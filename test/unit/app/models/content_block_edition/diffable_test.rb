@@ -126,6 +126,8 @@ class ContentBlockManager::DiffableTest < ActiveSupport::TestCase
         old_organisation = build(:organisation, name: "One Organisation")
         new_organisation = build(:organisation, name: "Another Organisation")
 
+        Organisation.stubs(:all).returns([old_organisation, new_organisation])
+
         previous_edition.lead_organisation_id = old_organisation.id
         previous_edition.save!
 
