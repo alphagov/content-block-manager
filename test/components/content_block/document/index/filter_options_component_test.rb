@@ -71,7 +71,6 @@ class ContentBlockManager::ContentBlock::Document::Index::FilterOptionsComponent
   end
 
   it "selects organisation if selected in filters" do
-    skip("Skipping until we can fetch organisations from Publishing API")
     helper_mock.stubs(:taggable_organisations_container).returns([
       { text: "Department of Placeholder", value: 1 },
       { text: "Ministry of Example", value: 2, selected: true },

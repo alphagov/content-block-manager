@@ -27,13 +27,8 @@ private
     }
   end
 
-  def taggable_organisations_options(_selected_orgs)
-    # TODO: Migrate code to fetch organisations from Publishing API
-    # helpers.taggable_organisations_container(selected_orgs)
-    [
-      { text: "HM Revenue & Customs (HMRC)", value: 1, selected: false },
-      { text: "Test Organisation (TO)", value: 2, selected: false },
-    ]
+  def taggable_organisations_options(selected_orgs)
+    helpers.taggable_organisations_container(selected_orgs)
   end
 
   def options_for_lead_organisation(selected_orgs = [])
