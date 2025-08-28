@@ -16,7 +16,7 @@ class ContentBlockManager::BaseController < Admin::BaseController
   def edition_params
     params.require("content_block/edition")
           .permit(
-            :organisation_id,
+            :lead_organisation_id,
             :creator,
             :instructions_to_publishers,
             "scheduled_publication(1i)",
