@@ -5,7 +5,7 @@ module ContentBlockManager
     included do
       scope :with_lead_organisation,
             lambda { |id|
-              joins(latest_edition: :edition_organisation).where("content_block_edition_organisations.organisation_id = :id", id:)
+              latest_edition.where("content_block_editions.lead_organisation_id = :id", id:)
             }
     end
   end
