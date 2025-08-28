@@ -15,17 +15,18 @@ class ContentBlockManager::ContentBlock::WorkflowTest < ActionDispatch::Integrat
     }
   end
 
-  let(:organisation) { create(:organisation) }
+  let(:organisation) { build(:organisation) }
   let(:document) { create(:content_block_document, :pension, content_id: @content_id, sluggable_string: "some-slug") }
-  let(:edition) { create(:content_block_edition, document:, details:, organisation:, instructions_to_publishers: "instructions", title: "Some Edition Title") }
+  let(:edition) { create(:content_block_edition, document:, details:, lead_organisation_id: organisation.id, instructions_to_publishers: "instructions", title: "Some Edition Title") }
 
   let!(:schema) { stub_request_for_schema("pension") }
 
-  setup do
+  before do
     login_as_admin
     @content_id = "49453854-d8fd-41da-ad4c-f99dbac601c3"
 
     stub_publishing_api_has_embedded_content(content_id: @content_id, total: 0, results: [], order: ContentBlockManager::HostContentItem::DEFAULT_ORDER)
+    Organisation.stubs(:all).returns([organisation])
   end
 
   describe "when creating a new content block" do
@@ -111,7 +112,7 @@ class ContentBlockManager::ContentBlock::WorkflowTest < ActionDispatch::Integrat
 
         describe "when there are existing subschema blocks created already" do
           let(:details) { { subschema_1: { existing_subschema: { name: "existing subschema" } } } }
-          let(:edition) { create(:content_block_edition, document:, details:, organisation:, instructions_to_publishers: "instructions", title: "Some Edition Title") }
+          let(:edition) { create(:content_block_edition, document:, details:, lead_organisation_id: organisation.id, instructions_to_publishers: "instructions", title: "Some Edition Title") }
 
           it "shows the existing block and how to add another embedded block" do
             visit content_block_manager_content_block_workflow_path(id: edition.id, step: "embedded_subschema_1")
@@ -169,7 +170,7 @@ class ContentBlockManager::ContentBlock::WorkflowTest < ActionDispatch::Integrat
               params: {
                 "content_block/edition" => {
                   "title" => "New title",
-                  "organisation_id" => organisation.id,
+                  "lead_organisation_id" => organisation.id,
                   "details" => {
                     "foo" => "bar",
                   },
@@ -188,7 +189,7 @@ class ContentBlockManager::ContentBlock::WorkflowTest < ActionDispatch::Integrat
               params: {
                 "content_block/edition" => {
                   "title" => "New title",
-                  "organisation_id" => organisation.id,
+                  "lead_organisation_id" => organisation.id,
                   "details" => {
                     "foo" => "",
                   },
@@ -205,7 +206,7 @@ class ContentBlockManager::ContentBlock::WorkflowTest < ActionDispatch::Integrat
               params: {
                 "content_block/edition" => {
                   "title" => "New title",
-                  "organisation_id" => organisation.id,
+                  "lead_organisation_id" => organisation.id,
                   "details" => {
                     "foo" => "bar",
                   },
@@ -629,8 +630,7 @@ def assert_edition_is_published(&block)
         "bar" => "Bar text",
       },
       links: {
-        # TODO: Fix this when we have organisations working correctly
-        primary_publishing_organisation: [nil],
+        primary_publishing_organisation: [edition.lead_organisation_id],
       },
       update_type: "major",
       change_note: edition.change_note,

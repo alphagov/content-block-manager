@@ -7,11 +7,14 @@ class ContentBlockManager::ContentBlock::DocumentsTest < ActionDispatch::Integra
   include Rails.application.routes.url_helpers
   include ContentBlockManager::IntegrationTestHelpers
 
+  let(:organisation) { build(:organisation) }
+
   setup do
     logout
-    @organisation = create(:organisation)
-    user = create(:gds_admin, organisation: @organisation)
+    user = create(:gds_admin)
     login_as(user)
+
+    Organisation.stubs(:all).returns([organisation])
   end
 
   describe "#index" do
@@ -27,14 +30,14 @@ class ContentBlockManager::ContentBlock::DocumentsTest < ActionDispatch::Integra
         :contact,
         details: { "email_address" => "first_edition@example.com" },
         document: content_block_document,
-        organisation: @organisation,
+        lead_organisation_id: organisation.id,
       )
       second_edition = create(
         :content_block_edition,
         :contact,
         details: { "email_address" => "second_edition@example.com" },
         document: content_block_document,
-        organisation: @organisation,
+        lead_organisation_id: organisation.id,
       )
 
       visit content_block_manager_content_block_documents_path
@@ -49,6 +52,7 @@ class ContentBlockManager::ContentBlock::DocumentsTest < ActionDispatch::Integra
         :contact,
         details: { "email_address" => "live_edition@example.com" },
         document: content_block_document,
+        lead_organisation_id: organisation.id,
       )
       _document_without_latest_edition = create(:content_block_document, :contact, sluggable_string: "no latest edition")
 
@@ -68,9 +72,9 @@ class ContentBlockManager::ContentBlock::DocumentsTest < ActionDispatch::Integra
 
     describe "when there are filter params provided" do
       it "does not change the params" do
-        visit content_block_manager_content_block_documents_path({ lead_organisation: "123" })
+        visit content_block_manager_content_block_documents_path({ lead_organisation: organisation.id })
 
-        assert_current_path content_block_manager_content_block_documents_path({ lead_organisation: "123" })
+        assert_current_path content_block_manager_content_block_documents_path({ lead_organisation: organisation.id })
       end
     end
   end
@@ -114,7 +118,7 @@ class ContentBlockManager::ContentBlock::DocumentsTest < ActionDispatch::Integra
   end
 
   describe "#show" do
-    let(:edition) { create(:content_block_edition, :contact) }
+    let(:edition) { create(:content_block_edition, :contact, lead_organisation_id: organisation.id) }
     let(:document) { edition.document }
 
     before do

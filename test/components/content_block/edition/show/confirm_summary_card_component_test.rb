@@ -10,7 +10,7 @@ class ContentBlockManager::ContentBlock::Edition::Show::ConfirmSummaryCardCompon
     build_stubbed(:content_block_edition, :pension,
                   title: "Some edition title",
                   details: { "interesting_fact" => "value of fact", "something" => { "else" => "value" } },
-                  organisation:,
+                  lead_organisation_id: organisation.id,
                   document: content_block_document)
   end
   let(:fields) do
@@ -22,6 +22,7 @@ class ContentBlockManager::ContentBlock::Edition::Show::ConfirmSummaryCardCompon
 
   before do
     content_block_edition.document.expects(:schema).returns(schema)
+    Organisation.stubs(:all).returns([organisation])
   end
 
   it "it renders instructions to publishers" do

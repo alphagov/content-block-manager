@@ -8,8 +8,7 @@ class ContentBlockManager::ContentBlock::UsersTest < ActionDispatch::Integration
 
   setup do
     logout
-    @organisation = create(:organisation)
-    user = create(:gds_admin, organisation: @organisation)
+    user = create(:gds_admin)
     login_as(user)
   end
 

@@ -17,7 +17,7 @@ class ContentBlockManager::ContentBlock::Document::Show::SummaryListComponentTes
       :pension,
       details: { foo: "bar", something: "else", "embedded" => { "something" => { "is" => "here" } } },
       creator: build(:user),
-      organisation:,
+      lead_organisation_id: organisation.id,
       scheduled_publication: Time.zone.now,
       state: "published",
       updated_at: 1.day.ago,
@@ -36,6 +36,7 @@ class ContentBlockManager::ContentBlock::Document::Show::SummaryListComponentTes
   before do
     content_block_document.stubs(:schema).returns(schema_without_embeddable_fields)
     content_block_document.stubs(:latest_edition).returns(content_block_edition)
+    Organisation.stubs(:all).returns([organisation])
   end
 
   it "renders a scheduled content block correctly" do

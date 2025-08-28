@@ -8,12 +8,13 @@ class ContentBlockManager::PublishEditionServiceTest < ActiveSupport::TestCase
     let(:schema) { build(:content_block_schema, block_type: "content_block_type", body: { "properties" => { "foo" => "", "bar" => "" } }) }
     let(:document) { create(:content_block_document, :pension, content_id:, sluggable_string: "some-edition-title") }
     let(:major_change) { true }
+    let(:organisation) { build(:organisation) }
     let(:edition) do
       create(
         :content_block_edition,
         document:,
         details: { "foo" => "Foo text", "bar" => "Bar text" },
-        organisation: @organisation,
+        lead_organisation_id: organisation.id,
         instructions_to_publishers: "instructions",
         title: "Some Edition Title",
         change_note: "Something changed publicly",
@@ -24,7 +25,7 @@ class ContentBlockManager::PublishEditionServiceTest < ActiveSupport::TestCase
     setup do
       ContentBlockManager::ContentBlock::Schema.stubs(:find_by_block_type)
                                                .returns(schema)
-      @organisation = create(:organisation)
+      Organisation.stubs(:all).returns([organisation])
     end
 
     it "returns a ContentBlockEdition" do
@@ -55,7 +56,7 @@ class ContentBlockManager::PublishEditionServiceTest < ActiveSupport::TestCase
             "bar" => "Bar text",
           },
           links: {
-            primary_publishing_organisation: [@organisation.content_id],
+            primary_publishing_organisation: [organisation.id],
           },
           update_type: "major",
           change_note: edition.change_note,
@@ -132,6 +133,7 @@ class ContentBlockManager::PublishEditionServiceTest < ActiveSupport::TestCase
       scheduled_editions = create_list(:content_block_edition, 2,
                                        document:,
                                        scheduled_publication: 7.days.from_now,
+                                       lead_organisation_id: organisation.id,
                                        state: "scheduled")
 
       scheduled_editions.each do |scheduled_edition|

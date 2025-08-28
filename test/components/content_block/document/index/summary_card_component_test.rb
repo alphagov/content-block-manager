@@ -10,6 +10,7 @@ class ContentBlockManager::ContentBlock::Document::Index::SummaryCardComponentTe
   include ContentBlockManager::ContentBlock::EditionHelper
 
   let(:content_block_document) { build_stubbed(:content_block_document, :pension) }
+  let(:organisation) { build(:organisation) }
   let(:content_block_edition) do
     build_stubbed(
       :content_block_edition,
@@ -17,7 +18,7 @@ class ContentBlockManager::ContentBlock::Document::Index::SummaryCardComponentTe
       id: 123,
       details: { foo: "bar", something: "else" },
       creator: build(:user),
-      organisation: build(:organisation),
+      lead_organisation_id: organisation.id,
       scheduled_publication: Time.zone.now,
       state: "published",
       updated_at: 1.day.ago,
@@ -35,6 +36,7 @@ class ContentBlockManager::ContentBlock::Document::Index::SummaryCardComponentTe
   before do
     content_block_document.stubs(:latest_edition).at_least_once.returns(content_block_edition)
     content_block_edition.stubs(:schema).returns(schema)
+    Organisation.stubs(:all).returns([organisation])
   end
 
   it "renders a published content block as a summary card" do

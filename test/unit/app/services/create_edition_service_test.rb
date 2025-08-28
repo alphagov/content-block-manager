@@ -4,7 +4,7 @@ class ContentBlockManager::CreateEditionServiceTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
 
   describe "#call" do
-    let!(:organisation) { create(:organisation) }
+    let!(:organisation) { build(:organisation) }
 
     let(:content_id) { "49453854-d8fd-41da-ad4c-f99dbac601c3" }
     let(:schema) { build(:content_block_schema, block_type: "content_block_type", body: { "properties" => { "foo" => "", "bar" => "" } }) }
@@ -19,7 +19,7 @@ class ContentBlockManager::CreateEditionServiceTest < ActiveSupport::TestCase
           "bar" => "Bar text",
         },
         creator: build(:user),
-        organisation_id: organisation.id.to_s,
+        lead_organisation_id: organisation.id.to_s,
         title: new_title,
       }
     end
@@ -32,6 +32,8 @@ class ContentBlockManager::CreateEditionServiceTest < ActiveSupport::TestCase
 
       ContentBlockManager::ContentBlock::Schema.stubs(:find_by_block_type)
                                             .returns(schema)
+
+      Organisation.stubs(:all).returns([organisation])
     end
 
     it "returns a ContentBlockEdition" do

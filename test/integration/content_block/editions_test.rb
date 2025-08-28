@@ -12,6 +12,12 @@ class ContentBlockManager::ContentBlock::EditionsTest < ActionDispatch::Integrat
   end
 
   describe "#new" do
+    let(:organisation) { build(:organisation) }
+
+    before do
+      Organisation.stubs(:all).returns([organisation])
+    end
+
     describe "when a document id is provided" do
       let!(:original_edition) { create(:content_block_edition, :pension, document: content_block_document) }
       let(:content_block_document) { create(:content_block_document, :pension) }
@@ -71,13 +77,14 @@ class ContentBlockManager::ContentBlock::EditionsTest < ActionDispatch::Integrat
         "bar" => "Bar text",
       }
     end
-    let(:organisation) { create(:organisation) }
+    let(:organisation) { build(:organisation) }
 
     let!(:schema) { stub_request_for_schema("pension") }
 
     before do
       content_block_document.latest_edition = original_edition
       content_block_document.save!
+      Organisation.stubs(:all).returns([organisation])
     end
 
     describe "when updating an existing block" do
@@ -89,7 +96,7 @@ class ContentBlockManager::ContentBlock::EditionsTest < ActionDispatch::Integrat
               "content_block/edition": {
                 document_attributes:,
                 details:,
-                organisation_id: organisation.id,
+                lead_organisation_id: organisation.id,
                 title:,
               },
             }
@@ -100,7 +107,6 @@ class ContentBlockManager::ContentBlock::EditionsTest < ActionDispatch::Integrat
         new_edition = content_block_document.editions.last
         new_author = ContentBlockManager::ContentBlock::EditionAuthor.last
         new_version = ContentBlockManager::ContentBlock::Version.last
-        new_edition_organisation = ContentBlockManager::ContentBlock::EditionOrganisation.last
 
         assert_equal document_attributes[:block_type], content_block_document.block_type
         assert_equal title, new_edition.title
@@ -110,9 +116,6 @@ class ContentBlockManager::ContentBlock::EditionsTest < ActionDispatch::Integrat
         assert_equal new_edition.creator, new_author.user
 
         assert_equal new_version.whodunnit, new_author.user.id.to_s
-
-        assert_equal new_edition_organisation.organisation_id, organisation.id
-        assert_equal new_edition_organisation.content_block_edition_id, new_edition.id
       end
 
       it "should render the template when a validation error is raised" do
@@ -192,7 +195,7 @@ class ContentBlockManager::ContentBlock::EditionsTest < ActionDispatch::Integrat
             document_attributes:,
             details:,
             title:,
-            organisation_id: organisation.id,
+            lead_organisation_id: organisation.id,
           },
         }
 
@@ -200,7 +203,6 @@ class ContentBlockManager::ContentBlock::EditionsTest < ActionDispatch::Integrat
         document = edition.document
         author = ContentBlockManager::ContentBlock::EditionAuthor.last
         version = ContentBlockManager::ContentBlock::Version.last
-        edition_organisation = ContentBlockManager::ContentBlock::EditionOrganisation.last
 
         assert_equal title, edition.title
         assert_equal document_attributes[:block_type], document.block_type
@@ -210,9 +212,6 @@ class ContentBlockManager::ContentBlock::EditionsTest < ActionDispatch::Integrat
         assert_equal edition.creator, author.user
 
         assert_equal version.whodunnit, author.user.id.to_s
-
-        assert_equal edition_organisation.organisation_id, organisation.id
-        assert_equal edition_organisation.content_block_edition_id, edition.id
       end
 
       it "should render the template when a validation error is raised" do
