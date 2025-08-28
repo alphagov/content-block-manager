@@ -8,7 +8,7 @@ module Workflow::UpdateMethods
 
     @content_block_edition.assign_attributes(
       title: edition_params[:title],
-      organisation_id: edition_params[:organisation_id],
+      lead_organisation_id: edition_params[:lead_organisation_id],
       instructions_to_publishers: edition_params[:instructions_to_publishers],
       details: @content_block_edition.details.merge(edition_params[:details]),
     )
