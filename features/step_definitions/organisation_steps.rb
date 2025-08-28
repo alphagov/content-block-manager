@@ -1,3 +1,6 @@
 Given(/^the organisation "([^"]*)" exists$/) do |name|
-  create_org_and_stub_content_store(:organisation, name:)
+  @organisations ||= []
+  @organisation = build(:organisation, name:)
+  @organisations << @organisation
+  Organisation.stubs(:all).returns(@organisations)
 end

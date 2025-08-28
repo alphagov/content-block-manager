@@ -47,7 +47,7 @@ When("I complete the form with the following fields:") do |table|
 
   fill_in "Title", with: @title if @title.present?
 
-  select @organisation, from: "content_block_manager_content_block_edition_lead_organisation" if @organisation.present?
+  select @organisation, from: "content_block_manager_content_block_edition_lead_organisation_id" if @organisation.present?
 
   fill_in "Instructions to publishers", with: @instructions_to_publishers if @instructions_to_publishers.present?
 
@@ -132,13 +132,12 @@ end
 
 Given("a pension content block has been created") do
   @content_blocks ||= []
-  organisation = create(:organisation)
   @content_block = create(
     :content_block_edition,
     :pension,
     details: { description: "Some text" },
     creator: @user,
-    organisation:,
+    lead_organisation_id: @organisation.id,
     title: "My pension",
   )
   ContentBlockManager::ContentBlock::Edition::HasAuditTrail.acting_as(@user) do
@@ -149,13 +148,12 @@ end
 
 Given("a contact content block has been created") do
   @content_blocks ||= []
-  organisation = create(:organisation)
   @content_block = create(
     :content_block_edition,
     :contact,
     details: { description: "Some text" },
     creator: @user,
-    organisation:,
+    lead_organisation_id: @organisation.id,
     title: "My contact",
   )
   ContentBlockManager::ContentBlock::Edition::HasAuditTrail.acting_as(@user) do
@@ -167,7 +165,7 @@ end
 Given(/^([^"]*) content blocks of type ([^"]*) have been created with the fields:$/) do |count, block_type, table|
   fields = table.rows_hash
   organisation_name = fields.delete("organisation")
-  organisation = Organisation.where(name: organisation_name).first
+  organisation = Organisation.all.find { |org| org.name == organisation_name }
   title = fields.delete("title") || "title"
   instructions_to_publishers = fields.delete("instructions_to_publishers")
 
@@ -179,7 +177,7 @@ Given(/^([^"]*) content blocks of type ([^"]*) have been created with the fields
       3,
       block_type.to_sym,
       document:,
-      organisation:,
+      lead_organisation_id: organisation.id,
       details: fields,
       creator: @user,
       instructions_to_publishers:,
@@ -260,7 +258,7 @@ end
 When("I set all fields to blank") do
   fill_in "Title", with: ""
   fill_in "Description", with: ""
-  select "", from: "content_block/edition[organisation_id]"
+  select "", from: "content_block/edition[lead_organisation_id]"
   click_save_and_continue
 end
 
@@ -272,14 +270,14 @@ Then("the edition should have been updated successfully") do
     should_show_summary_card_for_pension_content_block(
       "Changed title",
       "New description",
-      "Ministry of Example",
+      @organisation,
       "new context information",
     )
   else
     should_show_summary_card_for_contact_content_block(
       "Changed title",
       "changed@example.com",
-      "Ministry of Example",
+      @organisation,
       "new context information",
     )
   end
