@@ -29,10 +29,9 @@ module ApplicationHelper
   end
 
   def taggable_organisations_container(selected_ids)
-    # TODO: Remove this when we move to fetching organisations from Publishing API
     Organisation.all.map do |o|
       {
-        text: o.select_name,
+        text: o.name,
         value: o.id,
         selected: selected_ids.include?(o.id),
       }
