@@ -1,15 +1,10 @@
 FactoryBot.define do
-  factory :organisation do
+  factory :organisation, class: "Organisation" do
+    id { SecureRandom.uuid }
     sequence(:name) { |index| "organisation-#{index}" }
-    organisation_type_key { :other }
-    slug { name }
   end
 
-  factory :ministerial_department, parent: :organisation do
-    organisation_type_key { :ministerial_department }
-  end
-
-  factory :non_ministerial_department, parent: :organisation do
-    organisation_type_key { :non_ministerial_department }
+  initialize_with do
+    new(**attributes)
   end
 end

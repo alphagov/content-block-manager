@@ -50,4 +50,26 @@ class ContentBlockManager::OrganisationTest < ActiveSupport::TestCase
       assert(5.times { Organisation.all })
     end
   end
+
+  describe "#find" do
+    let(:organisation_1) { build(:organisation) }
+    let(:organisation_2) { build(:organisation) }
+
+    before do
+      Organisation.expects(:all).returns([organisation_1, organisation_2])
+    end
+
+    it "returns an organisation" do
+      organisation = Organisation.find(organisation_1.id)
+
+      assert_equal organisation.id, organisation_1.id
+      assert_equal organisation.name, organisation_1.name
+    end
+
+    it "returns nil if an organisation cannot be found" do
+      organisation = Organisation.find(SecureRandom.uuid)
+
+      assert_nil organisation
+    end
+  end
 end

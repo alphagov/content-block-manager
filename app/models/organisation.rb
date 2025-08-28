@@ -8,5 +8,9 @@ class Organisation < Data.define(:id, :name)
         end
       end
     end
+
+    def find(id)
+      all.find { |org| org.id == id }
+    end
   end
 end
