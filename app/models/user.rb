@@ -1,9 +1,6 @@
 class User < ApplicationRecord
   include GDS::SSO::User
 
-  belongs_to :organisation, foreign_key: :organisation_slug, primary_key: :slug,
-                            optional: true
-
   serialize :permissions, coder: YAML, type: Array
 
   validates :name, presence: true
@@ -55,10 +52,6 @@ class User < ApplicationRecord
     has_permission?(Permissions::VISUAL_EDITOR_PRIVATE_BETA)
   end
 
-  def organisation_name
-    organisation ? organisation.name : nil
-  end
-
   def has_email?
     email.present?
   end
@@ -67,19 +60,7 @@ class User < ApplicationRecord
     user.gds_editor?
   end
 
-  def can_handle_fatalities?
-    gds_editor? || (organisation && organisation.handles_fatalities?)
-  end
-
   def fuzzy_last_name
     name.split(/ +/, 2).last
   end
-
-  def organisation_content_id
-    return organisation.content_id if organisation
-
-    @organisation_content_id || ""
-  end
-
-  attr_writer :organisation_content_id
 end
