@@ -30,7 +30,7 @@ private
   def organisation_item
     {
       field: "Lead organisation",
-      value: content_block_edition.lead_organisation,
+      value: content_block_edition.lead_organisation.name,
     }
   end
 
