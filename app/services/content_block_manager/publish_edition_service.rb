@@ -50,7 +50,7 @@ module ContentBlockManager
         details: content_block_edition.details,
         links: {
           primary_publishing_organisation: [
-            content_block_edition.lead_organisation.content_id,
+            content_block_edition.lead_organisation.id,
           ],
         },
         update_type: content_block_edition.major_change ? "major" : "minor",
