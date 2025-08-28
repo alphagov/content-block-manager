@@ -6,7 +6,7 @@ FactoryBot.define do
     schema { build(:content_block_schema) }
     creator
 
-    organisation { FactoryBot.build(:organisation) }
+    lead_organisation_id { SecureRandom.uuid }
 
     document_id { nil }
 
@@ -25,14 +25,6 @@ FactoryBot.define do
     ContentBlockManager::ContentBlock::Schema.valid_schemas.each do |type|
       trait type.to_sym do
         document { build(:content_block_document, block_type: type) }
-      end
-    end
-
-    after :build do |edition, evaluator|
-      if evaluator.organisation
-        edition.build_edition_organisation(
-          organisation: evaluator.organisation,
-        )
       end
     end
 
