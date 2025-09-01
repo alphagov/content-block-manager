@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   get "/healthcheck/live", to: proc { [200, {}, %w[OK]] }
   get "/healthcheck/ready", to: GovukHealthcheck.rack_response
 
+  namespace :admin do
+    post "preview" => "preview#preview"
+  end
+
   namespace :content_block_manager, path: "/" do
     root to: "content_block/documents#index", via: :get
 
