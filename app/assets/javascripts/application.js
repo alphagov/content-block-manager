@@ -8,6 +8,8 @@
 //= require govuk_publishing_components/lib/cookie-functions
 //= require govuk_publishing_components/lib/trigger-event
 
+//= require components/govspeak-editor
+
 //= require ./modules/auto-populate-telephone-number-label
 //= require ./modules/copy-embed-code
 
