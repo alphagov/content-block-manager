@@ -95,44 +95,9 @@ class ContentBlockManager::ContentBlock::Document::Show::HostEditionsTableCompon
       end
       assert_selector "tbody .govuk-table__cell", text: host_content_item.document_type.humanize
       assert_selector "tbody .govuk-table__cell", text: "1.2m"
-      # TODO: Migrate code to fetch organisations from Publishing API
-      # assert_selector "tbody .govuk-table__cell", text: host_content_item.publishing_organisation["title"]
+      assert_selector "tbody .govuk-table__cell", text: host_content_item.publishing_organisation["title"]
       assert_selector "tbody .govuk-table__cell", text: "#{time_ago_in_words(host_content_item.last_edited_at)} ago by #{last_edited_by_editor.name}"
       assert_link last_edited_by_editor.name, { href: content_block_manager_user_path(last_edited_by_editor.uid) }
-    end
-
-    context "when the organisation does NOT exist within Whitehall" do
-      it "does not link to the organisation" do
-        render_inline(
-          described_class.new(
-            caption:,
-            host_content_items:,
-            content_block_edition:,
-          ),
-        )
-        assert_no_selector "tbody .govuk-table__cell a", text: host_content_item.publishing_organisation["title"]
-      end
-    end
-
-    context "when the organisation DOES exist within Whitehall" do
-      it "links to the organisation instead of printing the name" do
-        skip("Skipping until we can fetch organisations from Publishing API")
-        organisation = create(:organisation, content_id: host_content_item.publishing_organisation["content_id"], name: host_content_item.publishing_organisation["title"])
-
-        expected_href = Rails.application.routes.url_helpers.admin_organisation_path(organisation)
-
-        render_inline(
-          described_class.new(
-            caption:,
-            host_content_items:,
-            content_block_edition:,
-          ),
-        )
-        assert_selector "tbody .govuk-table__cell a",
-                        text: host_content_item.publishing_organisation["title"]
-
-        assert_link host_content_item.publishing_organisation["title"], href: expected_href
-      end
     end
 
     context "when the organisation received does not have a title or base_path" do
