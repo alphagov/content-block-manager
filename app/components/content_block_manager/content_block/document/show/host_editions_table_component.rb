@@ -83,7 +83,7 @@ private
         text: content_item.instances,
       },
       {
-        text: organisation_link(content_item),
+        text: content_item.publishing_organisation.fetch("title", nil),
       },
       {
         text: updated_field_for(content_item),
@@ -127,29 +127,6 @@ private
   def content_link(content_item)
     link_to(content_link_text(content_item),
             frontend_path(content_item), class: "govuk-link", target: "_blank", rel: "noopener")
-  end
-
-  def organisation_link(_content_item)
-    # TODO: Migrate code to fetch organisations from Publishing API
-    # return nil if content_item.nil?
-    #
-    # matching_organisation = all_publishing_organisations.find_by_content_id(content_item.publishing_organisation["content_id"])
-    # if matching_organisation
-    #   link_to(matching_organisation.name, admin_organisation_path(matching_organisation), class: "govuk-link")
-    # else
-    #   content_item.publishing_organisation.fetch("title", nil)
-    # end
-    nil
-  end
-
-  def all_publishing_organisations
-    @all_publishing_organisations ||= begin
-      host_content_ids = host_content_items.map { |content_item|
-        content_item.publishing_organisation.fetch("content_id", nil)
-      }.compact
-
-      Organisation.where(content_id: host_content_ids)
-    end
   end
 
   def updated_field_for(content_item)
