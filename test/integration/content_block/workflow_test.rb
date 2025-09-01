@@ -620,7 +620,7 @@ def assert_edition_is_published(&block)
     {
       schema_name: "content_block_type",
       document_type: "content_block_type",
-      publishing_app: "content_block_manager",
+      publishing_app: "content-block-manager",
       title: "Some Edition Title",
       content_id_alias: "some-slug",
       instructions_to_publishers: "instructions",
