@@ -5,12 +5,16 @@ class ContentBlockManager::DiffableTest < ActiveSupport::TestCase
 
   let(:document) { create(:content_block_document, :pension) }
 
-  let(:organisation) { create(:organisation) }
+  let(:organisation) { build(:organisation) }
   let(:previous_edition) do
-    create(:content_block_edition, document:, created_at: Time.zone.now - 2.days, organisation:)
+    create(:content_block_edition, document:, created_at: Time.zone.now - 2.days, lead_organisation_id: organisation.id)
   end
   let(:edition) do
-    create(:content_block_edition, document:, organisation:)
+    create(:content_block_edition, document:, lead_organisation_id: organisation.id)
+  end
+
+  before do
+    Organisation.stubs(:all).returns([organisation])
   end
 
   describe "#generate_diff" do
@@ -119,13 +123,15 @@ class ContentBlockManager::DiffableTest < ActiveSupport::TestCase
       end
 
       it "returns a diff if the organisation has changed" do
-        old_organisation = create(:organisation, name: "One Organisation")
-        new_organisation = create(:organisation, name: "Another Organisation")
+        old_organisation = build(:organisation, name: "One Organisation")
+        new_organisation = build(:organisation, name: "Another Organisation")
 
-        previous_edition.organisation = old_organisation
+        Organisation.stubs(:all).returns([old_organisation, new_organisation])
+
+        previous_edition.lead_organisation_id = old_organisation.id
         previous_edition.save!
 
-        edition.organisation = new_organisation
+        edition.lead_organisation_id = new_organisation.id
         edition.save!
 
         expected_diff = {

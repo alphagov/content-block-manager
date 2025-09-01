@@ -1,5 +1,8 @@
 Feature: Content Block Manager Permissions
 
+  Background:
+    Given the organisation "Ministry of Example" exists
+
   Scenario: GDS editor cannot access the content block manager
     Given I am a GDS editor
     When I visit the Content Block Manager home page

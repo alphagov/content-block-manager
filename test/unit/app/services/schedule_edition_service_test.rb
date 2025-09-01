@@ -4,7 +4,7 @@ class ContentBlockManager::ScheduleEditionServiceTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
 
   let(:content_id) { SecureRandom.uuid }
-  let(:organisation) { create(:organisation) }
+  let(:organisation) { build(:organisation) }
   let(:schema) { build(:content_block_schema, block_type: "content_block_type", body: { "properties" => { "foo" => "", "bar" => "" } }) }
 
   let(:edition) do
@@ -12,13 +12,14 @@ class ContentBlockManager::ScheduleEditionServiceTest < ActiveSupport::TestCase
            document: create(:content_block_document, :pension, content_id:),
            details: { "foo" => "Foo text", "bar" => "Bar text" },
            scheduled_publication: Time.zone.parse("2034-09-02T10:05:00"),
-           organisation:)
+           lead_organisation_id: organisation.id)
   end
 
   setup do
     ContentBlockManager::ContentBlock::Schema.stubs(:find_by_block_type)
                                              .returns(schema)
     stub_publishing_api_has_embedded_content(content_id:, total: 0, results: [], order: ContentBlockManager::HostContentItem::DEFAULT_ORDER)
+    Organisation.stubs(:all).returns([organisation])
   end
 
   describe "#call" do
@@ -42,6 +43,7 @@ class ContentBlockManager::ScheduleEditionServiceTest < ActiveSupport::TestCase
       scheduled_editions = create_list(:content_block_edition, 2,
                                        document: edition.document,
                                        scheduled_publication: 7.days.from_now,
+                                       lead_organisation_id: organisation.id,
                                        state: "scheduled")
 
       ContentBlockManager::SchedulePublishingWorker.expects(:queue).with do |expected_edition|

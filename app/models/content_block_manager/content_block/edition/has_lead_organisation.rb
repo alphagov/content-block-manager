@@ -3,25 +3,11 @@ module ContentBlockManager
     extend ActiveSupport::Concern
 
     included do
-      has_one :edition_organisation, foreign_key: :content_block_edition_id,
-                                     dependent: :destroy,
-                                     class_name: "ContentBlockManager::ContentBlock::EditionOrganisation"
-      has_one :organisation, through: :edition_organisation, class_name: "Organisation"
-
       validates_with ContentBlockManager::OrganisationValidator
     end
 
-    def organisation_id=(organisation_id)
-      if organisation_id.blank?
-        self.edition_organisation = nil
-      else
-        edition_organisation = build_edition_organisation
-        edition_organisation.organisation_id = organisation_id
-      end
-    end
-
     def lead_organisation
-      organisation
+      Organisation.find(lead_organisation_id)
     end
   end
 end

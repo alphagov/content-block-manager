@@ -19,7 +19,7 @@ def should_show_generic_content_block_details(document_title, organisation, inst
   expect(page).to have_selector(".govuk-summary-list__key", text: "Title")
   expect(page).to have_selector(".govuk-summary-list__value", text: document_title)
   expect(page).to have_selector(".govuk-summary-list__key", text: "Lead organisation")
-  expect(page).to have_selector(".govuk-summary-list__value", text: organisation)
+  expect(page).to have_selector(".govuk-summary-list__value", text: organisation.name)
   if instructions_to_publishers
     expect(page).to have_selector(".govuk-summary-list__key", text: "Instructions to publishers")
     expect(page).to have_selector(".govuk-summary-list__value", text: instructions_to_publishers)
@@ -58,7 +58,7 @@ def change_details(object_type: "pension")
     fill_in "Email address", with: "changed@example.com"
   end
 
-  select "Ministry of Example", from: "content_block_manager_content_block_edition_lead_organisation"
+  select "Ministry of Example", from: "content_block_manager_content_block_edition_lead_organisation_id"
   fill_in "Instructions to publishers", with: "new context information"
   click_save_and_continue
 end

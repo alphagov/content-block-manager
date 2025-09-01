@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_27_150713) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_28_130017) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -38,15 +38,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_27_150713) do
     t.index ["user_id"], name: "index_content_block_edition_authors_on_user_id"
   end
 
-  create_table "content_block_edition_organisations", force: :cascade do |t|
-    t.integer "content_block_edition_id", null: false
-    t.integer "organisation_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["content_block_edition_id"], name: "idx_on_content_block_edition_id_e433bc9b13"
-    t.index ["organisation_id"], name: "index_content_block_edition_organisations_on_organisation_id"
-  end
-
   create_table "content_block_editions", force: :cascade do |t|
     t.json "details", null: false
     t.integer "document_id", null: false
@@ -59,6 +50,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_27_150713) do
     t.boolean "major_change"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "lead_organisation_id"
     t.index ["document_id"], name: "index_content_block_editions_on_document_id"
     t.index ["title"], name: "index_content_block_editions_on_title"
   end
@@ -84,24 +76,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_27_150713) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["key"], name: "index_flipflop_features_on_key"
-  end
-
-  create_table "organisations", force: :cascade do |t|
-    t.text "name", null: false
-    t.text "slug", null: false
-    t.text "url"
-    t.text "govuk_status", default: "live", null: false
-    t.datetime "closed_at"
-    t.text "content_id"
-    t.boolean "political", default: false, null: false
-    t.text "organisation_type_key", null: false
-    t.text "govuk_closed_status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index "upper(name)", name: "index_organisations_on_upper_name", unique: true
-    t.index "upper(slug)", name: "index_organisations_on_upper_slug", unique: true
-    t.index ["content_id"], name: "index_organisations_on_content_id"
-    t.index ["organisation_type_key"], name: "index_organisations_on_organisation_type_key"
   end
 
   create_table "users", force: :cascade do |t|

@@ -6,11 +6,14 @@ class ContentBlockManager::ContentBlock::Editions::EmbeddedObjectsTest < ActionD
   extend Minitest::Spec::DSL
   include Rails.application.routes.url_helpers
 
+  let(:organisation) { build(:organisation) }
+
   setup do
     logout
-    @organisation = create(:organisation)
-    user = create(:gds_admin, organisation: @organisation)
+    user = create(:gds_admin)
     login_as(user)
+
+    Organisation.stubs(:all).returns([organisation])
   end
 
   let(:edition) { create(:content_block_edition, :pension, details: { "something" => { "embedded" => { "title" => "Embedded", "is" => "here" } } }) }

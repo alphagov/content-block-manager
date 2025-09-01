@@ -10,7 +10,7 @@ class ContentBlockManager::ContentBlock::EditionTest < ActiveSupport::TestCase
   let(:details) { { "some_field" => "some_content" } }
   let(:title) { "Edition title" }
   let(:creator) { create(:user) }
-  let(:organisation) { create(:organisation) }
+  let(:organisation) { build(:organisation) }
   let(:internal_change_note) { "My internal change note" }
   let(:change_note) { "My internal change note" }
   let(:major_change) { true }
@@ -25,7 +25,7 @@ class ContentBlockManager::ContentBlock::EditionTest < ActiveSupport::TestCase
         block_type: "pension",
       },
       creator:,
-      organisation_id: organisation.id.to_s,
+      lead_organisation_id: organisation.id.to_s,
       title:,
       internal_change_note:,
       change_note:,
@@ -36,6 +36,7 @@ class ContentBlockManager::ContentBlock::EditionTest < ActiveSupport::TestCase
   before do
     ContentBlockManager::ContentBlock::Edition.any_instance.stubs(:create_random_id).returns(new_content_id)
     content_block_edition.stubs(:schema).returns(build(:content_block_schema))
+    Organisation.stubs(:all).returns([organisation])
   end
 
   it "exists with required data" do
@@ -85,7 +86,7 @@ class ContentBlockManager::ContentBlock::EditionTest < ActiveSupport::TestCase
       document_attributes: {
         block_type: nil,
       },
-      organisation_id: organisation.id.to_s,
+      lead_organisation_id: organisation.id.to_s,
     )
 
     assert_invalid content_block_edition
@@ -99,7 +100,7 @@ class ContentBlockManager::ContentBlock::EditionTest < ActiveSupport::TestCase
       updated_at:,
       details:,
       document_attributes: {},
-      organisation_id: organisation.id.to_s,
+      lead_organisation_id: organisation.id.to_s,
       title: nil,
     )
 
@@ -365,7 +366,7 @@ class ContentBlockManager::ContentBlock::EditionTest < ActiveSupport::TestCase
 
       assert_equal new_edition.state, "draft"
       assert_nil new_edition.id
-      assert_equal new_edition.organisation, content_block_edition.lead_organisation
+      assert_equal new_edition.lead_organisation, content_block_edition.lead_organisation
       assert_equal new_edition.creator, creator
       assert_equal new_edition.title, content_block_edition.title
       assert_equal new_edition.details, content_block_edition.details

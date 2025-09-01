@@ -3,26 +3,22 @@ require "test_helper"
 class ContentBlockManager::HasLeadOrganisationTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
 
-  let(:organisation) { create(:organisation) }
-  let(:edition) do
-    create(
-      :content_block_edition,
-      organisation: organisation,
-      document: create(:content_block_document, :pension),
-    )
-  end
+  describe "#lead_organisation" do
+    let(:organisation) { build(:organisation) }
+    let(:edition) do
+      create(
+        :content_block_edition,
+        lead_organisation_id: organisation.id,
+        document: create(:content_block_document, :pension),
+      )
+    end
 
-  before do
-    edition.reload
-  end
+    before do
+      Organisation.expects(:find).with(organisation.id).returns(organisation)
+    end
 
-  it "creates an edition_organisation for a new edition" do
-    edition_organisation = edition.edition_organisation
-
-    assert_equal organisation.id, edition_organisation.organisation_id
-  end
-
-  it "returns the lead organisation from the edition_organisation" do
-    assert_equal organisation, edition.lead_organisation
+    it "returns an organisation object" do
+      assert_equal edition.lead_organisation, organisation
+    end
   end
 end

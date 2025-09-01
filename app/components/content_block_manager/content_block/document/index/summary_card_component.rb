@@ -41,7 +41,7 @@ private
   def organisation_item
     {
       key: "Lead organisation",
-      value: content_block_edition.lead_organisation,
+      value: content_block_edition.lead_organisation.name,
     }
   end
 

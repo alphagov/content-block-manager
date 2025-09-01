@@ -39,7 +39,7 @@ module ContentBlockManager
         new_edition = dup
         new_edition.assign_attributes(
           state: "draft",
-          organisation: lead_organisation,
+          lead_organisation_id:,
           creator: creator,
           change_note: nil,
           internal_change_note: nil,

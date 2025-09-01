@@ -20,7 +20,7 @@ module ContentBlockManager
     end
 
     def previous_edition
-      @previous_edition ||= document.editions.includes(:edition_organisation, :organisation)[-2]
+      @previous_edition ||= document.editions[-2]
     end
 
     def previous_org
