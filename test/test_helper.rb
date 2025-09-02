@@ -20,7 +20,7 @@ require "govuk_sidekiq/testing"
 
 Dir[Rails.root.join("test/support/*.rb")].sort.each { |f| require f }
 
-GovukContentBlockManager::Application.load_tasks if Rake::Task.tasks.empty?
+ContentBlockManager::Application.load_tasks if Rake::Task.tasks.empty?
 
 Mocha.configure do |c|
   c.stubbing_non_existent_method = :prevent
