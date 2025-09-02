@@ -162,18 +162,18 @@ class ActiveSupport::TestCase
 end
 
 class ActionController::TestCase
-  # include HtmlAssertions
+  include HtmlAssertions
   # include AdminControllerTestHelpers
   # include AdminEditionControllerTestHelpers
   # include AdminEditionControllerScheduledPublishingTestHelpers
   # include AdminEditionRolesBehaviour
   # include AdminEditionWorldLocationsBehaviour
   # include DocumentControllerTestHelpers
-  # include ControllerTestHelpers
+  include ControllerTestHelpers
   # include ResourceTestHelpers
   # include AtomTestHelpers
   # include CacheControlTestHelpers
-  # include ViewRendering
+  include ViewRendering
   #
   # include Admin::EditionRoutesHelper
 
@@ -194,8 +194,8 @@ class ActionController::TestCase
     stub_request(:get, %r{\A#{Plek.find('publishing-api')}/v2/expanded-links/}).to_return(body: { links: {} }.to_json)
   end
 
-  def login_as(role_or_user, organisation = nil)
-    @current_user = role_or_user.is_a?(Symbol) ? create(role_or_user, organisation:) : role_or_user
+  def login_as(role_or_user)
+    @current_user = role_or_user.is_a?(Symbol) ? create(role_or_user) : role_or_user
     request.env["warden"] = stub(authenticate!: true, authenticated?: true, user: @current_user)
     Current.user = @current_user
     @current_user
