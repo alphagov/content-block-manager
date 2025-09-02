@@ -1,5 +1,5 @@
 {
-  "srcDir": "public/assets/content_block_manager",
+  "srcDir": "public/assets/content-block-manager",
   "srcFiles": [
     "test-dependencies-*.js",
     "application-*.js",
