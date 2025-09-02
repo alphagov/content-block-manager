@@ -1,0 +1,5 @@
+:verbose: true
+:concurrency: 8
+:queues:
+  - content_block_publishing
+  - default
