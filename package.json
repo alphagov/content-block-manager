@@ -1,5 +1,5 @@
 {
-  "name": "govuk-content-block-manager",
+  "name": "content-block-manager",
   "description": "Create and manage re-usable blocks of content",
   "private": true,
   "author": "Government Digital Service",

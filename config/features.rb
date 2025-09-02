@@ -1,3 +1,5 @@
+require_relative "../lib/content_block_manager"
+
 Flipflop.configure do
   # Strategies will be used in the order listed here.
   strategy :active_record, hidden: !Rails.env.development?
