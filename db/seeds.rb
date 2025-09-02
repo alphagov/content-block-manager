@@ -1,4 +1,4 @@
-return if Rails.env.test?
+return unless Rails.env.development?
 
 User.create!(
   name: "Test user",
