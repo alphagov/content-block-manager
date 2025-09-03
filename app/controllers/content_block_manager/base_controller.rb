@@ -1,6 +1,4 @@
 class ContentBlockManager::BaseController < ApplicationController
-  before_action :set_sentry_tags
-
   def scheduled_publication_params
     params.require(:scheduled_at).permit("scheduled_publication(1i)",
                                          "scheduled_publication(2i)",
@@ -30,9 +28,6 @@ class ContentBlockManager::BaseController < ApplicationController
           .merge!(creator: current_user)
   end
 
-  def set_sentry_tags
-    Sentry.set_tags(engine: "content_block_manager")
-  end
   delegate :support_url, to: :ContentBlockManager
   helper_method :support_url
 end
