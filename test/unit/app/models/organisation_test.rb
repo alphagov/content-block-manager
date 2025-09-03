@@ -27,7 +27,9 @@ class ContentBlockManager::OrganisationTest < ActiveSupport::TestCase
 
     it "fetches organisations" do
       Services.publishing_api.expects(:get_content_items)
-              .with(document_type: "organisation", per_page: "500")
+              .with(document_type: "organisation",
+                    fields: %w[title content_id],
+                    per_page: "500")
               .returns(results)
 
       organisations = Organisation.all
@@ -43,7 +45,9 @@ class ContentBlockManager::OrganisationTest < ActiveSupport::TestCase
 
     it "caches results" do
       Services.publishing_api.expects(:get_content_items)
-              .with(document_type: "organisation", per_page: "500")
+              .with(document_type: "organisation",
+                    fields: %w[title content_id],
+                    per_page: "500")
               .once
               .returns(results)
 
