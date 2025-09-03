@@ -2,7 +2,7 @@ require "test_helper"
 
 class Admin::PreviewControllerTest < ActionController::TestCase
   setup do
-    login_as :writer
+    login_as :user
   end
 
   view_test "renders the body param using govspeak into a document body template" do

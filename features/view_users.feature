@@ -1,6 +1,6 @@
 Feature: View users
   Background:
-    Given I am a GDS admin
+    Given I am logged in
     And A user exists with uuid "123"
 
   Scenario: GDS Editor views a user

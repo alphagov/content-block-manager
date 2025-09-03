@@ -11,7 +11,7 @@ class ContentBlockManager::ContentBlock::DocumentsTest < ActionDispatch::Integra
 
   setup do
     logout
-    user = create(:gds_admin)
+    user = create(:user)
     login_as(user)
 
     Organisation.stubs(:all).returns([organisation])

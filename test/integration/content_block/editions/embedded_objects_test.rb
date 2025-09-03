@@ -10,7 +10,7 @@ class ContentBlockManager::ContentBlock::Editions::EmbeddedObjectsTest < ActionD
 
   setup do
     logout
-    user = create(:gds_admin)
+    user = create(:user)
     login_as(user)
 
     Organisation.stubs(:all).returns([organisation])

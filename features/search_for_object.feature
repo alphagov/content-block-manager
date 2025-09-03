@@ -1,6 +1,6 @@
 Feature: Search for a content object
   Background:
-    Given I am a GDS admin
+    Given I am logged in
     And the organisation "Department of Placeholder" exists
     And the organisation "Ministry of Example" exists
     And a schema "pension" exists:
