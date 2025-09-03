@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_01_101004) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_03_125525) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -87,6 +87,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_01_101004) do
     t.text "permissions"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "organisation_slug"
+    t.string "organisation_content_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["uid"], name: "index_users_on_uid"
   end
