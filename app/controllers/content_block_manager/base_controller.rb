@@ -1,9 +1,5 @@
 class ContentBlockManager::BaseController < ApplicationController
-  before_action :check_block_manager_permissions, :set_sentry_tags
-
-  def check_block_manager_permissions
-    forbidden! unless current_user.gds_admin?
-  end
+  before_action :set_sentry_tags
 
   def scheduled_publication_params
     params.require(:scheduled_at).permit("scheduled_publication(1i)",
