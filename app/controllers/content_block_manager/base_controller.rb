@@ -1,10 +1,4 @@
-class ContentBlockManager::BaseController < Admin::BaseController
-  before_action :check_block_manager_permissions, :set_sentry_tags
-
-  def check_block_manager_permissions
-    forbidden! unless current_user.gds_admin?
-  end
-
+class ContentBlockManager::BaseController < ApplicationController
   def scheduled_publication_params
     params.require(:scheduled_at).permit("scheduled_publication(1i)",
                                          "scheduled_publication(2i)",
@@ -32,14 +26,6 @@ class ContentBlockManager::BaseController < Admin::BaseController
             details: @schema.permitted_params,
           )
           .merge!(creator: current_user)
-  end
-
-  def set_sentry_tags
-    Sentry.set_tags(engine: "content_block_manager")
-  end
-
-  def product_name
-    "Content Block Manager"
   end
 
   delegate :support_url, to: :ContentBlockManager

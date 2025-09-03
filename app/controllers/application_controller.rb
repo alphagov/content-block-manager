@@ -1,8 +1,10 @@
 class ApplicationController < ActionController::Base
   include GDS::SSO::ControllerMethods
+  layout "design_system"
 
   protect_from_forgery
 
+  prepend_before_action :authenticate_user!
   before_action :set_current_user
   before_action :set_authenticated_user_header
 

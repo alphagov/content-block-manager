@@ -4,7 +4,7 @@ FactoryBot.define do
     created_at { Time.zone.now.utc }
     updated_at { Time.zone.now.utc }
     schema { build(:content_block_schema) }
-    creator
+    creator { build(:user) }
 
     lead_organisation_id { SecureRandom.uuid }
 

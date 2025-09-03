@@ -1,4 +1,4 @@
-class Admin::PreviewController < Admin::BaseController
+class Admin::PreviewController < ApplicationController
   include GovspeakPreviewHelper
 
   def preview

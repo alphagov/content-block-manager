@@ -169,7 +169,6 @@ class ActionController::TestCase
   # include AdminEditionRolesBehaviour
   # include AdminEditionWorldLocationsBehaviour
   # include DocumentControllerTestHelpers
-  include ControllerTestHelpers
   # include ResourceTestHelpers
   # include AtomTestHelpers
   # include CacheControlTestHelpers
@@ -223,7 +222,7 @@ class ActionDispatch::IntegrationTest
   end
 
   def login_as_admin
-    login_as(create(:gds_admin, name: "admin-name", email: "admin@example.com"))
+    login_as(create(:user, name: "admin-name", email: "admin@example.com"))
   end
 
   def logout

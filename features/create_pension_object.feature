@@ -1,7 +1,7 @@
 Feature: Create a content object
 
   Background:
-    Given I am a GDS admin
+    Given I am logged in
     And the organisation "Ministry of Example" exists
     And a schema "pension" exists:
     """
