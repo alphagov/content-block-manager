@@ -169,7 +169,6 @@ class ActionController::TestCase
   # include AdminEditionRolesBehaviour
   # include AdminEditionWorldLocationsBehaviour
   # include DocumentControllerTestHelpers
-  include ControllerTestHelpers
   # include ResourceTestHelpers
   # include AtomTestHelpers
   # include CacheControlTestHelpers

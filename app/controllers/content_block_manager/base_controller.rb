@@ -1,4 +1,4 @@
-class ContentBlockManager::BaseController < Admin::BaseController
+class ContentBlockManager::BaseController < ApplicationController
   before_action :check_block_manager_permissions, :set_sentry_tags
 
   def check_block_manager_permissions
@@ -37,11 +37,6 @@ class ContentBlockManager::BaseController < Admin::BaseController
   def set_sentry_tags
     Sentry.set_tags(engine: "content_block_manager")
   end
-
-  def product_name
-    "Content Block Manager"
-  end
-
   delegate :support_url, to: :ContentBlockManager
   helper_method :support_url
 end

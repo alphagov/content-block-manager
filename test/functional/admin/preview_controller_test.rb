@@ -5,8 +5,6 @@ class Admin::PreviewControllerTest < ActionController::TestCase
     login_as :writer
   end
 
-  should_be_an_admin_controller
-
   view_test "renders the body param using govspeak into a document body template" do
     post :preview, params: { body: "# gov speak" }
     assert_select ".document .body h1", "gov speak"
