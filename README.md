@@ -1,42 +1,42 @@
 # Content Block Manager
 
-Content Block Manager is a tool for publishers to create and manage reusable
-blocks of content such as a simple ["Pension rate"][] or a complex ["Contact"][].
+Content Block Manager is used by publishers to create and manage "blocks" on content
+that can be reused and kept up to date across various pieces of content.
 
-## Live examples
+## Running the Application
 
-TO DO
-
-## Nomenclature
-
-TO DO
+Use [GOV.UK Docker](https://github.com/alphagov/govuk-docker) to run any commands that follow.
 
 ## Technical documentation
 
-### Before running the app (if applicable)
+This is a Ruby on Rails app, and should follow [our Rails app conventions](https://docs.publishing.service.gov.uk/manual/conventions-for-rails-applications.html).
 
-Anything that's not done automatically by the development environment:
-
-- Dependencies that need to be installed manually.
-- One-off commands that need to be run manually.
+You can use the [GOV.UK Docker environment](https://github.com/alphagov/govuk-docker) to run the application and its tests with all the necessary dependencies. Follow [the usage instructions](https://github.com/alphagov/govuk-docker#usage) to get started.
 
 ### Running the test suite
 
-TO DO
+These commands assume you have the [GOV.UK Docker environment](https://github.com/alphagov/govuk-docker) running and its binaries in your PATH.
+
+```
+# run all the test suites
+govuk-docker-run bundle exec rake
+```
+
+Javascript unit tests can also be run separately:
+
+```
+# run all the JavaScript tests
+govuk-docker-run bundle exec rake jasmine
+```
 
 ### Further documentation
 
-TO DO
+See the [`docs/`](docs/) directory.
 
 ## Licence
 
-[MIT Licence][]
+[MIT License](LICENCE)
 
-["Pension rate"]:
-https://github.com/alphagov/publishing-api/blob/main/content_schemas/formats/content_block_pension.jsonnet
+## Contact
 
-["Contact"]:
-https://github.com/alphagov/publishing-api/blob/main/content_schemas/formats/content_block_contact.jsonnet
-
-[MIT Licence]:
-./LICENCE
+The Content Modelling Team are available via Slack at [#govuk-publishing-content-modelling-dev](https://gds.slack.com/archives/C0776B04EJU)
