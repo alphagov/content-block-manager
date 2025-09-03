@@ -13,6 +13,23 @@ module ContentBlockManager
     "feedback-content-modelling@digital.cabinet-office.gov.uk"
   end
 
+  def self.admin_host
+    @admin_host ||= URI(admin_root).host
+  end
+
+  def self.internal_admin_host
+    @internal_admin_host ||=
+      URI(Plek.find("content-block-manager")).host
+  end
+
+  def self.public_host
+    @public_host ||= URI(public_root).host
+  end
+
+  def self.admin_root
+    @admin_root ||= Plek.external_url_for("content-block-manager")
+  end
+
   def self.public_root
     @public_root ||= Plek.website_root
   end

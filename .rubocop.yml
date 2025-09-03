@@ -48,3 +48,4 @@ Lint/MissingSuper:
 Rails/SaveBang:
   Exclude:
     - 'Rakefile'
+    - 'test/test_helper.rb'
