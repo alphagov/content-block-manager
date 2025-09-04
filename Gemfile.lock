@@ -179,6 +179,7 @@ GEM
       rubocop (>= 1)
       smart_properties
     erubi (1.13.1)
+    execjs (2.10.0)
     factory_bot (6.5.5)
       activesupport (>= 6.1.0)
     faker (3.5.2)
@@ -869,6 +870,8 @@ GEM
       memoist3 (~> 1.0.0)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
+    terser (1.2.6)
+      execjs (>= 0.3.0, < 3)
     thor (1.4.0)
     thruster (0.1.15)
     thruster (0.1.15-aarch64-linux)
@@ -970,6 +973,7 @@ DEPENDENCIES
   rubocop-govuk
   simplecov
   sprockets-rails
+  terser
   thruster
   timecop
   transitions
