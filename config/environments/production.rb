@@ -13,45 +13,58 @@ Rails.application.configure do
   config.consider_all_requests_local = false
 
   # Turn on fragment caching in view templates.
-  config.action_controller.perform_caching = true
+  config.action_controller.perform_caching = false
+
+  # Disable serving static files from `public/`, relying on NGINX/Apache to do so instead.
+  config.public_file_server.enabled = true
 
   # Cache assets for far-future expiry since they are all digest stamped.
   config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.year.to_i}" }
 
-  # Enable serving of images, stylesheets, and JavaScripts from an asset server.
-  # config.asset_host = "http://assets.example.com"
+  # Compress JavaScripts and CSS.
+  # Can also use `Terser.new(mangle: false)` to disable name mangling
+  config.assets.js_compressor = :terser
 
-  # Assume all access to the app is happening through a SSL-terminating reverse proxy.
-  config.assume_ssl = true
+  # Do not fall back to assets pipeline if a precompiled asset is missed.
+  config.assets.compile = false
 
-  # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = true
+  # Generate digests for assets URLs
+  config.assets.digest = true
 
-  # Skip http-to-https redirect for the default health check endpoint.
-  # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
+  # Defaults to a file named manifest-<random>.json in the config.assets.prefix
+  # directory within the public folder.
+  config.assets.manifest = Rails.root.join("public/assets/content-block-manager/assets-manifest.json")
 
-  # Log to STDOUT with the current request id as a default log tag.
-  config.log_tags = [:request_id]
-  config.logger   = ActiveSupport::TaggedLogging.logger($stdout)
+  # Specifies the header that your server uses for sending files
+  config.action_dispatch.x_sendfile_header = "X-Accel-Redirect" # for nginx
 
-  # Change to "debug" to log everything (including potentially personally-identifiable information!)
+  # "info" includes generic and useful information about system operation, but avoids logging too much
+  # information to avoid inadvertent exposure of personally identifiable information (PII). If you
+  # want to log everything, set the level to "debug".
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
 
+  # Log to STDOUT by default
+  if ENV["RAILS_LOG_TO_STDOUT"].present?
+    config.logger = ActiveSupport::Logger.new($stdout)
+                                         .tap  { |logger| logger.formatter = ::Logger::Formatter.new }
+                                         .then { |logger| ActiveSupport::TaggedLogging.new(logger) }
+  end
+
   # Prevent health checks from clogging up the logs.
-  config.silence_healthcheck_path = "/up"
+  config.silence_healthcheck_path = "^\/healthcheck"
+
+  # Prepend all log lines with the following tags.
+  config.log_tags = [:request_id]
 
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
-  # Replace the default in-process memory cache store with a durable alternative.
-  # config.cache_store = :mem_cache_store
-
-  # Replace the default in-process and non-durable queuing backend for Active Job.
-  # config.active_job.queue_adapter = :resque
-
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = true
+
+  # Don't log any deprecations.
+  config.active_support.report_deprecations = true
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
@@ -60,11 +73,11 @@ Rails.application.configure do
   config.active_record.attributes_for_inspect = [:id]
 
   # Enable DNS rebinding protection and other `Host` header attacks.
-  # config.hosts = [
-  #   "example.com",     # Allow requests from example.com
-  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
-  # ]
-  #
+  config.hosts = [
+    /content-block-manager\..*\.gov.uk$/,
+    /^content-block-manager$/,
+  ]
+
   # Skip DNS rebinding protection for the default health check endpoint.
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  config.host_authorization = { exclude: ->(request) { request.path.match?("^\/healthcheck") } }
 end
