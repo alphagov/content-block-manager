@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_03_125525) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_08_131107) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -81,7 +81,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_03_125525) do
   create_table "users", force: :cascade do |t|
     t.text "name", null: false
     t.text "uid"
-    t.text "email", null: false
+    t.text "email"
     t.boolean "disabled", default: false
     t.boolean "remotely_signed_out", default: false
     t.text "permissions"
