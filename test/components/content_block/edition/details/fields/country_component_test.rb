@@ -6,14 +6,13 @@ class ContentBlockManager::ContentBlock::Edition::Details::Fields::CountryCompon
   let(:content_block_edition) { build(:content_block_edition, :pension) }
   let(:field) { stub("field", name: "country", is_required?: true, default_value: nil) }
 
-  # let(:world_locations) { 5.times.map { |i| build(:world_location, name: "World location #{i}") } }
-  # let(:uk) { build(:world_location, name: "United Kingdom") }
+  let(:world_locations) { 5.times.map { |i| build(:world_location, name: "World location #{i}") } }
+  let(:uk) { build(:world_location, name: "United Kingdom") }
 
-  # let(:all_locations) { [world_locations, uk].flatten }
+  let(:all_locations) { [world_locations, uk].flatten }
 
   before do
-    skip("Skip these until we have migrated WorldLocations to come from Publishing API")
-    # WorldLocation.stubs(:geographical).returns(all_locations)
+    WorldLocation.stubs(:countries).returns(all_locations)
   end
 
   it "should render an select field populated with WorldLocations with the UK as the blank option" do
