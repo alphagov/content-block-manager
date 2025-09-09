@@ -23,7 +23,7 @@ class ContentBlockManager::SearchableByUpdatedDateTest < ActiveSupport::TestCase
       not_matching_document.latest_edition = not_matching_edition
       not_matching_document.save!
 
-      assert_equal [matching_document_1, matching_document_2], ContentBlockManager::ContentBlock::Document.from_date(filter_date_time)
+      assert_same_elements [matching_document_1, matching_document_2], ContentBlockManager::ContentBlock::Document.from_date(filter_date_time)
     end
   end
 
@@ -48,7 +48,7 @@ class ContentBlockManager::SearchableByUpdatedDateTest < ActiveSupport::TestCase
       not_matching_document.latest_edition = not_matching_edition
       not_matching_document.save!
 
-      assert_equal [matching_document_1, matching_document_2], ContentBlockManager::ContentBlock::Document.to_date(filter_date_time)
+      assert_same_elements [matching_document_1, matching_document_2], ContentBlockManager::ContentBlock::Document.to_date(filter_date_time)
     end
   end
 end
