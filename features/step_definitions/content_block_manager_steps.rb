@@ -47,7 +47,17 @@ When("I complete the form with the following fields:") do |table|
 
   fill_in "Title", with: @title if @title.present?
 
-  select @organisation, from: "content_block_manager_content_block_edition_lead_organisation_id" if @organisation.present?
+  if @organisation.present?
+    if Capybara.current_session.driver.is_a?(Capybara::Playwright::Driver)
+      Capybara.current_session.driver.with_playwright_page do |page|
+        combobox = page.get_by_role("combobox", name: "Lead organisation")
+        combobox.click
+        combobox.get_by_role("option", name: @organisation).click
+      end
+    else
+      select @organisation, from: "content_block_manager_content_block_edition_lead_organisation_id"
+    end
+  end
 
   fill_in "Instructions to publishers", with: @instructions_to_publishers if @instructions_to_publishers.present?
 
