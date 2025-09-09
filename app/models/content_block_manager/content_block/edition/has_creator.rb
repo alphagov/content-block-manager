@@ -10,6 +10,10 @@ module ContentBlockManager
       edition_authors.first&.user
     end
 
+    def creator_id=(user_id)
+      self.creator = User.find(user_id)
+    end
+
     def creator=(user)
       if new_record?
         edition_author = edition_authors.first || edition_authors.build

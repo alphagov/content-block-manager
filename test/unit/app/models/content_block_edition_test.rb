@@ -145,6 +145,16 @@ class ContentBlockManager::ContentBlock::EditionTest < ActiveSupport::TestCase
     assert_equal content_block_edition.creator, content_block_edition.edition_authors.first.user
   end
 
+  describe "#creator_id=" do
+    it "sets the creator given an ID" do
+      user = create(:user)
+      content_block_edition = build(:content_block_edition)
+      content_block_edition.creator_id = user.id
+
+      assert_equal content_block_edition.creator, user
+    end
+  end
+
   describe "#creator=" do
     it "raises an exception if called for a persisted record" do
       content_block_edition.save!
