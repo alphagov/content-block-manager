@@ -2,9 +2,9 @@ class Organisation < Data.define(:id, :name)
   class << self
     def all
       Rails.cache.fetch "organisations", expires_in: 1.day do
-        api_response["results"].map do |organisation|
+        api_response["results"].map { |organisation|
           new(id: organisation["content_id"], name: organisation["title"])
-        end
+        }.sort_by(&:name)
       end
     end
 
