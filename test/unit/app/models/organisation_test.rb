@@ -12,11 +12,11 @@ class ContentBlockManager::OrganisationTest < ActiveSupport::TestCase
 
   describe "#all" do
     let(:organisation_1) do
-      { "content_id" => SecureRandom.uuid, "title" => "Organisation 1" }
+      { "content_id" => SecureRandom.uuid, "title" => "Organisation B" }
     end
 
     let(:organisation_2) do
-      { "content_id" => SecureRandom.uuid, "title" => "Organisation 2" }
+      { "content_id" => SecureRandom.uuid, "title" => "Organisation A" }
     end
 
     let(:results) do
@@ -36,11 +36,11 @@ class ContentBlockManager::OrganisationTest < ActiveSupport::TestCase
 
       assert_equal 2, organisations.size
 
-      assert_equal organisations.first.id, organisation_1["content_id"]
-      assert_equal organisations.first.name, organisation_1["title"]
+      assert_equal organisations.first.id, organisation_2["content_id"]
+      assert_equal organisations.first.name, organisation_2["title"]
 
-      assert_equal organisations.second.id, organisation_2["content_id"]
-      assert_equal organisations.second.name, organisation_2["title"]
+      assert_equal organisations.second.id, organisation_1["content_id"]
+      assert_equal organisations.second.name, organisation_1["title"]
     end
 
     it "caches results" do

@@ -52,6 +52,7 @@ group :test do
   gem "minitest-fail-fast"
   gem "minitest-stub-const"
   gem "mocha"
+  gem "mutex_m"
   gem "rails-controller-testing"
   gem "simplecov"
   gem "timecop"
