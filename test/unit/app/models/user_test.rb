@@ -29,4 +29,21 @@ class ContentBlockManager::UserTest < ActiveSupport::TestCase
       assert_equal "Editor", user.role
     end
   end
+
+  describe "#organisation" do
+    it "returns nil when organisation_content_id is nil" do
+      user = build(:user)
+
+      assert_nil user.organisation
+    end
+
+    it "returns an organisation when one exists" do
+      organisation = build(:organisation, id: SecureRandom.uuid)
+      user = build(:user, organisation_content_id: organisation.id)
+
+      Organisation.expects(:find).with(organisation.id).returns(organisation)
+
+      assert_equal user.organisation, organisation
+    end
+  end
 end
