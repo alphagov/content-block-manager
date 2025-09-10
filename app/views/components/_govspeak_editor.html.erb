@@ -12,8 +12,7 @@
   right_to_left ||= false
 
   data_attributes ||= {}
-  data_attributes[:module] ||= ""
-  data_attributes[:module] << " govspeak-editor"
+  data_attributes[:module] = "#{data_attributes[:module]} govspeak-editor"
   data_attributes[:module] = data_attributes[:module].strip
 
   textarea_data_attributes ||= {}
