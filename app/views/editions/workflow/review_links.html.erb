@@ -1,0 +1,48 @@
+<% content_for :context, context %>
+<% content_for :title, "Preview #{@document.block_type.humanize.downcase}" %>
+<% content_for :title_margin_bottom, 4 %>
+<% content_for :back_link do %>
+  <%= render "govuk_publishing_components/components/back_link", {
+    href: back_path,
+  } %>
+<% end %>
+
+<p class="govuk-body">
+  This list shows the places where the change will be made. It does not include content in PDFs or beyond <a href="https://gov.uk" class="govuk-link">GOV.UK</a>.
+</p>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <%= form_with(
+        url: workflow_path(
+          edition_id: @edition.id,
+          step: :review_links,
+          ),
+        id: "review_links",
+        method: :put,
+        ) do %>
+          <%= render(
+                Edition::HostContent::TableComponent.new(
+                  caption: "List of locations",
+                  host_content_items: @host_content_items,
+                  current_page: @page,
+                  order: @order,
+                  edition: @edition,
+                  ),
+                ) %>
+      <% end %>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <%= render Shared::ContinueOrCancelButtonGroup.new(
+          form_id: "review_links",
+          edition: @edition,
+          ) %>
+      </div>
+    </div>
+  </div>
+</div>

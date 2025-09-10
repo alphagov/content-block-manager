@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ContentBlockManager::SignonUser::Show::SummaryListComponentTest < ViewComponent::TestCase
+class SignonUser::Show::SummaryListComponentTest < ViewComponent::TestCase
   extend Minitest::Spec::DSL
   include Rails.application.routes.url_helpers
 
@@ -15,7 +15,7 @@ class ContentBlockManager::SignonUser::Show::SummaryListComponentTest < ViewComp
   end
 
   it "renders a Govuk User correctly" do
-    render_inline(ContentBlockManager::SignonUser::Show::SummaryListComponent.new(user:))
+    render_inline(SignonUser::Show::SummaryListComponent.new(user:))
 
     assert_selector ".govuk-summary-list__row", count: 3
 

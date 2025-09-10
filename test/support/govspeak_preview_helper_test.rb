@@ -111,7 +111,7 @@ class GovspeakPreviewHelperTest < ActionView::TestCase
   test "should call the embed codes helper" do
     input = "Here is some Govspeak"
     expected = "Expected output"
-    ContentBlockManager::FindAndReplaceEmbedCodesService.expects(:call).with(input).returns(expected)
+    FindAndReplaceEmbedCodesService.expects(:call).with(input).returns(expected)
     govspeak_to_html(input, { preview: true })
   end
 

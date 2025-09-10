@@ -1,0 +1,19 @@
+<% content_for :context, "Create content block" %>
+
+<% if @schemas %>
+  <% content_for :back_link do %>
+    <%= render "govuk_publishing_components/components/back_link", {
+      href: documents_path,
+    } %>
+  <% end %>
+  <% content_for :page_title, "Select a content block" %>
+  <%= render partial: "documents/schemas", locals: { schemas: @schemas} %>
+<% else %>
+  <% content_for :back_link do %>
+    <%= render "govuk_publishing_components/components/back_link", {
+      href: new_document_path,
+    } %>
+  <% end %>
+  <% content_for :title, "Create #{@schema.name}" %>
+  <%= render partial: "shared/form", locals: { form: @form } %>
+<% end %>

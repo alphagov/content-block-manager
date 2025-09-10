@@ -55,21 +55,21 @@ When("I complete the form with the following fields:") do |table|
         combobox.get_by_role("option", name: @organisation).click
       end
     else
-      select @organisation, from: "content_block_manager_content_block_edition_lead_organisation_id"
+      select @organisation, from: "edition_lead_organisation_id"
     end
   end
 
   fill_in "Instructions to publishers", with: @instructions_to_publishers if @instructions_to_publishers.present?
 
   fields.keys.each do |k|
-    fill_in "content_block_manager_content_block_edition_details_#{k}", with: @details[k]
+    fill_in "edition_details_#{k}", with: @details[k]
   end
 
   click_save_and_continue
 end
 
 Then("the edition should have been created successfully") do
-  edition = ContentBlockManager::ContentBlock::Edition.all.last
+  edition = Edition.all.last
 
   assert_not_nil edition
   assert_not_nil edition.document
@@ -83,74 +83,74 @@ Then("the edition should have been created successfully") do
 end
 
 And("I should be taken to the confirmation page for a published block") do
-  content_block_edition = ContentBlockManager::ContentBlock::Edition.last
+  edition = Edition.last
 
-  assert_text I18n.t("content_block_edition.confirmation_page.updated.banner", block_type: content_block_edition.document.block_type.humanize)
-  assert_text I18n.t("content_block_edition.confirmation_page.updated.detail")
+  assert_text I18n.t("edition.confirmation_page.updated.banner", block_type: edition.document.block_type.humanize)
+  assert_text I18n.t("edition.confirmation_page.updated.detail")
 
   expect(page).to have_link(
     "View content block",
-    href: content_block_manager.content_block_manager_content_block_document_path(
-      content_block_edition.document,
+    href: document_path(
+      edition.document,
     ),
   )
 end
 
 And("I should be taken to the confirmation page for a new {string}") do |block_type|
-  content_block = ContentBlockManager::ContentBlock::Edition.last
+  content_block = Edition.last
 
-  assert_text I18n.t("content_block_edition.confirmation_page.created.banner", block_type: block_type.titlecase)
-  assert_text I18n.t("content_block_edition.confirmation_page.created.detail")
+  assert_text I18n.t("edition.confirmation_page.created.banner", block_type: block_type.titlecase)
+  assert_text I18n.t("edition.confirmation_page.created.detail")
 
   expect(page).to have_link(
     "View content block",
-    href: content_block_manager.content_block_manager_content_block_document_path(
+    href: document_path(
       content_block.document,
     ),
   )
 end
 
 When("I click to view the content block") do
-  click_link href: content_block_manager.content_block_manager_content_block_document_path(
-    ContentBlockManager::ContentBlock::Edition.last.document,
+  click_link href: document_path(
+    Edition.last.document,
   )
 end
 
 When("I should be taken to the scheduled confirmation page") do
-  content_block_edition = ContentBlockManager::ContentBlock::Edition.last
+  edition = Edition.last
 
   assert_text I18n.t(
-    "content_block_edition.confirmation_page.scheduled.banner",
+    "edition.confirmation_page.scheduled.banner",
     block_type: "Pension",
-    date: I18n.l(content_block_edition.scheduled_publication, format: :long_ordinal),
+    date: I18n.l(edition.scheduled_publication, format: :long_ordinal),
   ).squish
-  assert_text I18n.t("content_block_edition.confirmation_page.scheduled.detail")
+  assert_text I18n.t("edition.confirmation_page.scheduled.detail")
 
   expect(page).to have_link(
     "View content block",
-    href: content_block_manager.content_block_manager_content_block_document_path(
-      content_block_edition.document,
+    href: document_path(
+      edition.document,
     ),
   )
 end
 
 Then("I should be taken back to the document page") do
-  expect(page.current_url).to match(content_block_manager.content_block_manager_content_block_document_path(
-                                      ContentBlockManager::ContentBlock::Edition.last.document,
+  expect(page.current_url).to match(document_path(
+                                      Edition.last.document,
                                     ))
 end
 
 Given("a pension content block has been created") do
   @content_blocks ||= []
   @content_block = create(
-    :content_block_edition,
+    :edition,
     :pension,
     details: { description: "Some text" },
     creator: @user,
     lead_organisation_id: @organisation.id,
     title: "My pension",
   )
-  ContentBlockManager::ContentBlock::Edition::HasAuditTrail.acting_as(@user) do
+  Edition::HasAuditTrail.acting_as(@user) do
     @content_block.publish!
   end
   @content_blocks.push(@content_block)
@@ -159,14 +159,14 @@ end
 Given("a contact content block has been created") do
   @content_blocks ||= []
   @content_block = create(
-    :content_block_edition,
+    :edition,
     :contact,
     details: { description: "Some text" },
     creator: @user,
     lead_organisation_id: @organisation.id,
     title: "My contact",
   )
-  ContentBlockManager::ContentBlock::Edition::HasAuditTrail.acting_as(@user) do
+  Edition::HasAuditTrail.acting_as(@user) do
     @content_block.publish!
   end
   @content_blocks.push(@content_block)
@@ -180,10 +180,10 @@ Given(/^([^"]*) content blocks of type ([^"]*) have been created with the fields
   instructions_to_publishers = fields.delete("instructions_to_publishers")
 
   (1..count.to_i).each do |_i|
-    document = create(:content_block_document, block_type.to_sym, sluggable_string: title.parameterize(separator: "_"))
+    document = create(:document, block_type.to_sym, sluggable_string: title.parameterize(separator: "_"))
 
     editions = create_list(
-      :content_block_edition,
+      :edition,
       3,
       block_type.to_sym,
       document:,
@@ -200,21 +200,21 @@ Given(/^([^"]*) content blocks of type ([^"]*) have been created with the fields
 end
 
 Then("I am taken back to Content Block Manager home page") do
-  assert_equal current_path, content_block_manager.content_block_manager_root_path
+  assert_equal current_path, root_path
 end
 
 And("no draft Content Block Edition has been created") do
-  assert_equal 0, ContentBlockManager::ContentBlock::Edition.where(state: "draft").count
+  assert_equal 0, Edition.where(state: "draft").count
 end
 
 And("no draft Content Block Document has been created") do
-  assert_equal 0, ContentBlockManager::ContentBlock::Document.count
+  assert_equal 0, Document.count
 end
 
 Then("I should see the details for all documents") do
   assert_text "Content Block Manager"
 
-  ContentBlockManager::ContentBlock::Document.find_each do |document|
+  Document.find_each do |document|
     should_show_summary_title_for_generic_content_block(
       document.title,
     )
@@ -222,7 +222,7 @@ Then("I should see the details for all documents") do
 end
 
 Then("I should see the details for all documents from my organisation") do
-  ContentBlockManager::ContentBlock::Document.with_lead_organisation(@user.organisation.id).each do |document|
+  Document.with_lead_organisation(@user.organisation.id).each do |document|
     should_show_summary_title_for_generic_content_block(
       document.title,
     )
@@ -239,13 +239,13 @@ end
 
 When("I click to view the document") do
   @schema = @schemas[@content_block.document.block_type]
-  click_link href: content_block_manager.content_block_manager_content_block_document_path(@content_block.document)
+  click_link href: document_path(@content_block.document)
 end
 
 When("I click to view the document with title {string}") do |title|
-  content_block = ContentBlockManager::ContentBlock::Edition.where(title:).first
+  content_block = Edition.where(title:).first
 
-  click_link href: content_block_manager.content_block_manager_content_block_document_path(content_block.document)
+  click_link href: document_path(content_block.document)
 end
 
 Then("I should see the details for the contact content block") do
@@ -268,7 +268,7 @@ end
 When("I set all fields to blank") do
   fill_in "Title", with: ""
   fill_in "Description", with: ""
-  select "", from: "content_block/edition[lead_organisation_id]"
+  select "", from: "edition[lead_organisation_id]"
   click_save_and_continue
 end
 
@@ -293,7 +293,7 @@ Then("the edition should have been updated successfully") do
   end
 
   # TODO: this can be removed once the summary list is referring to the Edition's title, not the Document title
-  edition = ContentBlockManager::ContentBlock::Edition.all.last
+  edition = Edition.all.last
   assert_equal "Changed title", edition.title
 end
 
@@ -346,13 +346,13 @@ When("I am updating a content block") do
 end
 
 When("one of the content blocks was updated 2 days ago") do
-  content_block_document = ContentBlockManager::ContentBlock::Document.all.last
-  content_block_document.latest_edition.updated_at = 2.days.before(Time.zone.now)
-  content_block_document.latest_edition.save!
+  document = Document.all.last
+  document.latest_edition.updated_at = 2.days.before(Time.zone.now)
+  document.latest_edition.save!
 end
 
 Then("the published state of the object should be shown") do
-  visit content_block_manager_content_block_document_path(@content_block.document)
+  visit document_path(@content_block.document)
   expect(page).to have_selector(".govuk-summary-list__key", text: "Status")
   expect(page).to have_selector(".govuk-summary-list__value", text: "Published")
 end
@@ -379,7 +379,7 @@ Then(/^I should see the object store's home page title$/) do
 end
 
 And(/^I should see the object store's navigation$/) do
-  expect(page).to have_selector("a.govuk-service-navigation__link[href='#{content_block_manager.content_block_manager_root_path}']", text: "Blocks")
+  expect(page).to have_selector("a.govuk-service-navigation__link[href='#{root_path}']", text: "Blocks")
 end
 
 And("I should see the object store's phase banner") do
@@ -442,11 +442,11 @@ Given(/^my pension content block has no rates$/) do
 end
 
 When("I choose {string} from the type dropdown") do |type|
-  select type, from: "content_block_manager_content_block_edition_details_telephones_telephone_numbers_0_type"
+  select type, from: "edition_details_telephones_telephone_numbers_0_type"
 end
 
 Then("the label should be set to {string}") do |label|
-  expect(find("#content_block_manager_content_block_edition_details_telephones_telephone_numbers_0_label").value).to eq(label)
+  expect(find("#edition_details_telephones_telephone_numbers_0_label").value).to eq(label)
 end
 
 And(/^I click save$/) do

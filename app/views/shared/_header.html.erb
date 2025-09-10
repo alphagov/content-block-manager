@@ -3,9 +3,9 @@
 <%= render "govuk_publishing_components/components/layout_header", {
   product_name: ContentBlockManager.product_name,
   environment: environment,
-  logo_link: content_block_manager_root_path,
+  logo_link: root_path,
   navigation_items: [
-    main_nav_item("Blocks", content_block_manager_root_path),
+    main_nav_item("Blocks", root_path),
     {
       text: "View website",
       href: ContentBlockManager.public_root,

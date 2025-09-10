@@ -9,7 +9,7 @@ Then(/^I should see the dependent content listed$/) do
     break if item == @dependent_content.last
   end
 
-  expect(page).to have_link(@host_content_editor.name, href: content_block_manager.content_block_manager_user_path(@host_content_editor.uid))
+  expect(page).to have_link(@host_content_editor.name, href: user_path(@host_content_editor.uid))
 end
 
 Then(/^I (should )?see the rollup data for the dependent content$/) do |_should|
@@ -42,7 +42,7 @@ When(/^dependent content exists for a content block$/) do
   stub_publishing_api_has_embedded_content_for_any_content_id(
     results: @dependent_content,
     total: @dependent_content.length,
-    order: ContentBlockManager::HostContentItem::DEFAULT_ORDER,
+    order: HostContentItem::DEFAULT_ORDER,
     rollup: @rollup,
   )
 

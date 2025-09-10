@@ -16,13 +16,13 @@ Run the following command in the `content-block-manager` Kubernetes (where `CONT
 block you want to delete):
 
 ```bash
-rake "content_block_manager:delete_content_block[CONTENT_ID]"
+rake "delete_content_block[CONTENT_ID]"
 ```
 
 For example:
 
 ```bash
-kubectl exec -it deploy/content-block-manager -- rake "content_block_manager:delete_content_block[a2184d5d-9d3a-4fc3-a290-8bb00edbfb69]"
+kubectl exec -it deploy/content-block-manager -- rake "delete_content_block[a2184d5d-9d3a-4fc3-a290-8bb00edbfb69]"
 ```
 
 This will then "Unpublish" the block and all its editions in Publishing API, as well as soft delete the block in

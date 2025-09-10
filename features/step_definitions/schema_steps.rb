@@ -1,6 +1,6 @@
 When("I click on the {string} schema") do |schema_id|
   @schema = @schemas[schema_id]
-  ContentBlockManager::ContentBlock::Schema.expects(:find_by_block_type).with(schema_id).at_least_once.returns(@schema)
+  Schema.expects(:find_by_block_type).with(schema_id).at_least_once.returns(@schema)
   choose @schema.name
   click_save_and_continue
 end
@@ -36,9 +36,9 @@ end
 And("a schema {string} exists:") do |block_type, json|
   @schemas ||= {}
   body = JSON.parse(json)
-  @schema = build(:content_block_schema, block_type:, body:)
+  @schema = build(:schema, block_type:, body:)
   @schemas[block_type] = @schema
-  ContentBlockManager::ContentBlock::Schema.stubs(:all).returns(@schemas.values)
+  Schema.stubs(:all).returns(@schemas.values)
 end
 
 And("the schema has a subschema {string}:") do |subschema_name, json|
@@ -50,7 +50,7 @@ And("the schema has a subschema {string}:") do |subschema_name, json|
       "^[a-z0-9]+(?:-[a-z0-9]+)*$" => @subschemas[subschema_name],
     },
   }
-  @schema = build(:content_block_schema, block_type: @schema.block_type, body: @schema.body)
+  @schema = build(:schema, block_type: @schema.block_type, body: @schema.body)
   @schemas[@schema.block_type] = @schema
-  ContentBlockManager::ContentBlock::Schema.stubs(:all).returns(@schemas.values)
+  Schema.stubs(:all).returns(@schemas.values)
 end

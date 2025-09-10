@@ -1,14 +1,14 @@
 require "test_helper"
 
-class ContentBlockManager::EmbeddedObjectImmutabilityCheckTest < ActiveSupport::TestCase
+class EmbeddedObjectImmutabilityCheckTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
 
   let(:field_reference) { %w[foo bar baz] }
-  let(:checker) { ContentBlockManager::EmbeddedObjectImmutabilityCheck.new(edition:, field_reference:) }
+  let(:checker) { EmbeddedObjectImmutabilityCheck.new(edition:, field_reference:) }
 
   describe "#can_be_deleted?" do
     describe "when an edition is given" do
-      let(:edition) { build(:content_block_edition, :contact, details:) }
+      let(:edition) { build(:edition, :contact, details:) }
 
       describe "and something exists in the field reference" do
         let(:details) do

@@ -1,7 +1,7 @@
 require "test_helper"
 require "capybara/rails"
 
-class ContentBlockManager::ContentBlock::UsersTest < ActionDispatch::IntegrationTest
+class UsersTest < ActionDispatch::IntegrationTest
   include Capybara::DSL
   extend Minitest::Spec::DSL
   include Rails.application.routes.url_helpers
@@ -16,8 +16,8 @@ class ContentBlockManager::ContentBlock::UsersTest < ActionDispatch::Integration
     let(:user_uuid) { SecureRandom.uuid }
 
     it "returns 404 if the user doesn't exist" do
-      ContentBlockManager::SignonUser.expects(:with_uuids).with([user_uuid]).returns([])
-      visit content_block_manager_user_path(user_uuid)
+      SignonUser.expects(:with_uuids).with([user_uuid]).returns([])
+      visit user_path(user_uuid)
       assert_text "Could not find User with ID #{user_uuid}"
     end
   end

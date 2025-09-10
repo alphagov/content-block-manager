@@ -53,7 +53,7 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
   let(:params) do
     {
       "show_opening_hours" => show_opening_hours,
-      "content_block/edition" => {
+      "edition" => {
         "details" => details,
       },
     }
@@ -67,7 +67,7 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
         result = ParamsPreprocessors::TelephonePreprocessor.new(params).processed_params
 
         assert_equal result["show_opening_hours"], "1"
-        assert_equal result["content_block/edition"]["details"]["telephones"]["opening_hours"], {
+        assert_equal result["edition"]["details"]["telephones"]["opening_hours"], {
           "show_opening_hours" => true,
           "opening_hours" => "Some text",
         }
@@ -81,7 +81,7 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
         result = ParamsPreprocessors::TelephonePreprocessor.new(params).processed_params
 
         assert_equal result["hours_available"], nil
-        assert_equal result["content_block/edition"]["details"]["telephones"]["opening_hours"], {}
+        assert_equal result["edition"]["details"]["telephones"]["opening_hours"], {}
       end
     end
   end
@@ -93,7 +93,7 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
       it "converts the string to a boolean" do
         result = ParamsPreprocessors::TelephonePreprocessor.new(params).processed_params
 
-        assert_equal result["content_block/edition"]["details"]["telephones"]["call_charges"], {
+        assert_equal result["edition"]["details"]["telephones"]["call_charges"], {
           "show_call_charges_info_url" => true,
           "label" => "Label",
           "call_charges_info_url" => "https://example.com",
@@ -107,7 +107,7 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
       it "empties the call charges object" do
         result = ParamsPreprocessors::TelephonePreprocessor.new(params).processed_params
 
-        assert_equal result["content_block/edition"]["details"]["telephones"]["call_charges"], {}
+        assert_equal result["edition"]["details"]["telephones"]["call_charges"], {}
       end
     end
   end
@@ -119,7 +119,7 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
       it "converts the string to a boolean" do
         result = ParamsPreprocessors::TelephonePreprocessor.new(params).processed_params
 
-        assert_equal result["content_block/edition"]["details"]["telephones"]["bsl_guidance"], {
+        assert_equal result["edition"]["details"]["telephones"]["bsl_guidance"], {
           "show" => true,
           "value" => "Some value",
         }
@@ -132,7 +132,7 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
       it "empties the BSL Guidance object" do
         result = ParamsPreprocessors::TelephonePreprocessor.new(params).processed_params
 
-        assert_equal result["content_block/edition"]["details"]["telephones"]["bsl_guidance"], {}
+        assert_equal result["edition"]["details"]["telephones"]["bsl_guidance"], {}
       end
     end
   end
@@ -150,7 +150,7 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
             "telephone_number_prefix" => "**Custom** prefix 121212 then",
             "telephone_number" => "1234 123 1234",
           },
-          result["content_block/edition"]["details"]["telephones"]["video_relay_service"],
+          result["edition"]["details"]["telephones"]["video_relay_service"],
         )
       end
     end
@@ -163,7 +163,7 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
 
         assert_equal(
           {},
-          result["content_block/edition"]["details"]["telephones"]["video_relay_service"],
+          result["edition"]["details"]["telephones"]["video_relay_service"],
         )
       end
     end
@@ -176,7 +176,7 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
 
         assert_equal(
           {},
-          result["content_block/edition"]["details"]["telephones"]["video_relay_service"],
+          result["edition"]["details"]["telephones"]["video_relay_service"],
         )
       end
     end

@@ -1,12 +1,12 @@
 require "test_helper"
 
-class ContentBlockManager::Shared::CancelAndDeleteButtonComponentTest < ViewComponent::TestCase
+class Shared::CancelAndDeleteButtonComponentTest < ViewComponent::TestCase
   extend Minitest::Spec::DSL
 
   let(:url) { "/url" }
 
   let(:cancel_and_delete_component) do
-    ContentBlockManager::Shared::CancelAndDeleteButtonComponent.new(url:)
+    Shared::CancelAndDeleteButtonComponent.new(url:)
   end
 
   it "renders the delete form with given url" do

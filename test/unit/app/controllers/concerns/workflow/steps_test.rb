@@ -23,18 +23,18 @@ end
 class Workflow::StepsTest < ActionDispatch::IntegrationTest
   extend Minitest::Spec::DSL
 
-  include ContentBlockManager::IntegrationTestHelpers
+  include IntegrationTestHelpers
 
-  let(:content_block_document) { build(:content_block_document, :pension) }
-  let(:content_block_edition) { build(:content_block_edition, :pension, document: content_block_document) }
+  let(:document) { build(:document, :pension) }
+  let(:edition) { build(:edition, :pension, document: document) }
 
-  let!(:schema) { stub_request_for_schema(content_block_document.block_type) }
+  let!(:schema) { stub_request_for_schema(document.block_type) }
 
   before do
-    ContentBlockManager::ContentBlock::Edition.stubs(:find).with(content_block_edition.id).returns(content_block_edition)
+    Edition.stubs(:find).with(edition.id).returns(edition)
   end
 
-  let(:workflow) { WorkflowTestClass.new({ id: content_block_edition.id, step: }) }
+  let(:workflow) { WorkflowTestClass.new({ id: edition.id, step: }) }
 
   describe "#current_step" do
     Workflow::Step::ALL.each do |step|
@@ -89,7 +89,7 @@ class Workflow::StepsTest < ActionDispatch::IntegrationTest
     let(:step) { "something" }
 
     before do
-      content_block_document.expects(:is_new_block?).at_least_once.returns(true)
+      document.expects(:is_new_block?).at_least_once.returns(true)
     end
 
     it "removes steps not included in the create journey" do
@@ -138,13 +138,13 @@ class Workflow::StepsTest < ActionDispatch::IntegrationTest
       ]
     end
 
-    let!(:schema) { stub_request_for_schema(content_block_document.block_type, subschemas:) }
+    let!(:schema) { stub_request_for_schema(document.block_type, subschemas:) }
 
     let(:step) { "something" }
 
     before do
-      content_block_edition.stubs(:has_entries_for_subschema_id?).with("something").returns(true)
-      content_block_edition.stubs(:has_entries_for_subschema_id?).with("something_else").returns(true)
+      edition.stubs(:has_entries_for_subschema_id?).with("something").returns(true)
+      edition.stubs(:has_entries_for_subschema_id?).with("something_else").returns(true)
     end
 
     describe "#steps" do
@@ -159,8 +159,8 @@ class Workflow::StepsTest < ActionDispatch::IntegrationTest
 
       describe "when there are entries missing for a given subschema" do
         before do
-          content_block_edition.stubs(:has_entries_for_subschema_id?).with("something").returns(false)
-          content_block_edition.stubs(:has_entries_for_subschema_id?).with("something_else").returns(true)
+          edition.stubs(:has_entries_for_subschema_id?).with("something").returns(false)
+          edition.stubs(:has_entries_for_subschema_id?).with("something_else").returns(true)
         end
 
         it "skips the subschemas without data" do
@@ -216,7 +216,7 @@ class Workflow::StepsTest < ActionDispatch::IntegrationTest
 
     describe "and the content block is new" do
       before do
-        content_block_document.expects(:is_new_block?).at_least_once.returns(true)
+        document.expects(:is_new_block?).at_least_once.returns(true)
       end
 
       it "removes steps not included in the create journey" do
@@ -273,14 +273,14 @@ class Workflow::StepsTest < ActionDispatch::IntegrationTest
       ]
     end
 
-    let!(:schema) { stub_request_for_schema(content_block_document.block_type, subschemas:) }
+    let!(:schema) { stub_request_for_schema(document.block_type, subschemas:) }
 
     let(:step) { "something" }
 
     before do
-      content_block_edition.stubs(:has_entries_for_subschema_id?).with("something").returns(true)
-      content_block_edition.stubs(:has_entries_for_subschema_id?).with("something_else").returns(true)
-      content_block_edition.stubs(:has_entries_for_subschema_id?).with("ungrouped").returns(true)
+      edition.stubs(:has_entries_for_subschema_id?).with("something").returns(true)
+      edition.stubs(:has_entries_for_subschema_id?).with("something_else").returns(true)
+      edition.stubs(:has_entries_for_subschema_id?).with("ungrouped").returns(true)
     end
 
     describe "#steps" do
@@ -295,9 +295,9 @@ class Workflow::StepsTest < ActionDispatch::IntegrationTest
 
       describe "when there are entries missing for a given subschema" do
         before do
-          content_block_edition.stubs(:has_entries_for_subschema_id?).with("something").returns(false)
-          content_block_edition.stubs(:has_entries_for_subschema_id?).with("something_else").returns(false)
-          content_block_edition.stubs(:has_entries_for_subschema_id?).with("ungrouped").returns(true)
+          edition.stubs(:has_entries_for_subschema_id?).with("something").returns(false)
+          edition.stubs(:has_entries_for_subschema_id?).with("something_else").returns(false)
+          edition.stubs(:has_entries_for_subschema_id?).with("ungrouped").returns(true)
         end
 
         it "skips the subschemas without data" do
@@ -310,9 +310,9 @@ class Workflow::StepsTest < ActionDispatch::IntegrationTest
 
         describe "when there are entries missing for only some subschemas in a group" do
           before do
-            content_block_edition.stubs(:has_entries_for_subschema_id?).with("something").returns(false)
-            content_block_edition.stubs(:has_entries_for_subschema_id?).with("something_else").returns(true)
-            content_block_edition.stubs(:has_entries_for_subschema_id?).with("ungrouped").returns(true)
+            edition.stubs(:has_entries_for_subschema_id?).with("something").returns(false)
+            edition.stubs(:has_entries_for_subschema_id?).with("something_else").returns(true)
+            edition.stubs(:has_entries_for_subschema_id?).with("ungrouped").returns(true)
           end
 
           it "retains the group" do
@@ -370,7 +370,7 @@ class Workflow::StepsTest < ActionDispatch::IntegrationTest
 
     describe "and the content block is new" do
       before do
-        content_block_document.expects(:is_new_block?).at_least_once.returns(true)
+        document.expects(:is_new_block?).at_least_once.returns(true)
       end
 
       it "removes steps not included in the create journey" do

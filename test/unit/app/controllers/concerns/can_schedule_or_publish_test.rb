@@ -11,10 +11,10 @@ class EditionFormTestClass
   include CanScheduleOrPublish
   include I18n::Base
 
-  attr_reader :params, :content_block_edition
+  attr_reader :params, :edition
 
-  def initialize(content_block_edition, params)
-    @content_block_edition = content_block_edition
+  def initialize(edition, params)
+    @edition = edition
     @params = params
   end
 
@@ -29,7 +29,7 @@ class EditionFormTestClass
   end
 end
 
-class ContentBlockManager::ContentBlock::EditionFormTest < ActiveSupport::TestCase
+class EditionFormTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
 
   def it_raises_a_validation_error(object, error_key)
@@ -38,7 +38,7 @@ class ContentBlockManager::ContentBlock::EditionFormTest < ActiveSupport::TestCa
     end
 
     assert_equal 1, error.record.errors.messages.count
-    assert_equal I18n.t("activerecord.errors.models.content_block_manager/content_block/edition.attributes.#{error_key}"), error.record.errors.full_messages[0]
+    assert_equal I18n.t("activerecord.errors.models.edition.attributes.#{error_key}"), error.record.errors.full_messages[0]
   end
 
   describe "#validate_scheduled_edition" do
@@ -46,8 +46,8 @@ class ContentBlockManager::ContentBlock::EditionFormTest < ActiveSupport::TestCa
       Timecop.freeze "2018-06-07"
     end
 
-    let(:content_block_edition) { build(:content_block_edition, :pension) }
-    let(:object) { EditionFormTestClass.new(content_block_edition, params) }
+    let(:edition) { build(:edition, :pension) }
+    let(:object) { EditionFormTestClass.new(edition, params) }
 
     context "when date params are valid" do
       let(:params) do

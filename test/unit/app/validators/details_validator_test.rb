@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ContentBlockManager::DetailsValidatorTest < ActiveSupport::TestCase
+class DetailsValidatorTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
 
   let(:body) do
@@ -39,11 +39,11 @@ class ContentBlockManager::DetailsValidatorTest < ActiveSupport::TestCase
     }
   end
 
-  let(:schema) { build(:content_block_schema, body:) }
+  let(:schema) { build(:schema, body:) }
 
   it "validates the presence of fields" do
-    content_block_edition = build(
-      :content_block_edition,
+    edition = build(
+      :edition,
       :pension,
       details: {
         foo: "",
@@ -52,16 +52,16 @@ class ContentBlockManager::DetailsValidatorTest < ActiveSupport::TestCase
       schema:,
     )
 
-    assert_equal content_block_edition.valid?, false
-    errors = content_block_edition.errors
+    assert_equal edition.valid?, false
+    errors = edition.errors
 
     assert_error errors:, key: :details_foo, type: "blank", attribute: "Foo"
     assert_error errors:, key: :details_bar, type: "blank", attribute: "Bar"
   end
 
   it "validates the format of fields" do
-    content_block_edition = build(
-      :content_block_edition,
+    edition = build(
+      :edition,
       :pension,
       details: {
         foo: "dddd",
@@ -70,8 +70,8 @@ class ContentBlockManager::DetailsValidatorTest < ActiveSupport::TestCase
       schema:,
     )
 
-    assert_equal content_block_edition.valid?, false
-    errors = content_block_edition.errors
+    assert_equal edition.valid?, false
+    errors = edition.errors
 
     assert_equal errors.count, 2
     assert_error errors:, key: :details_foo, type: "invalid", attribute: "Foo"
@@ -79,8 +79,8 @@ class ContentBlockManager::DetailsValidatorTest < ActiveSupport::TestCase
   end
 
   it "validates the presence of nested fields in nested objects" do
-    content_block_edition = build(
-      :content_block_edition,
+    edition = build(
+      :edition,
       :pension,
       details: {
         foo: "foo@example.com",
@@ -95,17 +95,17 @@ class ContentBlockManager::DetailsValidatorTest < ActiveSupport::TestCase
       schema:,
     )
 
-    assert_equal content_block_edition.valid?, false
+    assert_equal edition.valid?, false
 
-    errors = content_block_edition.errors
+    errors = edition.errors
 
     assert_equal errors.count, 1
     assert_error errors:, key: :details_things_my_string, type: "blank", attribute: "My string"
   end
 
   it "validates the format of nested fields in nested objects" do
-    content_block_edition = build(
-      :content_block_edition,
+    edition = build(
+      :edition,
       :pension,
       details: {
         foo: "foo@example.com",
@@ -120,9 +120,9 @@ class ContentBlockManager::DetailsValidatorTest < ActiveSupport::TestCase
       schema:,
     )
 
-    assert_equal content_block_edition.valid?, false
+    assert_equal edition.valid?, false
 
-    errors = content_block_edition.errors
+    errors = edition.errors
 
     assert_error errors:, key: :details_things_something_else, type: "invalid", attribute: "Something else"
   end
@@ -143,8 +143,8 @@ class ContentBlockManager::DetailsValidatorTest < ActiveSupport::TestCase
     end
 
     it "returns an error if the pattern is incorrect" do
-      content_block_edition = build(
-        :content_block_edition,
+      edition = build(
+        :edition,
         :pension,
         details: {
           foo: "1234",
@@ -152,8 +152,8 @@ class ContentBlockManager::DetailsValidatorTest < ActiveSupport::TestCase
         schema:,
       )
 
-      assert_equal content_block_edition.valid?, false
-      errors = content_block_edition.errors
+      assert_equal edition.valid?, false
+      errors = edition.errors
       assert_error errors:, key: :details_foo, type: "invalid", attribute: "Foo"
     end
   end
@@ -196,8 +196,8 @@ class ContentBlockManager::DetailsValidatorTest < ActiveSupport::TestCase
     end
 
     it "returns an error if a required item is missing in an array of objects" do
-      content_block_edition = build(
-        :content_block_edition,
+      edition = build(
+        :edition,
         :pension,
         details: {
           foo: "foo@example.com",
@@ -220,14 +220,14 @@ class ContentBlockManager::DetailsValidatorTest < ActiveSupport::TestCase
         schema:,
       )
 
-      assert_equal content_block_edition.valid?, false
-      errors = content_block_edition.errors
+      assert_equal edition.valid?, false
+      errors = edition.errors
       assert_error errors:, key: :details_things_array_of_objects_1_foo, type: "blank", attribute: "Foo"
     end
 
     it "returns an error if an item is invalid in an array of objects" do
-      content_block_edition = build(
-        :content_block_edition,
+      edition = build(
+        :edition,
         :pension,
         details: {
           foo: "foo@example.com",
@@ -250,23 +250,23 @@ class ContentBlockManager::DetailsValidatorTest < ActiveSupport::TestCase
         schema:,
       )
 
-      assert_equal content_block_edition.valid?, false
-      errors = content_block_edition.errors
+      assert_equal edition.valid?, false
+      errors = edition.errors
       assert_error errors:, key: :details_things_array_of_objects_0_foo, type: "invalid", attribute: "Foo"
     end
   end
 
   describe "#translate_error" do
-    let(:validator) { ContentBlockManager::DetailsValidator.new }
+    let(:validator) { DetailsValidator.new }
 
     it "attempts to find a translation for a field when validation fails" do
       attribute = "foo"
       type = "bar"
 
       I18n.expects(:t).with(
-        "activerecord.errors.models.content_block_manager/content_block/edition.attributes.#{attribute}.#{type}",
+        "activerecord.errors.models.edition.attributes.#{attribute}.#{type}",
         attribute: attribute.humanize,
-        default: ["activerecord.errors.models.content_block_manager/content_block/edition.#{type}".to_sym],
+        default: ["activerecord.errors.models.edition.#{type}".to_sym],
       ).returns("translated")
 
       assert_equal validator.translate_error(type, attribute), "translated"
@@ -274,7 +274,7 @@ class ContentBlockManager::DetailsValidatorTest < ActiveSupport::TestCase
   end
 
   describe "#key_with_optional_prefix" do
-    let(:validator) { ContentBlockManager::DetailsValidator.new }
+    let(:validator) { DetailsValidator.new }
 
     it "returns the key when an error does not have a data_pointer" do
       assert_equal validator.key_with_optional_prefix({}, "my_key"), "my_key"
@@ -292,6 +292,6 @@ class ContentBlockManager::DetailsValidatorTest < ActiveSupport::TestCase
   end
 
   def assert_error(errors:, key:, type:, attribute:)
-    assert_equal errors[key], [I18n.t("activerecord.errors.models.content_block_manager/content_block/edition.#{type}", attribute:)]
+    assert_equal errors[key], [I18n.t("activerecord.errors.models.edition.#{type}", attribute:)]
   end
 end

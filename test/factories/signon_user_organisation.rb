@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :signon_user_organisation, class: "ContentBlockManager::SignonUser::Organisation" do
+  factory :signon_user_organisation, class: "SignonUser::Organisation" do
     content_id { SecureRandom.uuid }
     sequence(:name) { |i| "organisation #{i}" }
     sequence(:slug) { |i| "organisation-#{i}" }

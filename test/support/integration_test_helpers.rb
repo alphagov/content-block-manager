@@ -1,4 +1,4 @@
-module ContentBlockManager::IntegrationTestHelpers
+module IntegrationTestHelpers
   def stub_request_for_schema(block_type, subschemas: [], fields: nil)
     schema = stub(
       id: "content_block_type",
@@ -22,7 +22,7 @@ module ContentBlockManager::IntegrationTestHelpers
     subschemas.each do |subschema|
       schema.stubs(:subschema).with(subschema.id).returns(subschema)
     end
-    ContentBlockManager::ContentBlock::Schema.stubs(:find_by_block_type).with(block_type).returns(schema)
+    Schema.stubs(:find_by_block_type).with(block_type).returns(schema)
     schema
   end
 end

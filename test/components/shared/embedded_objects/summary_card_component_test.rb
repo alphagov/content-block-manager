@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCase
+class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCase
   extend Minitest::Spec::DSL
   include Rails.application.routes.url_helpers
 
@@ -34,16 +34,16 @@ class ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponentTest < V
     )
   end
 
-  let(:document) { build(:content_block_document, :pension, schema:) }
-  let(:content_block_edition) { build_stubbed(:content_block_edition, :pension, details:, document:) }
+  let(:document) { build(:document, :pension, schema:) }
+  let(:edition) { build_stubbed(:edition, :pension, details:, document:) }
 
   before do
     schema.stubs(:subschema).returns(subschema)
   end
 
   it "renders a summary list" do
-    component = ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponent.new(
-      content_block_edition:,
+    component = Shared::EmbeddedObjects::SummaryCardComponent.new(
+      edition:,
       object_type: "embedded-objects",
       object_title: "my-embedded-object",
     )
@@ -69,8 +69,8 @@ class ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponentTest < V
   end
 
   it "adds a data attribute if test_id_prefix is set" do
-    component = ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponent.new(
-      content_block_edition:,
+    component = Shared::EmbeddedObjects::SummaryCardComponent.new(
+      edition:,
       object_type: "embedded-objects",
       object_title: "my-embedded-object",
       test_id_prefix: "prefix",
@@ -83,12 +83,12 @@ class ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponentTest < V
 
   describe "when there is a translated value" do
     it "returns a translated value" do
-      I18n.expects(:t).with("content_block_edition.details.labels.embedded-objects.name", default: "Name").returns("Name")
-      I18n.expects(:t).with("content_block_edition.details.labels.embedded-objects.field-1", default: "Field 1").returns("Field 1")
-      I18n.expects(:t).with("content_block_edition.details.labels.embedded-objects.field-2", default: "Field 2").returns("Field 2")
+      I18n.expects(:t).with("edition.details.labels.embedded-objects.name", default: "Name").returns("Name")
+      I18n.expects(:t).with("edition.details.labels.embedded-objects.field-1", default: "Field 1").returns("Field 1")
+      I18n.expects(:t).with("edition.details.labels.embedded-objects.field-2", default: "Field 2").returns("Field 2")
 
-      component = ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponent.new(
-        content_block_edition:,
+      component = Shared::EmbeddedObjects::SummaryCardComponent.new(
+        edition:,
         object_type: "embedded-objects",
         object_title: "my-embedded-object",
         test_id_prefix: "prefix",
@@ -115,9 +115,9 @@ class ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponentTest < V
   end
 
   it "renders a summary list with a collection" do
-    component = ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponent.with_collection(
+    component = Shared::EmbeddedObjects::SummaryCardComponent.with_collection(
       %w[my-embedded-object],
-      content_block_edition:,
+      edition:,
       object_type: "embedded-objects",
     )
 
@@ -128,8 +128,8 @@ class ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponentTest < V
   end
 
   it "renders a summary list with edit link" do
-    component = ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponent.new(
-      content_block_edition:,
+    component = Shared::EmbeddedObjects::SummaryCardComponent.new(
+      edition:,
       object_type: "embedded-objects",
       object_title: "my-embedded-object",
     )
@@ -138,8 +138,8 @@ class ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponentTest < V
 
     assert_selector ".govuk-summary-card__title", text: "Embedded Object details"
 
-    expected_edit_path = edit_embedded_object_content_block_manager_content_block_edition_path(
-      content_block_edition,
+    expected_edit_path = edit_embedded_object_edition_path(
+      edition,
       object_type: "embedded-objects",
       object_title: "my-embedded-object",
     )
@@ -165,8 +165,8 @@ class ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponentTest < V
   end
 
   it "renders a summary list with edit link and redirect url if provided" do
-    component = ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponent.new(
-      content_block_edition:,
+    component = Shared::EmbeddedObjects::SummaryCardComponent.new(
+      edition:,
       object_type: "embedded-objects",
       object_title: "my-embedded-object",
       redirect_url: "https://example.com",
@@ -176,8 +176,8 @@ class ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponentTest < V
 
     assert_selector ".govuk-summary-card__title", text: "Embedded Object details"
 
-    expected_edit_path = edit_embedded_object_content_block_manager_content_block_edition_path(
-      content_block_edition,
+    expected_edit_path = edit_embedded_object_edition_path(
+      edition,
       object_type: "embedded-objects",
       object_title: "my-embedded-object",
       redirect_url: "https://example.com",
@@ -206,8 +206,8 @@ class ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponentTest < V
     end
 
     it "renders a summary list" do
-      component = ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponent.new(
-        content_block_edition:,
+      component = Shared::EmbeddedObjects::SummaryCardComponent.new(
+        edition:,
         object_type: "embedded-objects",
         object_title: "my-embedded-object",
       )
@@ -252,8 +252,8 @@ class ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponentTest < V
       end
 
       it "renders a nested summary card" do
-        component = ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponent.new(
-          content_block_edition:,
+        component = Shared::EmbeddedObjects::SummaryCardComponent.new(
+          edition:,
           object_type: "embedded-objects",
           object_title: "my-embedded-object",
         )
@@ -281,8 +281,8 @@ class ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponentTest < V
       end
 
       it "returns a translated field if there is one present" do
-        component = ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponent.new(
-          content_block_edition:,
+        component = Shared::EmbeddedObjects::SummaryCardComponent.new(
+          edition:,
           object_type: "embedded-objects",
           object_title: "my-embedded-object",
         )
@@ -290,20 +290,20 @@ class ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponentTest < V
         component.expects(:key_to_title).with("name", "embedded-objects").returns("Name translated")
         component.expects(:translated_value).with("name", "My Embedded Object").returns("My Embedded Object translated")
 
-        ContentBlockManager::Shared::EmbeddedObjects::SummaryCard::NestedItemComponent
+        Shared::EmbeddedObjects::SummaryCard::NestedItemComponent
           .any_instance
           .expects(:humanized_label)
           .with(relative_key: "item")
           .twice
           .returns("Item translated")
 
-        ContentBlockManager::Shared::EmbeddedObjects::SummaryCard::NestedItemComponent
+        Shared::EmbeddedObjects::SummaryCard::NestedItemComponent
           .any_instance
           .expects(:translated_value)
           .with("item", "Foo")
           .returns("Foo translated")
 
-        ContentBlockManager::Shared::EmbeddedObjects::SummaryCard::NestedItemComponent
+        Shared::EmbeddedObjects::SummaryCard::NestedItemComponent
           .any_instance
           .expects(:translated_value)
           .with("item", "Bar")
@@ -348,8 +348,8 @@ class ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponentTest < V
       end
 
       it "renders a nested summary card" do
-        component = ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponent.new(
-          content_block_edition:,
+        component = Shared::EmbeddedObjects::SummaryCardComponent.new(
+          edition:,
           object_type: "embedded-objects",
           object_title: "my-embedded-object",
         )

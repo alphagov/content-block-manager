@@ -10,11 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_08_131107) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_08_131237) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
-  create_table "content_block_documents", force: :cascade do |t|
+  create_table "documents", force: :cascade do |t|
     t.text "content_id"
     t.text "sluggable_string"
     t.text "block_type"
@@ -24,21 +24,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_08_131107) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["content_id_alias"], name: "index_content_block_documents_on_content_id_alias", unique: true
-    t.index ["latest_edition_id"], name: "index_content_block_documents_on_latest_edition_id"
-    t.index ["live_edition_id"], name: "index_content_block_documents_on_live_edition_id"
+    t.index ["content_id_alias"], name: "index_documents_on_content_id_alias", unique: true
+    t.index ["latest_edition_id"], name: "index_documents_on_latest_edition_id"
+    t.index ["live_edition_id"], name: "index_documents_on_live_edition_id"
   end
 
-  create_table "content_block_edition_authors", force: :cascade do |t|
+  create_table "edition_authors", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "edition_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["edition_id"], name: "index_content_block_edition_authors_on_edition_id"
-    t.index ["user_id"], name: "index_content_block_edition_authors_on_user_id"
+    t.index ["edition_id"], name: "index_edition_authors_on_edition_id"
+    t.index ["user_id"], name: "index_edition_authors_on_user_id"
   end
 
-  create_table "content_block_editions", force: :cascade do |t|
+  create_table "editions", force: :cascade do |t|
     t.json "details", null: false
     t.integer "document_id", null: false
     t.text "state", default: "draft", null: false
@@ -51,23 +51,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_08_131107) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "lead_organisation_id"
-    t.index ["document_id"], name: "index_content_block_editions_on_document_id"
-    t.index ["title"], name: "index_content_block_editions_on_title"
-  end
-
-  create_table "content_block_versions", force: :cascade do |t|
-    t.text "item_type", null: false
-    t.integer "item_id", null: false
-    t.integer "event", null: false
-    t.text "whodunnit"
-    t.text "state"
-    t.json "field_diffs"
-    t.text "updated_embedded_object_type"
-    t.text "updated_embedded_object_title"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["item_id"], name: "index_content_block_versions_on_item_id"
-    t.index ["item_type"], name: "index_content_block_versions_on_item_type"
+    t.index ["document_id"], name: "index_editions_on_document_id"
+    t.index ["title"], name: "index_editions_on_title"
   end
 
   create_table "flipflop_features", force: :cascade do |t|
@@ -91,5 +76,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_08_131107) do
     t.string "organisation_content_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["uid"], name: "index_users_on_uid"
+  end
+
+  create_table "versions", force: :cascade do |t|
+    t.text "item_type", null: false
+    t.integer "item_id", null: false
+    t.integer "event", null: false
+    t.text "whodunnit"
+    t.text "state"
+    t.json "field_diffs"
+    t.text "updated_embedded_object_type"
+    t.text "updated_embedded_object_title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_id"], name: "index_versions_on_item_id"
+    t.index ["item_type"], name: "index_versions_on_item_type"
   end
 end

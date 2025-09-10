@@ -1,19 +1,19 @@
 require "test_helper"
 
-class ContentBlockManager::ConfirmationCopyPresenterTest < ActiveSupport::TestCase
+class ConfirmationCopyPresenterTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
 
-  let(:content_block_edition) { build(:content_block_edition, :pension) }
-  let(:block_type) { content_block_edition.block_type.humanize }
+  let(:edition) { build(:edition, :pension) }
+  let(:block_type) { edition.block_type.humanize }
 
-  let(:presenter) { ContentBlockManager::ConfirmationCopyPresenter.new(content_block_edition) }
+  let(:presenter) { ConfirmationCopyPresenter.new(edition) }
 
   context "when the content block is scheduled" do
-    let(:content_block_edition) { build(:content_block_edition, :pension, scheduled_publication: Time.zone.now, state: :scheduled) }
+    let(:edition) { build(:edition, :pension, scheduled_publication: Time.zone.now, state: :scheduled) }
 
     describe "#for_panel" do
       it "should return the scheduled text" do
-        assert_equal "#{block_type} scheduled to publish on #{I18n.l(content_block_edition.scheduled_publication, format: :long_ordinal)}", presenter.for_panel
+        assert_equal "#{block_type} scheduled to publish on #{I18n.l(edition.scheduled_publication, format: :long_ordinal)}", presenter.for_panel
       end
     end
 
@@ -25,11 +25,11 @@ class ContentBlockManager::ConfirmationCopyPresenterTest < ActiveSupport::TestCa
   end
 
   context "when there is more than one edition for the underlying document" do
-    let(:document) { content_block_edition.document }
+    let(:document) { edition.document }
 
     before do
       document.expects(:editions).returns(
-        build_list(:content_block_edition, 3, :pension),
+        build_list(:edition, 3, :pension),
       )
     end
 

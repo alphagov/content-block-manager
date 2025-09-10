@@ -5,15 +5,15 @@ Then("I see the errors prompting me to provide a date and time") do
 end
 
 Then("I see the errors informing me the date is invalid") do
-  assert_text I18n.t("activerecord.errors.models.content_block_manager/content_block/edition.attributes.scheduled_publication.time.blank"), minimum: 2
+  assert_text I18n.t("activerecord.errors.models.edition.attributes.scheduled_publication.time.blank"), minimum: 2
 end
 
 Then("I should see an error message telling me that schedule publishing cannot be blank") do
-  assert_text I18n.t("activerecord.errors.models.content_block_manager/content_block/edition.attributes.schedule_publishing.blank"), minimum: 2
+  assert_text I18n.t("activerecord.errors.models.edition.attributes.schedule_publishing.blank"), minimum: 2
 end
 
 Then("I see the errors informing me the date must be in the future") do
-  assert_text I18n.t("activerecord.errors.models.content_block_manager/content_block/edition.attributes.scheduled_publication.future_date"), minimum: 2
+  assert_text I18n.t("activerecord.errors.models.edition.attributes.scheduled_publication.future_date"), minimum: 2
 end
 
 When("I choose to schedule the change") do

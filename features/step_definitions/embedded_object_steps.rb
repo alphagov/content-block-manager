@@ -35,7 +35,7 @@ And("I add the following {string} to the form:") do |item_type, table|
   end
 
   fields.each do |row|
-    field_prefix = "content_block/edition[details][#{@object_type.pluralize}][#{item_type}][]"
+    field_prefix = "edition[details][#{@object_type.pluralize}][#{item_type}][]"
 
     row.each do |key, value|
       within all(".js-add-another__fieldset").last do
@@ -89,19 +89,19 @@ Then("I should see that the call charges fields have been changed") do
 end
 
 When("I indicate that BSL guidance should be shown") do
-  check I18n.t("content_block_edition.details.labels.telephones.bsl_guidance.show")
+  check I18n.t("edition.details.labels.telephones.bsl_guidance.show")
 end
 
 When("I change the BSL guidance label from its default value") do
-  fill_in(I18n.t("content_block_edition.details.labels.telephones.bsl_guidance.value"), with: "More about BSL")
+  fill_in(I18n.t("edition.details.labels.telephones.bsl_guidance.value"), with: "More about BSL")
 end
 
 When("I indicate that the opening hours should be shown") do
-  check I18n.t("content_block_edition.details.labels.telephones.opening_hours.show_opening_hours")
+  check I18n.t("edition.details.labels.telephones.opening_hours.show_opening_hours")
 end
 
 When("I input the opening hours") do
-  fill_in(I18n.t("content_block_edition.details.labels.telephones.opening_hours.opening_hours"), with: "Monday - Friday: 9am-5pm")
+  fill_in(I18n.t("edition.details.labels.telephones.opening_hours.opening_hours"), with: "Monday - Friday: 9am-5pm")
 end
 
 Then("I should see that the BSL guidance fields have been changed") do
@@ -118,7 +118,7 @@ Then("I should see errors for the required {string} fields") do |object_type|
   schema = @schemas.values.first.subschema(object_type.pluralize)
   required_fields = schema.body["required"]
   required_fields.each do |required_field|
-    assert_text "#{ContentBlockManager::ContentBlock::Edition.human_attribute_name("details_#{required_field}")} cannot be blank", minimum: 2
+    assert_text "#{Edition.human_attribute_name("details_#{required_field}")} cannot be blank", minimum: 2
   end
 end
 
@@ -126,7 +126,7 @@ Then("I should see errors for the required nested {string} fields") do |nested_o
   subschema = @subschemas[@object_type.pluralize]
   required_fields = subschema.dig("properties", nested_object_name.pluralize, "items", "required")
   required_fields.each do |required_field|
-    assert_text "#{ContentBlockManager::ContentBlock::Edition.human_attribute_name("details_#{required_field}")} cannot be blank", minimum: 2
+    assert_text "#{Edition.human_attribute_name("details_#{required_field}")} cannot be blank", minimum: 2
   end
 end
 

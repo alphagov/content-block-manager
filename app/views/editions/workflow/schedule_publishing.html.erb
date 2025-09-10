@@ -1,0 +1,13 @@
+<%=
+    render Shared::SchedulePublishingComponent.new(
+      edition: @edition,
+      params:,
+      context:,
+      back_link: back_path,
+      form_url: workflow_path(
+        @edition,
+        step: :schedule_publishing,
+      ),
+      is_rescheduling: false,
+    )
+%>

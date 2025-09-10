@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ContentBlockManager::GeneratePreviewHtmlTest < ActiveSupport::TestCase
+class GeneratePreviewHtmlTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
   include Rails.application.routes.url_helpers
   include TextAssertions
@@ -19,11 +19,11 @@ class ContentBlockManager::GeneratePreviewHtmlTest < ActiveSupport::TestCase
   end
 
   let(:document) do
-    build(:content_block_document, :contact, content_id: preview_content_id)
+    build(:document, :contact, content_id: preview_content_id)
   end
 
   let(:block_to_preview) do
-    build(:content_block_edition, :contact, document:, details: { "email_address" => "new@new.com" }, id: 1)
+    build(:edition, :contact, document:, details: { "email_address" => "new@new.com" }, id: 1)
   end
 
   before do
@@ -32,9 +32,9 @@ class ContentBlockManager::GeneratePreviewHtmlTest < ActiveSupport::TestCase
   end
 
   it "returns the preview html" do
-    actual_content = ContentBlockManager::GeneratePreviewHtml.new(
+    actual_content = GeneratePreviewHtml.new(
       content_id: host_content_id,
-      content_block_edition: block_to_preview,
+      edition: block_to_preview,
       base_path: host_base_path,
       locale: "en",
     ).call
@@ -54,9 +54,9 @@ class ContentBlockManager::GeneratePreviewHtmlTest < ActiveSupport::TestCase
     it "shows an error template" do
       expected_content = Nokogiri::HTML.parse("<html><body class=\" draft\"><p>Preview not found</p></body></html>").to_s
 
-      actual_content = ContentBlockManager::GeneratePreviewHtml.new(
+      actual_content = GeneratePreviewHtml.new(
         content_id: host_content_id,
-        content_block_edition: block_to_preview,
+        edition: block_to_preview,
         base_path: host_base_path,
         locale: "en",
       ).call
@@ -75,14 +75,14 @@ class ContentBlockManager::GeneratePreviewHtmlTest < ActiveSupport::TestCase
     end
 
     it "updates any link paths" do
-      actual_content = ContentBlockManager::GeneratePreviewHtml.new(
+      actual_content = GeneratePreviewHtml.new(
         content_id: host_content_id,
-        content_block_edition: block_to_preview,
+        edition: block_to_preview,
         base_path: host_base_path,
         locale: "en",
       ).call
 
-      url = host_content_preview_content_block_manager_content_block_edition_path(id: block_to_preview.id, host_content_id:)
+      url = host_content_preview_edition_path(id: block_to_preview.id, host_content_id:)
 
       parsed_content = Nokogiri::HTML.parse(actual_content)
 
@@ -108,9 +108,9 @@ class ContentBlockManager::GeneratePreviewHtmlTest < ActiveSupport::TestCase
     end
 
     it "returns the preview html" do
-      actual_content = ContentBlockManager::GeneratePreviewHtml.new(
+      actual_content = GeneratePreviewHtml.new(
         content_id: host_content_id,
-        content_block_edition: block_to_preview,
+        edition: block_to_preview,
         base_path: host_base_path,
         locale: "en",
       ).call

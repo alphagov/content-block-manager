@@ -11,7 +11,7 @@ class GDS::SSO::Lint::UserTest
   end
 end
 
-class ContentBlockManager::UserTest < ActiveSupport::TestCase
+class UserTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
 
   describe "validations" do

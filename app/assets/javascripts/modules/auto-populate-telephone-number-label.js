@@ -8,7 +8,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
 
   AutoPopulateTelephoneNumberLabel.prototype.init = function () {
     const typeSelects = this.module.querySelectorAll(
-      "select[name='content_block/edition[details][telephones][telephone_numbers][][type]']"
+      "select[name='edition[details][telephones][telephone_numbers][][type]']"
     )
 
     typeSelects.forEach(function (el) {
@@ -29,7 +29,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
     const label = select
       .closest('fieldset')
       .querySelector(
-        "input[name='content_block/edition[details][telephones][telephone_numbers][][label]']"
+        "input[name='edition[details][telephones][telephone_numbers][][label]']"
       )
 
     if (selectedIndex > 0) {

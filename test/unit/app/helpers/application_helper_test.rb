@@ -33,11 +33,11 @@ class ApplicationHelperTest < ActionView::TestCase
     let(:user) { build(:user) }
 
     it "links to an author if set" do
-      assert_equal linked_author(user), link_to(user.name, content_block_manager_user_path(user.uid), {})
+      assert_equal linked_author(user), link_to(user.name, user_path(user.uid), {})
     end
 
     it "passes link options to link_to" do
-      assert_equal linked_author(user, { class: "my-link" }), link_to(user.name, content_block_manager_user_path(user.uid), { class: "my-link" })
+      assert_equal linked_author(user, { class: "my-link" }), link_to(user.name, user_path(user.uid), { class: "my-link" })
     end
 
     it "returns an unlinked user name if the user does not have a uuid" do

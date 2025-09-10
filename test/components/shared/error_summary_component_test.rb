@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ContentBlockManager::Shared::ErrorSummaryComponentTest < ViewComponent::TestCase
+class Shared::ErrorSummaryComponentTest < ViewComponent::TestCase
   extend Minitest::Spec::DSL
 
   let(:object_with_no_errors) { ErrorSummaryTestObject.new("title", Time.zone.today) }
@@ -11,12 +11,12 @@ class ContentBlockManager::Shared::ErrorSummaryComponentTest < ViewComponent::Te
   end
 
   it "does not render if there are no errors on the object passed in" do
-    render_inline(ContentBlockManager::Shared::ErrorSummaryComponent.new(object: object_with_no_errors))
+    render_inline(Shared::ErrorSummaryComponent.new(object: object_with_no_errors))
     assert_empty page.text
   end
 
   it "constructs a list of links which link to an id based on the objects class and attribute of the error" do
-    render_inline(ContentBlockManager::Shared::ErrorSummaryComponent.new(object: object_with_errors))
+    render_inline(Shared::ErrorSummaryComponent.new(object: object_with_errors))
 
     first_link = page.all(".gem-c-error-summary__list-item")[0].find("a")
     second_link = page.all(".gem-c-error-summary__list-item")[1].find("a")
@@ -33,7 +33,7 @@ class ContentBlockManager::Shared::ErrorSummaryComponentTest < ViewComponent::Te
   end
 
   it "overrides the class in the href with `parent class` if passed in" do
-    render_inline(ContentBlockManager::Shared::ErrorSummaryComponent.new(object: object_with_errors, parent_class: "parent_class"))
+    render_inline(Shared::ErrorSummaryComponent.new(object: object_with_errors, parent_class: "parent_class"))
 
     first_link = page.all(".gem-c-error-summary__list-item")[0].find("a")
     second_link = page.all(".gem-c-error-summary__list-item")[1].find("a")
@@ -50,7 +50,7 @@ class ContentBlockManager::Shared::ErrorSummaryComponentTest < ViewComponent::Te
   end
 
   it "constructs data modules for tracking analytics based on the class name and error message" do
-    render_inline(ContentBlockManager::Shared::ErrorSummaryComponent.new(object: object_with_errors))
+    render_inline(Shared::ErrorSummaryComponent.new(object: object_with_errors))
 
     first_link = page.all(".gem-c-error-summary__list-item")[0].find("a")
     second_link = page.all(".gem-c-error-summary__list-item")[1].find("a")
@@ -85,14 +85,14 @@ class ContentBlockManager::Shared::ErrorSummaryComponentTest < ViewComponent::Te
   it "when an errors attribute is base it renders the error as text not a link" do
     object = ErrorSummaryTestObject.new("title", Time.zone.today)
     object.errors.add(:base, "This is a top level error that is agnostic of model level validations. It has probably been added by an updater service or a controller and does not link to an input.")
-    render_inline(ContentBlockManager::Shared::ErrorSummaryComponent.new(object:))
+    render_inline(Shared::ErrorSummaryComponent.new(object:))
 
     assert_selector ".gem-c-error-summary__list-item a", count: 0
     assert_selector ".gem-c-error-summary__list-item span", text: "This is a top level error that is agnostic of model level validations. It has probably been added by an updater service or a controller and does not link to an input."
   end
 
   it "renders errors when 'ActiveModel::Errors' are passed in" do
-    render_inline(ContentBlockManager::Shared::ErrorSummaryComponent.new(object: object_with_errors.errors, parent_class: "error_summary_test_object"))
+    render_inline(Shared::ErrorSummaryComponent.new(object: object_with_errors.errors, parent_class: "error_summary_test_object"))
 
     first_link = page.all(".gem-c-error-summary__list-item")[0].find("a")
     second_link = page.all(".gem-c-error-summary__list-item")[1].find("a")
@@ -109,7 +109,7 @@ class ContentBlockManager::Shared::ErrorSummaryComponentTest < ViewComponent::Te
   end
 
   it "renders errors when an array of 'ActiveModel::Error' objects are passed in" do
-    render_inline(ContentBlockManager::Shared::ErrorSummaryComponent.new(object: object_with_errors.errors.errors, parent_class: "error_summary_test_object"))
+    render_inline(Shared::ErrorSummaryComponent.new(object: object_with_errors.errors.errors, parent_class: "error_summary_test_object"))
 
     first_link = page.all(".gem-c-error-summary__list-item")[0].find("a")
     second_link = page.all(".gem-c-error-summary__list-item")[1].find("a")
