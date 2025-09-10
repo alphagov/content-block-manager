@@ -6,8 +6,8 @@ window.GOVUK.vars.extraDomains = [
     name: 'production',
     domains: ['content-block-manager.publishing.service.gov.uk'],
     initialiseGA4: true,
-    id: 'GTM-xxx',
-    gaProperty: 'UA-xxx'
+    id: 'GTM-P93SHJ4Z',
+    gaProperty: 'UA-26179049-6'
   },
   {
     name: 'staging',
@@ -18,8 +18,8 @@ window.GOVUK.vars.extraDomains = [
     name: 'integration',
     domains: ['content-block-manager.integration.publishing.service.gov.uk'],
     initialiseGA4: true,
-    id: 'GTM-xxx',
-    auth: 'xxxx',
+    id: 'GTM-P93SHJ4Z',
+    auth: '8jHx-VNEguw67iX9TBC6_g',
     preview: 'env-50'
   }
 ]
