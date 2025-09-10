@@ -20,10 +20,12 @@ module ContentBlockManager
             rows.each do |row|
               klass.create!(**row)
             end
+          end
 
-            # As we want the IDs to be the same as the old app - this ensures the next ID is the value of the last
-            # inserted ID plus 1
-            ActiveRecord::Base.connection.reset_pk_sequence!(klass.table_name)
+          # As we want the IDs to be the same as the old app - this ensures the next ID is the value of the last
+          # inserted ID plus 1
+          ActiveRecord::Base.connection.tables.each do |t|
+            ActiveRecord::Base.connection.reset_pk_sequence!(t)
           end
         end
       end
