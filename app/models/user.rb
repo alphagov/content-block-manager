@@ -12,4 +12,8 @@ class User < ApplicationRecord
   module Permissions
     SIGNIN = "signin".freeze
   end
+
+  def organisation
+    organisation_content_id ? Organisation.find(organisation_content_id) : nil
+  end
 end

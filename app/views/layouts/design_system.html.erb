@@ -4,10 +4,10 @@
   <% content_for :head do %>
     <meta name="govuk:components_gem_version" content="<%= GovukPublishingComponents::VERSION %>">
     <meta name="govuk:user-created-at" content="<%= current_user&.created_at&.to_date %>">
-    <meta name="govuk:user-organisation-name" content="<%#= current_user&.organisation_name %>">
+    <meta name="govuk:user-organisation-name" content="<%= current_user&.organisation&.name %>">
     <meta name="govuk:user-role" content="<%= current_user&.role %>">
     <meta name="govuk:format" content="<%= "#{action_name}-#{controller_name}" %>">
-    <meta name="govuk:user-id" content="">
+    <meta name="govuk:user-id" content="<%= current_user&.anonymous_user_id %>">
     <% if get_content_id(@edition) %>
       <meta name="govuk:content-id" content="<%= get_content_id(@edition) %>">
     <% end %>
