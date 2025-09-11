@@ -24,7 +24,11 @@ FactoryBot.define do
 
     Schema.valid_schemas.each do |type|
       trait type.to_sym do
-        document { build(:document, block_type: type) }
+        after(:build) do |edition, _evaluator|
+          unless edition.document_id || edition.document
+            edition.document = build(:document, block_type: type)
+          end
+        end
       end
     end
 
