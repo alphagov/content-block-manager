@@ -13,7 +13,7 @@ Given("A user exists with uuid {string}") do |uuid|
 end
 
 When("I visit the user page for uuid {string}") do |uuid|
-  visit content_block_manager_user_path(uuid)
+  visit user_path(uuid)
 end
 
 Then("I should see the details for that user") do

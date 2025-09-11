@@ -1,0 +1,62 @@
+<% parent_class = "edition" %>
+
+<% content_for :error_summary, render(Shared::ErrorSummaryComponent.new(object: @form.edition, parent_class:)) %>
+
+<%= form_with(
+      url: @form.url,
+      method: @form.form_method,
+      model: @form.edition) do |f| %>
+  <%= hidden_field_tag "edition[document_attributes][block_type]",
+                       @form.schema.block_type %>
+
+  <%= render "govuk_publishing_components/components/input", {
+    label: {
+      text: "Title",
+    },
+    name: "edition[title]",
+    id: "#{parent_class}_title",
+    value: @form.edition&.title,
+    error_items: errors_for(@form.edition.errors, "title".to_sym),
+  } %>
+
+  <%=
+    render Edition::Details::FormComponent.new(
+      edition: @form.edition,
+      schema: @form.schema,
+    )
+  %>
+
+  <%= render "govuk_publishing_components/components/select_with_search", {
+    id: "#{parent_class}_lead_organisation_id",
+    name: "edition[lead_organisation_id]",
+    error_items: errors_for(@form.edition.errors, "lead_organisation_id".to_sym),
+    include_blank: true,
+    label: "Lead organisation",
+    options: taggable_organisations_container([@form.edition.lead_organisation_id]),
+  } %>
+
+  <%= render "govuk_publishing_components/components/textarea", {
+    label: {
+      text: "Instructions to publishers (optional)",
+    },
+    name: "edition[instructions_to_publishers]",
+    hint: "Add information that’s important for anyone editing this block to know. For example, who to contact about the block if you have questions.",
+    textarea_id: "#{parent_class}_instructions_to_publishers",
+    value: @form.edition&.instructions_to_publishers,
+    error_items: errors_for(@form.edition.errors, "instructions_to_publishers".to_sym),
+  } %>
+
+  <div class="govuk-button-group govuk-!-margin-bottom-6">
+    <%= render "govuk_publishing_components/components/button", {
+      text: "Save and continue",
+      name: "save_and_continue",
+      value: "Save and continue",
+      type: "submit",
+    } %>
+    <%= render "govuk_publishing_components/components/button", {
+      text: "Cancel",
+      href: @form.back_path,
+      secondary_solid: true,
+    } %>
+  </div>
+<% end %>

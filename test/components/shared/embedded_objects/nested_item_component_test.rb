@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ContentBlockManager::Shared::EmbeddedObjects::NestedItemComponentTest < ViewComponent::TestCase
+class Shared::EmbeddedObjects::NestedItemComponentTest < ViewComponent::TestCase
   extend Minitest::Spec::DSL
   include Rails.application.routes.url_helpers
 
@@ -9,7 +9,7 @@ class ContentBlockManager::Shared::EmbeddedObjects::NestedItemComponentTest < Vi
   end
 
   let(:component) do
-    ContentBlockManager::Shared::EmbeddedObjects::SummaryCard::NestedItemComponent.new(
+    Shared::EmbeddedObjects::SummaryCard::NestedItemComponent.new(
       nested_items: nested_items,
       object_key: "nested_object",
       title: "Nested object",

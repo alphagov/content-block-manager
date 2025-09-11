@@ -1,17 +1,17 @@
 require "test_helper"
 
-class ContentBlockManager::PublishEditionServiceTest < ActiveSupport::TestCase
+class PublishEditionServiceTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
 
   describe "#call" do
     let(:content_id) { "49453854-d8fd-41da-ad4c-f99dbac601c3" }
-    let(:schema) { build(:content_block_schema, block_type: "content_block_type", body: { "properties" => { "foo" => "", "bar" => "" } }) }
-    let(:document) { create(:content_block_document, :pension, content_id:, sluggable_string: "some-edition-title") }
+    let(:schema) { build(:schema, block_type: "content_block_type", body: { "properties" => { "foo" => "", "bar" => "" } }) }
+    let(:document) { create(:document, :pension, content_id:, sluggable_string: "some-edition-title") }
     let(:major_change) { true }
     let(:organisation) { build(:organisation) }
     let(:edition) do
       create(
-        :content_block_edition,
+        :edition,
         document:,
         details: { "foo" => "Foo text", "bar" => "Bar text" },
         lead_organisation_id: organisation.id,
@@ -23,20 +23,19 @@ class ContentBlockManager::PublishEditionServiceTest < ActiveSupport::TestCase
     end
 
     setup do
-      ContentBlockManager::ContentBlock::Schema.stubs(:find_by_block_type)
-                                               .returns(schema)
+      Schema.stubs(:find_by_block_type).returns(schema)
       Organisation.stubs(:all).returns([organisation])
     end
 
     it "returns a ContentBlockEdition" do
-      result = ContentBlockManager::PublishEditionService.new.call(edition)
-      assert_instance_of ContentBlockManager::ContentBlock::Edition, result
+      result = PublishEditionService.new.call(edition)
+      assert_instance_of Edition, result
     end
 
     it "publishes the Edition" do
-      ContentBlockManager::SchedulePublishingWorker.expects(:dequeue).never
+      SchedulePublishingWorker.expects(:dequeue).never
 
-      ContentBlockManager::PublishEditionService.new.call(edition)
+      PublishEditionService.new.call(edition)
       assert_equal "published", edition.state
       assert_equal edition.id, document.live_edition_id
     end
@@ -65,7 +64,7 @@ class ContentBlockManager::PublishEditionServiceTest < ActiveSupport::TestCase
 
       Services.publishing_api.expects(:publish).with(content_id)
 
-      ContentBlockManager::PublishEditionService.new.call(edition)
+      PublishEditionService.new.call(edition)
 
       assert_equal "published", edition.state
       assert_equal edition.id, document.live_edition_id
@@ -82,7 +81,7 @@ class ContentBlockManager::PublishEditionServiceTest < ActiveSupport::TestCase
 
         Services.publishing_api.stubs(:publish)
 
-        ContentBlockManager::PublishEditionService.new.call(edition)
+        PublishEditionService.new.call(edition)
 
         assert_equal "published", edition.state
         assert_equal edition.id, document.live_edition_id
@@ -102,7 +101,7 @@ class ContentBlockManager::PublishEditionServiceTest < ActiveSupport::TestCase
       assert_nil document.live_edition_id
 
       assert_raises(GdsApi::HTTPErrorResponse) do
-        ContentBlockManager::PublishEditionService.new.call(edition)
+        PublishEditionService.new.call(edition)
       end
 
       assert_equal "draft", edition.state
@@ -121,8 +120,8 @@ class ContentBlockManager::PublishEditionServiceTest < ActiveSupport::TestCase
 
       Services.publishing_api.expects(:discard_draft).with(content_id)
 
-      assert_raises(ContentBlockManager::PublishEditionService::PublishingFailureError, "Could not publish #{content_id} because: Some backend error") do
-        ContentBlockManager::PublishEditionService.new.call(edition)
+      assert_raises(PublishEditionService::PublishingFailureError, "Could not publish #{content_id} because: Some backend error") do
+        PublishEditionService.new.call(edition)
       end
 
       assert_equal "draft", edition.state
@@ -130,17 +129,17 @@ class ContentBlockManager::PublishEditionServiceTest < ActiveSupport::TestCase
     end
 
     it "supersedes any previously scheduled editions" do
-      scheduled_editions = create_list(:content_block_edition, 2,
+      scheduled_editions = create_list(:edition, 2,
                                        document:,
                                        scheduled_publication: 7.days.from_now,
                                        lead_organisation_id: organisation.id,
                                        state: "scheduled")
 
       scheduled_editions.each do |scheduled_edition|
-        ContentBlockManager::SchedulePublishingWorker.expects(:dequeue).with(scheduled_edition)
+        SchedulePublishingWorker.expects(:dequeue).with(scheduled_edition)
       end
 
-      ContentBlockManager::PublishEditionService.new.call(edition)
+      PublishEditionService.new.call(edition)
 
       scheduled_editions.each do |scheduled_edition|
         assert scheduled_edition.reload.superseded?

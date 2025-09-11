@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ContentBlockManager::PreviewContentTest < ActiveSupport::TestCase
+class PreviewContentTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
 
   let(:title) { "Ministry of Example" }
@@ -20,10 +20,10 @@ class ContentBlockManager::PreviewContentTest < ActiveSupport::TestCase
     let(:host_title) { "Test" }
     let(:host_base_path) { "/test" }
     let(:document) do
-      build(:content_block_document, :pension, content_id: preview_content_id)
+      build(:document, :pension, content_id: preview_content_id)
     end
     let(:block_to_preview) do
-      build(:content_block_edition, :pension, document:, details: { "email_address" => "new@new.com" }, id: 1)
+      build(:edition, :pension, document:, details: { "email_address" => "new@new.com" }, id: 1)
     end
     let(:metadata_response) do
       stub(:response, parsed_content: { "instances" => 2 })
@@ -40,16 +40,16 @@ class ContentBlockManager::PreviewContentTest < ActiveSupport::TestCase
       end
 
       it "returns the title of host document" do
-        ContentBlockManager::GeneratePreviewHtml.expects(:new)
+        GeneratePreviewHtml.expects(:new)
                                                 .with(content_id: host_content_id,
-                                                      content_block_edition: block_to_preview,
+                                                      edition: block_to_preview,
                                                       base_path: host_base_path,
                                                       locale: "en")
                                                 .returns(preview_response)
 
-        preview_content = ContentBlockManager::PreviewContent.for_content_id(
+        preview_content = PreviewContent.for_content_id(
           content_id: host_content_id,
-          content_block_edition: block_to_preview,
+          edition: block_to_preview,
         )
 
         assert_equal host_title, preview_content.title
@@ -60,16 +60,16 @@ class ContentBlockManager::PreviewContentTest < ActiveSupport::TestCase
       it "allows a base_path to be provided" do
         base_path = "/something/different"
 
-        ContentBlockManager::GeneratePreviewHtml.expects(:new)
+        GeneratePreviewHtml.expects(:new)
                                                 .with(content_id: host_content_id,
-                                                      content_block_edition: block_to_preview,
+                                                      edition: block_to_preview,
                                                       base_path:,
                                                       locale: "en")
                                                 .returns(preview_response)
 
-        ContentBlockManager::PreviewContent.for_content_id(
+        PreviewContent.for_content_id(
           content_id: host_content_id,
-          content_block_edition: block_to_preview,
+          edition: block_to_preview,
           base_path:,
         )
       end
@@ -84,16 +84,16 @@ class ContentBlockManager::PreviewContentTest < ActiveSupport::TestCase
       end
 
       it "returns the title of host document" do
-        ContentBlockManager::GeneratePreviewHtml.expects(:new)
+        GeneratePreviewHtml.expects(:new)
                                                 .with(content_id: host_content_id,
-                                                      content_block_edition: block_to_preview,
+                                                      edition: block_to_preview,
                                                       base_path: host_base_path,
                                                       locale: "cy")
                                                 .returns(preview_response)
 
-        preview_content = ContentBlockManager::PreviewContent.for_content_id(
+        preview_content = PreviewContent.for_content_id(
           content_id: host_content_id,
-          content_block_edition: block_to_preview,
+          edition: block_to_preview,
           base_path: nil,
           locale: "cy",
         )

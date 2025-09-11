@@ -10,7 +10,7 @@ class ParamsPreprocessorClass
   end
 end
 
-class ContentBlockManager::ContentBlock::ParamsPreprocessorClassTest < ActiveSupport::TestCase
+class ParamsPreprocessorClassTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
 
   let(:params) { { object_type:, "something" => "else" } }

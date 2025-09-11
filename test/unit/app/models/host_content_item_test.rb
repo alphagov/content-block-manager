@@ -1,10 +1,10 @@
 require "test_helper"
 
-class ContentBlockManager::HostContentItemTest < ActiveSupport::TestCase
+class HostContentItemTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
 
   describe ".for_document" do
-    let(:described_class) { ContentBlockManager::HostContentItem }
+    let(:described_class) { HostContentItem }
 
     let(:target_content_id) { SecureRandom.uuid }
 
@@ -50,11 +50,11 @@ class ContentBlockManager::HostContentItemTest < ActiveSupport::TestCase
       )
     end
     let(:publishing_api_mock) { stub("GdsApi::PublishingApi") }
-    let(:document) { mock("content_block_document", content_id: target_content_id) }
+    let(:document) { mock("document", content_id: target_content_id) }
 
     before do
       Services.expects(:publishing_api).returns(publishing_api_mock)
-      ContentBlockManager::SignonUser.stubs(:with_uuids).returns([editor])
+      SignonUser.stubs(:with_uuids).returns([editor])
     end
 
     it "calls the Publishing API for the content which embeds the target" do
@@ -83,7 +83,7 @@ class ContentBlockManager::HostContentItemTest < ActiveSupport::TestCase
 
     it "calls the editor finder with the correct argument" do
       publishing_api_mock.expects(:get_host_content_for_content_id).returns(fake_api_response)
-      ContentBlockManager::SignonUser.expects(:with_uuids).with([last_edited_by_editor_id]).returns([editor])
+      SignonUser.expects(:with_uuids).with([last_edited_by_editor_id]).returns([editor])
 
       described_class.for_document(document)
     end
@@ -127,7 +127,7 @@ class ContentBlockManager::HostContentItemTest < ActiveSupport::TestCase
       it "returns nil for last_edited_by_editor" do
         publishing_api_mock.expects(:get_host_content_for_content_id).returns(fake_api_response)
 
-        ContentBlockManager::SignonUser.expects(:with_uuids).never
+        SignonUser.expects(:with_uuids).never
 
         result = described_class.for_document(document)
 

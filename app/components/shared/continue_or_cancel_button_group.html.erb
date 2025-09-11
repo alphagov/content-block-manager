@@ -1,0 +1,26 @@
+<div class="govuk-button-group govuk-!-margin-bottom-6">
+  <div>
+    <%= render "govuk_publishing_components/components/button", {
+      text: button_text,
+      name: "confirm",
+      type: "submit",
+      form: form_id,
+    } %>
+  </div>
+  <div>
+    <% if is_editing? %>
+      <%= render "govuk_publishing_components/components/button", {
+        text: "Cancel",
+        href: helpers.cancel_workflow_index_path(edition),
+        secondary_solid: true,
+      } %>
+    <% else %>
+      <%= render Shared::CancelAndDeleteButtonComponent.new(
+        url: helpers.edition_path(
+          edition,
+          redirect_path: helpers.documents_path,
+        ),
+      ) %>
+    <% end %>
+  </div>
+</div>

@@ -13,10 +13,10 @@ class ShowMethodsTestClass
 
   attr_reader :current_step, :previous_step
 
-  def initialize(current_step:, previous_step:, content_block_edition:)
+  def initialize(current_step:, previous_step:, edition:)
     @current_step = current_step
     @previous_step = previous_step
-    @content_block_edition = content_block_edition
+    @edition = edition
   end
 end
 
@@ -25,7 +25,7 @@ class Workflow::ShowMethodsTest < ActionDispatch::IntegrationTest
   include Rails.application.routes.url_helpers
 
   describe "#back_path" do
-    let(:content_block_edition) { build_stubbed(:content_block_edition) }
+    let(:edition) { build_stubbed(:edition) }
 
     it "returns the name of the previous step" do
       expected_step_name = "something"
@@ -33,10 +33,10 @@ class Workflow::ShowMethodsTest < ActionDispatch::IntegrationTest
       current_step = mock("Workflow::Step")
       previous_step = mock("Workflow::Step", name: expected_step_name)
 
-      test_class = ShowMethodsTestClass.new(current_step:, previous_step:, content_block_edition:)
+      test_class = ShowMethodsTestClass.new(current_step:, previous_step:, edition:)
 
-      assert_equal test_class.back_path, content_block_manager_content_block_workflow_path(
-        content_block_edition,
+      assert_equal test_class.back_path, workflow_path(
+        edition,
         step: expected_step_name,
       )
     end

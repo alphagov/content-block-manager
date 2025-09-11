@@ -13,7 +13,7 @@ module ApplicationHelper
 
   def linked_author(author, link_options = {})
     if author&.uid
-      link_to(author.name, content_block_manager_user_path(author.uid), link_options)
+      link_to(author.name, user_path(author.uid), link_options)
     else
       author&.name || "-"
     end

@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ContentBlockManager::SignonUserTest < ActiveSupport::TestCase
+class SignonUserTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
 
   describe ".with_uuids" do
@@ -13,7 +13,7 @@ class ContentBlockManager::SignonUserTest < ActiveSupport::TestCase
     it "returns an empty array when no UUIDs are provided" do
       signon_api_stub.expects(:get_users).with(uuids: []).returns([])
 
-      result = ContentBlockManager::SignonUser.with_uuids([])
+      result = SignonUser.with_uuids([])
 
       assert_equal [], result
     end
@@ -39,7 +39,7 @@ class ContentBlockManager::SignonUserTest < ActiveSupport::TestCase
       ]
       signon_api_stub.expects(:get_users).with(uuids:).returns(api_response)
 
-      result = ContentBlockManager::SignonUser.with_uuids(uuids)
+      result = SignonUser.with_uuids(uuids)
 
       assert_equal result[0].uid, api_response[0]["uid"]
       assert_equal result[0].name, api_response[0]["name"]

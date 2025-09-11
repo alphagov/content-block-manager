@@ -9,10 +9,10 @@ class ParamsPreprocessors::TelephonePreprocessor
   end
 
   def process!
-    params["content_block/edition"]["details"]["telephones"]["opening_hours"] = format_opening_hours
-    params["content_block/edition"]["details"]["telephones"]["call_charges"] = format_call_charges
-    params["content_block/edition"]["details"]["telephones"]["bsl_guidance"] = format_bsl_guidance
-    params["content_block/edition"]["details"]["telephones"]["video_relay_service"] = video_relay_service
+    params["edition"]["details"]["telephones"]["opening_hours"] = format_opening_hours
+    params["edition"]["details"]["telephones"]["call_charges"] = format_call_charges
+    params["edition"]["details"]["telephones"]["bsl_guidance"] = format_bsl_guidance
+    params["edition"]["details"]["telephones"]["video_relay_service"] = video_relay_service
   end
 
 private
@@ -20,7 +20,7 @@ private
   attr_accessor :params
 
   def format_call_charges
-    call_charges = params["content_block/edition"]["details"]["telephones"]["call_charges"]
+    call_charges = params["edition"]["details"]["telephones"]["call_charges"]
     if call_charges
       call_charges["show_call_charges_info_url"] = ActiveRecord::Type::Boolean.new.cast(call_charges["show_call_charges_info_url"]) || false
 
@@ -33,7 +33,7 @@ private
   end
 
   def format_bsl_guidance
-    bsl_guidance = params["content_block/edition"]["details"]["telephones"]["bsl_guidance"]
+    bsl_guidance = params["edition"]["details"]["telephones"]["bsl_guidance"]
     if bsl_guidance
       bsl_guidance["show"] = ActiveRecord::Type::Boolean.new.cast(bsl_guidance["show"]) || false
 
@@ -46,7 +46,7 @@ private
   end
 
   def video_relay_service
-    obj = params["content_block/edition"]["details"]["telephones"]["video_relay_service"]
+    obj = params["edition"]["details"]["telephones"]["video_relay_service"]
     if obj
       obj["show"] = ActiveRecord::Type::Boolean.new
         .cast(obj["show"]) || false
@@ -60,7 +60,7 @@ private
   end
 
   def format_opening_hours
-    obj = params["content_block/edition"]["details"]["telephones"]["opening_hours"]
+    obj = params["edition"]["details"]["telephones"]["opening_hours"]
     if obj
       obj["show_opening_hours"] = ActiveRecord::Type::Boolean.new
                                                .cast(obj["show_opening_hours"]) || false
@@ -74,7 +74,7 @@ private
   end
 
   def strip_opening_hours
-    params["content_block/edition"]["details"]["telephones"]["opening_hours"] = []
+    params["edition"]["details"]["telephones"]["opening_hours"] = []
   end
 
   def format_time(hours, prefix)

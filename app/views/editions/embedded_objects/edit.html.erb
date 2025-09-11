@@ -1,0 +1,14 @@
+<% content_for :context, @edition.title %>
+<% content_for :title, "Edit #{@subschema.name.singularize.downcase}" %>
+
+<% content_for :error_summary, render(Shared::ErrorSummaryComponent.new(object: @edition, parent_class: "edition")) %>
+
+<%= form_with(
+    url: embedded_object_edition_path(
+      @edition,
+      object_type: @subschema.block_type,
+      object_title: @object_title,
+    ), method: :put) do |form| %>
+  <%= form.hidden_field :redirect_url, value: @redirect_url %>
+  <%= render partial: "editions/embedded_objects/shared/form", locals: { form: } %>
+<% end %>

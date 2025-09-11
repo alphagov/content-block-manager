@@ -1,0 +1,28 @@
+<% content_for :context, context %>
+<% content_for :title, "Do you want to save your draft, or delete it?" %>
+
+<div class="govuk-button-group govuk-!-margin-bottom-6">
+  <div>
+    <%= render "govuk_publishing_components/components/button", {
+      text: "Save for later",
+      href: document_path(@edition.document),
+    } %>
+  </div>
+  <div>
+    <%= form_with(
+          url: edition_path(
+            @edition,
+            redirect_path: document_path(@edition.document),
+          ),
+          method: :patch,
+        ) do %>
+      <%= render "govuk_publishing_components/components/button", {
+        text: "Delete draft",
+        name: "_method",
+        value: "delete",
+        type: "submit",
+        destructive: true,
+      } %>
+    <% end %>
+  </div>
+</div>

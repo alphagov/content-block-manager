@@ -29,7 +29,7 @@ def should_show_generic_content_block_details(document_title, organisation, inst
 end
 
 def should_show_edit_form_for_pension_content_block(content_block)
-  expect(page).to have_content(I18n.t("content_block_edition.update.title", block_type: "pension"))
+  expect(page).to have_content(I18n.t("edition.update.title", block_type: "pension"))
   expect(page).to have_field("Title", with: content_block.title)
   expect(page).to have_field("Description", with: content_block.details["description"])
   expect(page).to have_content("Save and continue")
@@ -37,7 +37,7 @@ def should_show_edit_form_for_pension_content_block(content_block)
 end
 
 def should_show_edit_form_for_contact_content_block(content_block)
-  expect(page).to have_content(I18n.t("content_block_edition.update.title", block_type: "contact"))
+  expect(page).to have_content(I18n.t("edition.update.title", block_type: "contact"))
   expect(page).to have_field("Title", with: content_block.title)
   expect(page).to have_field("Description", with: content_block.details["description"])
   expect(page).to have_content("Save and continue")
@@ -45,7 +45,7 @@ def should_show_edit_form_for_contact_content_block(content_block)
 end
 
 def visit_edit_page
-  visit content_block_manager.new_content_block_manager_content_block_document_edition_path(@content_block.document)
+  visit new_document_edition_path(@content_block.document)
 end
 
 def change_details(object_type: "pension")
@@ -58,7 +58,7 @@ def change_details(object_type: "pension")
     fill_in "Email address", with: "changed@example.com"
   end
 
-  select "Ministry of Example", from: "content_block_manager_content_block_edition_lead_organisation_id"
+  select "Ministry of Example", from: "edition_lead_organisation_id"
   fill_in "Instructions to publishers", with: "new context information"
   click_save_and_continue
 end
@@ -83,7 +83,7 @@ end
 
 def update_content_block
   # go to the edit page for the block
-  visit content_block_manager.new_content_block_manager_content_block_document_edition_path(@content_block.document)
+  visit new_document_edition_path(@content_block.document)
   #  fill in the new data
   change_details
   # accept changes if there is any dependent content

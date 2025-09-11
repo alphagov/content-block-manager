@@ -1,38 +1,38 @@
 require "test_helper"
 
-class ContentBlockManager::ScheduleEditionServiceTest < ActiveSupport::TestCase
+class ScheduleEditionServiceTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
 
   let(:content_id) { SecureRandom.uuid }
   let(:organisation) { build(:organisation) }
-  let(:schema) { build(:content_block_schema, block_type: "content_block_type", body: { "properties" => { "foo" => "", "bar" => "" } }) }
+  let(:schema) { build(:schema, block_type: "content_block_type", body: { "properties" => { "foo" => "", "bar" => "" } }) }
 
   let(:edition) do
-    create(:content_block_edition,
-           document: create(:content_block_document, :pension, content_id:),
+    create(:edition,
+           document: create(:document, :pension, content_id:),
            details: { "foo" => "Foo text", "bar" => "Bar text" },
            scheduled_publication: Time.zone.parse("2034-09-02T10:05:00"),
            lead_organisation_id: organisation.id)
   end
 
   setup do
-    ContentBlockManager::ContentBlock::Schema.stubs(:find_by_block_type)
+    Schema.stubs(:find_by_block_type)
                                              .returns(schema)
-    stub_publishing_api_has_embedded_content(content_id:, total: 0, results: [], order: ContentBlockManager::HostContentItem::DEFAULT_ORDER)
+    stub_publishing_api_has_embedded_content(content_id:, total: 0, results: [], order: HostContentItem::DEFAULT_ORDER)
     Organisation.stubs(:all).returns([organisation])
   end
 
   describe "#call" do
     it "schedules a new Edition via the Content Block Worker" do
-      ContentBlockManager::SchedulePublishingWorker.expects(:dequeue).never
+      SchedulePublishingWorker.expects(:dequeue).never
 
-      ContentBlockManager::SchedulePublishingWorker.expects(:queue).with do |expected_edition|
+      SchedulePublishingWorker.expects(:queue).with do |expected_edition|
         expected_edition.id = edition.id &&
           expected_edition.scheduled_publication == edition.scheduled_publication &&
           expected_edition.scheduled?
       end
 
-      updated_edition = ContentBlockManager::ScheduleEditionService
+      updated_edition = ScheduleEditionService
         .new(schema)
         .call(edition)
 
@@ -40,21 +40,21 @@ class ContentBlockManager::ScheduleEditionServiceTest < ActiveSupport::TestCase
     end
 
     it "supersedes any previously scheduled editions" do
-      scheduled_editions = create_list(:content_block_edition, 2,
+      scheduled_editions = create_list(:edition, 2,
                                        document: edition.document,
                                        scheduled_publication: 7.days.from_now,
                                        lead_organisation_id: organisation.id,
                                        state: "scheduled")
 
-      ContentBlockManager::SchedulePublishingWorker.expects(:queue).with do |expected_edition|
+      SchedulePublishingWorker.expects(:queue).with do |expected_edition|
         expected_edition.id = edition.id
       end
 
       scheduled_editions.each do |scheduled_edition|
-        ContentBlockManager::SchedulePublishingWorker.expects(:dequeue).with(scheduled_edition)
+        SchedulePublishingWorker.expects(:dequeue).with(scheduled_edition)
       end
 
-      ContentBlockManager::ScheduleEditionService
+      ScheduleEditionService
         .new(schema)
         .call(edition)
 
@@ -71,9 +71,9 @@ class ContentBlockManager::ScheduleEditionServiceTest < ActiveSupport::TestCase
       )
       raises_exception = ->(*_args) { raise exception }
 
-      ContentBlockManager::SchedulePublishingWorker.stub :queue, raises_exception do
+      SchedulePublishingWorker.stub :queue, raises_exception do
         assert_raises(GdsApi::HTTPErrorResponse) do
-          updated_edition = ContentBlockManager::ScheduleEditionService
+          updated_edition = ScheduleEditionService
             .new(schema)
             .call(edition)
 
@@ -87,11 +87,11 @@ class ContentBlockManager::ScheduleEditionServiceTest < ActiveSupport::TestCase
       exception = ArgumentError.new("Cannot find schema for block_type")
       raises_exception = ->(*_args) { raise exception }
 
-      ContentBlockManager::SchedulePublishingWorker.expects(:queue).never
+      SchedulePublishingWorker.expects(:queue).never
 
       edition.stub :schedule!, raises_exception do
         assert_raises(ArgumentError) do
-          ContentBlockManager::ScheduleEditionService.new(schema).call(edition)
+          ScheduleEditionService.new(schema).call(edition)
         end
       end
     end
@@ -113,15 +113,15 @@ class ContentBlockManager::ScheduleEditionServiceTest < ActiveSupport::TestCase
           },
         ]
 
-      stub_publishing_api_has_embedded_content(content_id:, total: 0, results: dependent_content, order: ContentBlockManager::HostContentItem::DEFAULT_ORDER)
+      stub_publishing_api_has_embedded_content(content_id:, total: 0, results: dependent_content, order: HostContentItem::DEFAULT_ORDER)
 
-      ContentBlockManager::PublishIntentWorker.expects(:perform_async).with(
+      PublishIntentWorker.expects(:perform_async).with(
         "/host-document",
         "example-app",
         Time.zone.local(2034, 9, 2, 10, 5, 0).to_s,
       ).once
 
-      ContentBlockManager::ScheduleEditionService
+      ScheduleEditionService
         .new(schema)
         .call(edition)
     end

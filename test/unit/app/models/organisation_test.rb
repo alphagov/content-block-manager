@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ContentBlockManager::OrganisationTest < ActiveSupport::TestCase
+class OrganisationTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
 
   let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }

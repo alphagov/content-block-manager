@@ -180,7 +180,7 @@ class PaginationHelperTest < ActionView::TestCase
   end
 
   it "still constructs the pagination links correctly when a path with no query string params is passed in" do
-    path = content_block_manager_content_block_documents_path
+    path = documents_path
 
     expected_hash = {
       previous_href: nil,
@@ -201,7 +201,7 @@ class PaginationHelperTest < ActionView::TestCase
   end
 
   it "still constructs the pagination links correctly when a path with no per_page query param is passed in" do
-    path = content_block_manager_content_block_documents_path(random_query_string: "random")
+    path = documents_path(random_query_string: "random")
 
     expected_hash = {
       previous_href: nil,
@@ -222,7 +222,7 @@ class PaginationHelperTest < ActionView::TestCase
   end
 
   it "constructs the url correctly when the request has an anchor and but query strings" do
-    path = "#{content_block_manager_content_block_documents_path}#document_tab"
+    path = "#{documents_path}#document_tab"
 
     expected_hash = {
       previous_href: nil,
@@ -243,8 +243,8 @@ class PaginationHelperTest < ActionView::TestCase
   end
 
   it "constructs the url correctly when the request has an anchor but and query strings" do
-    path = "#{content_block_manager_content_block_documents_path(random_query_string: 'random')}#document_tab"
-    base_path = content_block_manager_content_block_documents_path(random_query_string: "random")
+    path = "#{documents_path(random_query_string: 'random')}#document_tab"
+    base_path = documents_path(random_query_string: "random")
 
     expected_hash = {
       previous_href: nil,
@@ -265,6 +265,6 @@ class PaginationHelperTest < ActionView::TestCase
   end
 
   def path_for_page(page)
-    content_block_manager_content_block_documents_path(page:)
+    documents_path(page:)
   end
 end

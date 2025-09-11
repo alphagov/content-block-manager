@@ -6,36 +6,36 @@
       "fingerprint": "03c17b5f6b1cd546ea5316c6a960649980bf4545d35c606d24a859b1d15a8045",
       "check_name": "Render",
       "message": "Render path contains parameter value",
-      "file": "app/views/content_block_manager/content_block/editions/embedded_objects/shared/_form.html.erb",
+      "file": "app/views/editions/embedded_objects/shared/_form.html.erb",
       "line": 5,
       "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
-      "code": "render(action => ContentBlockManager::ContentBlock::Edition::Details::EmbeddedObjects::FormComponent.new(:content_block_edition => ContentBlockManager::ContentBlock::Edition.find(params[:id]), :subschema => (@subschema), :params => object_params(@subschema).dig(:details, @subschema.block_type), :object_title => (@object_title)), { :locals => ({ :\"contentblockmanager::contentblock::edition::details::embeddedobjects::formcomponent\" => ContentBlockManager::ContentBlock::Edition::Details::EmbeddedObjects::FormComponent.new(:content_block_edition => ContentBlockManager::ContentBlock::Edition.find(params[:id]), :subschema => (@subschema), :params => object_params(@subschema).dig(:details, @subschema.block_type), :object_title => (@object_title)) }) })",
+      "code": "render(action => Edition::Details::EmbeddedObjects::FormComponent.new(:edition => Edition.find(params[:id]), :subschema => (@subschema), :params => object_params(@subschema).dig(:details, @subschema.block_type), :object_title => (@object_title)), { :locals => ({ :\"edition::details::embeddedobjects::formcomponent\" => Edition::Details::EmbeddedObjects::FormComponent.new(:edition => Edition.find(params[:id]), :subschema => (@subschema), :params => object_params(@subschema).dig(:details, @subschema.block_type), :object_title => (@object_title)) }) })",
       "render_path": [
         {
           "type": "controller",
-          "class": "ContentBlockManager::ContentBlock::Editions::EmbeddedObjectsController",
+          "class": "Editions::EmbeddedObjectsController",
           "method": "create",
           "line": 49,
-          "file": "app/controllers/content_block_manager/content_block/editions/embedded_objects_controller.rb",
+          "file": "app/controllers/editions/embedded_objects_controller.rb",
           "rendered": {
-            "name": "content_block_manager/content_block/editions/embedded_objects/new",
-            "file": "app/views/content_block_manager/content_block/editions/embedded_objects/new.html.erb"
+            "name": "editions/embedded_objects/new",
+            "file": "app/views/editions/embedded_objects/new.html.erb"
           }
         },
         {
           "type": "template",
-          "name": "content_block_manager/content_block/editions/embedded_objects/new",
+          "name": "editions/embedded_objects/new",
           "line": 15,
-          "file": "app/views/content_block_manager/content_block/editions/embedded_objects/new.html.erb",
+          "file": "app/views/editions/embedded_objects/new.html.erb",
           "rendered": {
-            "name": "content_block_manager/content_block/editions/embedded_objects/shared/_form",
-            "file": "app/views/content_block_manager/content_block/editions/embedded_objects/shared/_form.html.erb"
+            "name": "editions/embedded_objects/shared/_form",
+            "file": "app/views/editions/embedded_objects/shared/_form.html.erb"
           }
         }
       ],
       "location": {
         "type": "template",
-        "template": "content_block_manager/content_block/editions/embedded_objects/shared/_form"
+        "template": "editions/embedded_objects/shared/_form"
       },
       "user_input": "params[:id]",
       "confidence": "Weak",
@@ -50,28 +50,28 @@
       "fingerprint": "583e25c14298253a88ef3c2455220550fa4bd9d4c8df0dea760b8512b352e249",
       "check_name": "RenderInline",
       "message": "Unescaped model attribute rendered inline",
-      "file": "app/views/content_block_manager/content_block/documents/show.html.erb",
+      "file": "app/views/documents/show.html.erb",
       "line": 18,
       "link": "https://brakemanscanner.org/docs/warning_types/cross-site_scripting/",
-      "code": "render(text => \"Edit #{ContentBlockManager::ContentBlock::Document.find(params[:id]).block_type.humanize.downcase}\", { :href => new_content_block_manager_content_block_document_edition_path(ContentBlockManager::ContentBlock::Document.find(params[:id])) })",
+      "code": "render(text => \"Edit #{Document.find(params[:id]).block_type.humanize.downcase}\", { :href => new_manager_document_edition_path(Document.find(params[:id])) })",
       "render_path": [
         {
           "type": "controller",
-          "class": "ContentBlockManager::ContentBlock::DocumentsController",
+          "class": "DocumentsController",
           "method": "show",
           "line": 25,
-          "file": "app/controllers/content_block_manager/content_block/documents_controller.rb",
+          "file": "app/controllers/documents_controller.rb",
           "rendered": {
-            "name": "content_block_manager/content_block/documents/show",
-            "file": "app/views/content_block_manager/content_block/documents/show.html.erb"
+            "name": "documents/show",
+            "file": "app/views/documents/show.html.erb"
           }
         }
       ],
       "location": {
         "type": "template",
-        "template": "content_block_manager/content_block/documents/show"
+        "template": "documents/show"
       },
-      "user_input": "ContentBlockManager::ContentBlock::Document.find(params[:id]).block_type.humanize.downcase",
+      "user_input": "Document.find(params[:id]).block_type.humanize.downcase",
       "confidence": "Medium",
       "cwe_id": [
         79

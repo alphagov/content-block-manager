@@ -2,12 +2,12 @@ describe('GOVUK.Modules.AutoPopulateTelephoneNumberLabel', function () {
   let fixture, autoPopulateTelephoneNumberLabel
 
   const fieldset = `<fieldset>
-          <select name="content_block/edition[details][telephones][telephone_numbers][][type]">
+          <select name="edition[details][telephones][telephone_numbers][][type]">
              <option value="">Select</option>
              <option value="1">1</option>
              <option value="2">2</option>
           </select>
-          <input name="content_block/edition[details][telephones][telephone_numbers][][label]" />
+          <input name="edition[details][telephones][telephone_numbers][][label]" />
       </fieldset>`
 
   beforeEach(function () {
@@ -27,14 +27,14 @@ describe('GOVUK.Modules.AutoPopulateTelephoneNumberLabel', function () {
 
   it('should auto-populate the label field when the type is selected', function () {
     const select = document.querySelector(
-      'select[name="content_block/edition[details][telephones][telephone_numbers][][type]"]'
+      'select[name="edition[details][telephones][telephone_numbers][][type]"]'
     )
     select.selectedIndex = 2
 
     window.GOVUK.triggerEvent(select, 'change')
 
     const valueField = document.querySelector(
-      'input[name="content_block/edition[details][telephones][telephone_numbers][][label]"]'
+      'input[name="edition[details][telephones][telephone_numbers][][label]"]'
     )
 
     expect(valueField.value).toEqual('2')

@@ -1,0 +1,10 @@
+<%=
+  render Shared::SchedulePublishingComponent.new(
+    context: "Edit content block",
+    edition: @edition,
+    params:,
+    back_link: document_path(id: @edition.document.id),
+    form_url: document_update_schedule_path(document_id: @edition.document.id),
+    is_rescheduling: true,
+  )
+%>

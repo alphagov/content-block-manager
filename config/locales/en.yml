@@ -2,11 +2,11 @@ en:
   activerecord:
     errors:
       models:
-        content_block_manager/content_block/document:
+        document:
           attributes:
             block_type:
               blank: Select a content block
-        content_block_manager/content_block/edition:
+        edition:
           format: "%{message}"
           invalid: "Invalid %{attribute}"
           blank: "%{attribute} cannot be blank"
@@ -27,16 +27,16 @@ en:
                 opening_hours:
                   blank: "Opening hours cannot be blank"
     attributes:
-      content_block_manager/content_block/edition/document:
+      edition/document:
         title: Title
-  content_block_document:
+  document:
     index:
       errors:
         date:
           invalid: "%{attribute} is not a valid date"
           range:
             invalid: "From date must be before to date"
-  content_block_edition:
+  edition:
     update:
       title: "Edit %{block_type}"
     create:

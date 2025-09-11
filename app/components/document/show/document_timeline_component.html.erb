@@ -1,0 +1,12 @@
+<h2 class="govuk-heading-l">Change history</h2>
+
+<div class="timeline">
+  <% versions.each_with_index do |version, i| %>
+    <%= render Document::Show::DocumentTimeline::TimelineItemComponent.new(
+      version:,
+      schema:,
+      is_first_published_version: version.id == first_published_version.id,
+      is_latest: i == 0,
+    ) %>
+  <% end %>
+</div>

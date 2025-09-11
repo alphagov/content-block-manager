@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :host_content_item, class: "ContentBlockManager::HostContentItem" do
+  factory :host_content_item, class: "HostContentItem" do
     title { "title" }
     base_path { "/foo/bar" }
     document_type { "something" }

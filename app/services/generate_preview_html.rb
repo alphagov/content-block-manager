@@ -1,0 +1,89 @@
+require "net/http"
+require "json"
+require "uri"
+
+class GeneratePreviewHtml
+  include Rails.application.routes.url_helpers
+
+  def initialize(content_id:, edition:, base_path:, locale:)
+    @content_id = content_id
+    @edition = edition
+    @base_path = base_path
+    @locale = locale
+  end
+
+  def call
+    uri = URI(frontend_path)
+    nokogiri_html = html_snapshot_from_frontend(uri)
+    update_local_link_paths(nokogiri_html)
+    add_draft_style(nokogiri_html)
+    replace_existing_content_blocks(nokogiri_html).to_s
+  end
+
+private
+
+  BLOCK_STYLE = "background-color: yellow;".freeze
+  ERROR_HTML = "<html><body><p>Preview not found</p></body></html>".freeze
+
+  attr_reader :edition, :content_id, :base_path, :locale
+
+  def frontend_path
+    frontend_base_path + base_path
+  end
+
+  def frontend_base_path
+    Rails.env.development? ? Plek.external_url_for("government-frontend") : Plek.website_root
+  end
+
+  def html_snapshot_from_frontend(uri)
+    begin
+      raw_html = Net::HTTP.get(uri)
+    rescue StandardError
+      raw_html = ERROR_HTML
+    end
+    Nokogiri::HTML.parse(raw_html)
+  end
+
+  def update_local_link_paths(nokogiri_html)
+    url = host_content_preview_edition_path(id: edition.id, host_content_id: content_id, locale:)
+    nokogiri_html.css("a").each do |link|
+      next if link[:href].start_with?("//") || link[:href].start_with?("http")
+
+      link[:href] = "#{url}&base_path=#{link[:href]}"
+      link[:target] = "_parent"
+    end
+
+    nokogiri_html
+  end
+
+  def add_draft_style(nokogiri_html)
+    nokogiri_html.css("body").each do |body|
+      body["class"] ||= ""
+      body["class"] += " draft"
+    end
+    nokogiri_html
+  end
+
+  def replace_existing_content_blocks(nokogiri_html)
+    replace_blocks(nokogiri_html)
+    style_blocks(nokogiri_html)
+    nokogiri_html
+  end
+
+  def replace_blocks(nokogiri_html)
+    content_block_wrappers(nokogiri_html).each do |wrapper|
+      embed_code = wrapper["data-embed-code"]
+      wrapper.replace edition.render(embed_code)
+    end
+  end
+
+  def style_blocks(nokogiri_html)
+    content_block_wrappers(nokogiri_html).each do |wrapper|
+      wrapper["style"] = BLOCK_STYLE
+    end
+  end
+
+  def content_block_wrappers(nokogiri_html)
+    nokogiri_html.css("[data-content-id=\"#{@edition.document.content_id}\"]")
+  end
+end

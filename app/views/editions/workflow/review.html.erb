@@ -1,0 +1,86 @@
+<% content_for :context, context %>
+<% content_for :title, "Review #{@edition.block_type.humanize.downcase}" %>
+
+<% content_for :back_link do %>
+  <%= render "govuk_publishing_components/components/back_link", {
+    href: back_path,
+  } %>
+<% end %>
+
+<% if @error_summary_errors %>
+  <%= render "govuk_publishing_components/components/error_summary", {
+    title: "There is a problem",
+    items: @error_summary_errors,
+  } %>
+<% end %>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <%= render(
+          Edition::Show::ConfirmSummaryCardComponent.new(
+            edition: @edition,
+            ),
+          ) %>
+
+    <% @schema.subschemas.each do |subschema| %>
+      <% if @edition.details[subschema.id] %>
+        <%= render Shared::EmbeddedObjects::SummaryCardComponent.with_collection(
+          @edition.details[subschema.id].keys,
+          edition: @edition,
+          object_type: subschema.id,
+          redirect_url: redirect_url_for_subschema(subschema, @edition),
+          test_id_prefix: "review_embedded",
+        ) %>
+      <% end %>
+    <% end %>
+
+    <% unless @edition.document.is_new_block? %>
+      <%= render(
+            Edition::Show::NotesSummaryCardComponent.new(
+              edition: @edition,
+              ),
+            ) %>
+
+      <%= render(
+            Edition::Show::PublicationDetailsSummaryCardComponent.new(
+              edition: @edition,
+            ),
+          ) %>
+      <% end %>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <%= form_with(
+          url: workflow_path(@edition, step: :review),
+          method: :put,
+          id: "review",
+          ) do %>
+        <%= render "govuk_publishing_components/components/checkboxes", {
+          name: "is_confirmed",
+          id: "is_confirmed",
+          heading: "Confirm",
+          visually_hide_heading: true,
+          no_hint_text: true,
+          error: @confirm_error_copy,
+          items: [
+            {
+              label: "I confirm that the details I’ve put into the content block have been checked and are factually correct.",
+              value: true,
+            },
+          ],
+        } %>
+    <% end %>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <%= render Shared::ContinueOrCancelButtonGroup.new(
+      form_id: "review",
+      button_text: is_scheduling? ? "Schedule" : "Publish",
+      edition: @edition,
+    ) %>
+  </div>
+</div>

@@ -36,7 +36,7 @@ module GovspeakPreviewHelper
 
   def preprocess_govspeak(govspeak, options)
     govspeak ||= ""
-    ContentBlockManager::FindAndReplaceEmbedCodesService.call(govspeak) if options[:preview]
+    FindAndReplaceEmbedCodesService.call(govspeak) if options[:preview]
     govspeak = add_heading_numbers(govspeak) if options[:heading_numbering] == :auto
     govspeak
   end

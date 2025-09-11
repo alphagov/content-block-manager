@@ -1,6 +1,6 @@
 module Workflow::Steps
   extend ActiveSupport::Concern
-  include ContentBlockManager::ContentBlock::SchemaHelper
+  include SchemaHelper
 
   included do
     before_action :initialize_edition_and_schema
@@ -30,7 +30,7 @@ module Workflow::Steps
 private
 
   def all_steps
-    if @content_block_edition.document.is_new_block?
+    if @edition.document.is_new_block?
       Workflow::Step::ALL.select { |s| s.included_in_create_journey == true }
     else
       Workflow::Step::ALL
@@ -38,8 +38,8 @@ private
   end
 
   def initialize_edition_and_schema
-    @content_block_edition = ContentBlockManager::ContentBlock::Edition.find(params[:id])
-    @schema = ContentBlockManager::ContentBlock::Schema.find_by_block_type(@content_block_edition.document.block_type)
+    @edition = Edition.find(params[:id])
+    @schema = Schema.find_by_block_type(@edition.document.block_type)
   end
 
   def index
@@ -47,8 +47,7 @@ private
   end
 
   def skip_subschema?(subschema)
-    !@content_block_edition.document.is_new_block? &&
-      !@content_block_edition.has_entries_for_subschema_id?(subschema.id)
+    !@edition.document.is_new_block? && !@edition.has_entries_for_subschema_id?(subschema.id)
   end
 
   def skip_group?(subschemas)

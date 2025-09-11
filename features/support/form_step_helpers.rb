@@ -48,7 +48,7 @@ def fill_in_embedded_object_form(object_type, table)
   @details = fields
   @object_title ||= @details["title"].parameterize
   fields.keys.each do |k|
-    field = find_field "content_block_manager_content_block_edition_details_#{object_type.pluralize}_#{k}"
+    field = find_field "edition_details_#{object_type.pluralize}_#{k}"
     if field.tag_name == "select"
       select @details[k], from: field[:id]
     else

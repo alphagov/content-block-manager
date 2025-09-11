@@ -10,7 +10,7 @@ module EmbeddedObjects
   end
 
   def get_schema(block_type)
-    ContentBlockManager::ContentBlock::Schema.find_by_block_type(block_type)
+    Schema.find_by_block_type(block_type)
   end
 
   def get_subschema(schema, object_type)
@@ -18,7 +18,7 @@ module EmbeddedObjects
   end
 
   def object_params(subschema)
-    processed_params.require("content_block/edition").permit(
+    processed_params.require("edition").permit(
       details: {
         subschema.block_type.to_s => subschema.permitted_params,
       },

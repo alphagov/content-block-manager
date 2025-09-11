@@ -1,19 +1,19 @@
 require "test_helper"
 
-class ContentBlockManager::Shared::SchedulePublishingComponentTest < ViewComponent::TestCase
+class Shared::SchedulePublishingComponentTest < ViewComponent::TestCase
   extend Minitest::Spec::DSL
   include Rails.application.routes.url_helpers
 
-  let(:content_block_document) { create(:content_block_document, :pension) }
-  let(:content_block_edition) { create(:content_block_edition, :pension, document: content_block_document) }
+  let(:document) { create(:document, :pension) }
+  let(:edition) { create(:edition, :pension, document: document) }
   let(:params) { {} }
   let(:context) { "Some context" }
   let(:back_link) { "/back-link" }
   let(:form_url) { "/form-url" }
 
   let(:rescheduling_component) do
-    ContentBlockManager::Shared::SchedulePublishingComponent.new(
-      content_block_edition:,
+    Shared::SchedulePublishingComponent.new(
+      edition:,
       params:,
       context:,
       back_link:,
@@ -23,8 +23,8 @@ class ContentBlockManager::Shared::SchedulePublishingComponentTest < ViewCompone
   end
 
   let(:component) do
-    ContentBlockManager::Shared::SchedulePublishingComponent.new(
-      content_block_edition:,
+    Shared::SchedulePublishingComponent.new(
+      edition:,
       params:,
       context:,
       back_link:,
@@ -46,14 +46,14 @@ class ContentBlockManager::Shared::SchedulePublishingComponentTest < ViewCompone
       render_inline(component)
 
       assert_selector ".govuk-button", text: "Cancel"
-      assert_selector "form[action='#{content_block_manager_content_block_edition_path(
-        content_block_edition,
-        redirect_path: content_block_manager_content_block_document_path(content_block_edition.document),
+      assert_selector "form[action='#{edition_path(
+        edition,
+        redirect_path: document_path(document),
       )}']"
     end
   end
 
-  describe "when the content_block_edition already has a publish date set" do
+  describe "when the edition already has a publish date set" do
     let(:params) do
       {
         "scheduled_at" => {
@@ -80,7 +80,7 @@ class ContentBlockManager::Shared::SchedulePublishingComponentTest < ViewCompone
 
   describe "when the params have date attributes set" do
     let(:scheduled_publication) { Time.zone.now + 1.month }
-    let(:content_block_edition) { create(:content_block_edition, :pension, document: content_block_document, scheduled_publication:) }
+    let(:edition) { create(:edition, :pension, document: document, scheduled_publication:) }
 
     it "prepopulates the date fields" do
       render_inline(component)

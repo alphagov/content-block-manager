@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ContentBlockManager::Shared::EmbeddedObjectsTest < ViewComponent::TestCase
+class Shared::EmbeddedObjectsTest < ViewComponent::TestCase
   extend Minitest::Spec::DSL
   include Rails.application.routes.url_helpers
 
@@ -29,13 +29,13 @@ class ContentBlockManager::Shared::EmbeddedObjectsTest < ViewComponent::TestCase
     ]
   end
   let(:subschema) { stub(:subschema, block_type: "embedded-objects", name: "Embedded objects", fields:) }
-  let(:document) { build(:content_block_document, :pension, schema:) }
-  let(:content_block_edition) { build_stubbed(:content_block_edition, :pension, details:, document:) }
+  let(:document) { build(:document, :pension, schema:) }
+  let(:edition) { build_stubbed(:edition, :pension, details:, document:) }
   let(:redirect_url) { "https://example.com" }
 
   let(:component) do
-    ContentBlockManager::Shared::EmbeddedObjectsComponent.new(
-      content_block_edition:,
+    Shared::EmbeddedObjectsComponent.new(
+      edition:,
       subschema:,
       redirect_url:,
     )
@@ -48,9 +48,9 @@ class ContentBlockManager::Shared::EmbeddedObjectsTest < ViewComponent::TestCase
   it "renders all embedded objects of a particular type" do
     summary_card_double = stub("summary_card")
 
-    ContentBlockManager::Shared::EmbeddedObjects::SummaryCardComponent.expects(:with_collection).with(
+    Shared::EmbeddedObjects::SummaryCardComponent.expects(:with_collection).with(
       %w[my-embedded-object another-embedded-object],
-      content_block_edition: content_block_edition,
+      edition: edition,
       object_type: subschema.block_type,
       redirect_url:,
       test_id_prefix: "embedded",
@@ -72,8 +72,8 @@ class ContentBlockManager::Shared::EmbeddedObjectsTest < ViewComponent::TestCase
 
     render_inline(component)
 
-    new_path = new_embedded_object_content_block_manager_content_block_edition_path(
-      content_block_edition,
+    new_path = new_embedded_object_edition_path(
+      edition,
       object_type: subschema.block_type,
     )
 
@@ -101,8 +101,8 @@ class ContentBlockManager::Shared::EmbeddedObjectsTest < ViewComponent::TestCase
       it "renders the correct button text" do
         render_inline(component)
 
-        new_path = new_embedded_object_content_block_manager_content_block_edition_path(
-          content_block_edition,
+        new_path = new_embedded_object_edition_path(
+          edition,
           object_type: subschema.block_type,
         )
 

@@ -1,0 +1,118 @@
+<% content_for :page_full_width, true %>
+<% content_for :page_title, @document.title %>
+<% content_for :back_link do %>
+  <%= render "govuk_publishing_components/components/back_link", {
+    href: documents_path,
+  } %>
+<% end %>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-three-quarters">
+    <h1 class="govuk-heading-xl">
+      <span class="govuk-caption-xl"><%= @document.schema.name %></span>
+      <%= @document.title %>
+    </h1>
+  </div>
+  <div class="govuk-grid-column-one-quarter content-block-manager-header--column-right">
+      <%= render "govuk_publishing_components/components/button", {
+        text: "Edit #{@document.block_type.humanize.downcase}",
+        href: new_document_edition_path(@document),
+      } %>
+  </div>
+</div>
+
+<% if @document.has_newer_draft? %>
+  <%
+    content_for :banner, render("govuk_publishing_components/components/notice", {
+      title: "There’s a saved draft of this content block",
+      description_govspeak: sanitize("<p>#{link_to "Continue editing", workflow_path(@document.latest_draft, step: :edit_draft)}</p>"),
+      show_banner_title: false,
+    })
+  %>
+<% end %>
+
+<%=
+  render(
+    Document::Show::HostEditionsRollupComponent.new(
+      rollup: @host_content_items.rollup,
+    ),
+  )
+%>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <%= render(
+          Document::Show::SummaryListComponent.new(
+            document: @document,
+          ),
+        ) %>
+  </div>
+</div>
+
+<% if @schema.embeddable_as_block? %>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <%= render(
+            Document::Show::DefaultBlockComponent.new(
+              document: @document,
+              ),
+            ) %>
+    </div>
+  </div>
+<% end %>
+
+<% grouped_subschemas(@schema).each do |group, subschemas| %>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h2 class="govuk-heading-l subschema-listing__heading"><%= h group.humanize %></h2>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <%= render Document::Show::EmbeddedObjects::TabGroupComponent.new(
+        document: @document,
+        subschemas: subschemas,
+        ) %>
+    </div>
+  </div>
+<% end %>
+
+<% ungrouped_subschemas(@schema).each do |subschema| %>
+  <div class="subschema-listing" data-testid="<%= subschema.id %>_listing">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <h2 class="govuk-heading-l subschema-listing__heading"><%= h subschema.name %></h2>
+
+        <%= render Document::Show::EmbeddedObjects::SubschemaItemsComponent.new(
+          edition: @document.latest_edition,
+          subschema: subschema,
+          ) %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<div class="govuk-grid-row govuk-!-padding-top-8">
+  <div class="govuk-grid-column-full">
+    <%= render(
+      Document::Show::HostEditionsTableComponent.new(
+        caption: "List of locations",
+        host_content_items: @host_content_items,
+        current_page: @page,
+        order: @order,
+        edition: @document.latest_edition,
+      ),
+    ) %>
+  </div>
+</div>
+
+<div class="govuk-grid-row govuk-!-padding-top-8">
+  <div class="govuk-grid-column-full">
+    <%= render(
+          Document::Show::DocumentTimelineComponent.new(
+            content_block_versions: @content_block_versions,
+            schema: @schema,
+          ),
+        ) %>
+  </div>
+</div>

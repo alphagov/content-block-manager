@@ -1,0 +1,16 @@
+<% content_for :context, @edition.title %>
+<% content_for :title, "Add #{add_indefinite_article @subschema.name.singularize.downcase}" %>
+<% content_for :back_link do %>
+  <%= render "govuk_publishing_components/components/back_link", {
+    href: @back_link,
+  } %>
+<% end %>
+<% content_for :error_summary, render(Shared::ErrorSummaryComponent.new(object: @edition, parent_class: "edition")) %>
+
+<%= form_with(
+      url: create_embedded_object_edition_path(
+        @edition,
+        object_type: @subschema.block_type,
+      ), method: :post) do |form| %>
+  <%= render partial: "editions/embedded_objects/shared/form", locals: { form: } %>
+<% end %>
