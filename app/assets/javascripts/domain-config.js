@@ -7,7 +7,7 @@ window.GOVUK.vars.extraDomains = [
     domains: ['content-block-manager.publishing.service.gov.uk'],
     initialiseGA4: true,
     id: 'GTM-P93SHJ4Z',
-    gaProperty: 'UA-26179049-6'
+    gaProperty: 'G-X4BPTC5NQW'
   },
   {
     name: 'staging',
@@ -19,6 +19,7 @@ window.GOVUK.vars.extraDomains = [
     domains: ['content-block-manager.integration.publishing.service.gov.uk'],
     initialiseGA4: true,
     id: 'GTM-P93SHJ4Z',
+    gaProperty: 'G-9FZ6YBQ08M',
     auth: '8jHx-VNEguw67iX9TBC6_g',
     preview: 'env-50'
   }
