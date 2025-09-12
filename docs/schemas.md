@@ -20,7 +20,7 @@ Schemas also support embedded objects (for example, the [Pension schema](https:/
 has rates embedded). If any embedded objects are included, a user has the ability to create these objects on a seperate
 screen after creating the initial object. Embedded objects look like this (using `rates` as an example):
 
-```
+```json
 "rates": {
   "rate-1": {
     "title": "Rate 1",

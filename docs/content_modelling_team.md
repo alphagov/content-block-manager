@@ -2,7 +2,8 @@
 
 The aim of the Content Modelling team is to:
 
-> ... enable a single source of content truth, using modelled content across documents and channels, to promote efficiency and accuracy
+> ... enable a single source of content truth, using modelled content across documents and channels, to promote
+> efficiency and accuracy
 
 Within publishing, we do this via the Content Block Manager and
 functionality within Publishing API to process embed codes, which allow content to be embedded in documents and
@@ -10,7 +11,8 @@ automatically update when the block changes.
 
 ## Contact
 
-The Content Modelling Team are available via Slack at [#govuk-publishing-content-modelling-dev](https://gds.slack.com/archives/C0776B04EJU)
+The Content Modelling Team are available via Slack at
+[#govuk-publishing-content-modelling-dev](https://gds.slack.com/archives/C0776B04EJU)
 
 ## More information
 
