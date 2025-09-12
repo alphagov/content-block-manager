@@ -2,7 +2,7 @@
 
 ## Before deleting
 
-* Are you sure you need to delete the content block? 
+* Are you sure you need to delete the content block?
 * Have you had sign off from the team that deleting is the best way forward?
 * Is the content block in use anywhere?
 
@@ -12,7 +12,7 @@ if the block is still referenced anywhere.
 
 ## How to delete a content block
 
-Run the following command in the `content-block-manager` Kubernetes (where `CONTENT_ID` is the content_id of the 
+Run the following command in the `content-block-manager` Kubernetes (where `CONTENT_ID` is the content_id of the
 block you want to delete):
 
 ```bash

@@ -1,0 +1,7 @@
+{
+  "ignorePatterns": [
+    {
+      "pattern": "^https://github.com/alphagov/whitehall/blob/main/app/services/content_block/find_and_replace_embed_codes_service.rb$"
+    }
+  ]
+}
