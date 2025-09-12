@@ -4,9 +4,10 @@ To add a new content block schema, follow the instructions below:
 
 ## Add the new type to Content Data API
 
-We need to add the new type to the `no_content` Parser as they do not need frontend Parsers, [as in this commit](https://github.com/alphagov/content-data-api/commit/e02a85381dac95a7a08964e81587a1b49e384554)
+We need to add the new type to the `no_content` Parser as they do not need frontend Parsers,
+[as in this commit](https://github.com/alphagov/content-data-api/commit/e02a85381dac95a7a08964e81587a1b49e384554)
 
-## Open a pull request
+## Open a pull request to Content Data API
 
 Once these changes are made, open a pull request to Content Data API and get it approved
 
@@ -24,7 +25,7 @@ objects have a title and a key to ensure they can be referenced correctly ([Exam
 A good example is in [this commit](https://github.com/alphagov/publishing-api/commit/ae69bd878c87d475ace819acc6b7d76b60f5c360). Failure
 to do this will mean that updates to content will not get picked up when changes are made
 
-## Open a pull request
+## Open a pull request to Publishing API
 
 Once these changes are made, open a pull request to Publishing API and get it approved
 

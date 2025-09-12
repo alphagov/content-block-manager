@@ -44,10 +44,9 @@ This is a different process than the one above for Whitehall, because it's using
 
 1. Inline preview in Whitehall calls the `AdminGovspeakHelper` to convert the textarea govspeak to HTML
 
-1. This then calls the Whitehall's `FindAndReplaceEmbedCodesService` which [replaces the embed codes in the HTML with the latest content of the block] (https://github.com/alphagov/whitehall/blob/main/app/services/content_block/find_and_replace_embed_codes_service.rb) (using Content Block Tools as above).
+1. This then calls the Whitehall's `FindAndReplaceEmbedCodesService` which [replaces the embed codes in the HTML with the latest content of the block] (<https://github.com/alphagov/whitehall/blob/main/app/services/content_block/find_and_replace_embed_codes_service.rb>) (using Content Block Tools as above).
 
-
-## Preview in Content Block Manager
+### Preview in Content Block Manager
 
 #### User journey
 

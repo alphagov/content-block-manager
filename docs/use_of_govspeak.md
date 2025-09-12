@@ -60,7 +60,7 @@ ContentBlockTools::ContentBlock.new(
 ).render
 ```
 
-When rendering the `ContactComponent`, for example, the `content_block_tools` 
+When rendering the `ContactComponent`, for example, the `content_block_tools`
 gem uses `ContentBlockTools::Govspeak::render_govspeak` (see [2]) on the
 govspeak-enabled fields. See the `telephone_component.html.erb`:
 
