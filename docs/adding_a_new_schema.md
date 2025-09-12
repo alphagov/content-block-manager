@@ -45,9 +45,9 @@ which allows you to configure how the schema is presented in Content Block Manag
 
 Once these changes are made, open pull request to Content Block Manager and get these changes approved
 
-## Optional: Add a presenter to Content Block Tools
+## Optional: Add a component to Content Block Tools
 
-If there are any custom behaviours required for a content block, you can add a presenter to the
+If there are any custom behaviours required for a content block, you can add a component to the
 [Content Block Tools gem](https://github.com/alphagov/govuk_content_block_tools).
 
-You can see [an example presenter here](https://github.com/alphagov/govuk_content_block_tools/blob/main/lib/content_block_tools/presenters/pension_presenter.rb).
+You can see [an example component here](https://github.com/alphagov/govuk_content_block_tools/blob/main/app/components/content_block_tools/contact_component.rb).
