@@ -4,7 +4,7 @@
 
 All content block types are managed in the schemas in [Publishing API](https://github.com/alphagov/publishing-api/tree/main/content_schemas).
 
-Schemas are prefixed with `content_block_*` and are picked up by Content Block Manager via the [`Schema` class](https://github.com/alphagov/content-block-manager/blob/main/app/models/content_block_manager/content_block/schema.rb).
+Schemas are prefixed with `content_block_*` and are picked up by Content Block Manager via the [`Schema` class](https://github.com/alphagov/content-block-manager/blob/main/app/models/schema.rb).
 
 When creating a new content block, we fetch all the supported schemas from Publishing API and give the user a list of
 valid block types to create. Once a block type is chosen the form is then populated using all the fields within a
