@@ -24,7 +24,7 @@ We are currently only actively supporting this for Mainstream and Whitehall.
 
 #### Technical explanation
 
-When saving the changes to the Host Document, we trigger an update of the draft Content Store as outlined in [Saving a draft](how_embedding_works/#saving-a-draft)
+When saving the changes to the Host Document, we trigger an update of the draft Content Store as outlined in [Saving a draft](how_embedding_works.md#saving-a-draft)
 
 ### Whitehall
 
