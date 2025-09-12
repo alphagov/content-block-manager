@@ -17,6 +17,7 @@ The Content Modelling Team are available via Slack at
 ## More information
 
 - [Adding a new schema](adding_a_new_schema.md)
+- [Architecture](architecture.md)
 - [Configuration](configuration.md)
 - [Deleting a content block](deleting_a_content_block.md)
 - [How embedding works](how_embedding_works.md)
