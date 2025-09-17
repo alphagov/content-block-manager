@@ -1,3 +1,4 @@
+# :nocov:
 desc "Run all linters"
 task lint: :environment do
   sh "bundle exec rubocop"
@@ -8,3 +9,4 @@ task lint: :environment do
   end
   sh "yarn run lint"
 end
+# :nocov:

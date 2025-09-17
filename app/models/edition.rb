@@ -28,9 +28,6 @@ class Edition < ApplicationRecord
       details:,
       embed_code:,
     ).render
-  rescue TypeError
-    # TODO: Remove this when we've updated Content Block Tools to support an array of telephones
-    nil
   end
 
   def clone_edition(creator:)

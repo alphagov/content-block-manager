@@ -37,6 +37,4 @@ Rails.application.routes.draw do
       get :preview, to: "editions/host_content#preview", path: "host-content/:host_content_id/preview", as: :host_content_preview
     end
   end
-
-  get "/page" => "pages#show"
 end

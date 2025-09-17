@@ -1,5 +1,3 @@
-require_relative "./locale"
-
 module ContentBlockManager
   def self.product_name
     "Content Block Manager"

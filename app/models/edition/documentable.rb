@@ -8,10 +8,8 @@ module Edition::Documentable
     before_validation :ensure_presence_of_document, on: :create
 
     accepts_nested_attributes_for :document
-  end
 
-  def block_type
-    @block_type ||= document&.block_type
+    delegate :block_type, :content_id, to: :document, allow_nil: true
   end
 
   def ensure_presence_of_document
