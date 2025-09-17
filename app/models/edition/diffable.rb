@@ -12,12 +12,6 @@ module Edition::Diffable
     diff
   end
 
-  # This is a temporary solution to allow us to specifically set the previous edition when backfilling
-  # the diffs. This can be deleted once the rake task has been run
-  def previous_edition=(edition)
-    @previous_edition = edition
-  end
-
   def previous_edition
     @previous_edition ||= document.editions[-2]
   end
