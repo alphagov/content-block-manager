@@ -69,6 +69,7 @@ schemas:
           opening_hours:
             component:
               opening_hours
+            govspeak_enabled: true
           call_charges:
             component:
               call_charges
