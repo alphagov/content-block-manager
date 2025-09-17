@@ -60,6 +60,14 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal document.block_type, edition.block_type
   end
 
+  it "persists the content_id to the document" do
+    edition.save!
+    edition.reload
+    document = edition.document
+
+    assert_equal document.content_id, edition.content_id
+  end
+
   it "creates a document" do
     edition.save!
     edition.reload
