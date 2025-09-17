@@ -3,6 +3,25 @@ require "test_helper"
 class ApplicationHelperTest < ActionView::TestCase
   extend Minitest::Spec::DSL
 
+  describe "#get_content_id" do
+    it "returns nil if edition is nil" do
+      assert_nil get_content_id(nil)
+    end
+
+    it "returns nil if edition does not respond to `content_id`" do
+      edition = stub("edition")
+      edition.stubs(:respond_to?).with("content_id").returns(false)
+
+      assert_nil get_content_id(edition)
+    end
+
+    it "returns the content_id if present" do
+      content_id = SecureRandom.uuid
+      edition = stub("edition", content_id:)
+      assert_equal get_content_id(edition), content_id
+    end
+  end
+
   describe "#add_indefinite_article" do
     it "prepends word with 'an' when a word starts with a vowel" do
       %w[
