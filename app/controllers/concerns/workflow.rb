@@ -12,9 +12,5 @@ module Workflow
       Step.new(:review, :review, :validate_review_page, true),
       Step.new(:confirmation, :confirmation, nil, true),
     ].freeze
-
-    def is_subschema?
-      name.to_s.start_with?(SUBSCHEMA_PREFIX)
-    end
   end
 end
