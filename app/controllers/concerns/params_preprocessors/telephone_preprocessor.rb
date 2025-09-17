@@ -72,15 +72,4 @@ private
       obj
     end
   end
-
-  def strip_opening_hours
-    params["edition"]["details"]["telephones"]["opening_hours"] = []
-  end
-
-  def format_time(hours, prefix)
-    h = hours["#{prefix}(h)"]
-    m = hours["#{prefix}(m)"]
-    meridian = hours["#{prefix}(meridian)"]
-    "#{h}:#{m}#{meridian}"
-  end
 end
