@@ -100,7 +100,11 @@ class Schema
 private
 
   def field_names
-    sort_fields (@body["properties"].to_a - embedded_objects.to_a).to_h.keys
+    sort_fields @body["properties"].keys - properties_to_ignore
+  end
+
+  def properties_to_ignore
+    [*embedded_objects.keys, "order"]
   end
 
   def sort_fields(fields)
