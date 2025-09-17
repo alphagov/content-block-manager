@@ -64,7 +64,6 @@ class ActiveSupport::TestCase
     stub_any_publishing_api_call
     stub_publishing_api_publish_intent
     Services.publishing_api.stubs(:get_events_for_content_id).returns([])
-    TaxonValidator.any_instance.stubs(:validate)
   end
 
   teardown do
