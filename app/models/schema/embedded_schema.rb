@@ -1,6 +1,6 @@
 class Schema
   class EmbeddedSchema < Schema
-    GOVSPEAK_ENABLED_PROPERTY_KEY = "x-govspeak_enabled".freeze
+    GOVSPEAK_ENABLED_PROPERTY_KEY = "govspeak_enabled".freeze
 
     def initialize(id, body, parent_schema_id)
       @parent_schema_id = parent_schema_id
@@ -41,17 +41,17 @@ class Schema
     end
 
     def govspeak_enabled?(field_name:, nested_object_key: nil)
-      return top_level_govspeak_enabled_fields.include?(field_name) unless nested_object_key
+      return top_level_govspeak_enabled_field?(field_name) unless nested_object_key
 
-      govspeak_enabled_fields_for_nested_object(nested_object_key).include?(field_name)
+      govspeak_enabled_field_for_nested_object?(nested_object_key, field_name)
     end
 
-    def govspeak_enabled_fields_for_nested_object(object_key)
-      body.dig("properties", object_key, GOVSPEAK_ENABLED_PROPERTY_KEY) || []
+    def govspeak_enabled_field_for_nested_object?(object_key, field_name)
+      config.dig("fields", object_key, "fields", field_name, GOVSPEAK_ENABLED_PROPERTY_KEY) == true
     end
 
-    def top_level_govspeak_enabled_fields
-      body.dig("properties", GOVSPEAK_ENABLED_PROPERTY_KEY) || []
+    def top_level_govspeak_enabled_field?(field_name)
+      config.dig("fields", field_name, GOVSPEAK_ENABLED_PROPERTY_KEY) == true
     end
 
   private

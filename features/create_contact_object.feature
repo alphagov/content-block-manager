@@ -96,8 +96,7 @@ Feature: Create a contact object
               "type": "string",
               "default": "0800 123 4567"
             }
-          },
-          "x-govspeak_enabled": ["prefix"]
+          }
         },
         "call_charges": {
           "type": "object",

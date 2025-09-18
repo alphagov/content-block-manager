@@ -75,9 +75,15 @@ schemas:
           bsl_guidance:
             component:
               bsl_guidance
+            fields:
+              value:
+                govspeak_enabled: true
           video_relay_service:
             component:
               video_relay_service
+            fields:
+              prefix:
+                govspeak_enabled: true
           telephone_numbers:
             data_attributes:
               module: auto-populate-telephone-number-label

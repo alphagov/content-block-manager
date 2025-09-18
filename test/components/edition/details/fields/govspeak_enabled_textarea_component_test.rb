@@ -7,21 +7,13 @@ class Edition::Details::Fields::GovspeakEnabledTextareaComponentTest < ViewCompo
 
   let(:edition) { build(:edition, :contact) }
 
-  let(:properties) do
-    {
-      "video_relay_service" => {
-        "x-govspeak_enabled" => %w[prefix],
-      },
-    }
-  end
-
   let(:body) do
     {
       "type" => "object",
       "patternProperties" => {
         "*" => {
           "type" => "object",
-          "properties" => properties,
+          "properties" => {},
         },
       },
     }
@@ -33,6 +25,25 @@ class Edition::Details::Fields::GovspeakEnabledTextareaComponentTest < ViewCompo
       body,
       "parent_schema_id",
     )
+  end
+  let(:config) do
+    {
+      "schemas" => {
+        "parent_schema_id" => {
+          "subschemas" => {
+            "telephones" => {
+              "fields" => {
+                "video_relay_service" => {
+                  "fields" => {
+                    "prefix" => { "govspeak_enabled" => true },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    }
   end
 
   let(:field) do
@@ -61,6 +72,10 @@ class Edition::Details::Fields::GovspeakEnabledTextareaComponentTest < ViewCompo
       "edition.details.labels.telephones.video_relay_service.prefix",
       default: "Prefix",
     ).returns("Translated label")
+
+    Schema::EmbeddedSchema
+      .stubs(:schema_settings)
+      .returns(config)
   end
 
   describe "GovspeakEnabledTextareaComponent" do
@@ -149,11 +164,23 @@ class Edition::Details::Fields::GovspeakEnabledTextareaComponentTest < ViewCompo
     end
 
     describe "'Govspeak supported' indicator" do
-      context "when the field IS declared 'govspeak-enabled' in the subschema" do
-        let(:properties) do
+      context "when the field IS declared 'govspeak-enabled' in the config" do
+        let(:config) do
           {
-            "video_relay_service" => {
-              "x-govspeak_enabled" => %w[prefix],
+            "schemas" => {
+              "parent_schema_id" => {
+                "subschemas" => {
+                  "telephones" => {
+                    "fields" => {
+                      "video_relay_service" => {
+                        "fields" => {
+                          "prefix" => { "govspeak_enabled" => true },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
             },
           }
         end
@@ -228,11 +255,23 @@ class Edition::Details::Fields::GovspeakEnabledTextareaComponentTest < ViewCompo
         end
       end
 
-      context "when the field is NOT declared 'govspeak-enabled in the subschema" do
-        let(:properties) do
+      context "when the field is NOT declared 'govspeak-enabled in the config" do
+        let(:config) do
           {
-            "video_relay_service" => {
-              "x-govspeak_enabled" => [],
+            "schemas" => {
+              "parent_schema_id" => {
+                "subschemas" => {
+                  "telephones" => {
+                    "fields" => {
+                      "video_relay_service" => {
+                        "fields" => {
+                          "prefix" => {},
+                        },
+                      },
+                    },
+                  },
+                },
+              },
             },
           }
         end

@@ -286,30 +286,49 @@ class Schema::EmbeddedSchemaTest < ActiveSupport::TestCase
         "patternProperties" => {
           "*" => {
             "type" => "object",
-            "properties" => {
-              "field_1" => { "type" => "string" },
-              "field_2" => { "type" => "string" },
-              "x-govspeak_enabled" => %w[field_2],
-              "nested_object_1" => {
-                "type" => "object",
-                "properties" => {
-                  "field_1" => { "type" => "string" },
-                  "field_2" => { "type" => "string" },
+            "properties" => {},
+          },
+        },
+      }
+    end
+
+    let(:subschema_id) { "subschema_id" }
+    let(:parent_schema_id) { "parent_schema_id" }
+    let(:schema) { Schema::EmbeddedSchema.new(subschema_id, body, parent_schema_id) }
+
+    let(:config) do
+      {
+        "schemas" => {
+          parent_schema_id => {
+            "subschemas" => {
+              subschema_id => {
+                "fields" => {
+                  "field_1" => {},
+                  "field_2" => { "govspeak_enabled" => true },
+                  "nested_object_1" => {
+                    "fields" => {
+                      "field_1" => {},
+                      "field_2" => { "govspeak_enabled" => true },
+                    },
+                  },
+                  "nested_object_2" => {
+                    "fields" => {
+                      "field_1" => { "govspeak_enabled" => true },
+                      "field_2" => {},
+                    },
+                  },
                 },
-                "x-govspeak_enabled" => %w[field_2],
-              },
-              "nested_object_2" => {
-                "type" => "object",
-                "properties" => {
-                  "field_1" => { "type" => "string" },
-                  "field_2" => { "type" => "string" },
-                },
-                "x-govspeak_enabled" => %w[field_1],
               },
             },
           },
         },
       }
+    end
+
+    before do
+      Schema::EmbeddedSchema
+        .stubs(:schema_settings)
+        .returns(config)
     end
 
     context "when a nested_object_key is given" do
