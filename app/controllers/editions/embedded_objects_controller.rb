@@ -22,7 +22,7 @@ class Editions::EmbeddedObjectsController < BaseController
       @context = @edition.title
 
       if @subschemas.blank?
-        render "admin/errors/not_found", status: :not_found
+        render "errors/not_found", status: :not_found
       else
         render "shared/embedded_objects/select_subschema"
       end
@@ -55,7 +55,7 @@ class Editions::EmbeddedObjectsController < BaseController
     @object_title = params[:object_title]
     @object = @edition.details.dig(params[:object_type], params[:object_title])
 
-    render "admin/errors/not_found", status: :not_found unless @object
+    render "errors/not_found", status: :not_found unless @object
   end
 
   def update

@@ -41,6 +41,9 @@ module ContentBlockManager
     # when a translation is present
     config.active_model.i18n_customize_full_message = true
 
+    # Serve error pages from app instead of static pages
+    config.exceptions_app = routes
+
     config.eager_load_paths += %W[
       #{config.root}/lib
     ]
