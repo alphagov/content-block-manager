@@ -32,9 +32,7 @@ class Edition::Details::Fields::TextareaComponent < Edition::Details::Fields::Ba
   end
 
   def hint_text
-    return nil unless govspeak_enabled?
-
-    "Govspeak supported"
+    nil
   end
 
   def aria_described_by
