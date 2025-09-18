@@ -2,7 +2,7 @@
 
   <% video_relay_service_inputs = capture do %>
     <%= render(
-      Edition::Details::Fields::GovspeakEnabledTextareaComponent.new(
+      Edition::Details::Fields::TextareaComponent.new(
         edition: edition,
         value: value_for_field(prefix) ,
         nested_object_key: field.name,

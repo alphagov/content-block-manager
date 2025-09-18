@@ -1,9 +1,9 @@
 require "test_helper"
 
-class Edition::Details::Fields::GovspeakEnabledTextareaComponentTest < ViewComponent::TestCase
+class Edition::Details::Fields::TextareaComponentTest < ViewComponent::TestCase
   extend Minitest::Spec::DSL
 
-  COMPONENT_CLASS = ".app-c-content-block-manager-govspeak-enabled-textarea-component".freeze
+  COMPONENT_CLASS = ".app-c-content-block-manager-textarea-component".freeze
 
   let(:edition) { build(:edition, :contact) }
 
@@ -58,7 +58,7 @@ class Edition::Details::Fields::GovspeakEnabledTextareaComponentTest < ViewCompo
   let(:field_value) { nil }
 
   let(:component) do
-    Edition::Details::Fields::GovspeakEnabledTextareaComponent.new(
+    Edition::Details::Fields::TextareaComponent.new(
       edition: edition,
       field: field,
       value: field_value,

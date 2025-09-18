@@ -1,7 +1,7 @@
 <div class="app-c-content-block-manager-bsl-guidance-component">
   <% value_input = capture do %>
     <%= render(
-      Edition::Details::Fields::GovspeakEnabledTextareaComponent.new(
+      Edition::Details::Fields::TextareaComponent.new(
         edition: edition,
         value: value_for_field(value_field),
         nested_object_key: field.name,
