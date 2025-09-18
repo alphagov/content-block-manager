@@ -108,6 +108,8 @@ private
   end
 
   def frontend_path(content_item)
+    return nil if content_item.base_path.nil?
+
     Plek.website_root + content_item.base_path
   end
 
@@ -125,8 +127,13 @@ private
   end
 
   def content_link(content_item)
-    link_to(content_link_text(content_item),
-            frontend_path(content_item), class: "govuk-link", target: "_blank", rel: "noopener")
+    path = frontend_path(content_item)
+
+    if path
+      link_to(content_link_text(content_item), path, class: "govuk-link", target: "_blank", rel: "noopener")
+    else
+      content_item.title
+    end
   end
 
   def updated_field_for(content_item)

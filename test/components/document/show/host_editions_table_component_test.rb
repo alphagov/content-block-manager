@@ -144,6 +144,38 @@ class Document::Show::HostEditionsTableComponentTest < ViewComponent::TestCase
       end
     end
 
+    describe "when a base_path is nil" do
+      let(:host_content_item) do
+        HostContentItem.new(
+          "title" => "Some title",
+          "base_path" => nil,
+          "document_type" => "document_type",
+          "publishing_app" => "publisher",
+          "last_edited_by_editor" => last_edited_by_editor,
+          "last_edited_at" => Time.zone.now.to_s,
+          "publishing_organisation" => publishing_organisation,
+          "unique_pageviews" => unique_pageviews,
+          "host_content_id" => SecureRandom.uuid,
+          "host_locale" => "en",
+          "instances" => 1,
+        )
+      end
+
+      it "Does not render a link" do
+        render_inline(
+          described_class.new(
+            caption:,
+            host_content_items:,
+            edition:,
+          ),
+        )
+
+        assert_selector "tbody" do |tbody|
+          tbody.assert_no_selector ".govuk-link", text: "#{host_content_item.title} (opens in new tab)"
+        end
+      end
+    end
+
     describe "sorting headers" do
       it "adds the table header as an anchor tag to each header" do
         render_inline(
