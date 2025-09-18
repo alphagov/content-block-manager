@@ -64,52 +64,19 @@ class Editions::EmbeddedObjectsController < BaseController
     @edition.update_object_with_details(params[:object_type], params[:object_title], @object)
     @edition.save!
 
-    if params[:redirect_url].present?
-      object_or_group = @subschema.group ? @subschema.group.humanize.singularize : @subschema.name.singularize
+    object_or_group = @subschema.group ? @subschema.group.humanize.singularize : @subschema.name.singularize
 
-      flash[:notice] = I18n.t(
-        "edition.create.embedded_objects.edited_confirmation",
-        object_name: @subschema.name.singularize,
-        object_or_group: object_or_group.downcase,
-        schema_name: @schema.name.singularize.downcase,
-      )
-      redirect_to params[:redirect_url], allow_other_host: false
-    else
-      redirect_to review_embedded_object_edition_path(
-        @edition,
-        object_type: @subschema.block_type,
-        object_title: params[:object_title],
-      )
-    end
+    flash[:notice] = I18n.t(
+      "edition.create.embedded_objects.edited_confirmation",
+      object_name: @subschema.name.singularize,
+      object_or_group: object_or_group.downcase,
+      schema_name: @schema.name.singularize.downcase,
+    )
+    redirect_to params[:redirect_url], allow_other_host: false
   rescue ActiveRecord::RecordInvalid
     @redirect_url = params[:redirect_url]
     @object_title = params[:object_title]
     render :edit
-  end
-
-  def review
-    @schema, @subschema = get_schema_and_subschema(@edition.document.block_type, params[:object_type])
-    @object_title = params[:object_title]
-  end
-
-  def publish
-    @schema, @subschema = get_schema_and_subschema(@edition.document.block_type, params[:object_type])
-    if params[:is_confirmed].blank?
-      flash[:error] = I18n.t("edition.review_page.errors.confirm")
-      redirect_path = review_embedded_object_edition_path(
-        @edition,
-        object_type: @subschema.block_type,
-        object_title: params[:object_title],
-      )
-    else
-      @edition.updated_embedded_object_type = @subschema.block_type
-      @edition.updated_embedded_object_title = params[:object_title]
-      PublishEditionService.new.call(@edition)
-      flash[:notice] = "#{@subschema.name.singularize} created"
-      redirect_path = document_path(@edition.document)
-    end
-
-    redirect_to redirect_path
   end
 
   def new_embedded_objects_options_redirect

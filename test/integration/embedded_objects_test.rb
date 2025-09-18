@@ -240,34 +240,7 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
   end
 
   describe "#update" do
-    it "should update an embedded object for an edition" do
-      put embedded_object_edition_path(
-        edition,
-        object_type:,
-        object_title: "embedded",
-      ), params: {
-        "edition" => {
-          details: {
-            object_type => {
-              "title" => "Embedded",
-              "is" => "different",
-            },
-          },
-        },
-      }
-
-      assert_redirected_to review_embedded_object_edition_path(
-        edition,
-        object_type:,
-        object_title: "embedded",
-      )
-
-      updated_edition = edition.reload
-
-      assert_equal updated_edition.details, { "something" => { "embedded" => { "title" => "Embedded", "is" => "different" } } }
-    end
-
-    it "should redirect if a redirect_url is given" do
+    it "should redirect to the redirect_url" do
       put embedded_object_edition_path(
         edition,
         object_type:,
@@ -291,7 +264,7 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
     describe "when the subschema belongs to a group" do
       let(:group) { "some_group" }
 
-      it "should redirect if a redirect_url is given" do
+      it "should redirect to the redirect_url" do
         put embedded_object_edition_path(
           edition,
           object_type:,
@@ -319,6 +292,7 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
         object_type:,
         object_title: "embedded",
       ), params: {
+        redirect_url: documents_path,
         "edition" => {
           details: {
             object_type => {
@@ -329,11 +303,7 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
         },
       }
 
-      assert_redirected_to review_embedded_object_edition_path(
-        edition,
-        object_type:,
-        object_title: "embedded",
-      )
+      assert_redirected_to documents_path
 
       updated_edition = edition.reload
 
