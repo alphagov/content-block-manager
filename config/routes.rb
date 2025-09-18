@@ -2,6 +2,14 @@ Rails.application.routes.draw do
   get "/healthcheck/live", to: proc { [200, {}, %w[OK]] }
   get "/healthcheck/ready", to: GovukHealthcheck.rack_response
 
+  scope via: :all do
+    match "/400", to: "errors#bad_request"
+    match "/403", to: "errors#forbidden"
+    match "/404", to: "errors#not_found"
+    match "/422", to: "errors#unprocessable_content"
+    match "/500", to: "errors#internal_server_error"
+  end
+
   namespace :admin do
     post "preview" => "preview#preview"
   end
