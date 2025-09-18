@@ -119,6 +119,27 @@ class SchemaTest < ActiveSupport::TestCase
     end
   end
 
+  describe "when a schema includes an order property" do
+    let(:body) do
+      {
+        "properties" => {
+          "foo" => {
+            "type" => "string",
+          },
+          "order" => {
+            "type" => "array",
+          },
+        },
+      }
+    end
+
+    describe "#fields" do
+      it "excludes the order field" do
+        assert_equal schema.fields.map(&:name), %w[foo]
+      end
+    end
+  end
+
   describe ".permitted_params" do
     it "returns permitted params" do
       assert_equal schema.permitted_params, %w[title foo bar]
