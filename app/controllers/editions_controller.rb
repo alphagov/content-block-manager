@@ -27,13 +27,17 @@ class EditionsController < BaseController
   rescue ActiveRecord::RecordInvalid => e
     @title = params[:document_id] ? e.record.document.title : "Create content block"
     @form = EditionForm.for(edition: e.record, schema: @schema)
-    render "editions/new"
+    render "editions/new", status: :unprocessable_entity
   end
 
   def destroy
     edition_to_delete = Edition.find(params[:id])
     DeleteEditionService.new.call(edition_to_delete)
     redirect_to params[:redirect_path] || root_path
+  end
+
+  def preview
+    @edition = Edition.find(params[:id])
   end
 
 private
