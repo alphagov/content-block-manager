@@ -46,7 +46,7 @@ class Editions::EmbeddedObjectsController < BaseController
     redirect_to embedded_objects_path
   rescue ActiveRecord::RecordInvalid
     @back_link = embedded_objects_path
-    render :new
+    render :new, status: :unprocessable_entity
   end
 
   def edit
