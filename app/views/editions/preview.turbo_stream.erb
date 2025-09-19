@@ -1,0 +1,16 @@
+<%= turbo_stream.replace "edition_#{@edition.id}" do %>
+  <div class="app-views-editions-preview">
+    <div class="govspeak">
+      <%= @edition.render(@edition.document.embed_code) %>
+    </div>
+  </div>
+<% end %>
+
+<%= turbo_stream.replace "preview_link_#{@edition.id}" do %>
+  <%= render("govuk_publishing_components/components/button", {
+    text: "Close preview",
+    secondary_quiet: true,
+    href: request.referer,
+    margin_bottom: false,
+  }) %>
+<% end %>
