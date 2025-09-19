@@ -49,10 +49,13 @@ class Edition::Details::Fields::BSLGuidanceComponentTest < ViewComponent::TestCa
       "value" => nil }
   end
 
+  let(:schema) { stub(:schema) }
+
   let(:component) do
     Edition::Details::Fields::BSLGuidanceComponent.new(
       edition:,
       field: field,
+      schema:,
       value: field_value,
       subschema: subschema,
     )

@@ -1,6 +1,7 @@
 class Edition::Details::EmbeddedObjects::FormComponent < Edition::Details::FormComponent
-  def initialize(edition:, subschema:, params:, object_title: nil)
+  def initialize(edition:, schema:, subschema:, params:, object_title: nil)
     @edition = edition
+    @schema = schema
     @subschema = subschema
     @params = params || {}
     @object_title = object_title
@@ -8,16 +9,17 @@ class Edition::Details::EmbeddedObjects::FormComponent < Edition::Details::FormC
 
 private
 
-  attr_reader :edition, :subschema, :params, :object_title
+  attr_reader :edition, :schema, :subschema, :params, :object_title
 
-  def schema
-    @subschema
+  def fields
+    subschema.fields
   end
 
   def component_args(field)
     {
       edition:,
       field: field,
+      schema:,
       subschema:,
       value: params[field.name],
       object_title:,

@@ -6,6 +6,7 @@ class Edition::Details::Fields::ArrayComponentTest < ViewComponent::TestCase
   let(:edition) { build(:edition, :pension) }
   let(:default_value) { nil }
   let(:field) { stub("field", name: "items", array_items:, is_required?: true, default_value:) }
+  let(:schema) { stub(:schema) }
   let(:array_items) { { "type" => "string" } }
   let(:field_value) { nil }
   let(:object_title) { nil }
@@ -14,6 +15,7 @@ class Edition::Details::Fields::ArrayComponentTest < ViewComponent::TestCase
     Edition::Details::Fields::ArrayComponent.new(
       edition:,
       field:,
+      schema:,
       value: field_value,
       object_title:,
     )

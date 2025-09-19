@@ -20,6 +20,8 @@ class Edition::Details::EmbeddedObjects::FormComponentTest < ViewComponent::Test
   let(:textarea_stub) { stub("textarea_component") }
   let(:boolean_stub) { stub("boolean_component") }
 
+  let(:schema) { stub(:schema) }
+
   before do
     subschema.stubs(:fields).returns([foo_field, bar_field, enum_field, textarea_field, boolean_field])
   end
@@ -29,12 +31,14 @@ class Edition::Details::EmbeddedObjects::FormComponentTest < ViewComponent::Test
       edition:,
       field: foo_field,
       subschema:,
+      schema:,
     ).returns(foo_stub)
 
     Edition::Details::Fields::StringComponent.expects(:new).with(
       edition:,
       field: bar_field,
       subschema:,
+      schema:,
     ).returns(bar_stub)
 
     Edition::Details::Fields::EnumComponent.expects(:new).with(
@@ -43,23 +47,27 @@ class Edition::Details::EmbeddedObjects::FormComponentTest < ViewComponent::Test
       subschema:,
       enum: ["some value", "another value"],
       default: "some value",
+      schema:,
     ).returns(enum_stub)
 
     Edition::Details::Fields::TextareaComponent.expects(:new).with(
       edition:,
       field: textarea_field,
       subschema:,
+      schema:,
     ).returns(textarea_stub)
 
     Edition::Details::Fields::BooleanComponent.expects(:new).with(
       edition:,
       field: boolean_field,
       subschema:,
+      schema:,
     ).returns(boolean_stub)
 
     component = Edition::Details::EmbeddedObjects::FormComponent.new(
       edition:,
       subschema:,
+      schema:,
       params: nil,
     )
 
@@ -79,6 +87,7 @@ class Edition::Details::EmbeddedObjects::FormComponentTest < ViewComponent::Test
       edition:,
       field: foo_field,
       subschema:,
+      schema:,
       value: "something",
     ).returns(foo_stub)
 
@@ -86,12 +95,14 @@ class Edition::Details::EmbeddedObjects::FormComponentTest < ViewComponent::Test
       edition:,
       field: bar_field,
       subschema:,
+      schema:,
     ).returns(bar_stub)
 
     Edition::Details::Fields::EnumComponent.expects(:new).with(
       edition:,
       field: enum_field,
       subschema:,
+      schema:,
       enum: ["some value", "another value"],
       default: "some value",
     ).returns(enum_stub)
@@ -100,18 +111,21 @@ class Edition::Details::EmbeddedObjects::FormComponentTest < ViewComponent::Test
       edition:,
       field: textarea_field,
       subschema:,
+      schema:,
     ).returns(textarea_stub)
 
     Edition::Details::Fields::BooleanComponent.expects(:new).with(
       edition:,
       field: boolean_field,
       subschema:,
+      schema:,
     ).returns(boolean_stub)
 
     component = Edition::Details::EmbeddedObjects::FormComponent.new(
       edition:,
       subschema:,
       params:,
+      schema:,
     )
 
     component.expects(:render).with(foo_stub)
@@ -130,6 +144,7 @@ class Edition::Details::EmbeddedObjects::FormComponentTest < ViewComponent::Test
       edition:,
       field: foo_field,
       subschema:,
+      schema:,
       object_title:,
     ).returns(foo_stub)
 
@@ -137,6 +152,7 @@ class Edition::Details::EmbeddedObjects::FormComponentTest < ViewComponent::Test
       edition:,
       field: bar_field,
       subschema:,
+      schema:,
       object_title:,
     ).returns(bar_stub)
 
@@ -144,6 +160,7 @@ class Edition::Details::EmbeddedObjects::FormComponentTest < ViewComponent::Test
       edition:,
       field: enum_field,
       subschema:,
+      schema:,
       enum: ["some value", "another value"],
       default: "some value",
       object_title:,
@@ -153,6 +170,7 @@ class Edition::Details::EmbeddedObjects::FormComponentTest < ViewComponent::Test
       edition:,
       field: textarea_field,
       subschema:,
+      schema:,
       object_title:,
     ).returns(textarea_stub)
 
@@ -160,12 +178,14 @@ class Edition::Details::EmbeddedObjects::FormComponentTest < ViewComponent::Test
       edition:,
       field: boolean_field,
       subschema:,
+      schema:,
       object_title:,
     ).returns(boolean_stub)
 
     component = Edition::Details::EmbeddedObjects::FormComponent.new(
       edition:,
       subschema:,
+      schema:,
       params: nil,
       object_title:,
     )

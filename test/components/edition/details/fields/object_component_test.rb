@@ -20,10 +20,13 @@ class Edition::Details::Fields::ObjectComponentTest < ViewComponent::TestCase
 
   let(:form_value) { nil }
 
+  let(:schema) { stub(:schema) }
+
   let(:component) do
     Edition::Details::Fields::ObjectComponent.new(
       edition:,
       field:,
+      schema:,
       value: form_value,
     )
   end

@@ -59,11 +59,14 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < ViewComponent::
     }
   end
 
+  let(:schema) { stub(:schema) }
+
   let(:component) do
     Edition::Details::Fields::VideoRelayServiceComponent.new(
       edition:,
       field: field,
       value: field_value,
+      schema:,
       subschema: subschema,
     )
   end

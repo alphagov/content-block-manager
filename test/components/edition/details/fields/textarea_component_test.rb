@@ -46,6 +46,8 @@ class Edition::Details::Fields::TextareaComponentTest < ViewComponent::TestCase
     }
   end
 
+  let(:schema) { stub(:schema) }
+
   let(:field) do
     Schema::Field::NestedField.new(
       name: "prefix",
@@ -61,6 +63,7 @@ class Edition::Details::Fields::TextareaComponentTest < ViewComponent::TestCase
     Edition::Details::Fields::TextareaComponent.new(
       edition: edition,
       field: field,
+      schema:,
       value: field_value,
       nested_object_key: "video_relay_service",
       subschema: subschema,

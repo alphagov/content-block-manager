@@ -5,6 +5,7 @@ class Edition::Details::Fields::EnumComponentTest < ViewComponent::TestCase
 
   let(:edition) { build(:edition, :pension) }
   let(:field) { stub("field", name: "something", is_required?: true, default_value: nil) }
+  let(:schema) { stub(:schema) }
 
   describe "when there is no default value" do
     it "should render a select field with given parameters" do
@@ -12,6 +13,7 @@ class Edition::Details::Fields::EnumComponentTest < ViewComponent::TestCase
         Edition::Details::Fields::EnumComponent.new(
           edition:,
           field:,
+          schema:,
           enum: ["a week", "a month"],
         ),
       )
@@ -31,6 +33,7 @@ class Edition::Details::Fields::EnumComponentTest < ViewComponent::TestCase
         Edition::Details::Fields::EnumComponent.new(
           edition:,
           field:,
+          schema:,
           enum: ["a week", "a month"],
           value: "a week",
         ),
@@ -53,6 +56,7 @@ class Edition::Details::Fields::EnumComponentTest < ViewComponent::TestCase
         Edition::Details::Fields::EnumComponent.new(
           edition:,
           field:,
+          schema:,
           enum: ["a week", "a month"],
           default: "a month",
         ),
@@ -72,6 +76,7 @@ class Edition::Details::Fields::EnumComponentTest < ViewComponent::TestCase
         Edition::Details::Fields::EnumComponent.new(
           edition:,
           field:,
+          schema:,
           enum: ["a week", "a month"],
           value: "a week",
           default: "a month",
@@ -95,6 +100,7 @@ class Edition::Details::Fields::EnumComponentTest < ViewComponent::TestCase
       Edition::Details::Fields::EnumComponent.new(
         edition:,
         field:,
+        schema:,
         enum: ["a week", "a month"],
       ),
     )
@@ -109,6 +115,7 @@ class Edition::Details::Fields::EnumComponentTest < ViewComponent::TestCase
       component = Edition::Details::Fields::EnumComponent.new(
         edition:,
         field:,
+        schema:,
         enum: ["a week", "a month"],
       )
 
@@ -123,6 +130,7 @@ class Edition::Details::Fields::EnumComponentTest < ViewComponent::TestCase
       component = Edition::Details::Fields::EnumComponent.new(
         edition:,
         field:,
+        schema:,
         enum: ["a week", "a month"],
         value: "a week",
       )

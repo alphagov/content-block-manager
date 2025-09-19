@@ -11,6 +11,8 @@ class Edition::Details::Fields::CountryComponentTest < ViewComponent::TestCase
 
   let(:all_locations) { [world_locations, uk].flatten }
 
+  let(:schema) { stub(:schema) }
+
   before do
     WorldLocation.stubs(:countries).returns(all_locations)
   end
@@ -19,6 +21,7 @@ class Edition::Details::Fields::CountryComponentTest < ViewComponent::TestCase
     render_inline(
       Edition::Details::Fields::CountryComponent.new(
         edition:,
+        schema:,
         field:,
       ),
     )
@@ -43,6 +46,7 @@ class Edition::Details::Fields::CountryComponentTest < ViewComponent::TestCase
       Edition::Details::Fields::CountryComponent.new(
         edition:,
         field:,
+        schema:,
         value: world_locations.first.name,
       ),
     )
@@ -68,6 +72,7 @@ class Edition::Details::Fields::CountryComponentTest < ViewComponent::TestCase
       Edition::Details::Fields::CountryComponent.new(
         edition:,
         field:,
+        schema:,
         enum: %w[country],
       ),
     )
@@ -82,6 +87,7 @@ class Edition::Details::Fields::CountryComponentTest < ViewComponent::TestCase
       component = Edition::Details::Fields::CountryComponent.new(
         edition:,
         field:,
+        schema:,
       )
 
       expected = [
@@ -100,6 +106,7 @@ class Edition::Details::Fields::CountryComponentTest < ViewComponent::TestCase
       component = Edition::Details::Fields::CountryComponent.new(
         edition:,
         field:,
+        schema:,
         value: world_locations.first.name,
       )
 

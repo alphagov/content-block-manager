@@ -1,4 +1,4 @@
-<% schema.fields.each do |field| %>
+<% fields.each do |field| %>
   <%= content_tag :div, data: field.data_attributes do %>
     <%= render component_for_field(field) %>
   <% end %>

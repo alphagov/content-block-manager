@@ -23,7 +23,12 @@ class Edition
           edition:,
           field:,
           value: edition.details&.fetch(field.name, nil),
+          schema:,
         }
+      end
+
+      def fields
+        schema.fields
       end
     end
   end

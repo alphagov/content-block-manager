@@ -6,12 +6,14 @@ class Edition::Details::Fields::BooleanComponentTest < ViewComponent::TestCase
   let(:edition) { build(:edition, :pension) }
   let(:default_value) { nil }
   let(:field) { stub("field", name: "email_address", is_required?: true, default_value:) }
+  let(:schema) { stub(:schema) }
 
   before do
     render_inline(
       Edition::Details::Fields::BooleanComponent.new(
         edition:,
         field:,
+        schema:,
         value: field_value,
       ),
     )

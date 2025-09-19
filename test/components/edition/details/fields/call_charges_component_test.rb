@@ -35,10 +35,13 @@ class Edition::Details::Fields::CallChargesComponentTest < ViewComponent::TestCa
       "show_call_charges_info_url" => nil }
   end
 
+  let(:schema) { stub(:schema) }
+
   let(:component) do
     Edition::Details::Fields::CallChargesComponent.new(
       edition:,
       field: field,
+      schema:,
       value: field_value,
     )
   end

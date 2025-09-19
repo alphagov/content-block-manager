@@ -34,11 +34,14 @@ class Edition::Details::Fields::OpeningHoursComponentTest < ViewComponent::TestC
       "opening_hours" => nil }
   end
 
+  let(:schema) { stub(:schema) }
+
   let(:component) do
     Edition::Details::Fields::OpeningHoursComponent.new(
       edition:,
       field: field,
       value: field_value,
+      schema:,
     )
   end
 

@@ -3,6 +3,7 @@
 <%=
   render Edition::Details::EmbeddedObjects::FormComponent.new(
     edition: @edition,
+    schema: @schema,
     subschema: @subschema,
     params: @object,
     object_title: @object_title,

@@ -5,12 +5,14 @@ class Edition::Details::Fields::StringComponentTest < ViewComponent::TestCase
 
   let(:edition) { build(:edition, :pension) }
   let(:field) { stub("field", name: "email_address", is_required?: true, default_value: nil) }
+  let(:schema) { stub(:schema) }
 
   it "should render an input field with default parameters" do
     render_inline(
       Edition::Details::Fields::StringComponent.new(
         edition:,
         field:,
+        schema:,
       ),
     )
 
@@ -28,6 +30,7 @@ class Edition::Details::Fields::StringComponentTest < ViewComponent::TestCase
       Edition::Details::Fields::StringComponent.new(
         edition:,
         field: optional_field,
+        schema:,
       ),
     )
 
@@ -39,6 +42,7 @@ class Edition::Details::Fields::StringComponentTest < ViewComponent::TestCase
       Edition::Details::Fields::StringComponent.new(
         edition:,
         field:,
+        schema:,
         value: "example@example.com",
       ),
     )
@@ -57,6 +61,7 @@ class Edition::Details::Fields::StringComponentTest < ViewComponent::TestCase
       Edition::Details::Fields::StringComponent.new(
         edition:,
         field:,
+        schema:,
       ),
     )
 
@@ -70,6 +75,7 @@ class Edition::Details::Fields::StringComponentTest < ViewComponent::TestCase
       Edition::Details::Fields::StringComponent.new(
         edition:,
         field:,
+        schema:,
         value: "some custom value",
       ),
     )
@@ -85,6 +91,7 @@ class Edition::Details::Fields::StringComponentTest < ViewComponent::TestCase
       Edition::Details::Fields::StringComponent.new(
         edition:,
         field:,
+        schema:,
         value: "some custom value",
       ),
     )
@@ -102,6 +109,7 @@ class Edition::Details::Fields::StringComponentTest < ViewComponent::TestCase
         Edition::Details::Fields::StringComponent.new(
           edition:,
           field:,
+          schema:,
         ),
       )
 
@@ -116,6 +124,7 @@ class Edition::Details::Fields::StringComponentTest < ViewComponent::TestCase
       Edition::Details::Fields::StringComponent.new(
         edition:,
         field:,
+        schema:,
         value: "some custom value",
         subschema:,
       )
