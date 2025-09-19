@@ -30,6 +30,7 @@ require "cucumber/rails"
 ActionController::Base.allow_rescue = false
 
 World(ApplicationHelper)
+World(TranslationHelper)
 
 # Remove/comment out the lines below if your app doesn't have a database.
 # For some databases (like MongoDB and CouchDB) you may need to use :truncation instead.

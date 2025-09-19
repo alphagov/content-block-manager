@@ -28,7 +28,9 @@ en:
                   blank: "Opening hours cannot be blank"
     attributes:
       edition/document:
-        title: Title
+        title:
+          default: Title
+          contact: Contact name
   document:
     index:
       errors:

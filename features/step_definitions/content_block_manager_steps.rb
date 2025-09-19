@@ -45,7 +45,7 @@ When("I complete the form with the following fields:") do |table|
   @instructions_to_publishers = fields.delete("instructions_to_publishers")
   @details = fields
 
-  fill_in "Title", with: @title if @title.present?
+  fill_in label_for_title(@schema.block_type), with: @title if @title.present?
 
   if @organisation.present?
     if Capybara.current_session.driver.is_a?(Capybara::Playwright::Driver)

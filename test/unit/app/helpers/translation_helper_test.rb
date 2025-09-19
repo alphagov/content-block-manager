@@ -61,4 +61,29 @@ class TranslationHelperTest < ActiveSupport::TestCase
       assert_equal "field value", translated_value("key", "field value")
     end
   end
+
+  describe "#label_for_title" do
+    let(:block_type) { "something" }
+    let(:default_title) { "Default title" }
+    let(:alternative_title) { "Alternative title" }
+
+    before do
+      I18n.stubs(:t).with("activerecord.attributes.edition/document.title.default")
+          .returns(default_title)
+    end
+
+    it "returns an alternative label for the block type if it exists" do
+      I18n.stubs(:t).with("activerecord.attributes.edition/document.title.#{block_type}", default: nil)
+          .returns(alternative_title)
+
+      assert_equal alternative_title, label_for_title(block_type)
+    end
+
+    it "returns the default for the block type if it does not exist" do
+      I18n.stubs(:t).with("activerecord.attributes.edition/document.title.#{block_type}", default: nil)
+          .returns(nil)
+
+      assert_equal default_title, label_for_title(block_type)
+    end
+  end
 end

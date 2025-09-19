@@ -20,7 +20,7 @@ private
 
   def title_item
     {
-      key: "Title",
+      key: helpers.label_for_title(document.block_type),
       value: document.title,
     }
   end

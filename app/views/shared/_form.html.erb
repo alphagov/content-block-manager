@@ -11,7 +11,7 @@
 
   <%= render "govuk_publishing_components/components/input", {
     label: {
-      text: "Title",
+      text: label_for_title(@form.schema.block_type),
     },
     name: "edition[title]",
     id: "#{parent_class}_title",
