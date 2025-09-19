@@ -64,7 +64,14 @@ def change_details(object_type: "pension")
 end
 
 def click_save_and_continue
-  click_on "Save and continue"
+  if Capybara.current_session.driver.is_a?(Capybara::Playwright::Driver)
+    Capybara.current_session.driver.with_playwright_page do |page|
+      button = page.get_by_role("button", name: "Save and continue")
+      button.click
+    end
+  else
+    click_on "Save and continue"
+  end
 end
 
 def schedule_change(number_of_days)
