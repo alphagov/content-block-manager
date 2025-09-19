@@ -61,47 +61,44 @@ en:
       errors:
         confirm: Tick box to confirm details are correct
     hints:
-      title:
-        contact: Explain the purpose of the contact, for example ‘Contact the Pension Service’, ‘Universal Credit helpline’
-    details:
-      hints:
-        contact:
-          description: For example, is there anything the user should know, prepare or include before using any contact method.
-          email_addresses:
-            subject:
-             "Set a default subject line that will automatically pre-fill when users send an email. 
-             For example: 'Lastname Firstname - DD/MM/YYYY - passport number'"
-            body:
-             "Set default body content that will automatically pre-fill when users send an email. 
-             For example: 'The body of the email must include your name, date of birth, passport number and mobile phone number.'"
-        pension:
-          rates:
-            amount: "Enter an exact amount, with the currency symbol - for example: £122.50"
-      labels:
-        telephones:
-          bsl_guidance:
-            show: Show BSL guidance?
-            value: Value
-          opening_hours:
-            show_opening_hours: Show opening hours?
-            opening_hours: Opening hours
-          video_relay_service:
-            show: Include Relay UK?
-            prefix: Label
-            telephone_number: Telephone number
-          call_charges:
-            show_call_charges_info_url: "Show hyperlink to 'Find out about call charges'"
-            label: "Label"
-            call_charges_info_url: "URL to find out about call charges"
+      contact:
+        title: Explain the purpose of the contact, for example ‘Contact the Pension Service’, ‘Universal Credit helpline’
+        description: For example, is there anything the user should know, prepare or include before using any contact method.
+        email_addresses:
+          subject:
+            "Set a default subject line that will automatically pre-fill when users send an email. 
+            For example: 'Lastname Firstname - DD/MM/YYYY - passport number'"
+          body:
+            "Set default body content that will automatically pre-fill when users send an email. 
+            For example: 'The body of the email must include your name, date of birth, passport number and mobile phone number.'"
+      pension:
+        rates:
+          amount: "Enter an exact amount, with the currency symbol - for example: £122.50"
+    labels:
+      telephones:
+        bsl_guidance:
+          show: Show BSL guidance?
+          value: Value
+        opening_hours:
+          show_opening_hours: Show opening hours?
+          opening_hours: Opening hours
+        video_relay_service:
+          show: Include Relay UK?
+          prefix: Label
+          telephone_number: Telephone number
+        call_charges:
+          show_call_charges_info_url: "Show hyperlink to 'Find out about call charges'"
+          label: "Label"
+          call_charges_info_url: "URL to find out about call charges"
         contact_links:
           url: URL
-      values:
-        true: "Yes"
-        false: "No"
-        type:
-          welsh_language: "Welsh language"
-          telephone: "Telephone"
-          textphone: "Textphone"
+    values:
+      true: "Yes"
+      false: "No"
+      type:
+        welsh_language: "Welsh language"
+        telephone: "Telephone"
+        textphone: "Textphone"
   date:
     formats:
       default: "%d %B %Y"

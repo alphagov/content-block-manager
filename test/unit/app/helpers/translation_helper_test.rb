@@ -95,13 +95,13 @@ class TranslationHelperTest < ActiveSupport::TestCase
     let(:response) { "RESPONSE" }
 
     it "fetches a translation when subschema is nil" do
-      I18n.expects(:t).with("edition.details.hints.schema.field", default: nil).returns(response)
+      I18n.expects(:t).with("edition.hints.schema.field", default: nil).returns(response)
 
       assert_equal hint_text(schema:, subschema: nil, field:), response
     end
 
     it "fetches a translation when subschema is present" do
-      I18n.expects(:t).with("edition.details.hints.schema.subschema.field", default: nil).returns(response)
+      I18n.expects(:t).with("edition.hints.schema.subschema.field", default: nil).returns(response)
 
       assert_equal hint_text(schema:, subschema:, field:), response
     end

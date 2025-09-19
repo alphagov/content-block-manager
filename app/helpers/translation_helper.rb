@@ -26,6 +26,6 @@ module TranslationHelper
       field.name,
     ].compact.join(".")
 
-    I18n.t("edition.details.hints.#{translation_lookup}", default: nil)
+    I18n.t("edition.hints.#{translation_lookup}", default: nil)
   end
 end
