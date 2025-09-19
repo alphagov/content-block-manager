@@ -249,7 +249,6 @@ Feature: Create a contact object
 
   @javascript
   Scenario: GDS editor sees errors for invalid telephone objects
-    When I save and continue
     And I click on the "telephones" subschema
     When I save and continue
     Then I should see errors for the required nested "telephone_number" fields
