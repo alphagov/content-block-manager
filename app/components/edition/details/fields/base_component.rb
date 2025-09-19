@@ -46,12 +46,8 @@ private
     errors_for(edition.errors, "details_#{id_suffix}".to_sym)
   end
 
-  def hint
-    I18n.t("edition.details.hints.#{translation_lookup}", default: nil)
-  end
-
-  def translation_lookup
-    @translation_lookup ||= subschema_block_type ? "#{subschema_block_type}.#{field.name}" : field.name
+  def hint_text
+    helpers.hint_text(schema:, subschema:, field:)
   end
 
   def id_suffix

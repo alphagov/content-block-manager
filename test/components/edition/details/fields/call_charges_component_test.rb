@@ -1,7 +1,7 @@
 require "test_helper"
 
-class Edition::Details::Fields::CallChargesComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
+class Edition::Details::Fields::CallChargesComponentTest < BaseComponentTestClass
+  let(:described_class) { Edition::Details::Fields::CallChargesComponent }
 
   let(:edition) { build(:edition, :contact) }
   let(:schema) { build(:schema) }
@@ -38,7 +38,7 @@ class Edition::Details::Fields::CallChargesComponentTest < ViewComponent::TestCa
   let(:schema) { stub(:schema) }
 
   let(:component) do
-    Edition::Details::Fields::CallChargesComponent.new(
+    described_class.new(
       edition:,
       field: field,
       schema:,
@@ -49,6 +49,8 @@ class Edition::Details::Fields::CallChargesComponentTest < ViewComponent::TestCa
   describe "Call Charges component" do
     describe "'show_call_charges_info_url' nested field" do
       it "shows a checkbox to toggle 'Show hyperlink' option" do
+        helper_stub.stubs(:humanized_label).returns("Show hyperlink to 'Find out about call charges'")
+
         render_inline(component)
 
         assert_selector(".app-c-content-block-manager-call-charges-component") do |component|

@@ -1,7 +1,7 @@
 require "test_helper"
 
-class Edition::Details::Fields::VideoRelayServiceComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
+class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTestClass
+  let(:described_class) { Edition::Details::Fields::VideoRelayServiceComponent }
 
   let(:edition) { build(:edition, :contact) }
 
@@ -62,7 +62,7 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < ViewComponent::
   let(:schema) { stub(:schema) }
 
   let(:component) do
-    Edition::Details::Fields::VideoRelayServiceComponent.new(
+    described_class.new(
       edition:,
       field: field,
       value: field_value,
@@ -71,13 +71,19 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < ViewComponent::
     )
   end
 
+  before do
+    Edition::Details::Fields::TextareaComponent.any_instance.stubs(:helpers).returns(helper_stub)
+  end
+
   describe "VideoRelayService component" do
     describe "'show' nested field" do
       it "shows a checkbox to toggle 'show' option" do
+        helper_stub.stubs(:humanized_label).returns("Include Relay UK?")
+
         render_inline(component)
 
         assert_selector(".app-c-content-block-manager-video-relay-service-component") do |component|
-          component.assert_selector("label", text: I18n.t("edition.details.labels.telephones.video_relay_service.show"))
+          component.assert_selector("label", text: "Include Relay UK?")
         end
       end
 
@@ -218,6 +224,9 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < ViewComponent::
     end
 
     it "should show errors" do
+      helper_stub.stubs(:humanized_label).with(relative_key: "prefix", root_object: "telephones.video_relay_service").returns("Prefix")
+      helper_stub.stubs(:humanized_label).with(relative_key: "telephone_number", root_object: "telephones.video_relay_service").returns("Telephone number")
+
       render_inline(component)
 
       assert_selector ".govuk-form-group.govuk-form-group--error", text: /Prefix/ do |form_group|

@@ -1,7 +1,7 @@
 require "test_helper"
 
-class Edition::Details::Fields::ArrayComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
+class Edition::Details::Fields::ArrayComponentTest < BaseComponentTestClass
+  let(:described_class) { Edition::Details::Fields::ArrayComponent }
 
   let(:edition) { build(:edition, :pension) }
   let(:default_value) { nil }
@@ -12,13 +12,18 @@ class Edition::Details::Fields::ArrayComponentTest < ViewComponent::TestCase
   let(:object_title) { nil }
 
   let(:component) do
-    Edition::Details::Fields::ArrayComponent.new(
+    described_class.new(
       edition:,
       field:,
       schema:,
       value: field_value,
       object_title:,
     )
+  end
+
+  before do
+    Edition::Details::Fields::Array::ItemComponent.any_instance.stubs(:helpers).returns(helper_stub)
+    helper_stub.stubs(:humanized_label).returns("Item")
   end
 
   describe "when there are no items present" do

@@ -31,10 +31,6 @@ class Edition::Details::Fields::TextareaComponent < Edition::Details::Fields::Ba
     label
   end
 
-  def hint_text
-    nil
-  end
-
   def aria_described_by
     "#{id_attribute}-hint"
   end

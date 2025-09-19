@@ -1,7 +1,7 @@
 require "test_helper"
 
-class Edition::Details::Fields::BooleanComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
+class Edition::Details::Fields::BooleanComponentTest < BaseComponentTestClass
+  let(:described_class) { Edition::Details::Fields::BooleanComponent }
 
   let(:edition) { build(:edition, :pension) }
   let(:default_value) { nil }
@@ -10,7 +10,7 @@ class Edition::Details::Fields::BooleanComponentTest < ViewComponent::TestCase
 
   before do
     render_inline(
-      Edition::Details::Fields::BooleanComponent.new(
+      described_class.new(
         edition:,
         field:,
         schema:,

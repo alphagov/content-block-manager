@@ -3,7 +3,7 @@
     <%= render "components/govspeak_editor", {
                 name: name_attribute,
                 id: id_attribute,
-                label: { text: label_element, hint_text: hint_text, hint_id: aria_described_by },
+                label: { text: label_element, hint_text:, hint_id: aria_described_by },
                 value:,
                 error_items: error_items,
                 hint_id: aria_described_by,
@@ -19,6 +19,7 @@
                 textarea_id: id_attribute,
                 value:,
                 error_items: error_items,
+                hint: hint_text,
     } %>
   <% end %>
 </div>

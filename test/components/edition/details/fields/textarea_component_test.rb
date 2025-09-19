@@ -1,9 +1,9 @@
 require "test_helper"
 
-class Edition::Details::Fields::TextareaComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
-
+class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
   COMPONENT_CLASS = ".app-c-content-block-manager-textarea-component".freeze
+
+  let(:described_class) { Edition::Details::Fields::TextareaComponent }
 
   let(:edition) { build(:edition, :contact) }
 
@@ -60,7 +60,7 @@ class Edition::Details::Fields::TextareaComponentTest < ViewComponent::TestCase
   let(:field_value) { nil }
 
   let(:component) do
-    Edition::Details::Fields::TextareaComponent.new(
+    described_class.new(
       edition: edition,
       field: field,
       schema:,
@@ -71,10 +71,10 @@ class Edition::Details::Fields::TextareaComponentTest < ViewComponent::TestCase
   end
 
   before do
-    I18n.expects(:t).with(
-      "edition.details.labels.telephones.video_relay_service.prefix",
-      default: "Prefix",
-    ).returns("Translated label")
+    helper_stub = stub(:helpers)
+    Edition::Details::Fields::TextareaComponent.any_instance.stubs(:helpers).returns(helper_stub)
+    helper_stub.stubs(:hint_text).returns(nil)
+    helper_stub.stubs(:humanized_label).returns("Translated label")
 
     Schema::EmbeddedSchema
       .stubs(:schema_settings)
