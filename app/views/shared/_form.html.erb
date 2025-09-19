@@ -17,6 +17,7 @@
     id: "#{parent_class}_title",
     value: @form.edition&.title,
     error_items: errors_for(@form.edition.errors, "title".to_sym),
+    hint: I18n.t("edition.hints.title.#{@form.schema.block_type}", default: nil),
   } %>
 
   <%=

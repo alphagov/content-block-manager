@@ -60,6 +60,9 @@ en:
     review_page:
       errors:
         confirm: Tick box to confirm details are correct
+    hints:
+      title:
+        contact: Explain the purpose of the contact, for example ‘Contact the Pension Service’, ‘Universal Credit helpline’
     details:
       hints:
         rates:
