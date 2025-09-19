@@ -65,6 +65,8 @@ en:
         contact: Explain the purpose of the contact, for example ‘Contact the Pension Service’, ‘Universal Credit helpline’
     details:
       hints:
+        contact:
+          description: For example, is there anything the user should know, prepare or include before using any contact method.
           email_addresses:
             subject:
              "Set a default subject line that will automatically pre-fill when users send an email. 
