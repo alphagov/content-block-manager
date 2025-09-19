@@ -185,7 +185,7 @@ class Edition::Details::Fields::TextareaComponentTest < ViewComponent::TestCase
           }
         end
 
-        it "displays a 'Govspeak supported' hint" do
+        it "displays guidance to indicate 'Govspeak supported'" do
           render_inline component
 
           assert_selector(COMPONENT_CLASS) do |component|
@@ -206,16 +206,6 @@ class Edition::Details::Fields::TextareaComponentTest < ViewComponent::TestCase
             assert_selector(COMPONENT_CLASS) do |component|
               component.assert_selector(
                 "textarea[aria-describedby='#{expected_hint_id_to_aria_mapping}']",
-              )
-            end
-          end
-
-          it "includes an ID on the label hint div, matching the 'aria-describedby' on the textarea" do
-            render_inline component
-
-            assert_selector(COMPONENT_CLASS) do |component|
-              component.assert_selector(
-                "div.govuk-hint[id='#{expected_hint_id_to_aria_mapping}']",
               )
             end
           end
@@ -361,14 +351,14 @@ class Edition::Details::Fields::TextareaComponentTest < ViewComponent::TestCase
 
   def displays_indication_that_govspeak_is_supported(component)
     component.assert_selector(
-      ".govuk-hint",
+      ".guidance.govspeak-supported",
       text: "Govspeak supported",
     )
   end
 
   def displays_no_indication_that_govspeak_is_supported(component)
     component.assert_no_selector(
-      ".govuk-hint",
+      ".guidance",
       text: "Govspeak supported",
     )
   end
