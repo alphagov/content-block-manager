@@ -30,6 +30,8 @@ Rails.application.routes.draw do
   end
   resources :editions, only: %i[new create destroy], path_names: { new: ":block_type/new" } do
     member do
+      get :preview, to: "editions#preview"
+
       # Workflow actions
       resources :workflow, only: %i[show update], controller: "editions/workflow", param: :step do
         collection do

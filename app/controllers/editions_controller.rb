@@ -36,6 +36,10 @@ class EditionsController < BaseController
     redirect_to params[:redirect_path] || root_path
   end
 
+  def preview
+    @edition = Edition.find(params[:id])
+  end
+
 private
 
   def block_type_param

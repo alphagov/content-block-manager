@@ -279,6 +279,23 @@ class EditionsTest < ActionDispatch::IntegrationTest
       end
     end
   end
+
+  describe "#preview" do
+    it "renders a preview of the edition" do
+      embed_code = "EMBED_CODE"
+      document = build(:document)
+      document.stubs(:embed_code).returns(embed_code)
+
+      edition = build_stubbed(:edition, document: document)
+
+      Edition.expects(:find).with(edition.id.to_s).returns(edition)
+      edition.expects(:render).with(document.embed_code).returns("RENDERED_BLOCK")
+
+      visit preview_edition_path(edition)
+
+      assert_selector ".app-views-editions-preview .govspeak", text: "RENDERED_BLOCK"
+    end
+  end
 end
 
 def renders_errors(&block)
