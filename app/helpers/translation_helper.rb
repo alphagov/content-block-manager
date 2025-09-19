@@ -18,4 +18,14 @@ module TranslationHelper
   def label_for_title(block_type)
     I18n.t("activerecord.attributes.edition/document.title.#{block_type}", default: nil) || I18n.t("activerecord.attributes.edition/document.title.default")
   end
+
+  def hint_text(schema:, subschema:, field:)
+    translation_lookup = [
+      schema.block_type,
+      subschema&.block_type,
+      field.name,
+    ].compact.join(".")
+
+    I18n.t("edition.details.hints.#{translation_lookup}", default: nil)
+  end
 end

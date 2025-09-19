@@ -86,4 +86,24 @@ class TranslationHelperTest < ActiveSupport::TestCase
       assert_equal default_title, label_for_title(block_type)
     end
   end
+
+  describe "#hint_text" do
+    let(:schema) { stub(:schema, block_type: "schema") }
+    let(:subschema) { stub(:subschema, block_type: "subschema") }
+    let(:field) { stub(:field, name: "field") }
+
+    let(:response) { "RESPONSE" }
+
+    it "fetches a translation when subschema is nil" do
+      I18n.expects(:t).with("edition.details.hints.schema.field", default: nil).returns(response)
+
+      assert_equal hint_text(schema:, subschema: nil, field:), response
+    end
+
+    it "fetches a translation when subschema is present" do
+      I18n.expects(:t).with("edition.details.hints.schema.subschema.field", default: nil).returns(response)
+
+      assert_equal hint_text(schema:, subschema:, field:), response
+    end
+  end
 end
