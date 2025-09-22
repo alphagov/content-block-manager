@@ -106,10 +106,6 @@ en:
     values:
       true: "Yes"
       false: "No"
-      type:
-        welsh_language: "Welsh language"
-        telephone: "Telephone"
-        textphone: "Textphone"
   date:
     formats:
       default: "%d %B %Y"
