@@ -55,11 +55,11 @@ And("I add the following {string} to the form:") do |item_type, table|
 end
 
 Given("I indicate that the call charges info URL should be shown") do
-  check "Show hyperlink to 'Find out about call charges'"
+  check I18n.t("edition.labels.contact.telephones.call_charges.show_call_charges_info_url")
 end
 
 Given("I change the call charges info URL from its default value") do
-  fill_in("URL to find out about call charges", with: "https://custom.example.com")
+  fill_in(I18n.t("edition.labels.contact.telephones.call_charges.call_charges_info_url"), with: "https://custom.example.com")
 end
 
 Given("I change the call charges info label from its default value") do
