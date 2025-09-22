@@ -12,8 +12,10 @@ class Shared::EmbeddedObjects::NestedItemComponentTest < ViewComponent::TestCase
     Shared::EmbeddedObjects::SummaryCard::NestedItemComponent.new(
       nested_items: nested_items,
       object_key: "nested_object",
+      object_type: "schema",
       title: "Nested object",
       subschema: schema,
+      root_schema_name: "schema",
     )
   end
 
@@ -21,6 +23,7 @@ class Shared::EmbeddedObjects::NestedItemComponentTest < ViewComponent::TestCase
     let(:schema) do
       stub(
         "sub-schema",
+        name: "schema",
         govspeak_enabled?: true,
       )
     end

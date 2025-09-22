@@ -25,7 +25,7 @@ When("I should see that the custom video relay info has been recorded") do
 end
 
 def label_for(field_name)
-  I18n.t("edition.details.labels.telephones.video_relay_service.#{field_name}")
+  I18n.t("edition.labels.contact.telephones.video_relay_service.#{field_name}")
 end
 
 def should_be_able_to_preview_the_govspeak_enabled_field

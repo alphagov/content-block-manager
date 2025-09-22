@@ -49,7 +49,7 @@ class Edition::Details::Fields::BSLGuidanceComponentTest < BaseComponentTestClas
       "value" => nil }
   end
 
-  let(:schema) { stub(:schema) }
+  let(:schema) { stub(:schema, block_type: "schema") }
 
   let(:component) do
     described_class.new(

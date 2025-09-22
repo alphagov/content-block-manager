@@ -3,7 +3,7 @@ require "test_helper"
 class Edition::Details::Fields::StringComponentTest < BaseComponentTestClass
   let(:edition) { build(:edition, :pension) }
   let(:field) { stub("field", name: "email_address", is_required?: true, default_value: nil) }
-  let(:schema) { stub(:schema) }
+  let(:schema) { stub(:schema, block_type: "schema") }
 
   let(:described_class) { Edition::Details::Fields::StringComponent }
 

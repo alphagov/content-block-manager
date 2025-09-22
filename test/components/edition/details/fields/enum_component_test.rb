@@ -5,7 +5,7 @@ class Edition::Details::Fields::EnumComponentTest < BaseComponentTestClass
 
   let(:edition) { build(:edition, :pension) }
   let(:field) { stub("field", name: "something", is_required?: true, default_value: nil) }
-  let(:schema) { stub(:schema) }
+  let(:schema) { stub(:schema, block_type: "schema") }
 
   before do
     helper_stub.stubs(:humanized_label).returns("Something")

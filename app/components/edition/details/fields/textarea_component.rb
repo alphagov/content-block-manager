@@ -45,6 +45,7 @@ private
 
   def nested_object_label
     helpers.humanized_label(
+      schema_name: schema.block_type,
       relative_key: field.name,
       root_object: "#{subschema_block_type}.#{nested_object_key}",
     )

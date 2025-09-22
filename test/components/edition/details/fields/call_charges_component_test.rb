@@ -4,7 +4,6 @@ class Edition::Details::Fields::CallChargesComponentTest < BaseComponentTestClas
   let(:described_class) { Edition::Details::Fields::CallChargesComponent }
 
   let(:edition) { build(:edition, :contact) }
-  let(:schema) { build(:schema) }
 
   let(:body) do
     {
@@ -19,9 +18,7 @@ class Edition::Details::Fields::CallChargesComponentTest < BaseComponentTestClas
     }
   end
 
-  before do
-    schema.stubs(:body).returns(body)
-  end
+  let(:schema) { stub(:schema, block_type: "schema", body:) }
 
   let(:field) do
     Schema::Field.new(
@@ -34,8 +31,6 @@ class Edition::Details::Fields::CallChargesComponentTest < BaseComponentTestClas
     { "call_charges_info_url" => nil,
       "show_call_charges_info_url" => nil }
   end
-
-  let(:schema) { stub(:schema) }
 
   let(:component) do
     described_class.new(

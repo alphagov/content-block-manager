@@ -59,7 +59,7 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
     }
   end
 
-  let(:schema) { stub(:schema) }
+  let(:schema) { stub(:schema, block_type: "schema") }
 
   let(:component) do
     described_class.new(
@@ -224,8 +224,8 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
     end
 
     it "should show errors" do
-      helper_stub.stubs(:humanized_label).with(relative_key: "prefix", root_object: "telephones.video_relay_service").returns("Prefix")
-      helper_stub.stubs(:humanized_label).with(relative_key: "telephone_number", root_object: "telephones.video_relay_service").returns("Telephone number")
+      helper_stub.stubs(:humanized_label).with(schema_name: "schema", relative_key: "prefix", root_object: "telephones.video_relay_service").returns("Prefix")
+      helper_stub.stubs(:humanized_label).with(schema_name: "schema", relative_key: "telephone_number", root_object: "telephones.video_relay_service").returns("Telephone number")
 
       render_inline(component)
 

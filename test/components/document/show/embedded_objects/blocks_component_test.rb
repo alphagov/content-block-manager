@@ -17,6 +17,7 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
 
   let(:schema) { stub("schema") }
   let(:subschema) { stub("schema", embeddable_as_block?: embeddable_as_block) }
+  let(:schema_name) { "schema_name" }
 
   before do
     document.stubs(:schema).returns(schema)
@@ -28,6 +29,7 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
     Document::Show::EmbeddedObjects::BlocksComponent.new(
       items:,
       object_type:,
+      schema_name:,
       object_title:,
       document:,
     )

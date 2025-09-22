@@ -89,19 +89,19 @@ Then("I should see that the call charges fields have been changed") do
 end
 
 When("I indicate that BSL guidance should be shown") do
-  check I18n.t("edition.details.labels.telephones.bsl_guidance.show")
+  check I18n.t("edition.labels.contact.telephones.bsl_guidance.show")
 end
 
 When("I change the BSL guidance label from its default value") do
-  fill_in(I18n.t("edition.details.labels.telephones.bsl_guidance.value"), with: "More about BSL")
+  fill_in(I18n.t("edition.labels.contact.telephones.bsl_guidance.value"), with: "More about BSL")
 end
 
 When("I indicate that the opening hours should be shown") do
-  check I18n.t("edition.details.labels.telephones.opening_hours.show_opening_hours")
+  check I18n.t("edition.labels.contact.telephones.opening_hours.show_opening_hours")
 end
 
 When("I input the opening hours") do
-  fill_in(I18n.t("edition.details.labels.telephones.opening_hours.opening_hours"), with: "Monday - Friday: 9am-5pm")
+  fill_in(I18n.t("edition.labels.contact.telephones.opening_hours.opening_hours"), with: "Monday - Friday: 9am-5pm")
 end
 
 Then("I should see that the BSL guidance fields have been changed") do

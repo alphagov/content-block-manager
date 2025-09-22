@@ -21,6 +21,7 @@ class Document::Show::EmbeddedObjects::SubschemaItemsComponentTest < ViewCompone
     }
   end
 
+  let(:schema) { stub("schema", block_type: "schema") }
   let(:subschema) { stub("subschema", id: "embedded-type", name: "Embedded Type") }
 
   let(:document) { build(:document, id: SecureRandom.uuid) }
@@ -29,6 +30,7 @@ class Document::Show::EmbeddedObjects::SubschemaItemsComponentTest < ViewCompone
   let(:component) do
     Document::Show::EmbeddedObjects::SubschemaItemsComponent.new(
       edition:,
+      schema:,
       subschema:,
     )
   end
@@ -53,12 +55,14 @@ class Document::Show::EmbeddedObjects::SubschemaItemsComponentTest < ViewCompone
       Document::Show::EmbeddedObjects::SubschemaItemComponent.expects(:new).with(
         edition:,
         object_type: subschema.id,
+        schema_name: schema.block_type,
         object_title: "my-embedded-object",
       ).returns(summary_list_stub_1)
 
       Document::Show::EmbeddedObjects::SubschemaItemComponent.expects(:new).with(
         edition:,
         object_type: subschema.id,
+        schema_name: schema.block_type,
         object_title: "my-other-embedded-object",
       ).returns(summary_list_stub_2)
 

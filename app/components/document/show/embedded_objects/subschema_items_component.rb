@@ -1,6 +1,7 @@
 class Document::Show::EmbeddedObjects::SubschemaItemsComponent < ViewComponent::Base
-  def initialize(edition:, subschema:)
+  def initialize(edition:, schema:, subschema:)
     @edition = edition
+    @schema = schema
     @subschema = subschema
   end
 
@@ -14,7 +15,7 @@ class Document::Show::EmbeddedObjects::SubschemaItemsComponent < ViewComponent::
 
 private
 
-  attr_reader :show_button, :edition, :subschema
+  attr_reader :show_button, :edition, :schema, :subschema
 
   def embedded_objects
     @embedded_objects ||= edition.details.fetch(object_type, {})

@@ -4,7 +4,6 @@ class Edition::Details::Fields::OpeningHoursComponentTest < BaseComponentTestCla
   let(:described_class) { Edition::Details::Fields::OpeningHoursComponent }
 
   let(:edition) { build(:edition, :contact) }
-  let(:schema) { build(:schema) }
 
   let(:body) do
     {
@@ -18,9 +17,7 @@ class Edition::Details::Fields::OpeningHoursComponentTest < BaseComponentTestCla
     }
   end
 
-  before do
-    schema.stubs(:body).returns(body)
-  end
+  let(:schema) { stub(:schema, block_type: "schema", body:) }
 
   let(:field) do
     Schema::Field.new(
@@ -33,8 +30,6 @@ class Edition::Details::Fields::OpeningHoursComponentTest < BaseComponentTestCla
     { "show_opening_hours" => nil,
       "opening_hours" => nil }
   end
-
-  let(:schema) { stub(:schema) }
 
   let(:component) do
     described_class.new(

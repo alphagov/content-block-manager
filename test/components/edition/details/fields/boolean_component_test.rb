@@ -6,7 +6,7 @@ class Edition::Details::Fields::BooleanComponentTest < BaseComponentTestClass
   let(:edition) { build(:edition, :pension) }
   let(:default_value) { nil }
   let(:field) { stub("field", name: "email_address", is_required?: true, default_value:) }
-  let(:schema) { stub(:schema) }
+  let(:schema) { stub(:schema, block_type: "schema") }
 
   before do
     render_inline(

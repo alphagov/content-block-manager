@@ -9,14 +9,14 @@ class TranslationHelperTest < ActiveSupport::TestCase
       it "prepends the root object to the 'relative label key'" do
         I18n.expects(:t)
           .with(
-            "edition.details.labels.root_object.nested_object.field_name",
+            "edition.labels.schema.root_object.nested_object.field_name",
             default: "Nested object.field name",
           )
           .returns("Field label")
 
         assert_equal(
           "Field label",
-          humanized_label(relative_key: "nested_object.field_name", root_object: "root_object"),
+          humanized_label(schema_name: "schema", relative_key: "nested_object.field_name", root_object: "root_object"),
         )
       end
     end
@@ -25,14 +25,14 @@ class TranslationHelperTest < ActiveSupport::TestCase
       it "uses only the 'relative label key" do
         I18n.expects(:t)
           .with(
-            "edition.details.labels.nested_object.field_name",
+            "edition.labels.schema.nested_object.field_name",
             default: "Nested object.field name",
           )
           .returns("Field label")
 
         assert_equal(
           "Field label",
-          humanized_label(relative_key: "nested_object.field_name"),
+          humanized_label(schema_name: "schema", relative_key: "nested_object.field_name"),
         )
       end
     end
@@ -40,14 +40,14 @@ class TranslationHelperTest < ActiveSupport::TestCase
     it "strips hyphens from the 'default' passed to I18n.t" do
       I18n.expects(:t)
         .with(
-          "edition.details.labels.nested_object.field-name",
+          "edition.labels.schema.nested_object.field-name",
           default: "Nested object.field name",
         )
         .returns("Field label")
 
       assert_equal(
         "Field label",
-        humanized_label(relative_key: "nested_object.field-name"),
+        humanized_label(schema_name: "schema", relative_key: "nested_object.field-name"),
       )
     end
   end
@@ -55,7 +55,7 @@ class TranslationHelperTest < ActiveSupport::TestCase
   describe "translated_value" do
     it "calls translation config with value" do
       I18n.expects(:t)
-          .with("edition.details.values.key.field value", default: ["edition.details.values.field value".to_sym, "field value"])
+          .with("edition.values.key.field value", default: ["edition.values.field value".to_sym, "field value"])
           .returns("field value")
 
       assert_equal "field value", translated_value("key", "field value")

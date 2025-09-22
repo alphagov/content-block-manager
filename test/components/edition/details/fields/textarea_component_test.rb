@@ -46,7 +46,7 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
     }
   end
 
-  let(:schema) { stub(:schema) }
+  let(:schema) { stub(:schema, block_type: "schema") }
 
   let(:field) do
     Schema::Field::NestedField.new(

@@ -11,7 +11,7 @@ class Edition::Details::Fields::CountryComponentTest < BaseComponentTestClass
 
   let(:all_locations) { [world_locations, uk].flatten }
 
-  let(:schema) { stub(:schema) }
+  let(:schema) { stub(:schema, block_type: "schema") }
 
   before do
     WorldLocation.stubs(:countries).returns(all_locations)

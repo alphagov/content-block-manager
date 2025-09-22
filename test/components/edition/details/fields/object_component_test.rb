@@ -11,7 +11,7 @@ class Edition::Details::Fields::ObjectComponentTest < BaseComponentTestClass
       stub("field", name: "email_address", enum_values: nil, default_value: nil),
     ]
   end
-  let(:schema) { stub("schema", id: "root") }
+  let(:schema) { stub("schema", id: "root", block_type: "schema") }
   let(:field) { stub("field", name: "nested", nested_fields:, schema:, is_required?: true, default_value: nil) }
 
   let(:label_stub) { stub("string_component") }
@@ -19,8 +19,6 @@ class Edition::Details::Fields::ObjectComponentTest < BaseComponentTestClass
   let(:email_address_stub) { stub("string_component") }
 
   let(:form_value) { nil }
-
-  let(:schema) { stub(:schema) }
 
   let(:component) do
     described_class.new(

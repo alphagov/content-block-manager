@@ -20,16 +20,20 @@
         <%= render Shared::EmbeddedObjects::SummaryCard::NestedItemComponent.with_collection(
           items,
           object_key: key,
+          object_type:,
           title: key.singularize.titleize,
           subschema: schema,
-          ) %>
+          root_schema_name: root_schema.block_type,
+        ) %>
       <% else %>
         <%= render Shared::EmbeddedObjects::SummaryCard::NestedItemComponent.new(
           nested_items: items,
           object_key: key,
+          object_type:,
           title: key.singularize.titleize,
           subschema: schema,
-          ) %>
+          root_schema_name: root_schema.block_type,
+        ) %>
       <% end %>
     <% end %>
   </div>
