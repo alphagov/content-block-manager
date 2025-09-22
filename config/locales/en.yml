@@ -82,6 +82,7 @@ en:
         addresses:
           title: Address name
         telephones:
+          title: Telephone name
           bsl_guidance:
             show: Show BSL guidance?
             value: Value
