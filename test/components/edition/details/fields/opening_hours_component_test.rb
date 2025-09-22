@@ -5,24 +5,48 @@ class Edition::Details::Fields::OpeningHoursComponentTest < BaseComponentTestCla
 
   let(:edition) { build(:edition, :contact) }
 
-  let(:body) do
+  let(:properties) do
     {
-      "type" => "object",
-      "properties" =>
-        { "opening_hours" =>
-            { "type" => "object",
-              "properties" =>
-                { "opening_hours" => { "type" => "string" },
-                  "show_opening_hours" => { "type" => "boolean" } } } },
+      "opening_hours" => {
+        "type" => "object",
+        "properties" => {
+          "show_opening_hours" => {
+            "type" => "boolean", "default" => false
+          },
+          "opening_hours" => {
+            "type" => "string",
+          },
+        },
+      },
     }
   end
 
-  let(:schema) { stub(:schema, block_type: "schema", body:) }
+  let(:body) do
+    {
+      "type" => "object",
+      "patternProperties" => {
+        "*" => {
+          "type" => "object",
+          "properties" => properties,
+        },
+      },
+    }
+  end
+
+  let(:subschema) do
+    Schema::EmbeddedSchema.new(
+      "telephones",
+      body,
+      "parent_schema_id",
+    )
+  end
+
+  let(:schema) { stub(:schema, block_type: "schema") }
 
   let(:field) do
     Schema::Field.new(
       "opening_hours",
-      schema,
+      subschema,
     )
   end
 
@@ -36,7 +60,8 @@ class Edition::Details::Fields::OpeningHoursComponentTest < BaseComponentTestCla
       edition:,
       field: field,
       value: field_value,
-      schema:,
+      schema: schema,
+      subschema: subschema,
     )
   end
 
@@ -96,7 +121,7 @@ class Edition::Details::Fields::OpeningHoursComponentTest < BaseComponentTestCla
           assert_selector(".govuk-checkboxes") do |component|
             component.assert_selector(
               "textarea" \
-                "[name='edition[details][opening_hours][opening_hours]']",
+                "[name='edition[details][telephones][opening_hours][opening_hours]']",
               text: "CUSTOM VALUE",
             )
           end
