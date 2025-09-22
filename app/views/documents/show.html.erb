@@ -71,6 +71,7 @@
     <div class="govuk-grid-column-full">
       <%= render Document::Show::EmbeddedObjects::TabGroupComponent.new(
         document: @document,
+        schema: @schema,
         subschemas: subschemas,
         ) %>
     </div>
@@ -85,6 +86,7 @@
 
         <%= render Document::Show::EmbeddedObjects::SubschemaItemsComponent.new(
           edition: @document.latest_edition,
+          schema: @schema,
           subschema: subschema,
           ) %>
       </div>

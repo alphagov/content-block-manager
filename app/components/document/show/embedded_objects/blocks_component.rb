@@ -2,8 +2,9 @@ class Document::Show::EmbeddedObjects::BlocksComponent < ViewComponent::Base
   include EmbedCodeHelper
   include SummaryListHelper
 
-  def initialize(items:, object_type:, object_title:, document:)
+  def initialize(items:, schema_name:, object_type:, object_title:, document:)
     @items = items
+    @schema_name = schema_name
     @object_type = object_type
     @object_title = object_title
     @document = document
@@ -11,7 +12,7 @@ class Document::Show::EmbeddedObjects::BlocksComponent < ViewComponent::Base
 
 private
 
-  attr_reader :items, :object_type, :object_title, :document
+  attr_reader :items, :schema_name, :object_type, :object_title, :document
 
   def component_classes
     [
@@ -31,7 +32,7 @@ private
   def attribute_rows(key_name = :key)
     first_class_items(items).map do |key, value|
       {
-        "#{key_name}": key_to_title(key),
+        "#{key_name}": key_to_title(key, schema_name),
         value: content_for_row(key, value),
         data: data_attributes_for_row(key),
       }
@@ -63,7 +64,7 @@ private
   def rows_for_nested_items(items, nested_name, index)
     items.map do |key, value|
       {
-        key: key_to_title(key),
+        key: key_to_title(key, schema_name),
         value: content_for_row(embed_code_identifier(nested_name, index, key), value),
         data: data_attributes_for_row(embed_code_identifier(nested_name, index, key)),
       }

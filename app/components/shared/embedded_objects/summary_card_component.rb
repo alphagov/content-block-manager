@@ -51,7 +51,11 @@ private
   end
 
   def schema
-    @schema ||= edition.document.schema.subschema(object_type)
+    @schema ||= root_schema.subschema(object_type)
+  end
+
+  def root_schema
+    @root_schema ||= edition.document.schema
   end
 
   def summary_card_actions

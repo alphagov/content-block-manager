@@ -19,7 +19,7 @@ private
 
   def title_row
     [
-      { text: "Title" },
+      { text: helpers.label_for_title(version.item.document.block_type) },
       { text: version.field_diffs["title"].previous_value },
       { text: version.field_diffs["title"].new_value },
     ]

@@ -1,16 +1,20 @@
 require "test_helper"
 
-class Edition::Details::Fields::StringComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
-
+class Edition::Details::Fields::StringComponentTest < BaseComponentTestClass
   let(:edition) { build(:edition, :pension) }
   let(:field) { stub("field", name: "email_address", is_required?: true, default_value: nil) }
+  let(:schema) { stub(:schema, block_type: "schema") }
+
+  let(:described_class) { Edition::Details::Fields::StringComponent }
 
   it "should render an input field with default parameters" do
+    helper_stub.stubs(:humanized_label).returns("Email address")
+
     render_inline(
-      Edition::Details::Fields::StringComponent.new(
+      described_class.new(
         edition:,
         field:,
+        schema:,
       ),
     )
 
@@ -23,11 +27,13 @@ class Edition::Details::Fields::StringComponentTest < ViewComponent::TestCase
 
   it "should show optional label when field is optional" do
     optional_field = stub("field", name: "email_address", is_required?: false, default_value: nil)
+    helper_stub.stubs(:humanized_label).returns("Email address")
 
     render_inline(
-      Edition::Details::Fields::StringComponent.new(
+      described_class.new(
         edition:,
         field: optional_field,
+        schema:,
       ),
     )
 
@@ -36,9 +42,10 @@ class Edition::Details::Fields::StringComponentTest < ViewComponent::TestCase
 
   it "should show the value when provided" do
     render_inline(
-      Edition::Details::Fields::StringComponent.new(
+      described_class.new(
         edition:,
         field:,
+        schema:,
         value: "example@example.com",
       ),
     )
@@ -54,9 +61,10 @@ class Edition::Details::Fields::StringComponentTest < ViewComponent::TestCase
     edition.errors.add(:details_email_address, "Some error goes here")
 
     render_inline(
-      Edition::Details::Fields::StringComponent.new(
+      described_class.new(
         edition:,
         field:,
+        schema:,
       ),
     )
 
@@ -67,9 +75,10 @@ class Edition::Details::Fields::StringComponentTest < ViewComponent::TestCase
 
   it "should allow a custom value" do
     render_inline(
-      Edition::Details::Fields::StringComponent.new(
+      described_class.new(
         edition:,
         field:,
+        schema:,
         value: "some custom value",
       ),
     )
@@ -78,13 +87,13 @@ class Edition::Details::Fields::StringComponentTest < ViewComponent::TestCase
   end
 
   it "should render hint text when a translation exists" do
-    I18n.expects(:t).with("edition.details.labels.email_address", default: "Email address").returns(nil)
-    I18n.expects(:t).with("edition.details.hints.email_address", default: nil).returns("Some hint text")
+    helper_stub.stubs(:hint_text).with(schema:, subschema: nil, field:).returns("Some hint text")
 
     render_inline(
-      Edition::Details::Fields::StringComponent.new(
+      described_class.new(
         edition:,
         field:,
+        schema:,
         value: "some custom value",
       ),
     )
@@ -94,14 +103,13 @@ class Edition::Details::Fields::StringComponentTest < ViewComponent::TestCase
 
   describe "when there is a translation for a field label" do
     it "should return the translation" do
-      I18n.expects(:t).with("edition.details.hints.email_address", default: nil).returns("Some hint text")
-
-      I18n.expects(:t).with("edition.details.labels.email_address", default: "Email address").returns("Email address translated")
+      helper_stub.stubs(:humanized_label).returns("Email address translated")
 
       render_inline(
-        Edition::Details::Fields::StringComponent.new(
+        described_class.new(
           edition:,
           field:,
+          schema:,
         ),
       )
 
@@ -113,9 +121,10 @@ class Edition::Details::Fields::StringComponentTest < ViewComponent::TestCase
     let(:subschema) { stub(:schema, block_type: "my_suffix") }
 
     let(:component) do
-      Edition::Details::Fields::StringComponent.new(
+      described_class.new(
         edition:,
         field:,
+        schema:,
         value: "some custom value",
         subschema:,
       )
@@ -131,8 +140,7 @@ class Edition::Details::Fields::StringComponentTest < ViewComponent::TestCase
     end
 
     it "should use the subschema for the hint text when provided" do
-      I18n.expects(:t).with("edition.details.labels.my_suffix.email_address", default: "Email address").returns(nil)
-      I18n.expects(:t).with("edition.details.hints.my_suffix.email_address", default: nil).returns("Some hint text")
+      helper_stub.stubs(:hint_text).with(schema:, subschema:, field:).returns("Some hint text")
 
       render_inline component
 

@@ -1,13 +1,14 @@
 class Document::Show::EmbeddedObjects::SubschemaItemComponent < ViewComponent::Base
-  def initialize(edition:, object_type:, object_title:)
+  def initialize(edition:, schema_name:, object_type:, object_title:)
     @edition = edition
+    @schema_name = schema_name
     @object_type = object_type
     @object_title = object_title
   end
 
 private
 
-  attr_reader :edition, :object_type, :object_title
+  attr_reader :edition, :schema_name, :object_type, :object_title
 
   def metadata_items
     object.reject { |k, _v| embeddable_fields.include?(k) }

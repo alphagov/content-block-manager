@@ -11,12 +11,13 @@
 
   <%= render "govuk_publishing_components/components/input", {
     label: {
-      text: "Title",
+      text: label_for_title(@form.schema.block_type),
     },
     name: "edition[title]",
     id: "#{parent_class}_title",
     value: @form.edition&.title,
     error_items: errors_for(@form.edition.errors, "title".to_sym),
+    hint: I18n.t("edition.hints.#{@form.schema.block_type}.title", default: nil),
   } %>
 
   <%=

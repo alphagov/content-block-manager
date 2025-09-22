@@ -1,10 +1,9 @@
 require "test_helper"
 
-class Edition::Details::Fields::OpeningHoursComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
+class Edition::Details::Fields::OpeningHoursComponentTest < BaseComponentTestClass
+  let(:described_class) { Edition::Details::Fields::OpeningHoursComponent }
 
   let(:edition) { build(:edition, :contact) }
-  let(:schema) { build(:schema) }
 
   let(:body) do
     {
@@ -18,9 +17,7 @@ class Edition::Details::Fields::OpeningHoursComponentTest < ViewComponent::TestC
     }
   end
 
-  before do
-    schema.stubs(:body).returns(body)
-  end
+  let(:schema) { stub(:schema, block_type: "schema", body:) }
 
   let(:field) do
     Schema::Field.new(
@@ -35,20 +32,23 @@ class Edition::Details::Fields::OpeningHoursComponentTest < ViewComponent::TestC
   end
 
   let(:component) do
-    Edition::Details::Fields::OpeningHoursComponent.new(
+    described_class.new(
       edition:,
       field: field,
       value: field_value,
+      schema:,
     )
   end
 
   describe "Opening hours component" do
     describe "show nested field" do
       it "shows a checkbox to toggle 'Show Opening Hours' option" do
+        helper_stub.stubs(:humanized_label).returns("Show opening hours?")
+
         render_inline(component)
 
         assert_selector(".govuk-checkboxes") do |component|
-          component.assert_selector("label", text: I18n.t("edition.details.labels.telephones.opening_hours.show_opening_hours"))
+          component.assert_selector("label", text: "Show opening hours?")
         end
       end
 

@@ -28,7 +28,9 @@ en:
                   blank: "Opening hours cannot be blank"
     attributes:
       edition/document:
-        title: Title
+        title:
+          default: Title
+          contact: Contact name
   document:
     index:
       errors:
@@ -58,10 +60,10 @@ en:
     review_page:
       errors:
         confirm: Tick box to confirm details are correct
-    details:
-      hints:
-        rates:
-          amount: "Enter an exact amount, with the currency symbol - for example: £122.50"
+    hints:
+      contact:
+        title: Explain the purpose of the contact, for example ‘Contact the Pension Service’, ‘Universal Credit helpline’
+        description: For example, is there anything the user should know, prepare or include before using any contact method.
         email_addresses:
           subject:
             "Set a default subject line that will automatically pre-fill when users send an email. 
@@ -69,7 +71,11 @@ en:
           body:
             "Set default body content that will automatically pre-fill when users send an email. 
             For example: 'The body of the email must include your name, date of birth, passport number and mobile phone number.'"
-      labels:
+      pension:
+        rates:
+          amount: "Enter an exact amount, with the currency symbol - for example: £122.50"
+    labels:
+      contact:
         telephones:
           bsl_guidance:
             show: Show BSL guidance?
@@ -85,15 +91,15 @@ en:
             show_call_charges_info_url: "Show hyperlink to 'Find out about call charges'"
             label: "Label"
             call_charges_info_url: "URL to find out about call charges"
-        contact_links:
-          url: URL
-      values:
-        true: "Yes"
-        false: "No"
-        type:
-          welsh_language: "Welsh language"
-          telephone: "Telephone"
-          textphone: "Textphone"
+          contact_links:
+            url: URL
+    values:
+      true: "Yes"
+      false: "No"
+      type:
+        welsh_language: "Welsh language"
+        telephone: "Telephone"
+        textphone: "Textphone"
   date:
     formats:
       default: "%d %B %Y"

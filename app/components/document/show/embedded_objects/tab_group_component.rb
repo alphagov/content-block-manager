@@ -1,12 +1,13 @@
 class Document::Show::EmbeddedObjects::TabGroupComponent < ViewComponent::Base
-  def initialize(document:, subschemas:)
+  def initialize(document:, schema:, subschemas:)
     @edition = document.latest_edition
+    @schema = schema
     @subschemas = subschemas
   end
 
 private
 
-  attr_reader :edition, :subschemas
+  attr_reader :edition, :schema, :subschemas
 
   def tabs
     subschemas.sort_by(&:group_order).map do |subschema|
@@ -26,6 +27,7 @@ private
   def component_for_subschema(subschema)
     Document::Show::EmbeddedObjects::SubschemaItemsComponent.new(
       edition:,
+      schema:,
       subschema:,
     )
   end

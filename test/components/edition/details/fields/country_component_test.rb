@@ -1,7 +1,7 @@
 require "test_helper"
 
-class Edition::Details::Fields::CountryComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
+class Edition::Details::Fields::CountryComponentTest < BaseComponentTestClass
+  let(:described_class) { Edition::Details::Fields::CountryComponent }
 
   let(:edition) { build(:edition, :pension) }
   let(:field) { stub("field", name: "country", is_required?: true, default_value: nil) }
@@ -11,14 +11,19 @@ class Edition::Details::Fields::CountryComponentTest < ViewComponent::TestCase
 
   let(:all_locations) { [world_locations, uk].flatten }
 
+  let(:schema) { stub(:schema, block_type: "schema") }
+
   before do
     WorldLocation.stubs(:countries).returns(all_locations)
   end
 
   it "should render an select field populated with WorldLocations with the UK as the blank option" do
+    helper_stub.stubs(:humanized_label).returns("Country")
+
     render_inline(
-      Edition::Details::Fields::CountryComponent.new(
+      described_class.new(
         edition:,
+        schema:,
         field:,
       ),
     )
@@ -40,9 +45,10 @@ class Edition::Details::Fields::CountryComponentTest < ViewComponent::TestCase
 
   it "should show an option as selected when value is given" do
     render_inline(
-      Edition::Details::Fields::CountryComponent.new(
+      described_class.new(
         edition:,
         field:,
+        schema:,
         value: world_locations.first.name,
       ),
     )
@@ -50,7 +56,6 @@ class Edition::Details::Fields::CountryComponentTest < ViewComponent::TestCase
     expected_name = "edition[details][country]"
     expected_id = "#{Edition::Details::Fields::BaseComponent::PARENT_CLASS}_details_country"
 
-    assert_selector "label", text: "Country"
     assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"]"
     assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"\"]", text: uk.name
 
@@ -65,9 +70,10 @@ class Edition::Details::Fields::CountryComponentTest < ViewComponent::TestCase
     edition.errors.add(:details_country, "Some error goes here")
 
     render_inline(
-      Edition::Details::Fields::CountryComponent.new(
+      described_class.new(
         edition:,
         field:,
+        schema:,
         enum: %w[country],
       ),
     )
@@ -79,9 +85,10 @@ class Edition::Details::Fields::CountryComponentTest < ViewComponent::TestCase
 
   describe "#options" do
     it "returns a list of countries" do
-      component = Edition::Details::Fields::CountryComponent.new(
+      component = described_class.new(
         edition:,
         field:,
+        schema:,
       )
 
       expected = [
@@ -97,9 +104,10 @@ class Edition::Details::Fields::CountryComponentTest < ViewComponent::TestCase
     end
 
     it "sets an option as selected when value is provided" do
-      component = Edition::Details::Fields::CountryComponent.new(
+      component = described_class.new(
         edition:,
         field:,
+        schema:,
         value: world_locations.first.name,
       )
 

@@ -1,7 +1,7 @@
 require "test_helper"
 
-class Edition::Details::Fields::BSLGuidanceComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
+class Edition::Details::Fields::BSLGuidanceComponentTest < BaseComponentTestClass
+  let(:described_class) { Edition::Details::Fields::BSLGuidanceComponent }
 
   let(:edition) { build(:edition, :contact) }
 
@@ -49,22 +49,31 @@ class Edition::Details::Fields::BSLGuidanceComponentTest < ViewComponent::TestCa
       "value" => nil }
   end
 
+  let(:schema) { stub(:schema, block_type: "schema") }
+
   let(:component) do
-    Edition::Details::Fields::BSLGuidanceComponent.new(
+    described_class.new(
       edition:,
       field: field,
+      schema:,
       value: field_value,
       subschema: subschema,
     )
   end
 
+  before do
+    Edition::Details::Fields::TextareaComponent.any_instance.stubs(:helpers).returns(helper_stub)
+  end
+
   describe "BSL Guidance component" do
     describe "'show' nested field" do
       it "shows a checkbox to toggle 'Show BSL Guidance' option" do
+        helper_stub.stubs(:humanized_label).returns("Show BSL Guidance?")
+
         render_inline(component)
 
         assert_selector(".app-c-content-block-manager-bsl-guidance-component") do |component|
-          component.assert_selector("label", text: I18n.t("edition.details.labels.telephones.bsl_guidance.show"))
+          component.assert_selector("label", text: "Show BSL Guidance?")
         end
       end
 

@@ -3,6 +3,8 @@ require "test_helper"
 class Document::Show::EmbeddedObjects::TabGroupComponentTest < ViewComponent::TestCase
   extend Minitest::Spec::DSL
 
+  let(:schema) { stub("schema") }
+
   let(:subschema_1) { stub("subschema_1", id: "embedded-type-1", name: "embedded type 1", group_order: 1) }
   let(:subschema_2) { stub("subschema_2", id: "embedded-type-2", name: "embedded type 2", group_order: 0) }
 
@@ -23,6 +25,7 @@ class Document::Show::EmbeddedObjects::TabGroupComponentTest < ViewComponent::Te
   let(:component) do
     Document::Show::EmbeddedObjects::TabGroupComponent.new(
       document:,
+      schema:,
       subschemas:,
     )
   end
@@ -33,11 +36,13 @@ class Document::Show::EmbeddedObjects::TabGroupComponentTest < ViewComponent::Te
 
     Document::Show::EmbeddedObjects::SubschemaItemsComponent.expects(:new).with(
       edition:,
+      schema:,
       subschema: subschema_1,
     ).returns(tab_component_1_double)
 
     Document::Show::EmbeddedObjects::SubschemaItemsComponent.expects(:new).with(
       edition:,
+      schema:,
       subschema: subschema_2,
     ).returns(tab_component_2_double)
 

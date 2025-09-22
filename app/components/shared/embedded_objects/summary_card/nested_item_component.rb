@@ -6,17 +6,19 @@ class Shared::EmbeddedObjects::SummaryCard::NestedItemComponent < ViewComponent:
 
   with_collection_parameter :nested_items
 
-  def initialize(nested_items:, object_key:, title:, subschema:, nested_items_counter: nil)
+  def initialize(nested_items:, object_key:, object_type:, title:, subschema:, root_schema_name:, nested_items_counter: nil)
     @nested_items = nested_items
     @object_key = object_key
+    @object_type = object_type
     @title = title
     @subschema = subschema
+    @root_schema_name = root_schema_name
     @nested_items_counter = nested_items_counter
   end
 
 private
 
-  attr_reader :nested_items, :object_key, :subschema, :nested_items_counter
+  attr_reader :nested_items, :object_key, :object_type, :subschema, :nested_items_counter, :root_schema_name
 
   def title
     if @nested_items_counter
@@ -29,7 +31,7 @@ private
   def rows
     nested_items.map do |field_name, value|
       {
-        key: humanized_label(relative_key: field_name),
+        key: humanized_label(schema_name: root_schema_name, relative_key: field_name, root_object: object_type),
         value: render_govspeak_if_enabled_for_field(
           object_key: object_key,
           field_name: field_name,

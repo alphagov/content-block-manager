@@ -1,14 +1,15 @@
 class Document::Show::EmbeddedObjects::MetadataComponent < ViewComponent::Base
   include TranslationHelper
-  def initialize(items:, object_type:, schema:)
+  def initialize(items:, object_type:, schema_name:, schema:)
     @items = items
     @object_type = object_type
+    @schema_name = schema_name
     @schema = schema
   end
 
 private
 
-  attr_reader :items
+  attr_reader :items, :schema_name, :object_type, :object_title
 
   def rows
     unordered_rows.sort_by { |row| row_ordering_rule(row) }
@@ -17,7 +18,7 @@ private
   def unordered_rows
     items.map do |key, value|
       {
-        field: helpers.humanized_label(relative_key: key, root_object: @object_type),
+        field: helpers.humanized_label(schema_name:, relative_key: key, root_object: object_type),
         value: helpers.translated_value(key, value),
       }
     end

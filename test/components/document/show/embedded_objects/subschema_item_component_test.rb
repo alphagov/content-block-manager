@@ -22,11 +22,13 @@ class Document::Show::EmbeddedObjects::SubschemaItemComponentTest < ViewComponen
   let(:edition) { build(:edition, :pension, details:) }
   let(:object_type) { "object" }
   let(:object_title) { "something" }
+  let(:schema_name) { "schema_name" }
 
   let(:component) do
     Document::Show::EmbeddedObjects::SubschemaItemComponent.new(
       edition:,
       object_type:,
+      schema_name:,
       object_title:,
     )
   end
@@ -46,12 +48,14 @@ class Document::Show::EmbeddedObjects::SubschemaItemComponentTest < ViewComponen
     Document::Show::EmbeddedObjects::MetadataComponent.expects(:new).with(
       items: { "title" => "Some title" },
       object_type:,
+      schema_name:,
       schema: subschema,
     ).returns(metadata_response)
 
     Document::Show::EmbeddedObjects::BlocksComponent.expects(:new).with(
       items: { "embeddable_item_2" => "Bar", "embeddable_item_1" => "Foo" },
       object_type:,
+      schema_name:,
       object_title:,
       document: edition.document,
     ).returns(block_response)

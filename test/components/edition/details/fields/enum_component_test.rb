@@ -1,17 +1,23 @@
 require "test_helper"
 
-class Edition::Details::Fields::EnumComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
+class Edition::Details::Fields::EnumComponentTest < BaseComponentTestClass
+  let(:described_class) { Edition::Details::Fields::EnumComponent }
 
   let(:edition) { build(:edition, :pension) }
   let(:field) { stub("field", name: "something", is_required?: true, default_value: nil) }
+  let(:schema) { stub(:schema, block_type: "schema") }
+
+  before do
+    helper_stub.stubs(:humanized_label).returns("Something")
+  end
 
   describe "when there is no default value" do
     it "should render a select field with given parameters" do
       render_inline(
-        Edition::Details::Fields::EnumComponent.new(
+        described_class.new(
           edition:,
           field:,
+          schema:,
           enum: ["a week", "a month"],
         ),
       )
@@ -28,9 +34,10 @@ class Edition::Details::Fields::EnumComponentTest < ViewComponent::TestCase
 
     it "should show an option as selected when value is given" do
       render_inline(
-        Edition::Details::Fields::EnumComponent.new(
+        described_class.new(
           edition:,
           field:,
+          schema:,
           enum: ["a week", "a month"],
           value: "a week",
         ),
@@ -50,9 +57,10 @@ class Edition::Details::Fields::EnumComponentTest < ViewComponent::TestCase
   describe "when there is a default value" do
     it "should render a select field with given parameters" do
       render_inline(
-        Edition::Details::Fields::EnumComponent.new(
+        described_class.new(
           edition:,
           field:,
+          schema:,
           enum: ["a week", "a month"],
           default: "a month",
         ),
@@ -69,9 +77,10 @@ class Edition::Details::Fields::EnumComponentTest < ViewComponent::TestCase
 
     it "should show an option as selected when value is given" do
       render_inline(
-        Edition::Details::Fields::EnumComponent.new(
+        described_class.new(
           edition:,
           field:,
+          schema:,
           enum: ["a week", "a month"],
           value: "a week",
           default: "a month",
@@ -92,9 +101,10 @@ class Edition::Details::Fields::EnumComponentTest < ViewComponent::TestCase
     edition.errors.add(:details_something, "Some error goes here")
 
     render_inline(
-      Edition::Details::Fields::EnumComponent.new(
+      described_class.new(
         edition:,
         field:,
+        schema:,
         enum: ["a week", "a month"],
       ),
     )
@@ -106,9 +116,10 @@ class Edition::Details::Fields::EnumComponentTest < ViewComponent::TestCase
 
   describe "#options" do
     it "returns a list of options" do
-      component = Edition::Details::Fields::EnumComponent.new(
+      component = described_class.new(
         edition:,
         field:,
+        schema:,
         enum: ["a week", "a month"],
       )
 
@@ -120,9 +131,10 @@ class Edition::Details::Fields::EnumComponentTest < ViewComponent::TestCase
     end
 
     it "sets an option as selected when value is provided" do
-      component = Edition::Details::Fields::EnumComponent.new(
+      component = described_class.new(
         edition:,
         field:,
+        schema:,
         enum: ["a week", "a month"],
         value: "a week",
       )

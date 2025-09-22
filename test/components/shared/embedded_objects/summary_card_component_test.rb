@@ -16,7 +16,7 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
     }
   end
 
-  let(:schema) { stub(:schema) }
+  let(:schema) { stub(:schema, block_type: "schema") }
   let(:fields) do
     [
       stub("field", name: "name"),
@@ -83,9 +83,9 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
 
   describe "when there is a translated value" do
     it "returns a translated value" do
-      I18n.expects(:t).with("edition.details.labels.embedded-objects.name", default: "Name").returns("Name")
-      I18n.expects(:t).with("edition.details.labels.embedded-objects.field-1", default: "Field 1").returns("Field 1")
-      I18n.expects(:t).with("edition.details.labels.embedded-objects.field-2", default: "Field 2").returns("Field 2")
+      I18n.expects(:t).with("edition.labels.embedded-objects.name", default: "Name").returns("Name")
+      I18n.expects(:t).with("edition.labels.embedded-objects.field-1", default: "Field 1").returns("Field 1")
+      I18n.expects(:t).with("edition.labels.embedded-objects.field-2", default: "Field 2").returns("Field 2")
 
       component = Shared::EmbeddedObjects::SummaryCardComponent.new(
         edition:,
@@ -293,7 +293,7 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
         Shared::EmbeddedObjects::SummaryCard::NestedItemComponent
           .any_instance
           .expects(:humanized_label)
-          .with(relative_key: "item")
+          .with(schema_name: schema.block_type, relative_key: "item", root_object: "embedded-objects")
           .twice
           .returns("Item translated")
 

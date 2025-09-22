@@ -4,16 +4,17 @@ class Edition::Details::Fields::BaseComponent < ViewComponent::Base
 
   PARENT_CLASS = "edition".freeze
 
-  def initialize(edition:, field:, value: nil, subschema: nil, **_args)
+  def initialize(edition:, field:, schema:, value: nil, subschema: nil, **_args)
     @edition = edition
     @field = field
+    @schema = schema
     @value = value || field.default_value
     @subschema = subschema
   end
 
 private
 
-  attr_reader :edition, :field, :subschema, :value
+  attr_reader :edition, :field, :schema, :subschema, :value
 
   def subschema_block_type
     @subschema_block_type ||= subschema&.block_type
@@ -21,7 +22,7 @@ private
 
   def label
     optional = field.is_required? ? nil : optional_label
-    "#{helpers.humanized_label(relative_key: field.name, root_object: subschema_block_type)}" \
+    "#{helpers.humanized_label(schema_name: schema.block_type, relative_key: field.name, root_object: subschema_block_type)}" \
     "#{optional}"
   end
 
@@ -45,12 +46,8 @@ private
     errors_for(edition.errors, "details_#{id_suffix}".to_sym)
   end
 
-  def hint
-    I18n.t("edition.details.hints.#{translation_lookup}", default: nil)
-  end
-
-  def translation_lookup
-    @translation_lookup ||= subschema_block_type ? "#{subschema_block_type}.#{field.name}" : field.name
+  def hint_text
+    helpers.hint_text(schema:, subschema:, field:)
   end
 
   def id_suffix

@@ -10,6 +10,6 @@ private
   end
 
   def label_for(field_name)
-    helpers.humanized_label(relative_key: field_name, root_object: "telephones.opening_hours")
+    helpers.humanized_label(schema_name: schema.block_type, relative_key: field_name, root_object: "telephones.opening_hours")
   end
 end

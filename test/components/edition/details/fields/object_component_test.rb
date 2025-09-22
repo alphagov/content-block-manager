@@ -1,7 +1,7 @@
 require "test_helper"
 
-class Edition::Details::Fields::ObjectComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
+class Edition::Details::Fields::ObjectComponentTest < BaseComponentTestClass
+  let(:described_class) { Edition::Details::Fields::ObjectComponent }
 
   let(:edition) { build(:edition, :pension) }
   let(:nested_fields) do
@@ -11,7 +11,7 @@ class Edition::Details::Fields::ObjectComponentTest < ViewComponent::TestCase
       stub("field", name: "email_address", enum_values: nil, default_value: nil),
     ]
   end
-  let(:schema) { stub("schema", id: "root") }
+  let(:schema) { stub("schema", id: "root", block_type: "schema") }
   let(:field) { stub("field", name: "nested", nested_fields:, schema:, is_required?: true, default_value: nil) }
 
   let(:label_stub) { stub("string_component") }
@@ -21,18 +21,21 @@ class Edition::Details::Fields::ObjectComponentTest < ViewComponent::TestCase
   let(:form_value) { nil }
 
   let(:component) do
-    Edition::Details::Fields::ObjectComponent.new(
+    described_class.new(
       edition:,
       field:,
+      schema:,
       value: form_value,
     )
   end
 
   it "renders fields for each property" do
+    helper_stub.stubs(:humanized_label).returns("Nested")
+
     render_inline(component)
 
     assert_selector(".govuk-fieldset") do |fieldset|
-      fieldset.assert_selector ".govuk-fieldset__legend--m h3", text: field.name.humanize
+      fieldset.assert_selector ".govuk-fieldset__legend--m h3", text: "Nested"
       fieldset.assert_selector ".govuk-form-group", count: 3
 
       fieldset.assert_selector ".govuk-form-group", text: /Label/ do |form_group|

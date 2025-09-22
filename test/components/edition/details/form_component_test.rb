@@ -52,16 +52,19 @@ class Edition::Details::FormComponentTest < ViewComponent::TestCase
     Edition::Details::Fields::StringComponent.expects(:new).with(
       edition:,
       field: foo_field,
+      schema:,
     ).returns(foo_stub)
 
     Edition::Details::Fields::StringComponent.expects(:new).with(
       edition:,
       field: bar_field,
+      schema:,
     ).returns(bar_stub)
 
     Edition::Details::Fields::EnumComponent.expects(:new).with(
       edition:,
       field: baz_field,
+      schema:,
       enum: %w[some enum],
     ).returns(baz_stub)
 
@@ -78,18 +81,21 @@ class Edition::Details::FormComponentTest < ViewComponent::TestCase
     Edition::Details::Fields::StringComponent.expects(:new).with(
       edition:,
       field: foo_field,
+      schema:,
       value: "foo value",
     ).returns(foo_stub)
 
     Edition::Details::Fields::StringComponent.expects(:new).with(
       edition:,
       field: bar_field,
+      schema:,
       value: "bar value",
     ).returns(bar_stub)
 
     Edition::Details::Fields::EnumComponent.expects(:new).with(
       edition:,
       field: baz_field,
+      schema:,
       value: "baz value",
       enum: %w[some enum],
     ).returns(baz_stub)
@@ -106,16 +112,19 @@ class Edition::Details::FormComponentTest < ViewComponent::TestCase
       Edition::Details::Fields::StringComponent.expects(:new).with(
         edition:,
         field: foo_field,
+        schema:,
       ).returns(foo_stub)
 
       Edition::Details::Fields::StringComponent.expects(:new).with(
         edition:,
         field: bar_field,
+        schema:,
       ).returns(bar_stub)
 
       Edition::Details::Fields::EnumComponent.expects(:new).with(
         edition:,
         field: baz_field,
+        schema:,
         enum: %w[some enum],
       ).returns(baz_stub)
 

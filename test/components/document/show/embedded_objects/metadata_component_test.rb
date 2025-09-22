@@ -10,7 +10,8 @@ class Document::Show::EmbeddedObjects::MetadataComponentTest < ViewComponent::Te
     }
   end
 
-  let(:object_type) { "telephone" }
+  let(:schema_name) { "schema" }
+  let(:object_type) { "object" }
 
   let(:body) do
     {
@@ -50,6 +51,7 @@ class Document::Show::EmbeddedObjects::MetadataComponentTest < ViewComponent::Te
   let(:component) do
     Document::Show::EmbeddedObjects::MetadataComponent.new(
       items:,
+      schema_name:,
       object_type:,
       schema:,
     )
@@ -152,11 +154,11 @@ class Document::Show::EmbeddedObjects::MetadataComponentTest < ViewComponent::Te
 
     it "uses translated label" do
       helpers.expects(:humanized_label)
-               .with(relative_key: "foo", root_object: object_type)
+               .with(schema_name:, relative_key: "foo", root_object: object_type)
                .returns("Foo translated")
 
       helpers.expects(:humanized_label)
-               .with(relative_key: "fizz", root_object: object_type)
+               .with(schema_name:, relative_key: "fizz", root_object: object_type)
                .returns("Fizz translated")
 
       helpers.expects(:translated_value)
@@ -197,11 +199,11 @@ class Document::Show::EmbeddedObjects::MetadataComponentTest < ViewComponent::Te
 
     it "uses translated label" do
       helpers.expects(:humanized_label)
-               .with(relative_key: "foo", root_object: object_type)
+               .with(schema_name:, relative_key: "foo", root_object: object_type)
                .returns("Foo")
 
       helpers.expects(:humanized_label)
-               .with(relative_key: "fizz", root_object: object_type)
+               .with(schema_name:, relative_key: "fizz", root_object: object_type)
                .returns("Fizz")
 
       helpers.expects(:translated_value)

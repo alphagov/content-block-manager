@@ -1,17 +1,19 @@
 require "test_helper"
 
-class Edition::Details::Fields::BooleanComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
+class Edition::Details::Fields::BooleanComponentTest < BaseComponentTestClass
+  let(:described_class) { Edition::Details::Fields::BooleanComponent }
 
   let(:edition) { build(:edition, :pension) }
   let(:default_value) { nil }
   let(:field) { stub("field", name: "email_address", is_required?: true, default_value:) }
+  let(:schema) { stub(:schema, block_type: "schema") }
 
   before do
     render_inline(
-      Edition::Details::Fields::BooleanComponent.new(
+      described_class.new(
         edition:,
         field:,
+        schema:,
         value: field_value,
       ),
     )
