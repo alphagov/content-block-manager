@@ -123,6 +123,7 @@ schemas:
           description:
             component:
               textarea
+            govspeak_enabled: true
       contact_links:
         group: contact_methods
         embeddable_as_block: true
