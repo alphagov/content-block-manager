@@ -96,7 +96,7 @@ en:
             prefix: Label
             telephone_number: Telephone number
           call_charges:
-            show_call_charges_info_url: "Show hyperlink to 'Find out about call charges'"
+            show_call_charges_info_url: Add call charges
             label: "Label"
             call_charges_info_url: "URL to find out about call charges"
           contact_links:
