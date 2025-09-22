@@ -86,8 +86,8 @@ en:
         telephones:
           title: Telephone name
           bsl_guidance:
-            show: Show BSL guidance?
-            value: Value
+            show: Add British Sign Language (BSL)
+            value: British Sign Language (BSL)
           opening_hours:
             show_opening_hours: Add opening hours
             opening_hours: Opening hours
