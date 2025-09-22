@@ -42,6 +42,7 @@ private
       errors:,
       error_lookup_prefix: "details_#{id_suffix}",
       can_be_deleted: can_be_deleted?(index),
+      hints: hint_text,
     )
   end
 

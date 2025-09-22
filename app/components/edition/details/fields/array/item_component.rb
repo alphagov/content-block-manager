@@ -1,7 +1,7 @@
 class Edition::Details::Fields::Array::ItemComponent < ViewComponent::Base
   include ErrorsHelper
 
-  def initialize(field_name:, array_items:, name_prefix:, id_prefix:, value:, index:, errors:, error_lookup_prefix:, can_be_deleted:)
+  def initialize(field_name:, array_items:, name_prefix:, id_prefix:, value:, index:, errors:, error_lookup_prefix:, can_be_deleted:, hints:)
     @field_name = field_name
     @array_items = array_items
     @name_prefix = name_prefix
@@ -11,11 +11,12 @@ class Edition::Details::Fields::Array::ItemComponent < ViewComponent::Base
     @errors = errors
     @error_lookup_prefix = error_lookup_prefix
     @can_be_deleted = can_be_deleted
+    @hints = hints || {}
   end
 
 private
 
-  attr_reader :field_name, :array_items, :name_prefix, :id_prefix, :value, :index, :errors, :error_lookup_prefix, :can_be_deleted
+  attr_reader :field_name, :array_items, :name_prefix, :id_prefix, :value, :index, :errors, :error_lookup_prefix, :can_be_deleted, :hints
 
   def wrapper_classes
     [
@@ -54,6 +55,10 @@ private
 
   def object_field_value(field)
     value ? field_value&.fetch(field) : nil
+  end
+
+  def hint_text_for_field(field)
+    hints.fetch(field.to_sym, nil)
   end
 
   def select_options(enum, value)

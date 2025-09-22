@@ -14,6 +14,7 @@ class Edition::Details::Fields::Array::ItemComponentTest < ViewComponent::TestCa
       errors:,
       error_lookup_prefix:,
       can_be_deleted:,
+      hints:,
     )
   end
 
@@ -21,13 +22,14 @@ class Edition::Details::Fields::Array::ItemComponentTest < ViewComponent::TestCa
   let(:error_lookup_prefix) { "foo_bar" }
   let(:errors_for_field) { [] }
   let(:can_be_deleted) { true }
+  let(:hints) { nil }
 
   before do
     component.stubs(:errors_for).returns(errors_for_field)
   end
 
   describe "if the array item is a string" do
-    let(:field_name) { "Bar" }
+    let(:field_name) { "bar" }
     let(:array_items) { { "type" => "string" } }
     let(:name_prefix) { "foo[bar]" }
     let(:id_prefix) { "foo_bar" }
@@ -80,10 +82,24 @@ class Edition::Details::Fields::Array::ItemComponentTest < ViewComponent::TestCa
         assert_selector ".app-c-content-block-manager-array-item-component--immutable"
       end
     end
+
+    describe "if a hint is present" do
+      let(:hints) do
+        { bar: "Some hint" }
+      end
+
+      it "renders a hint" do
+        render_inline(component)
+
+        assert_selector ".govuk-form-group" do |form_group|
+          form_group.assert_selector ".govuk-hint", text: "Some hint"
+        end
+      end
+    end
   end
 
   describe "if the array item is an enum" do
-    let(:field_name) { "Bar" }
+    let(:field_name) { "bar" }
     let(:array_items) { { "type" => "string", "enum" => %w[foo bar baz] } }
     let(:name_prefix) { "foo[bar]" }
     let(:id_prefix) { "foo_bar" }
@@ -134,10 +150,24 @@ class Edition::Details::Fields::Array::ItemComponentTest < ViewComponent::TestCa
         end
       end
     end
+
+    describe "if a hint is present" do
+      let(:hints) do
+        { bar: "Some hint" }
+      end
+
+      it "renders a hint" do
+        render_inline(component)
+
+        assert_selector ".govuk-form-group" do |form_group|
+          form_group.assert_selector ".govuk-hint", text: "Some hint"
+        end
+      end
+    end
   end
 
   describe "if the array item is an object" do
-    let(:field_name) { "Bar" }
+    let(:field_name) { "bar" }
     let(:array_items) do
       {
         "type" => "object",
@@ -189,6 +219,24 @@ class Edition::Details::Fields::Array::ItemComponentTest < ViewComponent::TestCa
 
         assert_selector ".govuk-form-group--error", text: /Buzz/ do |form_group|
           form_group.assert_selector ".govuk-error-message", text: "Buzz cannot be blank"
+        end
+      end
+    end
+
+    describe "if a hint is present" do
+      let(:hints) do
+        { fizz: "Some hint", buzz: "Another hint" }
+      end
+
+      it "renders a hint" do
+        render_inline(component)
+
+        assert_selector ".govuk-form-group", text: /Fizz/ do |form_group|
+          form_group.assert_selector ".govuk-hint", text: "Some hint"
+        end
+
+        assert_selector ".govuk-form-group", text: /Buzz/ do |form_group|
+          form_group.assert_selector ".govuk-hint", text: "Another hint"
         end
       end
     end
