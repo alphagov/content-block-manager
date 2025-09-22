@@ -27,6 +27,7 @@ gem "sprockets-rails"
 gem "terser"
 gem "thruster", require: false
 gem "transitions", require: ["transitions", "active_record/transitions"]
+gem "turbo-rails"
 gem "tzinfo-data", platforms: %i[windows jruby]
 gem "view_component"
 

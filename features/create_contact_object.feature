@@ -189,6 +189,20 @@ Feature: Create a contact object
       | my basic contact | this is basic | Ministry of Example | this is important  |
 
   @javascript
+  Scenario: GDS editor can preview a Contact
+    When I click on Preview
+    Then I should see a preview of my contact
+    When I click to close the preview
+    And I click on the "email_addresses" subschema
+    And I complete the "email_address" form with the following fields:
+      | title     | label         | email_address    | subject  | body             |
+      | Email us  | Send an email | foo@example.com  | Your ref | Name and address |
+    When I click on Preview
+    Then I should see a preview of my contact
+    When I click to close the preview
+    Then I should see the add contact methods screen
+
+  @javascript
   Scenario: GDS editor creates a Contact with an email address and a telephone
     And I click on the "email_addresses" subschema
     And I complete the "email_address" form with the following fields:
@@ -235,7 +249,6 @@ Feature: Create a contact object
 
   @javascript
   Scenario: GDS editor sees errors for invalid telephone objects
-    When I save and continue
     And I click on the "telephones" subschema
     When I save and continue
     Then I should see errors for the required nested "telephone_number" fields

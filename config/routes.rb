@@ -30,19 +30,24 @@ Rails.application.routes.draw do
   end
   resources :editions, only: %i[new create destroy], path_names: { new: ":block_type/new" } do
     member do
+      get :preview, to: "editions#preview"
+
+      # Workflow actions
       resources :workflow, only: %i[show update], controller: "editions/workflow", param: :step do
         collection do
           get :cancel, to: "editions/workflow#cancel"
         end
       end
+
+      # Embedded object actions
       get "embedded-objects/(:object_type)/new", to: "editions/embedded_objects#new", as: :new_embedded_object
       post "embedded-objects", to: "editions/embedded_objects#new_embedded_objects_options_redirect", as: :new_embedded_objects_options_redirect
       post "embedded-objects/:object_type", to: "editions/embedded_objects#create", as: :create_embedded_object
       get "embedded-objects/:object_type/:object_title/edit", to: "editions/embedded_objects#edit", as: :edit_embedded_object
       put "embedded-objects/:object_type/:object_title", to: "editions/embedded_objects#update", as: :embedded_object
-      get "embedded-objects/:object_type/:object_title/review", to: "editions/embedded_objects#review", as: :review_embedded_object
-      post "embedded-objects/:object_type/:object_title/publish", to: "editions/embedded_objects#publish", as: :publish_embedded_object
-      get :preview, to: "editions/host_content#preview", path: "host-content/:host_content_id/preview", as: :host_content_preview
+
+      # Host content preview actions
+      get "host-content/:host_content_id/preview", to: "editions/host_content#preview", as: :host_content_preview
     end
   end
 end
