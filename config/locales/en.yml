@@ -76,6 +76,8 @@ en:
             For example: 'The body of the email must include your name, date of birth, passport number and mobile phone number.'"
         telephones:
           description: For example, is there anything the user should know, prepare or include before telephoning.
+          call_charges:
+            show_call_charges_info_url: For example, consider if this telephone number has UK call charges.
       pension:
         rates:
           amount: "Enter an exact amount, with the currency symbol - for example: £122.50"

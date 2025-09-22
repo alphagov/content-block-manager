@@ -41,6 +41,10 @@ class Edition::Details::Fields::CallChargesComponentTest < BaseComponentTestClas
     )
   end
 
+  before do
+    helper_stub.stubs(:hint_text).returns({ show_call_charges_info_url: "Hint text" })
+  end
+
   describe "Call Charges component" do
     describe "'show_call_charges_info_url' nested field" do
       it "shows a checkbox to toggle 'Show hyperlink' option" do
@@ -50,6 +54,8 @@ class Edition::Details::Fields::CallChargesComponentTest < BaseComponentTestClas
 
         assert_selector(".app-c-content-block-manager-call-charges-component") do |component|
           component.assert_selector("label", text: "Show hyperlink to 'Find out about call charges'")
+          component.assert_selector("input[type='checkbox']", count: 1)
+          component.assert_selector(".govuk-hint", text: "Hint text")
         end
       end
 
