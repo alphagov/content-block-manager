@@ -69,9 +69,7 @@ en:
           description: For example, is there anything the user should know, prepare or include before using any contact method.
         email_addresses:
           email_address: Write email addresses in full, in lower case. Prioritise team email addresses over personal email addresses for users.
-          subject:
-            "Set a default subject line that will automatically pre-fill when users send an email. 
-            For example: 'Lastname Firstname - DD/MM/YYYY - passport number'"
+          subject: Set a default subject line that will automatically pre-fill when users send an email using the email link.
           body:
             "Set default body content that will automatically pre-fill when users send an email. 
             For example: 'The body of the email must include your name, date of birth, passport number and mobile phone number.'"
