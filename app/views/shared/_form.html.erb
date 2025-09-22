@@ -41,7 +41,7 @@
       text: "Instructions to publishers (optional)",
     },
     name: "edition[instructions_to_publishers]",
-    hint: "Add information that’s important for anyone editing this block to know. For example, who to contact about the block if you have questions.",
+    hint: t("edition.hints.instructions_to_publishers"),
     textarea_id: "#{parent_class}_instructions_to_publishers",
     value: @form.edition&.instructions_to_publishers,
     error_items: errors_for(@form.edition.errors, "instructions_to_publishers".to_sym),
