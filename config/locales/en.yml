@@ -74,6 +74,9 @@ en:
           body:
             "Set default body content that will automatically pre-fill when users send an email. 
             For example: 'The body of the email must include your name, date of birth, passport number and mobile phone number.'"
+          description:
+            "For example, is there anything the user should know, prepare or include before using the email address. 
+             You can repeat the content for ‘Subject’ and ‘Body’ for users who do not use the email link."
         telephones:
           description: For example, is there anything the user should know, prepare or include before telephoning.
           call_charges:
