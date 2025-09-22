@@ -44,6 +44,7 @@ schemas:
           description:
             component:
               textarea
+            govspeak_enabled: true
       telephones:
         group: contact_methods
         group_order: 2
