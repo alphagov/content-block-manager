@@ -65,6 +65,9 @@ en:
       contact:
         title: Explain the purpose of the contact, for example ‘Contact the Pension Service’, ‘Universal Credit helpline’
         description: For example, is there anything the user should know, prepare or include before using any contact method.
+        contact_links:
+          label: This will display as link text.
+          description: For example, is there anything the user should know, prepare or include before using the contact link.
         addresses:
           description: For example, is there anything the user should know, prepare or include before using any contact method.
         email_addresses:
