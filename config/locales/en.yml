@@ -89,6 +89,8 @@ en:
           title: Address name
         email_addresses:
           title: Email name
+        contact_links:
+          title: Contact link name
         telephones:
           title: Telephone name
           bsl_guidance:
