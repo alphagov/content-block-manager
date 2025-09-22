@@ -85,6 +85,10 @@ class Schema
     @config ||= self.class.schema_settings.dig("schemas", @id) || {}
   end
 
+  def govspeak_enabled?(field_name:)
+    config.dig("fields", field_name, GOVSPEAK_ENABLED_PROPERTY_KEY) == true
+  end
+
   def field_ordering_rule(field)
     if field_order
       # If a field order is found in the config, order by the index. If a field is not found, put it to the end
