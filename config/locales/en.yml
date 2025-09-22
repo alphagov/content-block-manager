@@ -77,6 +77,8 @@ en:
           amount: "Enter an exact amount, with the currency symbol - for example: £122.50"
     labels:
       contact:
+        addresses:
+          title: Address name
         telephones:
           bsl_guidance:
             show: Show BSL guidance?
