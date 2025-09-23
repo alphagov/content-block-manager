@@ -66,6 +66,7 @@ schemas:
           description:
             component:
               textarea
+            govspeak_enabled: true
           opening_hours:
             component:
               opening_hours
