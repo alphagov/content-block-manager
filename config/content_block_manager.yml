@@ -23,6 +23,8 @@ schemas:
       description:
         component:
           textarea
+        govspeak_enabled: true
+
     subschemas:
       email_addresses:
         group: contact_methods
