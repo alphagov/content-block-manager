@@ -30,6 +30,10 @@ Then("I see that the telephone bsl guidance value is Govspeak-enabled") do
   expect_to_see_a_govspeak_enabled_textarea_for_id("edition_details_telephones_bsl_guidance_value")
 end
 
+Then("I see that the telephone opening hours field is Govspeak-enabled") do
+  expect_to_see_a_govspeak_enabled_textarea_for_id("edition_details_telephones_opening_hours_opening_hours")
+end
+
 def expect_to_see_a_govspeak_enabled_textarea_for_id(id)
   assert(
     page.has_selector?(".app-c-govspeak-editor ##{id}"),

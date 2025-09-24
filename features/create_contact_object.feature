@@ -313,6 +313,8 @@ Feature: Create a contact object
     Then I see that the contact telephone description is Govspeak-enabled
     And I see that the telephone video relay service prefix is Govspeak-enabled
     And I see that the telephone bsl guidance value is Govspeak-enabled
+    And I see that the telephone opening hours field is Govspeak-enabled
+
 
 
 
