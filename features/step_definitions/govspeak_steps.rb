@@ -26,6 +26,10 @@ Then("I see that the telephone video relay service prefix is Govspeak-enabled") 
   expect_to_see_a_govspeak_enabled_textarea_for_id("edition_details_telephones_video_relay_service_prefix")
 end
 
+Then("I see that the telephone bsl guidance value is Govspeak-enabled") do
+  expect_to_see_a_govspeak_enabled_textarea_for_id("edition_details_telephones_bsl_guidance_value")
+end
+
 def expect_to_see_a_govspeak_enabled_textarea_for_id(id)
   assert(
     page.has_selector?(".app-c-govspeak-editor ##{id}"),
