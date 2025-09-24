@@ -19,6 +19,8 @@ Before do
     .to_return(body: { links: {} }.to_json)
   stub_request(:get, %r{\A#{Plek.find('publishing-api')}/v2/expanded-links})
     .to_return(body: { expanded_links: {} }.to_json)
+  stub_request(:get, %r{\A#{Plek.find('publishing-api')}/v2/content\?document_type=world_location})
+    .to_return(body: { results: [{ title: "United Kingdom" }] }.to_json)
 end
 
 World(GdsApi::TestHelpers::PublishingApi)
