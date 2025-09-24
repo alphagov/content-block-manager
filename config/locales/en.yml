@@ -103,7 +103,7 @@ en:
             show_opening_hours: Add opening hours
             opening_hours: Opening hours
           video_relay_service:
-            show: Include Relay UK?
+            show: Add Relay UK
             prefix: Label
             telephone_number: Telephone number
           call_charges:
