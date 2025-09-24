@@ -4,6 +4,7 @@ schemas:
       description:
         component:
           textarea
+        govspeak_enabled: true
     subschemas:
       rates:
         embeddable_fields:
@@ -13,6 +14,11 @@ schemas:
           - amount
           - frequency
           - description
+        fields:
+          description:
+            component:
+              textarea
+            govspeak_enabled: true
   content_block_contact:
     embeddable_as_block: true
     field_order:

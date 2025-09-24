@@ -37,7 +37,10 @@ Feature: Create a content object
             "a week",
             "a month"
           ]
-        }
+          },
+          "description": {
+            "type": "string"
+          }
       }
     }
     """
@@ -112,4 +115,10 @@ Feature: Create a content object
     And I click the back link
     And I click save
     Then I should be on the "add_embedded_rates" step
+
+  Scenario: Block editor sees expected Govspeak-enabled fields
+      When I am creating a pension content block
+      Then I see that the block description is Govspeak-enabled
+      When I am creating a pension rate
+      Then I see that the pension rate description is Govspeak-enabled
 
