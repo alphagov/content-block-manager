@@ -9,6 +9,13 @@ When("I am creating a contact address") do
   click_button "Save and continue"
 end
 
+When("I am creating a contact link") do
+  visit_new_contact_block_page
+  create_contact_block
+  choose "Contact link"
+  click_button "Save and continue"
+end
+
 def visit_new_contact_block_page
   visit root_path
   click_link "Create content block"

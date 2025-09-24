@@ -299,4 +299,7 @@ Feature: Create a contact object
     Then I see that the block description is Govspeak-enabled
     When I am creating a contact address
     Then I see that the contact address description is Govspeak-enabled
+    When I am creating a contact link
+    Then I see that the contact link description is Govspeak-enabled
+
 
