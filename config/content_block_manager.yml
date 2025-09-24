@@ -4,6 +4,7 @@ schemas:
       description:
         component:
           textarea
+        govspeak_enabled: true
     subschemas:
       rates:
         embeddable_fields:
