@@ -23,6 +23,8 @@ schemas:
       description:
         component:
           textarea
+        govspeak_enabled: true
+
     subschemas:
       email_addresses:
         group: contact_methods
@@ -44,6 +46,7 @@ schemas:
           description:
             component:
               textarea
+            govspeak_enabled: true
       telephones:
         group: contact_methods
         group_order: 2
@@ -66,9 +69,13 @@ schemas:
           description:
             component:
               textarea
+            govspeak_enabled: true
           opening_hours:
             component:
               opening_hours
+            fields:
+              opening_hours:
+                govspeak_enabled: true
           call_charges:
             component:
               call_charges
@@ -117,6 +124,7 @@ schemas:
           description:
             component:
               textarea
+            govspeak_enabled: true
       contact_links:
         group: contact_methods
         embeddable_as_block: true

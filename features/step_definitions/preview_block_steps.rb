@@ -1,5 +1,5 @@
 When(/^I click on Preview$/) do
-  click_on "Preview"
+  preview_block_button.click
 end
 
 Then(/^I should see a preview of my contact$/) do
@@ -16,4 +16,8 @@ Then(/^I should see the add contact methods screen$/) do
   within ".govuk-summary-card" do
     @details["title"]
   end
+end
+
+def preview_block_button
+  find("a[title='Preview block']", text: "Preview")
 end

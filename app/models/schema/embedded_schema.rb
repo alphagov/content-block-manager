@@ -1,7 +1,5 @@
 class Schema
   class EmbeddedSchema < Schema
-    GOVSPEAK_ENABLED_PROPERTY_KEY = "govspeak_enabled".freeze
-
     def initialize(id, body, parent_schema_id)
       @parent_schema_id = parent_schema_id
       body = body["patternProperties"]&.values&.first || raise(ArgumentError, "Subschema `#{id}` is invalid")
@@ -47,11 +45,11 @@ class Schema
     end
 
     def govspeak_enabled_field_for_nested_object?(object_key, field_name)
-      config.dig("fields", object_key, "fields", field_name, GOVSPEAK_ENABLED_PROPERTY_KEY) == true
+      config.dig("fields", object_key, "fields", field_name, Schema::GOVSPEAK_ENABLED_PROPERTY_KEY) == true
     end
 
     def top_level_govspeak_enabled_field?(field_name)
-      config.dig("fields", field_name, GOVSPEAK_ENABLED_PROPERTY_KEY) == true
+      config.dig("fields", field_name, Schema::GOVSPEAK_ENABLED_PROPERTY_KEY) == true
     end
 
   private

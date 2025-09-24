@@ -5,12 +5,17 @@ class Edition::Details::Fields::TextareaComponent < Edition::Details::Fields::Ba
     super(**args)
   end
 
-  attr_reader :edition, :nested_object_key, :field, :subschema, :errors
+  attr_reader :edition, :nested_object_key, :field, :schema, :subschema, :errors
 
   def govspeak_enabled?
-    return false unless nested_object_key
+    if nested_object_key
+      return subschema.govspeak_enabled?(
+        nested_object_key: nested_object_key,
+        field_name: field.name,
+      )
+    end
 
-    subschema.govspeak_enabled?(nested_object_key: nested_object_key, field_name: field.name)
+    schema.govspeak_enabled?(field_name: field.name)
   end
 
   def name_attribute
