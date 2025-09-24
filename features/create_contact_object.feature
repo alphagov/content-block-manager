@@ -56,7 +56,6 @@ Feature: Create a contact object
           "items": {
             "type": "object",
             "required": [
-              "type",
               "label",
               "telephone_number"
             ],
@@ -66,14 +65,6 @@ Feature: Create a contact object
               },
               "telephone_number": {
                 "type": "string"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "",
-                  "telephone",
-                  "textphone"
-                ]
               }
             }
           }
@@ -214,9 +205,9 @@ Feature: Create a contact object
       | title            |
       | New phone number |
     And I add the following "telephone_numbers" to the form:
-      | label       | telephone_number | type      |
-      | Telephone 1 | 12345            | Telephone |
-      | Telephone 2 | 6789             | Textphone |
+      | label       | telephone_number |
+      | Telephone 1 | 12345            |
+      | Telephone 2 | 6789             |
     And I indicate that the video relay service info should be displayed
     And I provide custom video relay service info where available
     And I indicate that the call charges info URL should be shown
@@ -252,12 +243,6 @@ Feature: Create a contact object
     And I click on the "telephones" subschema
     When I save and continue
     Then I should see errors for the required nested "telephone_number" fields
-
-  @javascript
-  Scenario: Telephone number label is automatically populated
-    When I click on the "telephones" subschema
-    And I choose "Textphone" from the type dropdown
-    Then the label should be set to "Textphone"
 
   Scenario: GDS editor edits answers during creation of an object
     And I click on the "email_addresses" subschema
