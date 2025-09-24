@@ -30,7 +30,8 @@ class Editions::WorkflowController < BaseController
   end
 
   def context
-    @title
+    action = @edition.document.is_new_block? ? "create" : "update"
+    I18n.t("edition.#{action}.title", block_type: @schema.name.downcase)
   end
   helper_method :context
 
