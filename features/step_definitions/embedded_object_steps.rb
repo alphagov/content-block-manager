@@ -76,7 +76,7 @@ When("I view all the telephone attributes") do
 end
 
 Then("I should see that the call charges fields have been changed") do
-  within(".gem-c-summary-card[title='Call Charges']") do
+  within(".gem-c-summary-card[title='Call charges']") do
     expect(page).to have_css("dt", text: "Show call charges info url")
     expect(page).to have_css("dt", text: "on")
 
@@ -105,7 +105,7 @@ When("I input the opening hours") do
 end
 
 Then("I should see that the BSL guidance fields have been changed") do
-  within(".gem-c-summary-card[title='BSL Guidance']") do
+  within(".gem-c-summary-card[title='Bsl guidance']") do
     expect(page).to have_css("dt", text: "Show")
     expect(page).to have_css("dt", text: "true")
 
@@ -188,5 +188,5 @@ And("I should not see a button to add a new {string}") do |object_type|
 end
 
 Then("I should see the created embedded object of type {string}") do |object_type|
-  assert_text "#{object_type.humanize.pluralize} (1)"
+  assert_text "#{object_type.humanize.singularize} (1)"
 end

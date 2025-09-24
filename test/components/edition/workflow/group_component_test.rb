@@ -19,9 +19,9 @@ class Edition::Workflow::GroupComponentTest < ViewComponent::TestCase
   end
   let(:edition) { build(:edition, :pension, details:) }
 
-  let(:subschema_1) { stub("subschema_1", id: "embedded-type-1", block_type: "embedded-type-1", name: "embedded type 1", group_order: 1) }
-  let(:subschema_2) { stub("subschema_2", id: "embedded-type-1", block_type: "embedded-type-2", name: "embedded type 2", group_order: 0) }
-  let(:subschema_3) { stub("subschema_3", id: "embedded-type-3", block_type: "embedded-type-3", name: "embedded type 3", group_order: 2) }
+  let(:subschema_1) { stub("subschema_1", id: "embedded-type-1", block_type: "embedded-type-1", name: "first embedded types", group_order: 1) }
+  let(:subschema_2) { stub("subschema_2", id: "embedded-type-1", block_type: "embedded-type-2", name: "second embedded types", group_order: 0) }
+  let(:subschema_3) { stub("subschema_3", id: "embedded-type-3", block_type: "embedded-type-3", name: "third embedded types", group_order: 2) }
 
   let(:subschemas) do
     [
@@ -69,12 +69,12 @@ class Edition::Workflow::GroupComponentTest < ViewComponent::TestCase
       tabs: [
         {
           id: subschema_2.id,
-          label: "#{subschema_2.name.titleize} (3)",
+          label: "Second embedded type (3)",
           content: "summary_card_2_body",
         },
         {
           id: subschema_1.id,
-          label: "#{subschema_1.name.titleize} (2)",
+          label: "First embedded type (2)",
           content: "summary_card_1_body",
         },
       ],
