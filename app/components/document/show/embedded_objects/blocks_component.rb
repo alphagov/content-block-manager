@@ -81,7 +81,7 @@ private
 
   def block_row
     {
-      key: object_type.singularize.titleize,
+      key: object_type.humanize.singularize.capitalize,
       value: content_for_block_row,
       data: data_attributes_for_block_row,
     }
