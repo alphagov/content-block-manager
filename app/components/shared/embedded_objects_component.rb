@@ -30,7 +30,11 @@ private
   end
 
   def add_button_text
-    has_embedded_objects? ? "Add another #{subschema_name}" : "Add #{helpers.add_indefinite_article subschema_name}"
+    if has_embedded_objects?
+      I18n.t("buttons.add_another", item: subschema_name)
+    else
+      I18n.t("buttons.add", item: helpers.add_indefinite_article(subschema_name))
+    end
   end
 
   def has_embedded_objects?

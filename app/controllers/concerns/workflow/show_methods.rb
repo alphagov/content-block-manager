@@ -101,7 +101,11 @@ private
     @subschema = @schema.subschema(subschema_name)
     @step_name = current_step.name
     @action = @edition.document.is_new_block? ? "Add" : "Edit"
-    @add_button_text = has_embedded_objects ? "Add another #{subschema_name.humanize.singularize.downcase}" : "Add #{helpers.add_indefinite_article @subschema.name.humanize.singularize.downcase}"
+    @add_button_text = if has_embedded_objects
+                         I18n.t("buttons.add_another", item: subschema_name.humanize.singularize.downcase)
+                       else
+                         I18n.t("buttons.add", item: helpers.add_indefinite_article(@subschema.name.humanize.singularize.downcase))
+                       end
 
     if @subschema
       render :embedded_objects

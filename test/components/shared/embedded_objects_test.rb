@@ -77,7 +77,7 @@ class Shared::EmbeddedObjectsTest < ViewComponent::TestCase
       object_type: subschema.block_type,
     )
 
-    assert_selector "a.govuk-button[href='#{new_path}']", text: "Add another embedded object"
+    assert_selector "a.govuk-button[href='#{new_path}']", text: I18n.t("buttons.add_another", item: "embedded object")
   end
 
   it "does not render a button to add an object if the document is not a new block" do
@@ -106,7 +106,7 @@ class Shared::EmbeddedObjectsTest < ViewComponent::TestCase
           object_type: subschema.block_type,
         )
 
-        assert_selector "a.govuk-button[href='#{new_path}']", text: "Add an embedded object"
+        assert_selector "a.govuk-button[href='#{new_path}']", text: I18n.t("buttons.add", item: "an embedded object")
       end
 
       it "shows the title" do
