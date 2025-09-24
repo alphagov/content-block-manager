@@ -46,13 +46,13 @@ private
       if items.is_a?(Array)
         items.each_with_index do |nested_items, index|
           blocks << {
-            title: "#{key.singularize.titleize} #{index + 1}",
+            title: "#{key.singularize.humanize.capitalize} #{index + 1}",
             rows: rows_for_nested_items(nested_items, key, index),
           }
         end
       else
         blocks << {
-          title: key.titleize,
+          title: key.humanize.capitalize,
           rows: rows_for_nested_items(items, key, nil),
         }
       end
