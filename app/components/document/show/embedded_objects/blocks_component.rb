@@ -75,6 +75,10 @@ private
     object_type.singularize.humanize.downcase
   end
 
+  def title
+    "#{object_name} block".capitalize
+  end
+
   def block_row
     {
       key: object_type.singularize.titleize,

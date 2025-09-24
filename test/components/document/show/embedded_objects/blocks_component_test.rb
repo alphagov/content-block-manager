@@ -124,6 +124,8 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
       render_inline component
 
       assert_selector ".app-c-embedded-objects-blocks-component .govuk-summary-card" do |wrapper|
+        wrapper.assert_selector ".govuk-summary-card__title", text: "Something block"
+
         wrapper.assert_selector ".govuk-summary-list__row", count: 1
 
         expect_summary_list_row(test_id: "else", key: "Something", value: "BLOCK_RESPONSE")
