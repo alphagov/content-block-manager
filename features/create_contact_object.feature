@@ -311,6 +311,7 @@ Feature: Create a contact object
     Then I see that the contact email address description is Govspeak-enabled
     When I am creating a telephone
     Then I see that the contact telephone description is Govspeak-enabled
+    And I see that the telephone video relay service prefix is Govspeak-enabled
 
 
 
