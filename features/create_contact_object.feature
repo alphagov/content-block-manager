@@ -38,6 +38,9 @@ Feature: Create a contact object
         },
         "body": {
           "type": "string"
+        },
+        "description": {
+          "type": "string"
         }
       }
     }
@@ -301,5 +304,8 @@ Feature: Create a contact object
     Then I see that the contact address description is Govspeak-enabled
     When I am creating a contact link
     Then I see that the contact link description is Govspeak-enabled
+    When I am creating an email address
+    Then I see that the contact email address description is Govspeak-enabled
+
 
 
