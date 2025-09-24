@@ -18,6 +18,10 @@ Then("I see that the contact email address description is Govspeak-enabled") do
   expect_to_see_a_govspeak_enabled_textarea_for_id("edition_details_email_addresses_description")
 end
 
+Then("I see that the contact telephone description is Govspeak-enabled") do
+  expect_to_see_a_govspeak_enabled_textarea_for_id("edition_details_telephones_description")
+end
+
 def expect_to_see_a_govspeak_enabled_textarea_for_id(id)
   assert(
     page.has_selector?(".app-c-govspeak-editor ##{id}"),

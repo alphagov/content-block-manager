@@ -75,6 +75,9 @@ Feature: Create a contact object
         "title": {
           "type": "string"
         },
+        "description": {
+          "type": "string"
+        },
         "video_relay_service": {
           "type": "object",
           "properties": {
@@ -306,6 +309,9 @@ Feature: Create a contact object
     Then I see that the contact link description is Govspeak-enabled
     When I am creating an email address
     Then I see that the contact email address description is Govspeak-enabled
+    When I am creating a telephone
+    Then I see that the contact telephone description is Govspeak-enabled
+
 
 
 
