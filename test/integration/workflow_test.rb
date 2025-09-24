@@ -38,11 +38,11 @@ class WorkflowTest < ActionDispatch::IntegrationTest
       let(:step) { :edit_draft }
 
       describe "#show" do
-        it "shows the correct title and back link" do
+        it "shows the correct back link" do
           get workflow_path(id: edition.id, step:)
 
-          assert_equal assigns(:title), "Create #{schema.name}"
-          assert_equal assigns(:back_path), new_document_path
+          assert_equal I18n.t("edition.create.title", block_type: schema.name.downcase), assigns(:title)
+          assert_equal new_document_path, assigns(:back_path)
         end
       end
     end
@@ -157,8 +157,8 @@ class WorkflowTest < ActionDispatch::IntegrationTest
         it "shows the correct title and back link" do
           get workflow_path(id: edition.id, step:)
 
-          assert_equal assigns(:title), "Change #{schema.name}"
-          assert_equal assigns(:back_path), document_path(document)
+          assert_equal I18n.t("edition.update.title", block_type: schema.name.downcase), assigns(:title)
+          assert_equal document_path(document), assigns(:back_path)
         end
       end
 
