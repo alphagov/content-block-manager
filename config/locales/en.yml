@@ -122,3 +122,6 @@ en:
   time:
     formats:
       long_ordinal: "%e %B %Y %l:%M%P"
+  buttons:
+    add: "Add %{item}"
+    add_another: "Add another %{item}"

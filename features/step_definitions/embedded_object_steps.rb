@@ -49,7 +49,7 @@ And("I add the following {string} to the form:") do |item_type, table|
     end
 
     page.driver.with_playwright_page do |page|
-      page.get_by_text("Add another #{item_type.humanize.singularize}").click unless row == fields.last
+      page.get_by_text(I18n.t("buttons.add_another", item: item_type.humanize.singularize)).click unless row == fields.last
     end
   end
 end
@@ -140,12 +140,12 @@ end
 
 And("I click to add a new {string}") do |object_type|
   @object_type = object_type
-  click_on "Add #{add_indefinite_article object_type.humanize.downcase}"
+  click_on I18n.t("buttons.add", item: add_indefinite_article(object_type.humanize.downcase))
 end
 
 And("I click to add another {string}") do |object_type|
   @object_type = object_type
-  click_on "Add another #{object_type.humanize.downcase}"
+  click_on I18n.t("buttons.add_another", item: object_type.humanize.downcase)
 end
 
 And(/^that pension has a rate with the following fields:$/) do |table|
@@ -184,7 +184,7 @@ And(/^I should see the updated rates for that block$/) do
 end
 
 And("I should not see a button to add a new {string}") do |object_type|
-  assert_no_text "Add #{add_indefinite_article object_type}"
+  assert_no_text I18n.t("buttons.add", item: add_indefinite_article(object_type))
 end
 
 Then("I should see the created embedded object of type {string}") do |object_type|
