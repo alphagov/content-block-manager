@@ -43,7 +43,7 @@ class Document::Show::EmbeddedObjects::SubschemaItemsComponentTest < ViewCompone
 
   describe "#label" do
     it "returns the sub-schema's name and count of objects" do
-      assert_equal component.label, "Embedded Types (2)"
+      assert_equal component.label, "Embedded type (2)"
     end
   end
 

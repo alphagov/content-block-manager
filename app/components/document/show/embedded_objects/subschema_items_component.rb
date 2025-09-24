@@ -10,7 +10,7 @@ class Document::Show::EmbeddedObjects::SubschemaItemsComponent < ViewComponent::
   end
 
   def label
-    "#{subschema.name.pluralize} (#{embedded_objects.count})"
+    "#{subschema.name.singularize.capitalize} (#{embedded_objects.count})"
   end
 
 private
