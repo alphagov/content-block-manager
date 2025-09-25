@@ -51,7 +51,7 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
 
     render_inline component
 
-    assert_selector ".govuk-summary-card__title", text: "Embedded Object details"
+    assert_selector ".govuk-summary-card__title", text: "Embedded object details"
 
     assert_selector ".govuk-summary-list__row[data-testid='my_embedded_object_name']", text: /Name/ do
       assert_selector ".govuk-summary-list__key", text: "Name"
@@ -124,7 +124,7 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
 
     render_inline component
 
-    assert_selector ".govuk-summary-card__title", text: "Embedded Object details"
+    assert_selector ".govuk-summary-card__title", text: "Embedded object details"
     assert_selector ".govuk-summary-list__row", count: 3
   end
 
@@ -137,7 +137,7 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
 
     render_inline component
 
-    assert_selector ".govuk-summary-card__title", text: "Embedded Object details"
+    assert_selector ".govuk-summary-card__title", text: "Embedded object details"
 
     expected_edit_path = edit_embedded_object_edition_path(
       edition,
@@ -175,7 +175,7 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
 
     render_inline component
 
-    assert_selector ".govuk-summary-card__title", text: "Embedded Object details"
+    assert_selector ".govuk-summary-card__title", text: "Embedded object details"
 
     expected_edit_path = edit_embedded_object_edition_path(
       edition,
@@ -215,7 +215,7 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
 
       render_inline component
 
-      assert_selector ".govuk-summary-card__title", text: "Embedded Object details"
+      assert_selector ".govuk-summary-card__title", text: "Embedded object details"
 
       assert_selector ".govuk-summary-list__row[data-testid='my_embedded_object_name']", text: /Name/ do
         assert_selector ".govuk-summary-list__key", text: "Name"
@@ -261,7 +261,7 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
 
         render_inline component
 
-        assert_selector ".govuk-summary-card__title", text: "Embedded Object details"
+        assert_selector ".govuk-summary-card__title", text: "Embedded object details"
 
         assert_selector ".govuk-summary-list__row[data-testid='my_embedded_object_name']", text: /Name/ do
           assert_selector ".govuk-summary-list__key", text: "Name"
@@ -359,7 +359,7 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
 
         render_inline component
 
-        assert_selector ".govuk-summary-card__title", text: "Embedded Object details"
+        assert_selector ".govuk-summary-card__title", text: "Embedded object details"
 
         assert_selector ".govuk-summary-list__row[data-testid='my_embedded_object_name']", text: /Name/ do
           assert_selector ".govuk-summary-list__key", text: "Name"
