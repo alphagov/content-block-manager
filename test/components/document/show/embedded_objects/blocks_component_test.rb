@@ -15,8 +15,8 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
   let(:edition) { build(:edition, :pension) }
   let(:document) { build(:document, :pension) }
 
-  let(:schema) { stub("schema") }
-  let(:subschema) { stub("schema", embeddable_as_block?: embeddable_as_block) }
+  let(:schema) { stub("schema", block_type: "schema") }
+  let(:subschema) { stub("schema", embeddable_as_block?: embeddable_as_block, block_type: "subschema") }
   let(:schema_name) { "schema_name" }
 
   before do
