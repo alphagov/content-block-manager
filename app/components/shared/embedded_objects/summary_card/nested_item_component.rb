@@ -31,7 +31,7 @@ private
   def rows
     nested_items.map do |field_name, value|
       {
-        key: humanized_label(schema_name: root_schema_name, relative_key: field_name, root_object: object_type),
+        key: humanized_label(schema_name: root_schema_name, relative_key: field_name, root_object: "#{object_type}.#{object_key}"),
         value: render_govspeak_if_enabled_for_field(
           object_key: object_key,
           field_name: field_name,

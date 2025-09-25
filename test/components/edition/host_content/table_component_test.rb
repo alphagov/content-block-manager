@@ -79,6 +79,6 @@ class Edition::HostContent::TableComponentTest < ViewComponent::TestCase
     assert_selector ".govuk-table__header", text: "Views (30 days)"
     assert_selector ".govuk-table__header", text: "Instances"
     assert_selector ".govuk-table__header", text: "Lead organisation"
-    assert_selector ".govuk-table__header", text: "Preview (Opens in new tab)"
+    assert_selector ".govuk-table__header", text: "Preview (opens in new tab)"
   end
 end

@@ -43,7 +43,7 @@
       <% end %>
 
       <%= render("govuk_publishing_components/components/button", {
-        text: "Add another #{@group_name.humanize.singularize.downcase}",
+        text: I18n.t("buttons.add_another", item: @group_name.humanize.singularize.downcase),
         href: new_embedded_object_edition_path(
           @edition,
           group: @group_name,

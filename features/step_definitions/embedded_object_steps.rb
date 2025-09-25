@@ -49,7 +49,7 @@ And("I add the following {string} to the form:") do |item_type, table|
     end
 
     page.driver.with_playwright_page do |page|
-      page.get_by_text("Add another #{item_type.humanize.singularize}").click unless row == fields.last
+      page.get_by_text(I18n.t("buttons.add_another", item: item_type.humanize.singularize)).click unless row == fields.last
     end
   end
 end
@@ -76,8 +76,8 @@ When("I view all the telephone attributes") do
 end
 
 Then("I should see that the call charges fields have been changed") do
-  within(".gem-c-summary-card[title='Call Charges']") do
-    expect(page).to have_css("dt", text: "Show call charges info url")
+  within(".gem-c-summary-card[title='#{I18n.t('edition.titles.contact.telephones.call_charges')}']") do
+    expect(page).to have_css("dt", text: I18n.t("edition.labels.contact.telephones.call_charges.show_call_charges_info_url"))
     expect(page).to have_css("dt", text: "on")
 
     expect(page).not_to have_content("https://gov.uk/call-charges")
@@ -105,11 +105,11 @@ When("I input the opening hours") do
 end
 
 Then("I should see that the BSL guidance fields have been changed") do
-  within(".gem-c-summary-card[title='BSL Guidance']") do
-    expect(page).to have_css("dt", text: "Show")
-    expect(page).to have_css("dt", text: "true")
+  within(".gem-c-summary-card[title='#{I18n.t('edition.titles.contact.telephones.bsl_guidance')}']") do
+    expect(page).to have_css("dt", text: I18n.t("edition.labels.contact.telephones.bsl_guidance.show"))
+    expect(page).to have_css("dt", text: "Yes")
 
-    expect(page).to have_css("dt", text: "Value")
+    expect(page).to have_css("dt", text: I18n.t("edition.labels.contact.telephones.bsl_guidance.value"))
     expect(page).to have_css("dt", text: "More about BSL")
   end
 end
@@ -140,12 +140,12 @@ end
 
 And("I click to add a new {string}") do |object_type|
   @object_type = object_type
-  click_on "Add #{add_indefinite_article object_type.humanize.downcase}"
+  click_on I18n.t("buttons.add", item: add_indefinite_article(object_type.humanize.downcase))
 end
 
 And("I click to add another {string}") do |object_type|
   @object_type = object_type
-  click_on "Add another #{object_type.humanize.downcase}"
+  click_on I18n.t("buttons.add_another", item: object_type.humanize.downcase)
 end
 
 And(/^that pension has a rate with the following fields:$/) do |table|
@@ -184,9 +184,9 @@ And(/^I should see the updated rates for that block$/) do
 end
 
 And("I should not see a button to add a new {string}") do |object_type|
-  assert_no_text "Add #{add_indefinite_article object_type}"
+  assert_no_text I18n.t("buttons.add", item: add_indefinite_article(object_type))
 end
 
 Then("I should see the created embedded object of type {string}") do |object_type|
-  assert_text "#{object_type.humanize.pluralize} (1)"
+  assert_text "#{object_type.humanize.singularize} (1)"
 end

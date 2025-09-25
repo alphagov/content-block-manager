@@ -6,7 +6,9 @@ module Workflow::ShowMethods
     @schema = Schema.find_by_block_type(@edition.document.block_type)
     @form = EditionForm::Edit.new(edition: @edition, schema: @schema)
 
-    @title = @edition.document.is_new_block? ? "Create #{@form.schema.name}" : "Change #{@form.schema.name}"
+    action = @edition.document.is_new_block? ? "create" : "update"
+
+    @title = I18n.t("edition.#{action}.title", block_type: @form.schema.name.downcase)
     @back_path = @edition.document.is_new_block? ? new_document_path : @form.back_path
 
     render :edit_draft
@@ -99,7 +101,11 @@ private
     @subschema = @schema.subschema(subschema_name)
     @step_name = current_step.name
     @action = @edition.document.is_new_block? ? "Add" : "Edit"
-    @add_button_text = has_embedded_objects ? "Add another #{subschema_name.humanize.singularize.downcase}" : "Add #{helpers.add_indefinite_article @subschema.name.humanize.singularize.downcase}"
+    @add_button_text = if has_embedded_objects
+                         I18n.t("buttons.add_another", item: subschema_name.humanize.singularize.downcase)
+                       else
+                         I18n.t("buttons.add", item: helpers.add_indefinite_article(@subschema.name.humanize.singularize.downcase))
+                       end
 
     if @subschema
       render :embedded_objects

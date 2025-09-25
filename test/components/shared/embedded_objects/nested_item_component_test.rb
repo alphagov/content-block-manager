@@ -8,6 +8,16 @@ class Shared::EmbeddedObjects::NestedItemComponentTest < ViewComponent::TestCase
     { "nested_item_field" => "field *value*" }
   end
 
+  let(:schema) do
+    stub(
+      "sub-schema",
+      name: "schema",
+      govspeak_enabled?: true,
+    )
+  end
+
+  let(:root_schema_name) { "schema" }
+
   let(:component) do
     Shared::EmbeddedObjects::SummaryCard::NestedItemComponent.new(
       nested_items: nested_items,
@@ -20,14 +30,6 @@ class Shared::EmbeddedObjects::NestedItemComponentTest < ViewComponent::TestCase
   end
 
   context "when a field is govspeak enabled" do
-    let(:schema) do
-      stub(
-        "sub-schema",
-        name: "schema",
-        govspeak_enabled?: true,
-      )
-    end
-
     it "renders the value as HTML" do
       render_inline component
       rendered_value = page.find("dt.govuk-summary-list__value").native.children.to_html.strip
@@ -55,6 +57,22 @@ class Shared::EmbeddedObjects::NestedItemComponentTest < ViewComponent::TestCase
         "field *value*",
         rendered_value,
       )
+    end
+  end
+
+  describe "when a field has a translation" do
+    before do
+      component.expects(:humanized_label).with(
+        schema_name: "schema",
+        relative_key: "nested_item_field",
+        root_object: "schema.nested_object",
+      ).returns("Translated label")
+    end
+
+    it "renders the translated value" do
+      render_inline component
+
+      assert_selector ".govuk-summary-list__key", text: "Translated label"
     end
   end
 end
