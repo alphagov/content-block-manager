@@ -38,6 +38,9 @@ Feature: Create a contact object
         },
         "body": {
           "type": "string"
+        },
+        "description": {
+          "type": "string"
         }
       }
     }
@@ -70,6 +73,9 @@ Feature: Create a contact object
           }
         },
         "title": {
+          "type": "string"
+        },
+        "description": {
           "type": "string"
         },
         "video_relay_service": {
@@ -170,6 +176,40 @@ Feature: Create a contact object
       }
     }
     """
+    And the schema has a subschema "addresses":
+    """
+    {
+      "type":"object",
+      "properties": {
+        "country": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "postal_code": {
+          "type": "string"
+        },
+        "recipient": {
+          "type": "string"
+        },
+        "state_or_county": {
+          "type": "string"
+        },
+        "street_address": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string",
+          "default": "Address"
+        },
+        "town_or_city": {
+          "type": "string"
+        }
+      }
+    }
+    """
+
     And the schema "contact" has a group "contact_methods" with the following subschemas:
       | email_addresses | telephones | contact_links |
     And I visit the Content Block Manager home page
@@ -259,3 +299,23 @@ Feature: Create a contact object
     And I confirm my answers are correct
     And I review and confirm my answers are correct
     And I should be taken to the confirmation page for a new "contact"
+
+  Scenario: Block editor sees expected Govspeak-enabled fields
+    When I am creating a contact content block
+    Then I see that the block description is Govspeak-enabled
+    When I am creating a contact address
+    Then I see that the contact address description is Govspeak-enabled
+    When I am creating a contact link
+    Then I see that the contact link description is Govspeak-enabled
+    When I am creating an email address
+    Then I see that the contact email address description is Govspeak-enabled
+    When I am creating a telephone
+    Then I see that the contact telephone description is Govspeak-enabled
+    And I see that the telephone video relay service prefix is Govspeak-enabled
+    And I see that the telephone bsl guidance value is Govspeak-enabled
+    And I see that the telephone opening hours field is Govspeak-enabled
+
+
+
+
+

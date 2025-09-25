@@ -1,9 +1,31 @@
-Then("I see that the block description is Govspeak-enabled") do
-  expect_to_see_a_govspeak_enabled_textarea_for_id("edition_details_description")
-end
+Then(/^I see that the ([^"]*) is Govspeak-enabled$/) do |field|
+  id = case field
+       when "block description"
+         "edition_details_description"
 
-Then("I see that the pension rate description is Govspeak-enabled") do
-  expect_to_see_a_govspeak_enabled_textarea_for_id("edition_details_rates_description")
+       when "pension rate description"
+         "edition_details_rates_description"
+
+       when "contact address description"
+         "edition_details_addresses_description"
+       when "contact link description"
+         "edition_details_contact_links_description"
+       when "contact email address description"
+         "edition_details_email_addresses_description"
+       when "contact telephone description"
+         "edition_details_telephones_description"
+       when "telephone video relay service prefix"
+         "edition_details_telephones_video_relay_service_prefix"
+       when "telephone bsl guidance value"
+         "edition_details_telephones_bsl_guidance_value"
+       when "telephone opening hours field"
+         "edition_details_telephones_opening_hours_opening_hours"
+
+       else
+         raise "Unexpected field name: #{field}"
+       end
+
+  expect_to_see_a_govspeak_enabled_textarea_for_id(id)
 end
 
 def expect_to_see_a_govspeak_enabled_textarea_for_id(id)
