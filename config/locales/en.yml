@@ -86,6 +86,14 @@ en:
       pension:
         rates:
           amount: "Enter an exact amount, with the currency symbol - for example: £122.50"
+    titles:
+      contact:
+        telephones:
+          telephone_numbers: Telephone number
+          video_relay_service: Video relay service
+          bsl_guidance: BSL guidance
+          opening_hours: Opening hours
+          call_charges: Call charges
     labels:
       contact:
         addresses:

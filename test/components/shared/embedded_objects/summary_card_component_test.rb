@@ -31,6 +31,7 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
       embeddable_fields: %w[name field-1 field-2],
       govspeak_enabled?: false,
       fields:,
+      id: "subschema",
     )
   end
 
@@ -290,6 +291,8 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
         component.expects(:key_to_title).with("name", "embedded-objects").returns("Name translated")
         component.expects(:translated_value).with("name", "My Embedded Object").returns("My Embedded Object translated")
 
+        I18n.expects(:t).with("edition.titles.#{edition.schema.block_type}.#{subschema.id}.field", default: "Field").returns("Field translated")
+
         Shared::EmbeddedObjects::SummaryCard::NestedItemComponent
           .any_instance
           .expects(:humanized_label)
@@ -316,12 +319,12 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
           nested_block.assert_selector ".govuk-summary-list__value", text: "My Embedded Object translated"
         end
 
-        assert_selector ".app-c-content-block-manager-nested-item-component", text: /Field 1/ do |nested_block|
+        assert_selector ".app-c-content-block-manager-nested-item-component", text: /Field translated 1/ do |nested_block|
           nested_block.assert_selector ".govuk-summary-list__key", text: "Item translated"
           nested_block.assert_selector ".govuk-summary-list__value", text: "Foo translated"
         end
 
-        assert_selector ".app-c-content-block-manager-nested-item-component", text: /Field 2/ do |nested_block|
+        assert_selector ".app-c-content-block-manager-nested-item-component", text: /Field translated 2/ do |nested_block|
           nested_block.assert_selector ".govuk-summary-list__key", text: "Item translated"
           nested_block.assert_selector ".govuk-summary-list__value", text: "Bar translated"
         end
