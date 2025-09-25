@@ -76,8 +76,8 @@ When("I view all the telephone attributes") do
 end
 
 Then("I should see that the call charges fields have been changed") do
-  within(".gem-c-summary-card[title='Call charges']") do
-    expect(page).to have_css("dt", text: "Show call charges info url")
+  within(".gem-c-summary-card[title='#{I18n.t('edition.titles.contact.telephones.call_charges')}']") do
+    expect(page).to have_css("dt", text: I18n.t("edition.labels.contact.telephones.call_charges.show_call_charges_info_url"))
     expect(page).to have_css("dt", text: "on")
 
     expect(page).not_to have_content("https://gov.uk/call-charges")
@@ -105,11 +105,11 @@ When("I input the opening hours") do
 end
 
 Then("I should see that the BSL guidance fields have been changed") do
-  within(".gem-c-summary-card[title='Bsl guidance']") do
-    expect(page).to have_css("dt", text: "Show")
-    expect(page).to have_css("dt", text: "true")
+  within(".gem-c-summary-card[title='#{I18n.t('edition.titles.contact.telephones.bsl_guidance')}']") do
+    expect(page).to have_css("dt", text: I18n.t("edition.labels.contact.telephones.bsl_guidance.show"))
+    expect(page).to have_css("dt", text: "Yes")
 
-    expect(page).to have_css("dt", text: "Value")
+    expect(page).to have_css("dt", text: I18n.t("edition.labels.contact.telephones.bsl_guidance.value"))
     expect(page).to have_css("dt", text: "More about BSL")
   end
 end

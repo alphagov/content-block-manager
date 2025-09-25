@@ -39,6 +39,10 @@ private
     end
   end
 
+  def block_title(key)
+    I18n.t("edition.titles.#{document.schema.block_type}.#{schema.block_type}.#{key}", default: key.humanize.capitalize)
+  end
+
   def nested_blocks
     blocks = []
 
@@ -46,13 +50,13 @@ private
       if items.is_a?(Array)
         items.each_with_index do |nested_items, index|
           blocks << {
-            title: "#{key.singularize.humanize.capitalize} #{index + 1}",
+            title: "#{block_title(key.singularize)} #{index + 1}",
             rows: rows_for_nested_items(nested_items, key, index),
           }
         end
       else
         blocks << {
-          title: key.humanize.capitalize,
+          title: block_title(key),
           rows: rows_for_nested_items(items, key, nil),
         }
       end
@@ -64,8 +68,8 @@ private
   def rows_for_nested_items(items, nested_name, index)
     items.map do |key, value|
       {
-        key: key_to_title(key, schema_name),
-        value: content_for_row(embed_code_identifier(nested_name, index, key), value),
+        key: key_to_title(key, schema_name, "#{object_type}.#{nested_name}"),
+        value: content_for_row(embed_code_identifier(nested_name, index, key), translated_value(key, value)),
         data: data_attributes_for_row(embed_code_identifier(nested_name, index, key)),
       }
     end
