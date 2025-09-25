@@ -21,7 +21,7 @@
           items,
           object_key: key,
           object_type:,
-          title: key.singularize.titleize,
+          title: nested_item_title(key),
           subschema: schema,
           root_schema_name: root_schema.block_type,
         ) %>
@@ -30,7 +30,7 @@
           nested_items: items,
           object_key: key,
           object_type:,
-          title: key.singularize.titleize,
+          title: nested_item_title(key),
           subschema: schema,
           root_schema_name: root_schema.block_type,
         ) %>

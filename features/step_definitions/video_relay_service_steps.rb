@@ -11,14 +11,14 @@ Given("I provide custom video relay service info where available") do
 end
 
 When("I should see that the video relay service info is to be shown") do
-  within(".gem-c-summary-card[title='Video Relay Service']") do
+  within(".gem-c-summary-card[title='Video relay service']") do
     expect(page).to have_css("dt", text: "Show")
     expect(page).to have_css("dt", text: "true")
   end
 end
 
 When("I should see that the custom video relay info has been recorded") do
-  within(".gem-c-summary-card[title='Video Relay Service']") do
+  within(".gem-c-summary-card[title='Video relay service']") do
     expect(page).to have_content("01777 123 1234")
     expect(page).to have_content("**Custom** prefix: 12345 then")
   end

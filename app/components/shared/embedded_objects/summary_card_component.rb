@@ -24,6 +24,10 @@ private
     "#{object_type.titleize.singularize} details"
   end
 
+  def nested_item_title(key)
+    I18n.t("edition.titles.#{edition.schema.block_type}.#{schema.id}.#{key}", default: key.singularize.titleize)
+  end
+
   def items
     schema.fields.map { |field|
       [field.name, object[field.name]]
