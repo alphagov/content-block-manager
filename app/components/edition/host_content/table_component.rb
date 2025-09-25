@@ -2,7 +2,7 @@ class Edition::HostContent::TableComponent < Document::Show::HostEditionsTableCo
 private
 
   def head
-    [super, { text: "Preview (Opens in new tab)" }].flatten
+    [super, { text: "Preview (opens in new tab)" }].flatten
   end
 
   def row_for_content_item(content_item)

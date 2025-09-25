@@ -296,7 +296,7 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
         Shared::EmbeddedObjects::SummaryCard::NestedItemComponent
           .any_instance
           .expects(:humanized_label)
-          .with(schema_name: schema.block_type, relative_key: "item", root_object: "embedded-objects")
+          .with(schema_name: schema.block_type, relative_key: "item", root_object: "embedded-objects.field")
           .twice
           .returns("Item translated")
 
