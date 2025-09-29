@@ -62,7 +62,7 @@ class Schema
   end
 
   def subschemas_for_group(group)
-    subschemas.select { |s| s.group == group }
+    subschemas.select { |s| s.group == group }.sort_by(&:group_order)
   end
 
   def permitted_params

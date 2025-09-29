@@ -411,8 +411,8 @@ class SchemaTest < ActiveSupport::TestCase
   describe "#subschemas_for_group" do
     let(:group_1_subschemas) do
       [
-        stub(:subschema, group: "group_1"),
-        stub(:subschema, group: "group_1"),
+        stub(:subschema, group: "group_1", group_order: 2),
+        stub(:subschema, group: "group_1", group_order: 1),
       ]
     end
 
@@ -428,8 +428,8 @@ class SchemaTest < ActiveSupport::TestCase
       schema.stubs(:subschemas).returns(subschemas)
     end
 
-    it "returns subschemas for a group" do
-      assert_equal schema.subschemas_for_group("group_1"), group_1_subschemas
+    it "returns subschemas for a group sorted by the group order" do
+      assert_equal schema.subschemas_for_group("group_1"), [group_1_subschemas[1], group_1_subschemas[0]]
     end
 
     it "returns an empty array when no subschemas can be found" do
