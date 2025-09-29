@@ -1,9 +1,5 @@
 <%= turbo_stream.replace "edition_#{@edition.id}" do %>
-  <div class="app-views-editions-preview">
-    <div class="govspeak">
-      <%= @edition.render(@edition.document.embed_code) %>
-    </div>
-  </div>
+  <%= render "preview", edition: @edition %>
 <% end %>
 
 <%= turbo_stream.replace "preview_link_#{@edition.id}" do %>

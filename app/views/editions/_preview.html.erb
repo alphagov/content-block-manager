@@ -1,0 +1,8 @@
+<div class="app-views-editions-preview">
+  <p class="govuk-body app-views-editions-preview__reorder-link">
+    <%= link_to "Reorder", order_edit_edition_path(edition), class: "govuk-link" %>
+  </p>
+  <div class="govspeak">
+    <%= edition.render(edition.document.embed_code) %>
+  </div>
+</div>
