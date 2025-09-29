@@ -30,7 +30,7 @@ class Editions::WorkflowController < BaseController
   end
 
   def context
-    @title
+    @edition.title
   end
   helper_method :context
 

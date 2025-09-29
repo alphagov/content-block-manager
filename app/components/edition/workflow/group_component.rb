@@ -26,7 +26,7 @@ private
   end
 
   def tab_label(subschema, items)
-    "#{subschema.name.titleize} (#{items.values.count})"
+    "#{subschema.name.singularize.capitalize} (#{items.values.count})"
   end
 
   def content_for_tab(subschema, items)

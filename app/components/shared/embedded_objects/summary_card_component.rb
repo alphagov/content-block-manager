@@ -21,7 +21,11 @@ private
   attr_reader :edition, :object_type, :object_title, :redirect_url, :test_id_prefix
 
   def title
-    "#{object_type.titleize.singularize} details"
+    "#{object_type.titleize.singularize.capitalize} details"
+  end
+
+  def nested_item_title(key)
+    I18n.t("edition.titles.#{edition.schema.block_type}.#{schema.id}.#{key}", default: key.singularize.titleize)
   end
 
   def items

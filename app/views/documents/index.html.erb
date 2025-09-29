@@ -40,7 +40,7 @@
   <div class="govuk-grid-column-two-thirds">
     <h2 class="govuk-heading-m"><%= pluralize(@documents.total_count, "result") %></h2>
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-    <p class="govuk-body"><strong>Sorted by last updated first</strong></p>
+    <p class="govuk-body"><strong>Sorted by last updated</strong></p>
     <% @documents.each do |document| %>
       <%= render Document::Index::SummaryCardComponent.new(document:) %>
     <% end %>

@@ -61,7 +61,10 @@ en:
       errors:
         confirm: Tick box to confirm details are correct
     hints:
-      instructions_to_publishers: Add information that’s important for anyone using or editing this block to know. For example, who to contact about the block if you have questions.
+      instructions_to_publishers_html: |
+        Add information that’s important for anyone using or editing this block to know. For example, who to contact about the block if you have questions. <br/>
+        Content in this field is not displayed on GOV.UK.
+      lead_organisation: Content in this field is not displayed on GOV.UK.
       contact:
         title: Explain the purpose of the contact, for example ‘Contact the Pension Service’, ‘Universal Credit helpline’
         description: For example, is there anything the user should know, prepare or include before using any contact method.
@@ -86,6 +89,14 @@ en:
       pension:
         rates:
           amount: "Enter an exact amount, with the currency symbol - for example: £122.50"
+    titles:
+      contact:
+        telephones:
+          telephone_numbers: Telephone number
+          video_relay_service: Video relay service
+          bsl_guidance: British Sign Language (BSL)
+          opening_hours: Opening hours
+          call_charges: Call charges
     labels:
       contact:
         addresses:
@@ -103,7 +114,7 @@ en:
             show_opening_hours: Add opening hours
             opening_hours: Opening hours
           video_relay_service:
-            show: Include Relay UK?
+            show: Add Relay UK
             prefix: Label
             telephone_number: Telephone number
           call_charges:
@@ -122,3 +133,6 @@ en:
   time:
     formats:
       long_ordinal: "%e %B %Y %l:%M%P"
+  buttons:
+    add: "Add %{item}"
+    add_another: "Add another %{item}"

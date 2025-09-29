@@ -8,6 +8,14 @@ class WorkflowTest < ActionDispatch::IntegrationTest
   include Rails.application.routes.url_helpers
   include IntegrationTestHelpers
 
+  def self.it_shows_the_correct_context
+    it "shows the correct context" do
+      visit workflow_path(id: edition.id, step:)
+
+      assert_selector ".govuk-caption-xl", text: edition.title
+    end
+  end
+
   let(:details) do
     {
       foo: "Foo text",
@@ -38,11 +46,13 @@ class WorkflowTest < ActionDispatch::IntegrationTest
       let(:step) { :edit_draft }
 
       describe "#show" do
-        it "shows the correct title and back link" do
+        it_shows_the_correct_context
+
+        it "shows the correct back link" do
           get workflow_path(id: edition.id, step:)
 
-          assert_equal assigns(:title), "Create #{schema.name}"
-          assert_equal assigns(:back_path), new_document_path
+          assert_equal I18n.t("edition.create.title", block_type: schema.name.downcase), assigns(:title)
+          assert_equal new_document_path, assigns(:back_path)
         end
       end
     end
@@ -51,6 +61,8 @@ class WorkflowTest < ActionDispatch::IntegrationTest
       let(:step) { :review }
 
       describe "#show" do
+        it_shows_the_correct_context
+
         it "shows the new edition for review" do
           get workflow_path(id: edition.id, step:)
 
@@ -98,6 +110,10 @@ class WorkflowTest < ActionDispatch::IntegrationTest
       let!(:schema) { stub_request_for_schema("pension", subschemas:) }
 
       describe "#show" do
+        let(:step) { "embedded_subschema_1" }
+
+        it_shows_the_correct_context
+
         it "shows the form for the first subschema" do
           get workflow_path(id: edition.id, step: "embedded_subschema_1")
 
@@ -148,6 +164,8 @@ class WorkflowTest < ActionDispatch::IntegrationTest
       let(:step) { :edit_draft }
 
       describe "#show" do
+        it_shows_the_correct_context
+
         it "shows the form" do
           get workflow_path(id: edition.id, step:)
 
@@ -157,8 +175,8 @@ class WorkflowTest < ActionDispatch::IntegrationTest
         it "shows the correct title and back link" do
           get workflow_path(id: edition.id, step:)
 
-          assert_equal assigns(:title), "Change #{schema.name}"
-          assert_equal assigns(:back_path), document_path(document)
+          assert_equal I18n.t("edition.update.title", block_type: schema.name.downcase), assigns(:title)
+          assert_equal document_path(document), assigns(:back_path)
         end
       end
 
@@ -241,6 +259,8 @@ class WorkflowTest < ActionDispatch::IntegrationTest
       let(:step) { :review_links }
 
       describe "#show" do
+        it_shows_the_correct_context
+
         it_returns_embedded_content do
           visit workflow_path(id: edition.id, step:)
         end
@@ -284,6 +304,8 @@ class WorkflowTest < ActionDispatch::IntegrationTest
       let(:step) { :internal_note }
 
       describe "#show" do
+        it_shows_the_correct_context
+
         it "shows the form" do
           get workflow_path(id: edition.id, step:)
 
@@ -312,6 +334,8 @@ class WorkflowTest < ActionDispatch::IntegrationTest
       let(:step) { :change_note }
 
       describe "#show" do
+        it_shows_the_correct_context
+
         it "shows the form" do
           get workflow_path(id: edition.id, step:)
 
@@ -497,6 +521,8 @@ class WorkflowTest < ActionDispatch::IntegrationTest
       let(:step) { :schedule_publishing }
 
       describe "#show" do
+        it_shows_the_correct_context
+
         it "shows the form" do
           get workflow_path(id: edition.id, step:)
 
@@ -558,6 +584,7 @@ class WorkflowTest < ActionDispatch::IntegrationTest
 
     describe "when on the review step" do
       let(:step) { :review }
+      it_shows_the_correct_context
 
       it "shows the correct context and confirmation text" do
         visit workflow_path(id: edition.id, step:)

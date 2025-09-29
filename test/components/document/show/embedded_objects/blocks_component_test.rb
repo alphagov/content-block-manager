@@ -15,8 +15,8 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
   let(:edition) { build(:edition, :pension) }
   let(:document) { build(:document, :pension) }
 
-  let(:schema) { stub("schema") }
-  let(:subschema) { stub("schema", embeddable_as_block?: embeddable_as_block) }
+  let(:schema) { stub("schema", block_type: "schema") }
+  let(:subschema) { stub("schema", embeddable_as_block?: embeddable_as_block, block_type: "subschema") }
   let(:schema_name) { "schema_name" }
 
   before do
@@ -124,6 +124,8 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
       render_inline component
 
       assert_selector ".app-c-embedded-objects-blocks-component .govuk-summary-card" do |wrapper|
+        wrapper.assert_selector ".govuk-summary-card__title", text: "Something block"
+
         wrapper.assert_selector ".govuk-summary-list__row", count: 1
 
         expect_summary_list_row(test_id: "else", key: "Something", value: "BLOCK_RESPONSE")
