@@ -48,6 +48,10 @@ Rails.application.routes.draw do
 
       # Host content preview actions
       get "host-content/:host_content_id/preview", to: "editions/host_content#preview", as: :host_content_preview
+
+      # Reorder actions
+      get :order, to: "editions/order#edit", as: :order_edit
+      put :order, to: "editions/order#update", as: :order_update
     end
   end
 end
