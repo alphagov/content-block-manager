@@ -61,7 +61,10 @@ en:
       errors:
         confirm: Tick box to confirm details are correct
     hints:
-      instructions_to_publishers: Add information that’s important for anyone using or editing this block to know. For example, who to contact about the block if you have questions.
+      instructions_to_publishers_html: |
+        Add information that’s important for anyone using or editing this block to know. For example, who to contact about the block if you have questions. <br/>
+        Content in this field is not displayed on GOV.UK.
+      lead_organisation: Content in this field is not displayed on GOV.UK.
       contact:
         title: Explain the purpose of the contact, for example ‘Contact the Pension Service’, ‘Universal Credit helpline’
         description: For example, is there anything the user should know, prepare or include before using any contact method.

@@ -9,6 +9,10 @@
   <%= hidden_field_tag "edition[document_attributes][block_type]",
                        @form.schema.block_type %>
 
+  <p class="govuk-body">
+    You can use these fields in GOV.UK content unless stated otherwise.
+  </p>
+
   <%= render "govuk_publishing_components/components/input", {
     label: {
       text: label_for_title(@form.schema.block_type),
@@ -31,6 +35,7 @@
     id: "#{parent_class}_lead_organisation_id",
     name: "edition[lead_organisation_id]",
     error_items: errors_for(@form.edition.errors, "lead_organisation_id".to_sym),
+    hint: I18n.t("edition.hints.lead_organisation", default: nil),
     include_blank: true,
     label: "Lead organisation",
     options: taggable_organisations_container([@form.edition.lead_organisation_id]),
@@ -41,7 +46,7 @@
       text: "Instructions to publishers (optional)",
     },
     name: "edition[instructions_to_publishers]",
-    hint: t("edition.hints.instructions_to_publishers"),
+    hint: t("edition.hints.instructions_to_publishers_html"),
     textarea_id: "#{parent_class}_instructions_to_publishers",
     value: @form.edition&.instructions_to_publishers,
     error_items: errors_for(@form.edition.errors, "instructions_to_publishers".to_sym),
