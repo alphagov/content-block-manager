@@ -4,6 +4,7 @@
   </div>
 
   <%= form_with url: order_update_edition_path(edition), method: :put do |form| %>
+    <%= form.hidden_field "redirect_path", value: redirect_path %>
     <% order.each_with_index do |item, index| %>
       <div class="app-c-content-block-manager-reorder-component__item">
         <%= form.hidden_field "order[]", value: item %>
@@ -40,7 +41,7 @@
       <div>
         <%= render "govuk_publishing_components/components/button", {
           text: "Cancel",
-          href: "#",
+          href: redirect_path,
           secondary_solid: true,
         } %>
       </div>

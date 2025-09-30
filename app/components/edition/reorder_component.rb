@@ -1,12 +1,13 @@
 class Edition::ReorderComponent < ViewComponent::Base
-  def initialize(edition:, order:)
+  def initialize(edition:, order:, redirect_path:)
     @edition = edition
     @order = order
+    @redirect_path = redirect_path
   end
 
 private
 
-  attr_reader :edition, :order
+  attr_reader :edition, :order, :redirect_path
 
   def move_path(position, item, direction)
     updated_order = order.dup
@@ -15,6 +16,6 @@ private
       new_position,
       updated_order.delete(item),
     )
-    order_edit_edition_path(edition, order: order_dup)
+    order_edit_edition_path(edition, order: updated_order, redirect_path:)
   end
 end
