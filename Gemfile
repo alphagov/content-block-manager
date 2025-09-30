@@ -13,6 +13,7 @@ gem "govuk_frontend_toolkit"
 gem "govuk_publishing_components"
 gem "govuk_sidekiq"
 gem "jbuilder"
+gem "jsbundling-rails"
 gem "json_schemer"
 gem "kaminari"
 gem "pg", "~> 1.6"
@@ -24,6 +25,7 @@ gem "record_tag_helper", require: false
 gem "rinku", require: "rails_rinku"
 gem "sentry-sidekiq"
 gem "sprockets-rails"
+gem "stimulus-rails"
 gem "terser"
 gem "thruster", require: false
 gem "transitions", require: ["transitions", "active_record/transitions"]
