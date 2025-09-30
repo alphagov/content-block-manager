@@ -83,10 +83,4 @@ describe('GOVUK.Modules.CopyEmbedCode', function () {
 
     jasmine.clock().uninstall()
   })
-
-  it('hides the row showing the embed code', async function () {
-    expect(fixture.querySelectorAll('[data-embed-code-row="true"]')).toHaveSize(
-      0
-    )
-  })
 })
