@@ -2,20 +2,20 @@ describe('GOVUK.Modules.CopyEmbedCode', function () {
   let fixture, embedCode, copyEmbedCode, copyLink, fakeTextarea
 
   beforeEach(function () {
-    embedCode = 'something'
+    embedCode = '{embed:content_block_contact:block-name}'
     fixture = document.createElement('div')
     fixture.setAttribute('data-embed-code', embedCode)
     fixture.innerHTML = `
-      <dt class="govuk-summary-list__key">Embed code</dt>
-      <dd class="govuk-summary-list__value">${embedCode}</dd>
-      <div class="test-delete-me govuk-summary-list__row govuk-summary-list__row--no-actions" data-embed-code-row="true">
-                <dt class="govuk-summary-list__key">
-                  Embed code
-                </dt>
-                <dt class="govuk-summary-list__value">
-                  1234
-                </dt>
-      </div>
+      <dt class="govuk-summary-list__value">
+        <div class="app-c-embedded-objects-blocks-component__content">
+          <div data-embed-code="{{embed:content_block_contact:block-name}}">
+            My block content
+          </div>
+        </div>
+        <p class="app-c-embedded-objects-blocks-component__embed-code">
+          {{embed:content_block_contact:block-name}}
+        </p>
+      </dt>
     `
     document.body.append(fixture)
 
