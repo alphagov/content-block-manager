@@ -12,6 +12,7 @@
       <meta name="govuk:content-id" content="<%= get_content_id(@edition) %>">
     <% end %>
     <%= javascript_include_tag "domain-config" %>
+    <%= javascript_include_tag "stimulus", defer: true, type: "module" %>
     <%= javascript_include_tag "govuk_publishing_components/load-analytics" %>
     <%= turbo_include_tags %>
   <% end %>

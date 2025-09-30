@@ -3,6 +3,9 @@ module EmbedCodeHelper
     {
       module: "copy-embed-code",
       "embed-code": document.embed_code_for_field(key),
+      "link-copy-code-value": document.embed_code_for_field(key),
+      controller: "link-copy",
+      "link-copy-target": "code",
     }
   end
 

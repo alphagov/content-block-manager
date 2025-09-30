@@ -29,6 +29,9 @@ private
     {
       module: "copy-embed-code",
       "embed-code": embed_code,
+      "link-copy-code-value": embed_code,
+      controller: "link-copy",
+      "link-copy-target": "code",
     }
   end
 end

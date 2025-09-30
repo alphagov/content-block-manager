@@ -40,4 +40,14 @@
       padding: 0;
     }
   }
+
+  .embed-code {
+    background: yellow;
+    margin-top: govuk-spacing(1);
+    padding-left: govuk-spacing(1);
+    padding-right: govuk-spacing(1);
+    position: absolute;
+    right: govuk-spacing(3);
+  }
+
 }
