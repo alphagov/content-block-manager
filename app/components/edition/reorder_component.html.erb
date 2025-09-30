@@ -17,7 +17,10 @@
             <%= render "govuk_publishing_components/components/button", {
               text: "Up",
               href: move_path(index, item, :up),
-              secondary_solid: true
+              secondary_solid: true,
+              data_attributes: {
+                testid: "#{item}-move-up-button",
+              },
             } %>
           <% end %>
 
@@ -25,7 +28,10 @@
             <%= render "govuk_publishing_components/components/button", {
               text: "Down",
               href: move_path(index, item, :down),
-              secondary_solid: true
+              secondary_solid: true,
+              data_attributes: {
+                testid: "#{item}-move-down-button",
+              },
             } %>
           <% end %>
         </div>
