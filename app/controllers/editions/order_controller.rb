@@ -10,7 +10,7 @@ class Editions::OrderController < BaseController
     @edition.details["order"] = params[:order]
     @edition.save!
 
-    redirect_to params[:redirect_path]
+    redirect_to "#{params[:redirect_path]}?preview=true"
   end
 
 private

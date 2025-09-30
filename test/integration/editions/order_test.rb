@@ -126,7 +126,7 @@ class Editions::OrderTest < ActionDispatch::IntegrationTest
 
       assert_equal order, edition.details["order"]
 
-      assert_redirected_to root_path
+      assert_redirected_to "#{root_path}?preview=true"
     end
   end
 end
