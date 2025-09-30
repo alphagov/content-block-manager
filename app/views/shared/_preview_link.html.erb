@@ -1,0 +1,13 @@
+<div id="preview_link_<%= edition.id %>">
+  <%= render("govuk_publishing_components/components/button", {
+    text: "Preview",
+    secondary_quiet: true,
+    title: "Preview block",
+    href: preview_edition_path(edition),
+    margin_bottom: false,
+    data_attributes: {
+      turbo_stream: true,
+      turbo: true,
+    },
+  }) %>
+</div>

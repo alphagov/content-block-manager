@@ -21,3 +21,7 @@ end
 def preview_block_button
   find("a[title='Preview block']", text: "Preview")
 end
+
+Then(/^I should see the review contact screen$/) do
+  assert_text "I confirm that the details I’ve put into the content block have been checked and are factually correct."
+end

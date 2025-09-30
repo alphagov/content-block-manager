@@ -232,7 +232,11 @@ Feature: Create a contact object
     Then I should see a preview of my contact
     When I click to close the preview
     Then I should see the add contact methods screen
-
+    When I save and continue
+    And I click on Preview
+    When I click to close the preview
+    Then I should see the review contact screen
+    
   @javascript
   Scenario: GDS editor creates a Contact with an email address and a telephone
     And I click on the "email_addresses" subschema
