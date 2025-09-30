@@ -40,10 +40,10 @@ class Editions::OrderTest < ActionDispatch::IntegrationTest
   let(:edition) { create(:edition, document:, details:) }
   let(:subschemas) do
     [
-      stub(:subschema, block_type: "email_addresses", group_order: 1),
-      stub(:subschema, block_type: "telephones", group_order: 2),
-      stub(:subschema, block_type: "addresses", group_order: 3),
-      stub(:subschema, block_type: "contact_links", group_order: 4),
+      stub(:subschema, id: "email_addresses", block_type: "email_addresses", group_order: 1),
+      stub(:subschema, id: "telephones", block_type: "telephones", group_order: 2),
+      stub(:subschema, id: "addresses", block_type: "addresses", group_order: 3),
+      stub(:subschema, id: "contact_links", block_type: "contact_links", group_order: 4),
     ]
   end
   let(:schema) { stub(:schema, subschemas: subschemas, body: {}) }
@@ -80,6 +80,19 @@ class Editions::OrderTest < ActionDispatch::IntegrationTest
       get order_edit_edition_path(edition)
 
       assert_equal assigns(:order), edition.details["order"]
+    end
+
+    it "returns an order if a custom order is set in the params" do
+      order = %w[
+        email_addresses.email_address_1
+        telephones.telephone_1
+        contact_links.contact_link_1
+        email_addresses.email_address_2
+        addresses.address_1
+      ]
+
+      get order_edit_edition_path(edition, order:)
+      assert_equal assigns(:order), order
     end
   end
 
