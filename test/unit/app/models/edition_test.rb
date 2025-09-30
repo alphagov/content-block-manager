@@ -381,31 +381,6 @@ class EditionTest < ActiveSupport::TestCase
     end
   end
 
-  describe "#clone_edition" do
-    it "clones an edition in draft with the specified creator" do
-      edition = create(
-        :edition, :pension,
-        title: "Some title",
-        details: { "my" => "details" },
-        state: "published",
-        change_note: "Something",
-        internal_change_note: "Something else"
-      )
-      creator = create(:user)
-
-      new_edition = edition.clone_edition(creator:)
-
-      assert_equal new_edition.state, "draft"
-      assert_nil new_edition.id
-      assert_equal new_edition.lead_organisation, edition.lead_organisation
-      assert_equal new_edition.creator, creator
-      assert_equal new_edition.title, edition.title
-      assert_equal new_edition.details, edition.details
-      assert_nil new_edition.change_note
-      assert_nil new_edition.internal_change_note
-    end
-  end
-
   describe "#has_entries_for_subschema_id?" do
     it "returns false when there are no entries for a subschema ID" do
       edition.details["foo"] = {}

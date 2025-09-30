@@ -3,6 +3,7 @@ class Edition < ApplicationRecord
   validates :change_note, presence: true, if: :major_change?, on: :change_note
   validates :major_change, inclusion: [true, false], on: :change_note
 
+  include Cloneable
   include Documentable
   include HasAuditTrail
   include HasAuthors
@@ -28,18 +29,6 @@ class Edition < ApplicationRecord
       details:,
       embed_code:,
     ).render
-  end
-
-  def clone_edition(creator:)
-    new_edition = dup
-    new_edition.assign_attributes(
-      state: "draft",
-      lead_organisation_id:,
-      creator: creator,
-      change_note: nil,
-      internal_change_note: nil,
-    )
-    new_edition
   end
 
   def add_object_to_details(object_type, body)
