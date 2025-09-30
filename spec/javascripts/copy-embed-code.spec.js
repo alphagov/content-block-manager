@@ -87,5 +87,12 @@ describe('GOVUK.Modules.CopyEmbedCode', function () {
 
       jasmine.clock().uninstall()
     })
+
+    it('adds an "embedCodeFlash" element to display the code temporarily', function () {
+      window.GOVUK.triggerEvent(copyLink, 'click')
+
+      const embedCodeFlash = fixture.querySelector('.embed-code-flash')
+      expect(embedCodeFlash.textContent).toEqual(embedCode)
+    })
   })
 })

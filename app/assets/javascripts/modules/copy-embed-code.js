@@ -5,6 +5,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
   function CopyEmbedCode(module) {
     this.module = module
     this.copyLink = this.createLink.bind(this)()
+    this.embedCodeFlash = this.createEmbedCodeFlash.bind(this)()
   }
 
   CopyEmbedCode.prototype.init = function () {
@@ -38,11 +39,26 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
     return copyLink
   }
 
+  CopyEmbedCode.prototype.createEmbedCodeFlash = function () {
+    const embedCodeFlash = document.createElement('div')
+    embedCodeFlash.textContent = this.module.dataset.embedCode
+    embedCodeFlash.classList.add('embed-code-flash')
+
+    return embedCodeFlash
+  }
+
   CopyEmbedCode.prototype.copyCode = function (e) {
     e.preventDefault()
 
+    this.showEmbedCode()
     const embedCode = this.module.dataset.embedCode
     this.writeToClipboard(embedCode).then(this.copySuccess.bind(this))
+  }
+
+  CopyEmbedCode.prototype.showEmbedCode = function () {
+    this.module
+      .querySelector('.govuk-link__copy-link')
+      .after(this.embedCodeFlash)
   }
 
   CopyEmbedCode.prototype.copySuccess = function () {
