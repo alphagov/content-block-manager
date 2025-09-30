@@ -1,0 +1,20 @@
+.app-views-editions-reorder {
+  &__item {
+    border: 1px solid $govuk-border-colour;
+    padding: govuk-spacing(4);
+    margin-top: govuk-spacing(4);
+    margin-bottom: govuk-spacing(4);
+    position: relative;
+  }
+
+  &__buttons {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    margin-right: govuk-spacing(4);
+
+    .govuk-button {
+      margin-right: govuk-spacing(2);
+    }
+  }
+}
