@@ -120,11 +120,13 @@ class Editions::OrderTest < ActionDispatch::IntegrationTest
         addresses.address_1
       ]
 
-      put order_update_edition_path(edition), params: { order: }
+      put order_update_edition_path(edition), params: { order:, redirect_path: root_path }
 
       edition.reload
 
-      assert_equal edition.details["order"], order
+      assert_equal order, edition.details["order"]
+
+      assert_redirected_to root_path
     end
   end
 end

@@ -9,6 +9,8 @@ class Editions::OrderController < BaseController
   def update
     @edition.details["order"] = params[:order]
     @edition.save!
+
+    redirect_to params[:redirect_path]
   end
 
 private
