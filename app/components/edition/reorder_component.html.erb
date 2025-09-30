@@ -1,0 +1,16 @@
+<div class="app-c-content-block-manager-reorder-component">
+  <div class="govspeak">
+    <%= edition.clone_without_blocks.render %>
+  </div>
+
+  <%= form_with url: order_update_edition_path(edition), method: :put do |form| %>
+    <% order.each do |item| %>
+      <div class="app-c-content-block-manager-reorder-component__item">
+        <%= form.hidden_field "order[]", value: item %>
+        <div class="govspeak">
+          <%= edition.clone_with_block(item).render %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>
