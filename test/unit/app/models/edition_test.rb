@@ -211,6 +211,19 @@ class EditionTest < ActiveSupport::TestCase
 
       assert_equal edition.render(embed_code), rendered_response
     end
+
+    it "uses the document's embed code as default if none is provided" do
+      ContentBlockTools::ContentBlock.expects(:new)
+                                     .with(
+                                       document_type: "content_block_#{document.block_type}",
+                                       content_id: document.content_id,
+                                       title:,
+                                       details:,
+                                       embed_code: document.embed_code,
+                                     ).returns(stub_block)
+
+      assert_equal edition.render, rendered_response
+    end
   end
 
   describe "#add_object_to_details" do
