@@ -2,6 +2,7 @@ class Editions::OrderController < BaseController
   include Workflow::Steps
 
   def edit
+    @redirect_path = params[:redirect_path] || request.referer
     @order = params[:order] || @edition.details["order"] || default_order
   end
 

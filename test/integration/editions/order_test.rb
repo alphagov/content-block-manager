@@ -94,6 +94,20 @@ class Editions::OrderTest < ActionDispatch::IntegrationTest
       get order_edit_edition_path(edition, order:)
       assert_equal assigns(:order), order
     end
+
+    it "sets the redirect_path from the referrer" do
+      referrer = "http://example.com/referrers/here"
+
+      get order_edit_edition_path(edition), headers: { "HTTP_REFERER" => referrer }
+      assert_equal assigns(:redirect_path), referrer
+    end
+
+    it "sets the redirect_path from the params if present" do
+      referrer = "http://example.com/referrers/here"
+
+      get order_edit_edition_path(edition, redirect_path: referrer), headers: { "HTTP_REFERER" => "http://example.com/referrers/something/else" }
+      assert_equal assigns(:redirect_path), referrer
+    end
   end
 
   describe "#update" do
