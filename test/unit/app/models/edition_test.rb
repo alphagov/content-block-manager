@@ -394,4 +394,31 @@ class EditionTest < ActiveSupport::TestCase
       assert edition.has_entries_for_subschema_id?("foo")
     end
   end
+
+  describe "#has_entries_for_multiple_subschemas?" do
+    let(:subschemas) { [stub(:subschema, id: "foo"), stub(:subschema, id: "bar")] }
+    let(:schema) { stub(:schema, subschemas:) }
+    let(:document) { build(:document, schema:) }
+    let(:edition) { build(:edition, document:) }
+
+    it "returns true when an edition has entries for multiple subschemas" do
+      edition.stubs(:has_entries_for_subschema_id?).with(subschemas[0].id).returns(true)
+      edition.stubs(:has_entries_for_subschema_id?).with(subschemas[1].id).returns(true)
+
+      assert edition.has_entries_for_multiple_subschemas?
+    end
+
+    it "returns false when an edition has entries for one subschema" do
+      edition.stubs(:has_entries_for_subschema_id?).with(subschemas[0].id).returns(false)
+      edition.stubs(:has_entries_for_subschema_id?).with(subschemas[1].id).returns(true)
+
+      assert_not edition.has_entries_for_multiple_subschemas?
+    end
+
+    it "returns false when an edition has entries for no subschemas" do
+      edition.stubs(:has_entries_for_subschema_id?).returns(false)
+
+      assert_not edition.has_entries_for_multiple_subschemas?
+    end
+  end
 end

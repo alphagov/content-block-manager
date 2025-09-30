@@ -59,6 +59,12 @@ class Edition < ApplicationRecord
     details[subschema_id].present?
   end
 
+  def has_entries_for_multiple_subschemas?
+    schema = document.schema
+    subschemas = schema.subschemas
+    subschemas.select { |subschema| has_entries_for_subschema_id?(subschema.id) }.count > 1
+  end
+
 private
 
   def remove_destroyed(item)
