@@ -37,10 +37,11 @@ describe('GOVUK.Modules.CopyEmbedCode', function () {
     expect(copyLink.textContent).toBe('Copy code')
   })
 
-  it('should remove the .govuk-summary-list__row--no-actions class', function () {
-    expect(fixture.classList).not.toContain(
-      'govuk-summary-list__row--no-actions'
+  it('should remove the visible embed codes which are required for non-JS users', function () {
+    const ele = fixture.querySelector(
+      '.app-c-embedded-objects-blocks-component__embed-code'
     )
+    expect(ele).not.toEqual(jasmine.anything())
   })
 
   it('should create and populate a textarea', function () {

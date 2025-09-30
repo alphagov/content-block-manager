@@ -14,7 +14,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
 
     this.module.append(dd)
     this.module.classList.remove('govuk-summary-list__row--no-actions')
-    this.removeEmbedCodeCardRows()
+    this.removeVisibleCodesRequiredOnlyIfJsDisabled()
   }
 
   CopyEmbedCode.prototype.createLink = function () {
@@ -79,12 +79,16 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
     })
   }
 
-  CopyEmbedCode.prototype.removeEmbedCodeCardRows = function () {
-    const cardRows = document.querySelectorAll('[data-embed-code-row="true"]')
-    cardRows.forEach((row) => {
-      row.remove()
-    })
-  }
+  CopyEmbedCode.prototype.removeVisibleCodesRequiredOnlyIfJsDisabled =
+    function () {
+      this.module
+        .querySelectorAll(
+          '.app-c-embedded-objects-blocks-component__embed-code'
+        )
+        .forEach((element) => {
+          element.remove()
+        })
+    }
 
   Modules.CopyEmbedCode = CopyEmbedCode
 })(window.GOVUK.Modules)
