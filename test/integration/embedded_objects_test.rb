@@ -122,7 +122,7 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
           edition,
           group: "something",
         )
-        assert_equal I18n.t("activerecord.errors.models/document.attributes.block_type.blank"), flash[:error]
+        assert_equal I18n.t("activerecord.errors.models.document.attributes.block_type.blank"), flash[:error]
       end
     end
   end

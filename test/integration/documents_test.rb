@@ -103,7 +103,7 @@ class DocumentsTest < ActionDispatch::IntegrationTest
       follow_redirect!
 
       assert_equal new_document_path, path
-      assert_equal I18n.t("activerecord.errors.models/document.attributes.block_type.blank"), flash[:error]
+      assert_equal I18n.t("activerecord.errors.models.document.attributes.block_type.blank"), flash[:error]
     end
 
     it "redirects when the block type is specified" do
