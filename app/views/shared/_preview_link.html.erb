@@ -11,3 +11,18 @@
     },
   }) %>
 </div>
+
+<% if params[:preview] %>
+  <script>
+    // If the preview param is set, load the preview in the preview pane
+    window.addEventListener('load', function () {
+      fetch('<%= preview_edition_path(edition) %>', {
+        headers: {
+          Accept: "text/vnd.turbo-stream.html",
+        },
+      })
+        .then(r => r.text())
+        .then(html => Turbo.renderStreamMessage(html))
+    })
+  </script>
+<% end %>
