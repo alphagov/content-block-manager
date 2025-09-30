@@ -41,7 +41,7 @@
       <div>
         <%= render "govuk_publishing_components/components/button", {
           text: "Cancel",
-          href: redirect_path,
+          href: "#{redirect_path}?preview=true",
           secondary_solid: true,
         } %>
       </div>

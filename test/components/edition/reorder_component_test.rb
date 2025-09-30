@@ -74,7 +74,7 @@ class Edition::ReorderComponentTest < ViewComponent::TestCase
   it "renders the cancel button with the redirect path" do
     render_inline component
 
-    assert_selector "a[href='#{redirect_path}']", text: "Cancel"
+    assert_selector "a[href='#{redirect_path}?preview=true']", text: "Cancel"
   end
 
   def assert_button_exists(wrapper:, label:, order:)
