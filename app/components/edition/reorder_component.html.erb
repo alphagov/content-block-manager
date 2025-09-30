@@ -4,11 +4,29 @@
   </div>
 
   <%= form_with url: order_update_edition_path(edition), method: :put do |form| %>
-    <% order.each do |item| %>
+    <% order.each_with_index do |item, index| %>
       <div class="app-c-content-block-manager-reorder-component__item">
         <%= form.hidden_field "order[]", value: item %>
         <div class="govspeak">
           <%= edition.clone_with_block(item).render %>
+        </div>
+
+        <div class="app-c-content-block-manager-reorder-component__buttons">
+          <% unless index == 0 %>
+            <%= render "govuk_publishing_components/components/button", {
+              text: "Up",
+              href: move_path(index, item, :up),
+              secondary_solid: true
+            } %>
+          <% end %>
+
+          <% unless index == @order.length - 1 %>
+            <%= render "govuk_publishing_components/components/button", {
+              text: "Down",
+              href: move_path(index, item, :down),
+              secondary_solid: true
+            } %>
+          <% end %>
         </div>
       </div>
     <% end %>
