@@ -65,6 +65,15 @@ class Edition < ApplicationRecord
     subschemas.select { |subschema| has_entries_for_subschema_id?(subschema.id) }.count > 1
   end
 
+  def default_order
+    document.schema.subschemas.map { |subschema|
+      item_keys = details[subschema.block_type]&.keys || []
+      item_keys.map do |item_key|
+        "#{subschema.block_type}.#{item_key}"
+      end
+    }.flatten
+  end
+
 private
 
   def remove_destroyed(item)

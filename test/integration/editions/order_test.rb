@@ -55,16 +55,10 @@ class Editions::OrderTest < ActionDispatch::IntegrationTest
   end
 
   describe "#edit" do
-    it "returns a default order if the edition does not have a custom order set" do
+    it "returns the default order if the edition does not have a custom order set" do
       get order_edit_edition_path(edition)
 
-      assert_equal assigns(:order), %w[
-        email_addresses.email_address_1
-        email_addresses.email_address_2
-        telephones.telephone_1
-        addresses.address_1
-        contact_links.contact_link_1
-      ]
+      assert_equal assigns(:order), edition.default_order
     end
 
     it "returns an order if the edition has a custom order set" do

@@ -421,4 +421,59 @@ class EditionTest < ActiveSupport::TestCase
       assert_not edition.has_entries_for_multiple_subschemas?
     end
   end
+
+  describe "#default_order" do
+    let(:details) do
+      {
+        "telephones" => {
+          "telephone_1" => {
+            "something" => "here",
+          },
+        },
+        "addresses" => {
+          "address_1" => {
+            "something" => "here",
+          },
+        },
+        "email_addresses" => {
+          "email_address_1" => {
+            "something" => "here",
+          },
+          "email_address_2" => {
+            "something" => "here",
+          },
+        },
+        "contact_links" => {
+          "contact_link_1" => {
+            "something" => "here",
+          },
+        },
+      }
+    end
+    let(:edition) { create(:edition, document:, details:) }
+    let(:subschemas) do
+      [
+        stub(:subschema, id: "email_addresses", block_type: "email_addresses", group_order: 1),
+        stub(:subschema, id: "telephones", block_type: "telephones", group_order: 2),
+        stub(:subschema, id: "addresses", block_type: "addresses", group_order: 3),
+        stub(:subschema, id: "contact_links", block_type: "contact_links", group_order: 4),
+      ]
+    end
+    let(:schema) { stub(:schema, subschemas: subschemas, body: {}) }
+    let(:document) { build(:document, schema:) }
+
+    before do
+      document.stubs(:schema).returns(schema)
+    end
+
+    it "returns the default order" do
+      assert_equal edition.default_order, %w[
+        email_addresses.email_address_1
+        email_addresses.email_address_2
+        telephones.telephone_1
+        addresses.address_1
+        contact_links.contact_link_1
+      ]
+    end
+  end
 end
