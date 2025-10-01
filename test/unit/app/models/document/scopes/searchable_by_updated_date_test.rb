@@ -3,7 +3,7 @@ require "test_helper"
 class SearchableByUpdatedDateTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
 
-  describe ".from_date" do
+  describe ".last_updated_after" do
     test "finds documents updated from and including this date" do
       filter_date_time = 1.day.before(Time.zone.now)
       matching_document_1 = create(:document, :pension)
@@ -23,11 +23,11 @@ class SearchableByUpdatedDateTest < ActiveSupport::TestCase
       not_matching_document.latest_edition = not_matching_edition
       not_matching_document.save!
 
-      assert_same_elements [matching_document_1, matching_document_2], Document.from_date(filter_date_time)
+      assert_same_elements [matching_document_1, matching_document_2], Document.last_updated_after(filter_date_time)
     end
   end
 
-  describe ".to_date" do
+  describe ".last_updated_before" do
     test "finds documents updated up to and including this date" do
       filter_date_time = 1.day.before(Time.zone.now)
 
@@ -48,7 +48,7 @@ class SearchableByUpdatedDateTest < ActiveSupport::TestCase
       not_matching_document.latest_edition = not_matching_edition
       not_matching_document.save!
 
-      assert_same_elements [matching_document_1, matching_document_2], Document.to_date(filter_date_time)
+      assert_same_elements [matching_document_1, matching_document_2], Document.last_updated_before(filter_date_time)
     end
   end
 end

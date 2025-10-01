@@ -78,10 +78,9 @@ private
     documents = documents.where(id: ids_with_keyword(@filters[:keyword])) if @filters[:keyword].present?
     documents = documents.where(block_type: @filters[:block_type]) if @filters[:block_type].present?
     documents = documents.with_lead_organisation(@filters[:lead_organisation]) if @filters[:lead_organisation].present?
-    documents = documents.from_date(from_date) if valid? && from_date
-    documents = documents.to_date(to_date) if valid? && to_date
+    documents = documents.last_updated_after(from_date) if valid? && from_date
+    documents = documents.last_updated_before(to_date) if valid? && to_date
     documents.order("editions.updated_at DESC")
-    documents.distinct
   end
 
   def ids_with_keyword(filter)

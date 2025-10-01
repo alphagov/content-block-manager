@@ -13,7 +13,6 @@ class DocumentFilterTest < ActiveSupport::TestCase
         .returns(document_scope_mock)
       document_scope_mock.expects(:live).returns(document_scope_mock)
       document_scope_mock.expects(:joins).with(:latest_edition).returns(document_scope_mock)
-      document_scope_mock.expects(:distinct).returns(document_scope_mock)
       document_scope_mock.expects(:order).with("editions.updated_at DESC").returns(document_scope_mock)
       document_scope_mock.expects(:per).with(Document::DocumentFilter::DEFAULT_PAGE_SIZE).returns([])
     end
@@ -111,7 +110,7 @@ class DocumentFilterTest < ActiveSupport::TestCase
 
           expected_date_time = Time.zone.local(2025, 2, 1)
 
-          document_scope_mock.expects(:from_date).with(expected_date_time).returns(document_scope_mock)
+          document_scope_mock.expects(:last_updated_after).with(expected_date_time).returns(document_scope_mock)
           Document::DocumentFilter.new(
             {
               last_updated_from: { "3i" => "1", "2i" => "2", "1i" => "2025" },
@@ -124,7 +123,7 @@ class DocumentFilterTest < ActiveSupport::TestCase
 
           expected_date_time = Time.zone.local(2026, 4, 3).end_of_day
 
-          document_scope_mock.expects(:to_date).with(expected_date_time).returns(document_scope_mock)
+          document_scope_mock.expects(:last_updated_before).with(expected_date_time).returns(document_scope_mock)
           Document::DocumentFilter.new(
             {
               last_updated_to: { "3i" => "3", "2i" => "4", "1i" => "2026" },
