@@ -1,6 +1,6 @@
 class Document::Show::DocumentTimeline::EmbeddedObject::FieldChangesTableComponent < ViewComponent::Base
   def initialize(object_id:, field_diff:, subschema_id:, edition:)
-    @object_id = object_id
+    @object_identifier = object_id
     @field_diff = field_diff
     @subschema_id = subschema_id
     @edition = edition
@@ -12,7 +12,7 @@ class Document::Show::DocumentTimeline::EmbeddedObject::FieldChangesTableCompone
 
 private
 
-  attr_reader :object_id, :subschema_id, :edition
+  attr_reader :object_identifier, :subschema_id, :edition
 
   def rows
     field_diff.map do |field, diffs|
@@ -25,7 +25,7 @@ private
   end
 
   def caption
-    edition.details.dig(subschema_id, object_id, "title") || object_id.underscore.humanize
+    edition.details.dig(subschema_id, object_identifier, "title") || object_identifier.underscore.humanize
   end
 
   def flatten_hash_from(hash)
