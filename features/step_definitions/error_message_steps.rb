@@ -1,5 +1,5 @@
 Then("I should see a message that I need to confirm the details are correct") do
-  assert_text I18n.t("review_page.errors.confirm"), minimum: 2
+  assert_text I18n.t("edition.review_page.errors.confirm"), minimum: 2
 end
 
 Then("I should see a permissions error") do
