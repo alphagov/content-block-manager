@@ -84,7 +84,6 @@ Feature: Search for a content object
     And I click to view results
     And "2" content blocks are returned in total
 
-  @wip
   Scenario: GDS Editor searches for a content object by lead organisation
     When I visit the Content Block Manager home page
     And I select the lead organisation "Ministry of Example"
