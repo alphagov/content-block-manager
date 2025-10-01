@@ -221,8 +221,9 @@ Then("I should see the details for all documents") do
   end
 end
 
-Then("I should see the details for all documents from my organisation") do
-  Document.with_lead_organisation(@user.organisation.id).each do |document|
+Then("I should see the details for all documents from {string}") do |organisation_name|
+  organisation = Organisation.all.find { |org| org.name == organisation_name }
+  Document.with_lead_organisation(organisation.id).each do |document|
     should_show_summary_title_for_generic_content_block(
       document.title,
     )
@@ -451,4 +452,14 @@ end
 
 And(/^I click save$/) do
   click_button "Save"
+end
+
+When("the block {string} has been updated") do |title|
+  document = Edition.find_by(title:).document
+  document.latest_edition.updated_at = Time.zone.now
+  document.latest_edition.save!
+end
+
+Then("the block {string} should appear as the first item in the list") do |title|
+  expect(find("div[data-testid='homepage-item-0']")).to have_content(title)
 end
