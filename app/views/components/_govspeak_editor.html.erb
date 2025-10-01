@@ -16,15 +16,14 @@
   data_attributes[:module] = data_attributes[:module].strip
 
   textarea_data_attributes ||= {}
-  textarea_data_attributes[:module] ||= ""
-  textarea_data_attributes[:module] << " paste-html-to-govspeak"
+  textarea_data_attributes[:module] = "#{textarea_data_attributes[:module]} paste-html-to-govspeak"
   textarea_data_attributes[:module] = textarea_data_attributes[:module].strip
 
   preview_button_data_attributes ||= {}
   preview_button_data_attributes["content-target"] = "##{id}"
 
   classes = "app-c-govspeak-editor govuk-form-group"
-  classes << " govuk-form-group--error" if error_items
+  classes += " govuk-form-group--error" if error_items
 
   dir = right_to_left ? "rtl" : nil
 %>
