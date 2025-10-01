@@ -221,8 +221,9 @@ Then("I should see the details for all documents") do
   end
 end
 
-Then("I should see the details for all documents from my organisation") do
-  Document.with_lead_organisation(@user.organisation.id).each do |document|
+Then("I should see the details for all documents from {string}") do |organisation_name|
+  organisation = Organisation.all.find { |org| org.name == organisation_name }
+  Document.with_lead_organisation(organisation.id).each do |document|
     should_show_summary_title_for_generic_content_block(
       document.title,
     )
