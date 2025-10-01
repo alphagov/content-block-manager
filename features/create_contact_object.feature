@@ -263,7 +263,8 @@ Feature: Create a contact object
     And I click on Preview
     And I click on reorder
     And I click to move the contact form to the top
-    And I click to save the order
+    Then I should see the contact form moved to the top
+    When I click to save the order
     Then I should see a preview of my contact
     And the contact form should be at the top
     When I click to close the preview

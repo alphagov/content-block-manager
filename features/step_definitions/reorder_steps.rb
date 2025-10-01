@@ -15,3 +15,10 @@ And(/^the contact form should be at the top$/) do
 
   assert_equal "Contact Form", items[0].find_all(".content-block__contact-key")[0].text
 end
+
+Then(/^I should see the contact form moved to the top$/) do
+  Capybara.current_session.driver.with_playwright_page do |page|
+    item = page.get_by_testid("reorder-item-0")
+    expect(item).to playwright_matchers.have_text("Contact Form")
+  end
+end
