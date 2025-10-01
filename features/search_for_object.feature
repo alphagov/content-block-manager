@@ -19,7 +19,7 @@ Feature: Search for a content object
     }
     """
     And 1 content blocks of type pension have been created with the fields:
-      | title |  "a pension" |
+      | title |  a pension |
       | description  | ABC123 |
       | organisation | Department of Placeholder |
       | instructions_to_publishers | for GDS use only |
@@ -105,18 +105,23 @@ Feature: Search for a content object
     Then I should see a message that the filter dates are invalid
 
   Scenario: GDS Editor can view more than one page
-    When 15 content blocks of type contact have been created with the fields:
-      | title | page 1 edition |
-      | description  | ABC123 |
-      | organisation | Ministry of Example |
-    And 1 content blocks of type pension have been created with the fields:
+    When 1 content blocks of type pension have been created with the fields:
       | title |  page 2 edition |
       | description  | ABC123 |
       | organisation | Department of Placeholder |
       | instructions_to_publishers | for GDS use only |
+    And 15 content blocks of type contact have been created with the fields:
+      | title | page 1 edition |
+      | description  | ABC123 |
+      | organisation | Ministry of Example |
     When I visit the Content Block Manager home page
     And I enter the keyword "ABC123"
     And I click to view results
     Then I should see the content block with title "page 1 edition" returned
     And I click on page 2
     Then I should see the content block with title "page 2 edition" returned
+
+  Scenario: Blocks are ordered by most recently updated
+    When the block "example search title" has been updated
+    And I visit the Content Block Manager home page
+    Then the block "example search title" should appear as the first item in the list

@@ -452,3 +452,13 @@ end
 And(/^I click save$/) do
   click_button "Save"
 end
+
+When("the block {string} has been updated") do |title|
+  document = Edition.find_by(title:).document
+  document.latest_edition.updated_at = Time.zone.now
+  document.latest_edition.save!
+end
+
+Then("the block {string} should appear as the first item in the list") do |title|
+  expect(find("div[data-testid='homepage-item-0']")).to have_content(title)
+end

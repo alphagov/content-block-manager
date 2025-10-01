@@ -41,8 +41,10 @@
     <h2 class="govuk-heading-m"><%= pluralize(@documents.total_count, "result") %></h2>
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
     <p class="govuk-body"><strong>Sorted by last updated</strong></p>
-    <% @documents.each do |document| %>
-      <%= render Document::Index::SummaryCardComponent.new(document:) %>
+    <% @documents.each_with_index do |document, index| %>
+      <div data-testid="homepage-item-<%= index %>">
+        <%= render Document::Index::SummaryCardComponent.new(document:) %>
+      </div>
     <% end %>
 
     <%= paginate(@documents, theme: "govuk_paginator") %>
