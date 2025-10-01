@@ -2,7 +2,6 @@ require "test_helper"
 require "capybara/rails"
 
 class EditionsTest < ActionDispatch::IntegrationTest
-  include Capybara::DSL
   extend Minitest::Spec::DSL
   include Rails.application.routes.url_helpers
   include IntegrationTestHelpers

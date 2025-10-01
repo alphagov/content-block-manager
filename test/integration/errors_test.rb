@@ -2,7 +2,6 @@ require "test_helper"
 require "capybara/rails"
 
 class Admin::ErrorsControllerTest < ActionDispatch::IntegrationTest
-  include Capybara::DSL
   extend Minitest::Spec::DSL
 
   setup do
