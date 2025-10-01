@@ -211,6 +211,19 @@ class EditionTest < ActiveSupport::TestCase
 
       assert_equal edition.render(embed_code), rendered_response
     end
+
+    it "uses the document's embed code as default if none is provided" do
+      ContentBlockTools::ContentBlock.expects(:new)
+                                     .with(
+                                       document_type: "content_block_#{document.block_type}",
+                                       content_id: document.content_id,
+                                       title:,
+                                       details:,
+                                       embed_code: document.embed_code,
+                                     ).returns(stub_block)
+
+      assert_equal edition.render, rendered_response
+    end
   end
 
   describe "#add_object_to_details" do
@@ -368,31 +381,6 @@ class EditionTest < ActiveSupport::TestCase
     end
   end
 
-  describe "#clone_edition" do
-    it "clones an edition in draft with the specified creator" do
-      edition = create(
-        :edition, :pension,
-        title: "Some title",
-        details: { "my" => "details" },
-        state: "published",
-        change_note: "Something",
-        internal_change_note: "Something else"
-      )
-      creator = create(:user)
-
-      new_edition = edition.clone_edition(creator:)
-
-      assert_equal new_edition.state, "draft"
-      assert_nil new_edition.id
-      assert_equal new_edition.lead_organisation, edition.lead_organisation
-      assert_equal new_edition.creator, creator
-      assert_equal new_edition.title, edition.title
-      assert_equal new_edition.details, edition.details
-      assert_nil new_edition.change_note
-      assert_nil new_edition.internal_change_note
-    end
-  end
-
   describe "#has_entries_for_subschema_id?" do
     it "returns false when there are no entries for a subschema ID" do
       edition.details["foo"] = {}
@@ -404,6 +392,88 @@ class EditionTest < ActiveSupport::TestCase
       edition.details["foo"] = { "something" => { "foo" => "bar" } }
 
       assert edition.has_entries_for_subschema_id?("foo")
+    end
+  end
+
+  describe "#has_entries_for_multiple_subschemas?" do
+    let(:subschemas) { [stub(:subschema, id: "foo"), stub(:subschema, id: "bar")] }
+    let(:schema) { stub(:schema, subschemas:) }
+    let(:document) { build(:document, schema:) }
+    let(:edition) { build(:edition, document:) }
+
+    it "returns true when an edition has entries for multiple subschemas" do
+      edition.stubs(:has_entries_for_subschema_id?).with(subschemas[0].id).returns(true)
+      edition.stubs(:has_entries_for_subschema_id?).with(subschemas[1].id).returns(true)
+
+      assert edition.has_entries_for_multiple_subschemas?
+    end
+
+    it "returns false when an edition has entries for one subschema" do
+      edition.stubs(:has_entries_for_subschema_id?).with(subschemas[0].id).returns(false)
+      edition.stubs(:has_entries_for_subschema_id?).with(subschemas[1].id).returns(true)
+
+      assert_not edition.has_entries_for_multiple_subschemas?
+    end
+
+    it "returns false when an edition has entries for no subschemas" do
+      edition.stubs(:has_entries_for_subschema_id?).returns(false)
+
+      assert_not edition.has_entries_for_multiple_subschemas?
+    end
+  end
+
+  describe "#default_order" do
+    let(:details) do
+      {
+        "telephones" => {
+          "telephone_1" => {
+            "something" => "here",
+          },
+        },
+        "addresses" => {
+          "address_1" => {
+            "something" => "here",
+          },
+        },
+        "email_addresses" => {
+          "email_address_1" => {
+            "something" => "here",
+          },
+          "email_address_2" => {
+            "something" => "here",
+          },
+        },
+        "contact_links" => {
+          "contact_link_1" => {
+            "something" => "here",
+          },
+        },
+      }
+    end
+    let(:edition) { create(:edition, document:, details:) }
+    let(:subschemas) do
+      [
+        stub(:subschema, id: "email_addresses", block_type: "email_addresses", group_order: 1),
+        stub(:subschema, id: "telephones", block_type: "telephones", group_order: 2),
+        stub(:subschema, id: "addresses", block_type: "addresses", group_order: 3),
+        stub(:subschema, id: "contact_links", block_type: "contact_links", group_order: 4),
+      ]
+    end
+    let(:schema) { stub(:schema, subschemas: subschemas, body: {}) }
+    let(:document) { build(:document, schema:) }
+
+    before do
+      document.stubs(:schema).returns(schema)
+    end
+
+    it "returns the default order" do
+      assert_equal edition.default_order, %w[
+        email_addresses.email_address_1
+        email_addresses.email_address_2
+        telephones.telephone_1
+        addresses.address_1
+        contact_links.contact_link_1
+      ]
     end
   end
 end

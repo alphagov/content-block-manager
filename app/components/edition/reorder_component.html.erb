@@ -1,0 +1,60 @@
+<turbo-frame id="reorder-component-<%= edition.id %>">
+  <div class="app-c-content-block-manager-reorder-component">
+    <div class="govspeak">
+      <%= edition.clone_without_blocks.render %>
+    </div>
+
+    <%= form_with url: order_update_edition_path(edition), method: :put do |form| %>
+      <%= form.hidden_field "redirect_path", value: redirect_path %>
+      <% order.each_with_index do |item, position| %>
+        <div class="app-c-content-block-manager-reorder-component__item" data-testid="reorder-item-<%= position %>">
+          <%= form.hidden_field "order[]", value: item %>
+          <div class="govspeak">
+            <%= edition.clone_with_block(item).render %>
+          </div>
+
+          <div class="app-c-content-block-manager-reorder-component__buttons">
+            <% unless position == 0 %>
+              <%= render "govuk_publishing_components/components/button", {
+                text: "Up",
+                href: move_path(position, item, :up),
+                secondary_solid: true,
+                data_attributes: {
+                  testid: "#{item}-move-up-button",
+                  turbo: true,
+                },
+              } %>
+            <% end %>
+
+            <% unless position == @order.length - 1 %>
+              <%= render "govuk_publishing_components/components/button", {
+                text: "Down",
+                href: move_path(position, item, :down),
+                secondary_solid: true,
+                data_attributes: {
+                  testid: "#{item}-move-down-button",
+                  turbo: true,
+                },
+              } %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="govuk-button-group govuk-!-margin-bottom-6">
+        <div>
+          <%= render "govuk_publishing_components/components/button", {
+            text: "Save order",
+          } %>
+        </div>
+        <div>
+          <%= render "govuk_publishing_components/components/button", {
+            text: "Cancel",
+            href: "#{redirect_path}?preview=true",
+            secondary_solid: true,
+          } %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</turbo-frame>

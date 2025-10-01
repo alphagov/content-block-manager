@@ -14,6 +14,13 @@ Feature: Create a contact object
        "properties":{
           "description": {
             "type": "string"
+          },
+          "order": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^addresses|contact_links|email_addresses|telephones.[a-z0-9]+(?:-[a-z0-9]+)*$"
+            }
           }
        }
     }
@@ -236,7 +243,37 @@ Feature: Create a contact object
     And I click on Preview
     When I click to close the preview
     Then I should see the review contact screen
-    
+
+  @javascript
+  Scenario: GDS editor can reorder a Contact
+    When I click on the "email_addresses" subschema
+    And I complete the "email_address" form with the following fields:
+      | title     | label         | email_address    | subject  | body             |
+      | Email us  | Send an email | foo@example.com  | Your ref | Name and address |
+    And I click to add another "contact_method"
+    And I click on the "contact_links" subschema
+    And I complete the "contact_link" form with the following fields:
+      | title              | label      | url                | description |
+      | Contact Form       | Contact Us | http://example.com | Description |
+    And I click to add another "contact_method"
+    And I click on the "addresses" subschema
+    And I complete the "addresses" form with the following fields:
+      | recipient  | street_address  | town_or_city | postal_code |
+      | Recipient  | 123 Fake Street | Springfield  | ABC 123     |
+    And I click on Preview
+    And I click on reorder
+    And I click to move the contact form to the top
+    Then I should see the contact form moved to the top
+    When I click to save the order
+    Then I should see a preview of my contact
+    And the contact form should be at the top
+    When I click to close the preview
+    And I save and continue
+    And I review and confirm my answers are correct
+    Then I should be taken to the confirmation page for a new "contact"
+    When I click to view the content block
+    Then the contact form should be at the top
+
   @javascript
   Scenario: GDS editor creates a Contact with an email address and a telephone
     And I click on the "email_addresses" subschema

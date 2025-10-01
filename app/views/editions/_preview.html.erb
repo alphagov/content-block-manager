@@ -1,0 +1,10 @@
+<div class="app-views-editions-preview">
+  <% if edition.has_entries_for_multiple_subschemas? %>
+    <p class="govuk-body app-views-editions-preview__reorder-link">
+      <%= link_to "Reorder", order_edit_edition_path(edition), class: "govuk-link" %>
+    </p>
+  <% end %>
+  <div class="govspeak">
+    <%= edition.render(edition.document.embed_code) %>
+  </div>
+</div>

@@ -3,6 +3,7 @@ class Edition < ApplicationRecord
   validates :change_note, presence: true, if: :major_change?, on: :change_note
   validates :major_change, inclusion: [true, false], on: :change_note
 
+  include Cloneable
   include Documentable
   include HasAuditTrail
   include HasAuthors
@@ -20,7 +21,7 @@ class Edition < ApplicationRecord
     document.update!(latest_edition_id: id)
   end
 
-  def render(embed_code)
+  def render(embed_code = document.embed_code)
     ContentBlockTools::ContentBlock.new(
       document_type: "content_block_#{block_type}",
       content_id: document.content_id,
@@ -28,18 +29,6 @@ class Edition < ApplicationRecord
       details:,
       embed_code:,
     ).render
-  end
-
-  def clone_edition(creator:)
-    new_edition = dup
-    new_edition.assign_attributes(
-      state: "draft",
-      lead_organisation_id:,
-      creator: creator,
-      change_note: nil,
-      internal_change_note: nil,
-    )
-    new_edition
   end
 
   def add_object_to_details(object_type, body)
@@ -68,6 +57,21 @@ class Edition < ApplicationRecord
 
   def has_entries_for_subschema_id?(subschema_id)
     details[subschema_id].present?
+  end
+
+  def has_entries_for_multiple_subschemas?
+    schema = document.schema
+    subschemas = schema.subschemas
+    subschemas.select { |subschema| has_entries_for_subschema_id?(subschema.id) }.count > 1
+  end
+
+  def default_order
+    document.schema.subschemas.map { |subschema|
+      item_keys = details[subschema.block_type]&.keys || []
+      item_keys.map do |item_key|
+        "#{subschema.block_type}.#{item_key}"
+      end
+    }.flatten
   end
 
 private

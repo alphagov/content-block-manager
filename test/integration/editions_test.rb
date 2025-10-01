@@ -281,19 +281,35 @@ class EditionsTest < ActionDispatch::IntegrationTest
   end
 
   describe "#preview" do
-    it "renders a preview of the edition" do
-      embed_code = "EMBED_CODE"
-      document = build(:document)
+    let(:embed_code) { "EMBED_CODE" }
+    let(:document) { build(:document) }
+    let(:edition) { build_stubbed(:edition, document: document) }
+
+    before do
       document.stubs(:embed_code).returns(embed_code)
+      Edition.stubs(:find).with(edition.id.to_s).returns(edition)
+      edition.stubs(:render).with(document.embed_code).returns("RENDERED_BLOCK")
+      edition.stubs(:has_entries_for_multiple_subschemas?).returns(true)
+    end
 
-      edition = build_stubbed(:edition, document: document)
-
-      Edition.expects(:find).with(edition.id.to_s).returns(edition)
-      edition.expects(:render).with(document.embed_code).returns("RENDERED_BLOCK")
-
+    it "renders a preview of the edition" do
       visit preview_edition_path(edition)
 
       assert_selector ".app-views-editions-preview .govspeak", text: "RENDERED_BLOCK"
+    end
+
+    it "shows a link to reorder if has_entries_for_multiple_subschemas? is true" do
+      edition.stubs(:has_entries_for_multiple_subschemas?).returns(true)
+      visit preview_edition_path(edition)
+
+      assert_selector "a.govuk-link", text: "Reorder"
+    end
+
+    it "shows a link to reorder if has_entries_for_multiple_subschemas? is false" do
+      edition.stubs(:has_entries_for_multiple_subschemas?).returns(false)
+      visit preview_edition_path(edition)
+
+      assert_no_selector "a.govuk-link", text: "Reorder"
     end
   end
 end

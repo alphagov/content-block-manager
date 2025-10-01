@@ -8,10 +8,6 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-      <div class="app-views-editions-preview">
-        <div class="govspeak">
-          <%= @edition.render(@edition.document.embed_code) %>
-        </div>
-      </div>
+    <%= render "preview", edition: @edition %>
   </div>
 </div>

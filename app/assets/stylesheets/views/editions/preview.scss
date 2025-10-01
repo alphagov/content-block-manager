@@ -1,4 +1,8 @@
 .app-views-editions-preview {
   border: 1px solid $govuk-border-colour;
   padding: govuk-spacing(4);
+
+  &__reorder-link {
+    float: right;
+  }
 }

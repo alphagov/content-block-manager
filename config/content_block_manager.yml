@@ -34,7 +34,7 @@ schemas:
     subschemas:
       email_addresses:
         group: contact_methods
-        group_order: 1
+        group_order: 2
         embeddable_as_block: true
         embeddable_fields:
           - email_address
@@ -55,7 +55,7 @@ schemas:
             govspeak_enabled: true
       telephones:
         group: contact_methods
-        group_order: 2
+        group_order: 3
         embeddable_as_block: true
         embeddable_fields:
           - telephone_numbers
@@ -104,7 +104,7 @@ schemas:
               - telephone_number
       addresses:
         group: contact_methods
-        group_order: 3
+        group_order: 1
         field_order:
           - title
           - recipient
