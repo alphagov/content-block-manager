@@ -27,7 +27,7 @@ class EditionsController < BaseController
   rescue ActiveRecord::RecordInvalid => e
     @title = params[:document_id] ? e.record.document.title : "Create content block"
     @form = EditionForm.for(edition: e.record, schema: @schema)
-    render "editions/new", status: :unprocessable_entity
+    render "editions/new", status: :unprocessable_content
   end
 
   def destroy
