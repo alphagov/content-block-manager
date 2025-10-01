@@ -50,15 +50,26 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
   CopyEmbedCode.prototype.copyCode = function (e) {
     e.preventDefault()
 
-    this.showEmbedCode()
+    this.showEmbedCode(this.embedCodeFlash, this.module).then(
+      this.removeEmbedCodeAfterInterval.bind(this)
+    )
+
     const embedCode = this.module.dataset.embedCode
     this.writeToClipboard(embedCode).then(this.copySuccess.bind(this))
   }
 
-  CopyEmbedCode.prototype.showEmbedCode = function () {
-    this.module
-      .querySelector('.govuk-link__copy-link')
-      .after(this.embedCodeFlash)
+  CopyEmbedCode.prototype.showEmbedCode = function (ele, target) {
+    return new Promise(function (resolve) {
+      target.querySelector('.govuk-link__copy-link').after(ele)
+
+      resolve()
+    })
+  }
+
+  CopyEmbedCode.prototype.removeEmbedCodeAfterInterval = function () {
+    setTimeout(() => {
+      this.embedCodeFlash.remove()
+    }, 2000)
   }
 
   CopyEmbedCode.prototype.copySuccess = function () {

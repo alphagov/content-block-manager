@@ -88,11 +88,19 @@ describe('GOVUK.Modules.CopyEmbedCode', function () {
       jasmine.clock().uninstall()
     })
 
-    it('adds an "embedCodeFlash" element to display the code temporarily', function () {
-      window.GOVUK.triggerEvent(copyLink, 'click')
+    it('adds "embedCodeFlash" element, then removes after interval', async function () {
+      jasmine.clock().install()
+      await window.GOVUK.triggerEvent(copyLink, 'click')
 
-      const embedCodeFlash = fixture.querySelector('.embed-code-flash')
-      expect(embedCodeFlash.textContent).toEqual(embedCode)
+      const now = fixture.querySelector('.embed-code-flash')
+      expect(now.textContent).toEqual(embedCode)
+
+      jasmine.clock().tick(2000)
+
+      const later = document.querySelector('.embed-code-flash')
+      expect(later).not.toEqual(jasmine.anything())
+
+      jasmine.clock().uninstall()
     })
   })
 })
