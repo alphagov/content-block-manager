@@ -48,6 +48,8 @@ schemas:
           - body
           - description
         fields:
+          email_address:
+            embed_code_visible: true
           body:
             component:
               textarea
