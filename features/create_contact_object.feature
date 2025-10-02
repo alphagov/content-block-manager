@@ -268,6 +268,16 @@ Feature: Create a contact object
     Then I should see a preview of my contact
     And the contact methods should be in the new order
     When I click to close the preview
+    And I click to add another "contact_method"
+    And I click on the "contact_links" subschema
+    And I complete the "contact_link" form with the following fields:
+      | title              | label      | url                | description |
+      | Other Contact Form | Contact Us | http://example.com | Description |
+    And I click on Preview
+    When I click on reorder
+    Then I should see "Other Contact Form" in the ordered items
+    When I click the cancel link
+    And I click to close the preview
     And I save and continue
     And I review and confirm my answers are correct
     Then I should be taken to the confirmation page for a new "contact"

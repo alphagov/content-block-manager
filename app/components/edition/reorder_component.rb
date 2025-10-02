@@ -9,6 +9,11 @@ private
 
   attr_reader :edition, :order, :redirect_path
 
+  def item_keys
+    items_missing_from_order = edition.default_order - order
+    order + items_missing_from_order
+  end
+
   def move_path(position, item, direction)
     updated_order = order.dup
     new_position = direction == :up ? position - 1 : position + 1
