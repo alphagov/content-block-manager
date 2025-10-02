@@ -6,7 +6,7 @@
 
     <%= form_with url: order_update_edition_path(edition), method: :put do |form| %>
       <%= form.hidden_field "redirect_path", value: redirect_path %>
-      <% order.each_with_index do |item, position| %>
+      <% item_keys.each_with_index do |item, position| %>
         <div class="app-c-content-block-manager-reorder-component__item" data-testid="reorder-item-<%= position %>">
           <%= form.hidden_field "order[]", value: item %>
           <div class="govspeak">

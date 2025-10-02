@@ -12,10 +12,12 @@ class Edition::ReorderComponentTest < ViewComponent::TestCase
       telephones.telephone_1
     ]
   end
+  let(:default_order) { order }
   let(:redirect_path) { "/foo/bar" }
   let(:component) { Edition::ReorderComponent.new(edition:, order:, redirect_path:) }
 
   before do
+    edition.stubs(:default_order).returns(default_order)
     edition.stubs(:clone_without_blocks).returns(stub(:edition, render: "WITHOUT BLOCKS"))
     edition.stubs(:clone_with_block).with("email_addresses.email_address_1").returns(stub(:edition, render: "email_addresses.email_address_1"))
     edition.stubs(:clone_with_block).with("email_addresses.email_address_2").returns(stub(:edition, render: "email_addresses.email_address_2"))
@@ -75,6 +77,38 @@ class Edition::ReorderComponentTest < ViewComponent::TestCase
     render_inline component
 
     assert_selector "a[href='#{redirect_path}?preview=true']", text: "Cancel"
+  end
+
+  describe "when the edition contains blocks that are missing from the order" do
+    let(:default_order) do
+      order + %w[
+        email_addresses.email_address_3
+        email_addresses.email_address_4
+        telephones.telephone_2
+      ]
+    end
+
+    before do
+      edition.stubs(:clone_with_block).with("email_addresses.email_address_3").returns(stub(:edition, render: "email_addresses.email_address_3"))
+      edition.stubs(:clone_with_block).with("email_addresses.email_address_4").returns(stub(:edition, render: "email_addresses.email_address_4"))
+      edition.stubs(:clone_with_block).with("telephones.telephone_2").returns(stub(:edition, render: "telephones.telephone_2"))
+    end
+
+    it "renders the missing blocks" do
+      render_inline component
+
+      wrapper = page.find(".app-c-content-block-manager-reorder-component")
+      items = wrapper.all(".app-c-content-block-manager-reorder-component__item")
+
+      assert_equal 6, items.count
+
+      items[0].assert_selector ".govspeak", text: "email_addresses.email_address_1"
+      items[1].assert_selector ".govspeak", text: "email_addresses.email_address_2"
+      items[2].assert_selector ".govspeak", text: "telephones.telephone_1"
+      items[3].assert_selector ".govspeak", text: "email_addresses.email_address_3"
+      items[4].assert_selector ".govspeak", text: "email_addresses.email_address_4"
+      items[5].assert_selector ".govspeak", text: "telephones.telephone_2"
+    end
   end
 
   def assert_button_exists(wrapper:, label:, order:)
