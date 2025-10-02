@@ -4,7 +4,9 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
 ;(function (Modules) {
   function CopyEmbedCode(module) {
     this.module = module
+    this.delayIntervalInMs = 2000
     this.copyLink = this.createLink.bind(this)()
+    this.embedCodeFlash = this.createEmbedCodeFlash.bind(this)()
   }
 
   CopyEmbedCode.prototype.init = function () {
@@ -14,7 +16,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
 
     this.module.append(dd)
     this.module.classList.remove('govuk-summary-list__row--no-actions')
-    this.removeEmbedCodeCardRows()
+    this.removeVisibleCodesRequiredOnlyIfJsDisabled()
   }
 
   CopyEmbedCode.prototype.createLink = function () {
@@ -38,11 +40,37 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
     return copyLink
   }
 
+  CopyEmbedCode.prototype.createEmbedCodeFlash = function () {
+    const embedCodeFlash = document.createElement('div')
+    embedCodeFlash.textContent = this.module.dataset.embedCode
+    embedCodeFlash.classList.add('embed-code-flash')
+
+    return embedCodeFlash
+  }
+
   CopyEmbedCode.prototype.copyCode = function (e) {
     e.preventDefault()
 
+    this.showEmbedCode(this.embedCodeFlash, this.module).then(
+      this.removeEmbedCodeAfterInterval.bind(this)
+    )
+
     const embedCode = this.module.dataset.embedCode
     this.writeToClipboard(embedCode).then(this.copySuccess.bind(this))
+  }
+
+  CopyEmbedCode.prototype.showEmbedCode = function (ele, target) {
+    return new Promise(function (resolve) {
+      target.querySelector('.govuk-link__copy-link').after(ele)
+
+      resolve()
+    })
+  }
+
+  CopyEmbedCode.prototype.removeEmbedCodeAfterInterval = function () {
+    setTimeout(() => {
+      this.embedCodeFlash.remove()
+    }, this.delayIntervalInMs)
   }
 
   CopyEmbedCode.prototype.copySuccess = function () {
@@ -50,7 +78,10 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
     this.copyLink.textContent = 'Code copied'
     this.copyLink.focus()
 
-    setTimeout(this.restoreText.bind(this, originalText), 2000)
+    setTimeout(
+      this.restoreText.bind(this, originalText),
+      this.delayIntervalInMs
+    )
   }
 
   CopyEmbedCode.prototype.restoreText = function (originalText) {
@@ -79,12 +110,16 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
     })
   }
 
-  CopyEmbedCode.prototype.removeEmbedCodeCardRows = function () {
-    const cardRows = document.querySelectorAll('[data-embed-code-row="true"]')
-    cardRows.forEach((row) => {
-      row.remove()
-    })
-  }
+  CopyEmbedCode.prototype.removeVisibleCodesRequiredOnlyIfJsDisabled =
+    function () {
+      this.module
+        .querySelectorAll(
+          '.app-c-embedded-objects-blocks-component__embed-code'
+        )
+        .forEach((element) => {
+          element.remove()
+        })
+    }
 
   Modules.CopyEmbedCode = CopyEmbedCode
 })(window.GOVUK.Modules)
