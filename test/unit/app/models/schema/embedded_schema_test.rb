@@ -351,4 +351,77 @@ class Schema::EmbeddedSchemaTest < ActiveSupport::TestCase
       end
     end
   end
+
+  describe "#embed_code_visible?(field:)" do
+    let(:body) do
+      {
+        "type" => "object",
+        "patternProperties" => {
+          "*" => {
+            "type" => "object",
+            "properties" => {},
+          },
+        },
+      }
+    end
+
+    let(:subschema_id) { "subschema_id" }
+    let(:parent_schema_id) { "parent_schema_id" }
+    let(:schema) { Schema::EmbeddedSchema.new(subschema_id, body, parent_schema_id) }
+
+    let(:config) do
+      {
+        "schemas" => {
+          parent_schema_id => {
+            "subschemas" => {
+              subschema_id => {
+                "fields" => {
+                  "field_1" => {},
+                  "field_2" => { "embed_code_visible" => true },
+                  "nested_object_1" => {
+                    "fields" => {
+                      "field_1" => {},
+                      "field_2" => { "embed_code_visible" => true },
+                    },
+                  },
+                  "nested_object_2" => {
+                    "fields" => {
+                      "field_1" => { "embed_code_visible" => true },
+                      "field_2" => {},
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      }
+    end
+
+    before do
+      Schema::EmbeddedSchema
+        .stubs(:schema_settings)
+        .returns(config)
+    end
+
+    context "when a nested_object_key is given" do
+      it "returns true if the given field in the nested object is declared embed_code_visible" do
+        assert(schema.embed_code_visible?(nested_object_key: "nested_object_1", field_name: "field_2"))
+      end
+
+      it "returns false if the given field in the nested object is NOT embed_code_visible" do
+        assert_not(schema.embed_code_visible?(nested_object_key: "nested_object_2", field_name: "field_2"))
+      end
+    end
+
+    context "when a nested_object_key is NOT given" do
+      it "returns true if the given field in the top-level properties is embed_code_visible" do
+        assert(schema.embed_code_visible?(field_name: "field_2"))
+      end
+
+      it "returns false if the given field in the top-level properties is NOT embed_code_visible" do
+        assert_not(schema.embed_code_visible?(field_name: "field_1"))
+      end
+    end
+  end
 end
