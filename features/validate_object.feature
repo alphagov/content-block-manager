@@ -40,5 +40,5 @@ Feature: Validating a content block
       | title            | description   | organisation        | instructions_to_publishers |
       | my basic pension | this is basic | Ministry of Example | this is important  |
     Then I am asked to review my answers for a "pension"
-    When I click publish without confirming my details
+    When I submit without confirming my details
     Then I should see a message that I need to confirm the details are correct

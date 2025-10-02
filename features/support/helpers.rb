@@ -74,6 +74,10 @@ def click_save_and_continue
   end
 end
 
+def submit
+  find("button.govuk-button:not(.govuk-button--secondary)").click
+end
+
 def schedule_change(number_of_days)
   choose "Schedule the edit for the future"
   @future_date = number_of_days.days.since(Time.zone.now)
@@ -112,5 +116,5 @@ end
 
 def review_and_confirm
   check "is_confirmed"
-  click_on @is_scheduled ? "Schedule" : "Publish"
+  submit
 end

@@ -314,8 +314,8 @@ When("I review and confirm my answers are correct") do
   review_and_confirm
 end
 
-When("I click publish without confirming my details") do
-  click_on "Publish"
+When("I submit without confirming my details") do
+  submit
 end
 
 When(/^I save and continue$/) do
