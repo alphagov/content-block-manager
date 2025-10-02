@@ -87,7 +87,7 @@ class Editions::EmbeddedObjectsController < BaseController
       )
       redirect_to new_embedded_object_edition_path(@edition, object_type: params.require(:object_type))
     else
-      redirect_to new_embedded_object_edition_path(@edition, group: params.require(:group)), flash: { error: I18n.t("activerecord.errors.models/document.attributes.block_type.blank") }
+      redirect_to new_embedded_object_edition_path(@edition, group: params.require(:group)), flash: { error: I18n.t("activerecord.errors.models.document.attributes.block_type.blank") }
     end
   end
 

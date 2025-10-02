@@ -49,7 +49,7 @@ module Workflow::UpdateMethods
 
   def validate_review_page
     if params[:is_confirmed].blank?
-      @confirm_error_copy = I18n.t("review_page.errors.confirm")
+      @confirm_error_copy = I18n.t("edition.review_page.errors.confirm")
       @error_summary_errors = [{ text: @confirm_error_copy, href: "#is_confirmed-0" }]
       render :review, status: :unprocessable_entity
     else
