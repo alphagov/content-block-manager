@@ -80,7 +80,7 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
       it "clears the opening_hours object" do
         result = ParamsPreprocessors::TelephonePreprocessor.new(params).processed_params
 
-        assert_equal result["hours_available"], nil
+        assert_nil result["hours_available"]
         assert_equal result["edition"]["details"]["telephones"]["opening_hours"], {}
       end
     end

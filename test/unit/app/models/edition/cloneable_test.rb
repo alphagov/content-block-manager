@@ -15,7 +15,8 @@ class Edition::CloneableTest < ActiveSupport::TestCase
         details: { "my" => "details" },
         state: "published",
         change_note: "Something",
-        internal_change_note: "Something else"
+        internal_change_note: "Something else",
+        lead_organisation_id: SecureRandom.uuid
       )
       creator = create(:user)
 
@@ -23,7 +24,7 @@ class Edition::CloneableTest < ActiveSupport::TestCase
 
       assert_equal new_edition.state, "draft"
       assert_nil new_edition.id
-      assert_equal new_edition.lead_organisation, edition.lead_organisation
+      assert_equal new_edition.lead_organisation_id, edition.lead_organisation_id
       assert_equal new_edition.creator, creator
       assert_equal new_edition.title, edition.title
       assert_equal new_edition.details, edition.details

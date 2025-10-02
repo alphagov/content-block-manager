@@ -64,7 +64,7 @@ class Document::Show::EmbeddedObjects::TabGroupComponentTest < ViewComponent::Te
 
     tab_double = "TAB CONTENT"
 
-    component.expects(:render).with("govuk_publishing_components/components/tabs", tabs: expected_tabs).returns(tab_double)
+    component.expects(:render).with("govuk_publishing_components/components/tabs", { tabs: expected_tabs }).returns(tab_double)
 
     render_inline(component)
 

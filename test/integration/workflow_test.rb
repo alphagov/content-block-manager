@@ -2,7 +2,6 @@ require "test_helper"
 require "capybara/rails"
 
 class WorkflowTest < ActionDispatch::IntegrationTest
-  include Capybara::DSL
   extend Minitest::Spec::DSL
   include SidekiqTestHelpers
   include Rails.application.routes.url_helpers

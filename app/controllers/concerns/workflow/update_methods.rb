@@ -19,7 +19,7 @@ module Workflow::UpdateMethods
     @schema = Schema.find_by_block_type(@edition.document.block_type)
     @form = EditionForm::Edit.new(edition: @edition, schema: @schema)
 
-    render :edit_draft, status: :unprocessable_entity
+    render :edit_draft, status: :unprocessable_content
   end
 
   def validate_schedule
@@ -29,7 +29,7 @@ module Workflow::UpdateMethods
 
     redirect_to_next_step
   rescue ActiveRecord::RecordInvalid
-    render "editions/workflow/schedule_publishing", status: :unprocessable_entity
+    render "editions/workflow/schedule_publishing", status: :unprocessable_content
   end
 
   def update_internal_note
@@ -44,14 +44,14 @@ module Workflow::UpdateMethods
 
     redirect_to_next_step
   rescue ActiveRecord::RecordInvalid
-    render :change_note, status: :unprocessable_entity
+    render :change_note, status: :unprocessable_content
   end
 
   def validate_review_page
     if params[:is_confirmed].blank?
       @confirm_error_copy = I18n.t("edition.review_page.errors.confirm")
       @error_summary_errors = [{ text: @confirm_error_copy, href: "#is_confirmed-0" }]
-      render :review, status: :unprocessable_entity
+      render :review, status: :unprocessable_content
     else
       schedule_or_publish
     end

@@ -53,10 +53,6 @@ class Edition::Details::Fields::StringComponentTest < BaseComponentTestClass
     assert_selector 'input[value="example@example.com"]'
   end
 
-  it "should show the value from an embedded object" do
-    { "description": "example@example.com" }
-  end
-
   it "should show errors when present" do
     edition.errors.add(:details_email_address, "Some error goes here")
 
