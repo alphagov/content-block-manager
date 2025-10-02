@@ -244,7 +244,7 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
         wrapper.assert_selector ".govuk-details__summary-text", text: "All #{object_type} attributes"
         wrapper.assert_selector ".govuk-details__text", visible: false do |details|
           details.assert_selector ".app-c-embedded-objects-blocks-component__details-text",
-                                  text: "These are all the #{object_type} attributes that make up the #{object_type}. You can use the embed code for each attribute separately in your content if required.",
+                                  text: "These are all the #{object_type} attributes that make up the #{object_type}. You can use any available embed code for each attribute separately in your content if required.",
                                   visible: false
 
           details.assert_selector ".app-c-embedded-objects-blocks-component__details-summary-list", visible: false do |summary_list|
