@@ -4,6 +4,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
 ;(function (Modules) {
   function CopyEmbedCode(module) {
     this.module = module
+    this.delayIntervalInMs = 2000
     this.copyLink = this.createLink.bind(this)()
     this.embedCodeFlash = this.createEmbedCodeFlash.bind(this)()
   }
@@ -69,7 +70,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
   CopyEmbedCode.prototype.removeEmbedCodeAfterInterval = function () {
     setTimeout(() => {
       this.embedCodeFlash.remove()
-    }, 2000)
+    }, this.delayIntervalInMs)
   }
 
   CopyEmbedCode.prototype.copySuccess = function () {
@@ -77,7 +78,10 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
     this.copyLink.textContent = 'Code copied'
     this.copyLink.focus()
 
-    setTimeout(this.restoreText.bind(this, originalText), 2000)
+    setTimeout(
+      this.restoreText.bind(this, originalText),
+      this.delayIntervalInMs
+    )
   }
 
   CopyEmbedCode.prototype.restoreText = function (originalText) {
