@@ -66,7 +66,7 @@ class Edition < ApplicationRecord
   end
 
   def default_order
-    document.schema.subschemas.map { |subschema|
+    document.schema.subschemas.sort_by(&:group_order).map { |subschema|
       item_keys = details[subschema.block_type]&.keys || []
       item_keys.map do |item_key|
         "#{subschema.block_type}.#{item_key}"
