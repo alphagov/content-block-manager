@@ -454,9 +454,9 @@ class EditionTest < ActiveSupport::TestCase
     let(:subschemas) do
       [
         stub(:subschema, id: "email_addresses", block_type: "email_addresses", group_order: 1),
-        stub(:subschema, id: "telephones", block_type: "telephones", group_order: 2),
-        stub(:subschema, id: "addresses", block_type: "addresses", group_order: 3),
-        stub(:subschema, id: "contact_links", block_type: "contact_links", group_order: 4),
+        stub(:subschema, id: "telephones", block_type: "telephones", group_order: 4),
+        stub(:subschema, id: "addresses", block_type: "addresses", group_order: 2),
+        stub(:subschema, id: "contact_links", block_type: "contact_links", group_order: 3),
       ]
     end
     let(:schema) { stub(:schema, subschemas: subschemas, body: {}) }
@@ -470,9 +470,9 @@ class EditionTest < ActiveSupport::TestCase
       assert_equal edition.default_order, %w[
         email_addresses.email_address_1
         email_addresses.email_address_2
-        telephones.telephone_1
         addresses.address_1
         contact_links.contact_link_1
+        telephones.telephone_1
       ]
     end
   end

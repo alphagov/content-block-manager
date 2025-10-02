@@ -262,17 +262,17 @@ Feature: Create a contact object
       | Recipient  | 123 Fake Street | Springfield  | ABC 123     |
     And I click on Preview
     And I click on reorder
-    And I click to move the contact form to the top
-    Then I should see the contact form moved to the top
+    And I change the order of the contact methods
+    Then I should see the contact methods in the new order
     When I click to save the order
     Then I should see a preview of my contact
-    And the contact form should be at the top
+    And the contact methods should be in the new order
     When I click to close the preview
     And I save and continue
     And I review and confirm my answers are correct
     Then I should be taken to the confirmation page for a new "contact"
     When I click to view the content block
-    Then the contact form should be at the top
+    Then the contact methods should be in the new order
 
   @javascript
   Scenario: GDS editor creates a Contact with an email address and a telephone
