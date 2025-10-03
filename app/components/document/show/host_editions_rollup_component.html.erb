@@ -6,7 +6,7 @@
         <%=
           render(
             "govuk_publishing_components/components/glance_metric",
-            name: name.to_s.titleize,
+            name: title(name),
             figure: value[:figure],
             measurement_display_label: value[:display_label],
             measurement_explicit_label: value[:explicit_label],

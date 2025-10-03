@@ -22,4 +22,8 @@ private
       explicit_label: number_to_human(number, format: "%u"),
     }
   end
+
+  def title(metric)
+    I18n.t("rollup.#{metric}.title", default: metric.to_s.titleize)
+  end
 end

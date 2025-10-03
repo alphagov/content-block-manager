@@ -5,6 +5,13 @@ class Document::Show::HostEditionsRollupComponentTest < ViewComponent::TestCase
 
   let(:described_class) { Document::Show::HostEditionsRollupComponent }
 
+  before do
+    I18n.expects(:t).with("rollup.locations.title", default: "Locations").returns("Locations translated")
+    I18n.expects(:t).with("rollup.instances.title", default: "Instances").returns("Instances translated")
+    I18n.expects(:t).with("rollup.views.title", default: "Views").returns("Views translated")
+    I18n.expects(:t).with("rollup.organisations.title", default: "Organisations").returns("Organisations translated")
+  end
+
   it "returns rolled up data with small numbers" do
     rollup = build(:rollup, views: 12, locations: 2, instances: 3, organisations: 1)
 
@@ -15,19 +22,19 @@ class Document::Show::HostEditionsRollupComponentTest < ViewComponent::TestCase
     assert_equal 4, metrics.count
 
     assert metrics[0][:class].include?("locations")
-    metrics[0].assert_selector ".gem-c-glance-metric__heading", text: "Locations"
+    metrics[0].assert_selector ".gem-c-glance-metric__heading", text: "Locations translated"
     metrics[0].assert_selector ".gem-c-glance-metric__figure", text: "2"
 
     assert metrics[1][:class].include?("instances")
-    metrics[1].assert_selector ".gem-c-glance-metric__heading", text: "Instances"
+    metrics[1].assert_selector ".gem-c-glance-metric__heading", text: "Instances translated"
     metrics[1].assert_selector ".gem-c-glance-metric__figure", text: "3"
 
     assert metrics[2][:class].include?("views")
-    metrics[2].assert_selector ".gem-c-glance-metric__heading", text: "Views"
+    metrics[2].assert_selector ".gem-c-glance-metric__heading", text: "Views translated"
     metrics[2].assert_selector ".gem-c-glance-metric__figure", text: "12"
 
     assert metrics[3][:class].include?("organisations")
-    metrics[3].assert_selector ".gem-c-glance-metric__heading", text: "Organisations"
+    metrics[3].assert_selector ".gem-c-glance-metric__heading", text: "Organisations translated"
     metrics[3].assert_selector ".gem-c-glance-metric__figure", text: "1"
   end
 

@@ -140,3 +140,12 @@ en:
   buttons:
     add: "Add %{item}"
     add_another: "Add another %{item}"
+  rollup:
+    locations:
+      title: Locations
+    instances:
+      title: Instances
+    organisations:
+      title: Organisations
+    views:
+      title: Views
