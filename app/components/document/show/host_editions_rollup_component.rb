@@ -26,4 +26,8 @@ private
   def title(metric)
     I18n.t("rollup.#{metric}.title", default: metric.to_s.titleize)
   end
+
+  def context(metric)
+    I18n.t("rollup.#{metric}.context", default: nil)
+  end
 end
