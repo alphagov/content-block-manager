@@ -75,7 +75,7 @@ def click_save_and_continue
 end
 
 def submit
-  find("button.govuk-button:not(.govuk-button--secondary)").click
+  find("button[data-testid='submit-button']").click
 end
 
 def schedule_change(number_of_days)
