@@ -109,6 +109,103 @@ class Edition::ReorderComponentTest < ViewComponent::TestCase
       items[4].assert_selector ".govspeak", text: "email_addresses.email_address_4"
       items[5].assert_selector ".govspeak", text: "telephones.telephone_2"
     end
+
+    it "renders up and down buttons with the correct paths" do
+      render_inline component
+
+      wrapper = page.find(".app-c-content-block-manager-reorder-component")
+      items = wrapper.all(".app-c-content-block-manager-reorder-component__item")
+
+      assert_equal 6, items.count
+
+      items[0].assert_no_selector "a", text: "Up"
+      assert_button_exists(wrapper: items[0], label: "Down", order: %w[
+        email_addresses.email_address_2
+        email_addresses.email_address_1
+        telephones.telephone_1
+        email_addresses.email_address_3
+        email_addresses.email_address_4
+        telephones.telephone_2
+      ])
+
+      assert_button_exists(wrapper: items[1], label: "Up", order: %w[
+        email_addresses.email_address_2
+        email_addresses.email_address_1
+        telephones.telephone_1
+        email_addresses.email_address_3
+        email_addresses.email_address_4
+        telephones.telephone_2
+      ])
+      assert_button_exists(wrapper: items[1], label: "Down", order: %w[
+        email_addresses.email_address_1
+        telephones.telephone_1
+        email_addresses.email_address_2
+        email_addresses.email_address_3
+        email_addresses.email_address_4
+        telephones.telephone_2
+      ])
+
+      assert_button_exists(wrapper: items[2], label: "Up", order: %w[
+        email_addresses.email_address_1
+        telephones.telephone_1
+        email_addresses.email_address_2
+        email_addresses.email_address_3
+        email_addresses.email_address_4
+        telephones.telephone_2
+      ])
+      assert_button_exists(wrapper: items[2], label: "Down", order: %w[
+        email_addresses.email_address_1
+        email_addresses.email_address_2
+        email_addresses.email_address_3
+        telephones.telephone_1
+        email_addresses.email_address_4
+        telephones.telephone_2
+      ])
+
+      assert_button_exists(wrapper: items[3], label: "Up", order: %w[
+        email_addresses.email_address_1
+        email_addresses.email_address_2
+        email_addresses.email_address_3
+        telephones.telephone_1
+        email_addresses.email_address_4
+        telephones.telephone_2
+      ])
+      assert_button_exists(wrapper: items[3], label: "Down", order: %w[
+        email_addresses.email_address_1
+        email_addresses.email_address_2
+        telephones.telephone_1
+        email_addresses.email_address_4
+        email_addresses.email_address_3
+        telephones.telephone_2
+      ])
+
+      assert_button_exists(wrapper: items[4], label: "Up", order: %w[
+        email_addresses.email_address_1
+        email_addresses.email_address_2
+        telephones.telephone_1
+        email_addresses.email_address_4
+        email_addresses.email_address_3
+        telephones.telephone_2
+      ])
+      assert_button_exists(wrapper: items[4], label: "Down", order: %w[
+        email_addresses.email_address_1
+        email_addresses.email_address_2
+        telephones.telephone_1
+        email_addresses.email_address_3
+        telephones.telephone_2
+        email_addresses.email_address_4
+      ])
+
+      assert_button_exists(wrapper: items[5], label: "Up", order: %w[
+        email_addresses.email_address_1
+        email_addresses.email_address_2
+        telephones.telephone_1
+        email_addresses.email_address_3
+        telephones.telephone_2
+        email_addresses.email_address_4
+      ])
+      items[5].assert_no_selector "a", text: "Down"
+    end
   end
 
   def assert_button_exists(wrapper:, label:, order:)

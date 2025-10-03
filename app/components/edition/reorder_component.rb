@@ -7,15 +7,17 @@ class Edition::ReorderComponent < ViewComponent::Base
 
 private
 
-  attr_reader :edition, :order, :redirect_path
+  attr_reader :edition, :redirect_path
 
   def item_keys
-    items_missing_from_order = edition.default_order - order
-    order + items_missing_from_order
+    @item_keys ||= begin
+      items_missing_from_order = edition.default_order - @order
+      @order + items_missing_from_order
+    end
   end
 
   def move_path(position, item, direction)
-    updated_order = order.dup
+    updated_order = item_keys.dup
     new_position = direction == :up ? position - 1 : position + 1
     updated_order.insert(
       new_position,
