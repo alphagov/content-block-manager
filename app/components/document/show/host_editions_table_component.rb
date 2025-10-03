@@ -40,14 +40,14 @@ private
         sort_direction: sort_direction("document_type"),
       },
       {
-        text: "Views (30 days)",
-        href: sort_link("unique_pageviews"),
-        sort_direction: sort_direction("unique_pageviews"),
-      },
-      {
         text: "Instances",
         href: sort_link("instances"),
         sort_direction: sort_direction("instances"),
+      },
+      {
+        text: "Views (30 days)",
+        href: sort_link("unique_pageviews"),
+        sort_direction: sort_direction("unique_pageviews"),
       },
       {
         text: "Lead organisation",
@@ -77,10 +77,10 @@ private
         text: content_item.document_type.humanize,
       },
       {
-        text: content_item.unique_pageviews ? number_to_human(content_item.unique_pageviews, format: "%n%u", precision: 3, significant: true, units: { thousand: "k", million: "m", billion: "b" }) : 0,
+        text: content_item.instances,
       },
       {
-        text: content_item.instances,
+        text: content_item.unique_pageviews ? number_to_human(content_item.unique_pageviews, format: "%n%u", precision: 3, significant: true, units: { thousand: "k", million: "m", billion: "b" }) : 0,
       },
       {
         text: content_item.publishing_organisation.fetch("title", nil),
