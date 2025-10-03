@@ -5,6 +5,12 @@ class User < ApplicationRecord
 
   validates :name, presence: true
 
+  def is_e2e_user?
+    ENV.fetch("E2E_USER_EMAILS", "")
+       .split(",")
+       .include?(email)
+  end
+
   def role
     "Editor"
   end

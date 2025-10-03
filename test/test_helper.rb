@@ -10,6 +10,7 @@ end
 
 require File.expand_path("../config/environment", __dir__)
 
+require "climate_control"
 require "maxitest/autorun"
 require "rails/test_help"
 require "mocha/minitest"

@@ -46,4 +46,28 @@ class UserTest < ActiveSupport::TestCase
       assert_equal user.organisation, organisation
     end
   end
+
+  describe "#is_e2e_user?" do
+    let(:e2e_emails) { "e2euser@example.com,anothere2e@example.com" }
+
+    around do |test|
+      ClimateControl.modify E2E_USER_EMAILS: e2e_emails do
+        test.call
+      end
+    end
+
+    it "returns false when the user's email address is not included in the E2E_USER_EMAILS environment variable" do
+      user = build(:user, email: "normaluser@example.com")
+
+      assert_not user.is_e2e_user?
+    end
+
+    it "returns true when the user's email address is included in the E2E_USER_EMAILS environment variable" do
+      user1 = build(:user, email: "e2euser@example.com")
+      user2 = build(:user, email: "anothere2e@example.com")
+
+      assert user1.is_e2e_user?
+      assert user2.is_e2e_user?
+    end
+  end
 end
