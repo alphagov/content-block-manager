@@ -57,6 +57,7 @@ Feature: Create a content object
     Then I should be on the "add_embedded_rates" step
     When I save and continue
     Then I am asked to review my answers for a "pension"
+    And I should see a button labelled "Create"
     And I review and confirm my answers are correct
     Then the edition should have been created successfully
     And I should be taken to the confirmation page for a new "pension"

@@ -84,7 +84,7 @@
     <div class="govuk-grid-column-full">
       <%= render Shared::ContinueOrCancelButtonGroup.new(
         form_id: "review",
-        button_text: is_scheduling? ? "Schedule" : "Publish",
+        button_text: button_text_submit_for(@edition),
         edition: @edition,
         ) %>
     </div>

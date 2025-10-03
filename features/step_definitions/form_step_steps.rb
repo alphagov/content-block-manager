@@ -20,3 +20,7 @@ Then(/^I should be on the "([^"]*)" step$/) do |step|
     assert_text "Add #{::Regexp.last_match(1).humanize(capitalize: false)}"
   end
 end
+
+Then("I should see a button labelled {string}") do |label|
+  expect(page).to have_button(label)
+end
