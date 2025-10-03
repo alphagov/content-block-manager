@@ -4,6 +4,7 @@ class Document < ApplicationRecord
   include Scopes::SearchableByUpdatedDate
 
   include SoftDeletable
+  include HideableFromSearchIndex
 
   extend FriendlyId
   friendly_id :sluggable_string, use: :slugged, slug_column: :content_id_alias, routes: :default
