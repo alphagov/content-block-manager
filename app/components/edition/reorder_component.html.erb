@@ -26,7 +26,7 @@
               } %>
             <% end %>
 
-            <% unless position == @order.length - 1 %>
+            <% unless position == item_keys.length - 1 %>
               <%= render "govuk_publishing_components/components/button", {
                 text: "Down",
                 href: move_path(position, item, :down),
