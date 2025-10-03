@@ -116,7 +116,7 @@ GEM
     coderay (1.1.3)
     concurrent-ruby (1.3.5)
     connection_pool (2.5.4)
-    content_block_tools (1.3.0)
+    content_block_tools (1.3.1)
       actionview (>= 6, < 8.0.3)
       govspeak (>= 10.6.3)
       rails (>= 6, < 8.0.3)
@@ -244,7 +244,7 @@ GEM
       rake (>= 13)
     googleapis-common-protos-types (1.21.0)
       google-protobuf (~> 4.26)
-    govspeak (10.6.3)
+    govspeak (10.6.4)
       actionview (>= 6, < 8.0.3)
       addressable (>= 2.3.8, < 2.8.8)
       govuk_publishing_components (>= 43)
@@ -378,7 +378,7 @@ GEM
     mutex_m (0.3.0)
     net-http (0.6.0)
       uri
-    net-imap (0.5.10)
+    net-imap (0.5.11)
       date
       net-protocol
     net-pop (0.1.2)
@@ -1021,7 +1021,7 @@ CHECKSUMS
   coderay (1.1.3) sha256=dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b
   concurrent-ruby (1.3.5) sha256=813b3e37aca6df2a21a3b9f1d497f8cbab24a2b94cab325bffe65ee0f6cbebc6
   connection_pool (2.5.4) sha256=e9e1922327416091f3f6542f5f4446c2a20745276b9aa796dd0bb2fd0ea1e70a
-  content_block_tools (1.3.0) sha256=3ad3063c9f0865343096716e95e2a6bd35e4bea5d2665a67ca17793f91a23fa1
+  content_block_tools (1.3.1) sha256=320a063da2e032b5f0b22b543eddfa75ff793e2c3f7c632912e91547b3c1c181
   crack (1.0.0) sha256=c83aefdb428cdc7b66c7f287e488c796f055c0839e6e545fec2c7047743c4a49
   crass (1.0.6) sha256=dc516022a56e7b3b156099abc81b6d2b08ea1ed12676ac7a5657617f012bd45d
   cucumber (10.1.0) sha256=bd9f5783b6cc2f1113ed4e64822459d4e73c973063f2325d89b5d555e4fe3e05
@@ -1072,7 +1072,7 @@ CHECKSUMS
   google-protobuf (4.32.1-x86_64-linux-gnu) sha256=2d209c1980dbdeb4114c7d839a3305fb78dc90bde42fb9a22974c8a4841e0263
   google-protobuf (4.32.1-x86_64-linux-musl) sha256=d5314aea8817bd372177205667b4f4442a5884212bcaccb1ba569ec8a1a06ec4
   googleapis-common-protos-types (1.21.0) sha256=c91b6f2b8a2dab6af4e249e7be8e8d5fe174d6e58e065803d740031880179d8f
-  govspeak (10.6.3) sha256=73d5e80dcff68b5a02495d87c5157a130354599c6bed98bd58e40da522fcee55
+  govspeak (10.6.4) sha256=14c7929098f1aeee4736b08472f01f46d5a7d0b0b93bc2485030c0248f29d3a4
   govuk_app_config (9.20.1) sha256=3e9d66213aa002663f37450d8a55ea38486ae39b075bd7f669ce3eb647014698
   govuk_frontend_toolkit (9.0.1) sha256=18fdae529c9003e023c3461d89a45ddaf5ac0df311705351743c9f1b7b48a2de
   govuk_personalisation (1.1.0) sha256=6e7a0dcfaec11570d95490160a95aff85150df5b667a586ecd7d5de04feac5dd
@@ -1124,7 +1124,7 @@ CHECKSUMS
   multi_xml (0.7.2) sha256=307a96dc48613badb7b2fc174fd4e62d7c7b619bc36ea33bfd0c49f64f5787ce
   mutex_m (0.3.0) sha256=cfcb04ac16b69c4813777022fdceda24e9f798e48092a2b817eb4c0a782b0751
   net-http (0.6.0) sha256=9621b20c137898af9d890556848c93603716cab516dc2c89b01a38b894e259fb
-  net-imap (0.5.10) sha256=f84d206a296bff48a3a10507567fc38b050d2a40c92ea0d448164f64e60d6205
+  net-imap (0.5.11) sha256=761143adaf153208c49e8e9d52e1b18ce17a24dc4f7f4f367480b5b98010f221
   net-pop (0.1.2) sha256=848b4e982013c15b2f0382792268763b748cce91c9e91e36b0f27ed26420dff3
   net-protocol (0.2.2) sha256=aa73e0cba6a125369de9837b8d8ef82a61849360eba0521900e2c3713aa162a8
   net-smtp (0.5.1) sha256=ed96a0af63c524fceb4b29b0d352195c30d82dd916a42f03c62a3a70e5b70736
