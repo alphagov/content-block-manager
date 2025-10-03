@@ -234,6 +234,10 @@ Then("I should see the content block with title {string} returned") do |title|
   expect(page).to have_selector(".govuk-summary-card__title", text: title)
 end
 
+Then("I should not see the content block with title {string} returned") do |title|
+  expect(page).to_not have_selector(".govuk-summary-card__title", text: title)
+end
+
 Then("{string} content blocks are returned in total") do |count|
   assert_text "#{count} #{'result'.pluralize(count.to_i)}"
 end
@@ -458,6 +462,12 @@ When("the block {string} has been updated") do |title|
   document = Edition.find_by(title:).document
   document.latest_edition.updated_at = Time.zone.now
   document.latest_edition.save!
+end
+
+When("the block {string} has testing_artefact set to true") do |title|
+  document = Edition.find_by(title:).document
+  document.testing_artefact = true
+  document.save!
 end
 
 Then("the block {string} should appear as the first item in the list") do |title|
