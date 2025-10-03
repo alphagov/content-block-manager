@@ -122,6 +122,30 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
           end
         end
       end
+
+      context "when the 'show' field has related hint text" do
+        it "shows the hint text" do
+          component.stubs(:hint_text).returns({ show: "Some hint text" })
+
+          render_inline(component)
+
+          assert_selector(".app-c-content-block-manager-video-relay-service-component") do |component|
+            component.assert_selector(".govuk-checkboxes__item .govuk-hint", text: "Some hint text")
+          end
+        end
+      end
+
+      context "when the 'show' does not have related hint text" do
+        it "shows the hint text" do
+          component.stubs(:hint_text).returns(nil)
+
+          render_inline(component)
+
+          assert_selector(".app-c-content-block-manager-video-relay-service-component") do |component|
+            component.assert_no_selector(".govuk-checkboxes__item .govuk-hint")
+          end
+        end
+      end
     end
 
     describe "'prefix' nested field" do

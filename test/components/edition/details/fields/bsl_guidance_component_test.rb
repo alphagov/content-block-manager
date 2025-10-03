@@ -121,6 +121,30 @@ class Edition::Details::Fields::BSLGuidanceComponentTest < BaseComponentTestClas
           end
         end
       end
+
+      context "when the 'show' field has related hint text" do
+        it "shows the hint text" do
+          component.stubs(:hint_text).returns({ show: "Some hint text" })
+
+          render_inline(component)
+
+          assert_selector(".app-c-content-block-manager-bsl-guidance-component") do |component|
+            component.assert_selector(".govuk-checkboxes__item .govuk-hint", text: "Some hint text")
+          end
+        end
+      end
+
+      context "when the 'show' does not have related hint text" do
+        it "shows the hint text" do
+          component.stubs(:hint_text).returns(nil)
+
+          render_inline(component)
+
+          assert_selector(".app-c-content-block-manager-bsl-guidance-component") do |component|
+            component.assert_no_selector(".govuk-checkboxes__item .govuk-hint")
+          end
+        end
+      end
     end
 
     describe "'value' nested field" do
