@@ -10,17 +10,25 @@ class Document::Show::HostEditionsRollupComponentTest < ViewComponent::TestCase
 
     render_inline(described_class.new(rollup:))
 
-    assert_selector ".rollup-details__rollup-metric.views .gem-c-glance-metric__heading", text: "Views"
-    assert_selector ".rollup-details__rollup-metric.views .gem-c-glance-metric__figure", text: "12"
+    metrics = page.find_all(".rollup-details__rollup-metric")
 
-    assert_selector ".rollup-details__rollup-metric.locations .gem-c-glance-metric__heading", text: "Locations"
-    assert_selector ".rollup-details__rollup-metric.locations .gem-c-glance-metric__figure", text: "2"
+    assert_equal 4, metrics.count
 
-    assert_selector ".rollup-details__rollup-metric.instances .gem-c-glance-metric__heading", text: "Instances"
-    assert_selector ".rollup-details__rollup-metric.instances .gem-c-glance-metric__figure", text: "3"
+    assert metrics[0][:class].include?("locations")
+    metrics[0].assert_selector ".gem-c-glance-metric__heading", text: "Locations"
+    metrics[0].assert_selector ".gem-c-glance-metric__figure", text: "2"
 
-    assert_selector ".rollup-details__rollup-metric.organisations .gem-c-glance-metric__heading", text: "Organisations"
-    assert_selector ".rollup-details__rollup-metric.organisations .gem-c-glance-metric__figure", text: "1"
+    assert metrics[1][:class].include?("instances")
+    metrics[1].assert_selector ".gem-c-glance-metric__heading", text: "Instances"
+    metrics[1].assert_selector ".gem-c-glance-metric__figure", text: "3"
+
+    assert metrics[2][:class].include?("views")
+    metrics[2].assert_selector ".gem-c-glance-metric__heading", text: "Views"
+    metrics[2].assert_selector ".gem-c-glance-metric__figure", text: "12"
+
+    assert metrics[3][:class].include?("organisations")
+    metrics[3].assert_selector ".gem-c-glance-metric__heading", text: "Organisations"
+    metrics[3].assert_selector ".gem-c-glance-metric__figure", text: "1"
   end
 
   it "returns rolled up data with larger numbers" do

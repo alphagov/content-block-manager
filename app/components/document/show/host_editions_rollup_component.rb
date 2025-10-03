@@ -1,5 +1,5 @@
 class Document::Show::HostEditionsRollupComponent < ViewComponent::Base
-  METRICS = %i[locations instances organisations views].freeze
+  METRICS = %i[locations instances views organisations].freeze
 
   def initialize(rollup:)
     @rollup = rollup
