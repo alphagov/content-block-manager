@@ -28,6 +28,7 @@
         value: "true",
         checked: value_for_field(show_field) == true,
         conditional: value_input,
+        hint: hint_text&.fetch(:show, nil),
       },
     ],
   } %>

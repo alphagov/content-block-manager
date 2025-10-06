@@ -86,6 +86,10 @@ en:
             show_call_charges_info_url: For example, consider if this telephone number has UK call charges.
           telephone_numbers:
             label: For example, Telephone, Textphone, Welsh language.
+          video_relay_service:
+            show: Only select this option if your organisation has subscribed to a relay service.
+          bsl_guidance:
+            show: Only select this option if your organisation has subscribed to a relay service.
       pension:
         rates:
           amount: "Enter an exact amount, with the currency symbol - for example: £122.50"
