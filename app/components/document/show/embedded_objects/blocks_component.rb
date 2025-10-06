@@ -93,16 +93,34 @@ private
 
   def content_for_row(key, value)
     content = content_tag(:p, value, class: "app-c-embedded-objects-blocks-component__content govspeak")
-    return content unless schema.embed_code_visible?(field_name: key)
+
+    return content unless schema.embed_code_visible?(
+      field_name: field_name_from_key(key),
+      nested_object_key: nested_object_key_from_key(key),
+    )
 
     content << content_tag(:p, document.embed_code_for_field("#{object_type}/#{object_title}/#{key}"), class: "app-c-embedded-objects-blocks-component__embed-code")
     content
   end
 
+  def field_name_from_key(key)
+    key.split("/").last
+  end
+
+  def nested_object_key_from_key(key)
+    parts = key.split("/")
+    return nil if parts.size == 1
+
+    parts.first
+  end
+
   def data_attributes_for_row(key)
     attrs = { testid: (object_title.parameterize + "_#{key}").underscore }
 
-    return attrs unless schema.embed_code_visible?(field_name: key)
+    return attrs unless schema.embed_code_visible?(
+      field_name: field_name_from_key(key),
+      nested_object_key: nested_object_key_from_key(key),
+    )
 
     attrs.merge(
       {

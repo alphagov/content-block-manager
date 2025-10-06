@@ -49,8 +49,10 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
 
     context "when the 'foo' field is set to display its embed code" do
       before do
-        subschema.stubs(:embed_code_visible?).with(field_name: "foo").returns(true)
-        subschema.stubs(:embed_code_visible?).with(field_name: "fizz").returns(false)
+        subschema.stubs(:embed_code_visible?)
+          .with(field_name: "foo", nested_object_key: nil).returns(true)
+        subschema.stubs(:embed_code_visible?)
+          .with(field_name: "fizz", nested_object_key: nil).returns(false)
       end
 
       it "displays the embed code" do
@@ -189,6 +191,26 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
         assert_selector ".gem-c-summary-card[title='Thing 2']" do |summary_card|
           expect_summary_list_row(test_id: "else_things/1/title", key: "Title", value: "Title 2", embed_code_suffix: "things/1/title", parent_container: summary_card)
           expect_summary_list_row(test_id: "else_things/1/value", key: "Value", value: "Value 2", embed_code_suffix: "things/1/value", parent_container: summary_card)
+        end
+      end
+
+      describe "testing for visibility of embed code" do
+        before do
+          subschema.unstub(:embed_code_visible?)
+        end
+
+        it "decomposes the field key into i) nested_object_key and ii) field name" do
+          subschema.expects(:embed_code_visible?).with(
+            nested_object_key: "things",
+            field_name: "title",
+          ).at_least(2)
+
+          subschema.expects(:embed_code_visible?).with(
+            nested_object_key: "things",
+            field_name: "value",
+          ).at_least(2)
+
+          render_inline component
         end
       end
     end
