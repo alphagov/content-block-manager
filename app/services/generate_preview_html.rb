@@ -17,13 +17,15 @@ class GeneratePreviewHtml
     nokogiri_html = html_snapshot_from_frontend(uri)
     update_local_link_paths(nokogiri_html)
     add_draft_style(nokogiri_html)
+    update_css_hrefs(nokogiri_html)
+    update_js_srcs(nokogiri_html)
     replace_existing_content_blocks(nokogiri_html).to_s
   end
 
 private
 
   BLOCK_STYLE = "background-color: yellow;".freeze
-  ERROR_HTML = "<html><body><p>Preview not found</p></body></html>".freeze
+  ERROR_HTML = "<html><head></head><body><p>Preview not found</p></body></html>".freeze
 
   attr_reader :edition, :content_id, :base_path, :locale
 
@@ -60,6 +62,22 @@ private
     nokogiri_html.css("body").each do |body|
       body["class"] ||= ""
       body["class"] += " draft"
+    end
+    nokogiri_html
+  end
+
+  def update_css_hrefs(nokogiri_html)
+    head = nokogiri_html.at_css("head")
+    head.css("link[rel='stylesheet']").each do |link|
+      link[:href] = frontend_base_path + link[:href] if link[:href]
+    end
+    nokogiri_html
+  end
+
+  def update_js_srcs(nokogiri_html)
+    head = nokogiri_html.at_css("head")
+    head.css("script").each do |script|
+      script[:src] = frontend_base_path + script[:src] if script[:src]
     end
     nokogiri_html
   end

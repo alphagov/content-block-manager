@@ -23,7 +23,7 @@ When("I click on the first host document") do
     "#{Plek.website_root}#{@current_host_document['base_path']}",
   ).to_return(
     status: 200,
-    body: "<body><h1>#{@current_host_document['title']}</h1><p>iframe preview <a href=\"/other-page\">Link to other page</a></p>#{@content_block.render(embed_code)}</body>",
+    body: "<head></head><body><h1>#{@current_host_document['title']}</h1><p>iframe preview <a href=\"/other-page\">Link to other page</a></p>#{@content_block.render(embed_code)}</body>",
   )
 
   stub_request(
@@ -31,7 +31,7 @@ When("I click on the first host document") do
     "#{Plek.website_root}/other-page",
   ).to_return(
     status: 200,
-    body: "<body><h1>#{@current_host_document['title']}</h1><p>other page</p>#{@content_block.render(embed_code)}</body>",
+    body: "<head></head><body><h1>#{@current_host_document['title']}</h1><p>other page</p>#{@content_block.render(embed_code)}</body>",
   )
 
   click_on @current_host_document["title"]
