@@ -140,3 +140,16 @@ en:
   buttons:
     add: "Add %{item}"
     add_another: "Add another %{item}"
+  rollup:
+    locations:
+      title: Locations
+      context: used across GOV.UK
+    instances:
+      title: Instances
+      context: occurrences across locations
+    organisations:
+      title: Organisations
+      context: using this block
+    views:
+      title: Views
+      context: in last 30 days

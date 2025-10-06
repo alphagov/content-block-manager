@@ -1,5 +1,5 @@
 class Document::Show::HostEditionsRollupComponent < ViewComponent::Base
-  METRICS = %i[locations instances organisations views].freeze
+  METRICS = %i[locations instances views organisations].freeze
 
   def initialize(rollup:)
     @rollup = rollup
@@ -21,5 +21,13 @@ private
       display_label: number_to_human(number, format: "%u", units: { unit: "", thousand: "k", million: "m", billion: "b" }),
       explicit_label: number_to_human(number, format: "%u"),
     }
+  end
+
+  def title(metric)
+    I18n.t("rollup.#{metric}.title", default: metric.to_s.titleize)
+  end
+
+  def context(metric)
+    I18n.t("rollup.#{metric}.context", default: nil)
   end
 end

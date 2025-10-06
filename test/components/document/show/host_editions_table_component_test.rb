@@ -77,27 +77,42 @@ class Document::Show::HostEditionsTableComponentTest < ViewComponent::TestCase
 
       assert_selector ".govuk-table__caption", text: caption
 
-      assert_selector ".govuk-table__header", text: "Title"
-      assert_selector ".govuk-table__header", text: "Title"
-      assert_selector ".govuk-table__header", text: "Type"
-      assert_selector ".govuk-table__header", text: "Views (30 days)"
-      assert_selector ".govuk-table__header", text: "Instances"
-      assert_selector ".govuk-table__header", text: "Lead organisation"
-      assert_no_selector ".govuk-table__header", text: "Preview (Opens in new tab)"
+      headers = page.find_all(".govuk-table__header")
 
-      assert_selector "tbody .govuk-table__row", count: 1
+      assert_equal 6, headers.count
 
-      assert_selector ".govuk-link" do |link|
+      headers[0].assert_text "Title"
+      headers[1].assert_text "Type"
+      headers[2].assert_text "Instances"
+      headers[3].assert_text "Views (30 days)"
+      headers[4].assert_text "Lead organisation"
+      headers[5].assert_text "Last updated"
+
+      rows = page.find_all("tbody .govuk-table__row")
+
+      assert_equal 1, rows.count
+
+      columns = rows[0].find_all(".govuk-table__cell")
+
+      assert_equal 6, columns.count
+
+      columns[0].assert_selector ".govuk-link" do |link|
         assert_equal "#{host_content_item.title} (opens in new tab)", link.text
         assert_equal Plek.website_root + host_content_item.base_path, link[:href]
         assert_equal "noopener", link[:rel]
         assert_equal "_blank", link[:target]
       end
-      assert_selector "tbody .govuk-table__cell", text: host_content_item.document_type.humanize
-      assert_selector "tbody .govuk-table__cell", text: "1.2m"
-      assert_selector "tbody .govuk-table__cell", text: host_content_item.publishing_organisation["title"]
-      assert_selector "tbody .govuk-table__cell", text: "#{time_ago_in_words(host_content_item.last_edited_at)} ago by #{last_edited_by_editor.name}"
-      assert_link last_edited_by_editor.name, { href: user_path(last_edited_by_editor.uid) }
+
+      columns[1].assert_text host_content_item.document_type.humanize
+      columns[2].assert_text "1"
+      columns[3].assert_text "1.2m"
+      columns[4].assert_text host_content_item.publishing_organisation["title"]
+
+      columns[5].assert_text "#{time_ago_in_words(host_content_item.last_edited_at)} ago by #{last_edited_by_editor.name}"
+      columns[5].assert_selector "a.govuk-link" do |link|
+        assert_equal last_edited_by_editor.name, link.text
+        assert_equal user_path(last_edited_by_editor.uid), link[:href]
+      end
     end
 
     context "when the organisation received does not have a title or base_path" do
