@@ -158,4 +158,49 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
       assert_dom parsed_content, 'div.content-embed__content_block_contact[style="background-color: yellow;"]'
     end
   end
+
+  describe "when in development mode" do
+    let(:rendering_app) { "government-frontend" }
+    let(:publishing_api_response) do
+      {
+        "foo" => "bar",
+        "rendering_app" => rendering_app,
+      }
+    end
+
+    before do
+      Rails.env.stubs(:development?).returns(true)
+      Services.publishing_api.stubs(:get_content).with(host_content_id).returns(publishing_api_response)
+    end
+
+    it "makes a request to the rendering app as reported by the Publishing API" do
+      Net::HTTP.expects(:get).with(URI("#{Plek.external_url_for(rendering_app)}#{host_base_path}")).returns(fake_frontend_response)
+
+      GeneratePreviewHtml.new(
+        content_id: host_content_id,
+        edition: block_to_preview,
+        base_path: host_base_path,
+        locale: "en",
+      ).call
+    end
+
+    describe "when the Publishing API does not report a rendering app" do
+      let(:publishing_api_response) do
+        {
+          "foo" => "bar",
+        }
+      end
+
+      it "defaults to frontend" do
+        Net::HTTP.expects(:get).with(URI("#{Plek.external_url_for('frontend')}#{host_base_path}")).returns(fake_frontend_response)
+
+        GeneratePreviewHtml.new(
+          content_id: host_content_id,
+          edition: block_to_preview,
+          base_path: host_base_path,
+          locale: "en",
+        ).call
+      end
+    end
+  end
 end

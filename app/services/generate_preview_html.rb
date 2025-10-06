@@ -34,7 +34,18 @@ private
   end
 
   def frontend_base_path
-    Rails.env.development? ? Plek.external_url_for("government-frontend") : Plek.website_root
+    @frontend_base_path ||= Rails.env.development? ? development_base_path : Plek.website_root
+  end
+
+  # There are multiple rendering apps for GOV.UK. In non-dev environments, the Router app determines the rendering app
+  # to use. We don't have access to this in dev, so we need to get the rendering app from the Publishing API and construct
+  # the base path that way.
+  def development_base_path
+    @development_base_path ||= begin
+      publishing_api_response = Services.publishing_api.get_content(content_id)
+      rendering_app = publishing_api_response["rendering_app"] || "frontend"
+      Plek.external_url_for(rendering_app)
+    end
   end
 
   def html_snapshot_from_frontend(uri)
