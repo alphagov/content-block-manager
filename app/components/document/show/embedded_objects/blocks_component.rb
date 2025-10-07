@@ -32,7 +32,7 @@ private
   def attribute_rows(key_name = :key)
     first_class_items(items).map do |key, value|
       {
-        "#{key_name}": key_to_title(key, schema_name),
+        "#{key_name}": key_to_label(key, schema_name),
         value: content_for_row(key, value),
         data: data_attributes_for_row(key),
       }
@@ -68,7 +68,7 @@ private
   def rows_for_nested_items(items, nested_name, index)
     items.map do |key, value|
       {
-        key: key_to_title(key, schema_name, "#{object_type}.#{nested_name}"),
+        key: key_to_label(key, schema_name, "#{object_type}.#{nested_name}"),
         value: content_for_row(embed_code_identifier(nested_name, index, key), translated_value(key, value)),
         data: data_attributes_for_row(embed_code_identifier(nested_name, index, key)),
       }

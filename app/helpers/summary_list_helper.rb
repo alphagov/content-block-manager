@@ -23,7 +23,7 @@ module SummaryListHelper
     end
   end
 
-  def key_to_title(key, schema_name, object_type = nil)
+  def key_to_label(key, schema_name, object_type = nil)
     subject, count = key.split("/")
     if count
       humanized_label(schema_name:, relative_key: "#{subject.singularize} #{count.to_i + 1}", root_object: object_type)

@@ -288,7 +288,7 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
           object_title: "my-embedded-object",
         )
 
-        component.expects(:key_to_title).with("name", "embedded-objects").returns("Name translated")
+        component.expects(:key_to_label).with("name", "embedded-objects").returns("Name translated")
         component.expects(:translated_value).with("name", "My Embedded Object").returns("My Embedded Object translated")
 
         I18n.expects(:t).with("edition.titles.#{edition.schema.block_type}.#{subschema.id}.field", default: "Field").returns("Field translated")
