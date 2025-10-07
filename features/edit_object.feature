@@ -42,6 +42,7 @@ Feature: Edit a content object
     Then I should be on the "review" step
     And I should see a back link to the "schedule_publishing" step
     Then I should see a button labelled "Publish"
+    And I should not see a preview button
     When I review and confirm my answers are correct
     Then I should be taken to the confirmation page for a published block
     When I click to view the content block
