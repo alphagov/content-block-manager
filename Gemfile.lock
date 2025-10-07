@@ -255,14 +255,14 @@ GEM
       nokogiri (~> 1.12)
       rinku (~> 2.0)
       sanitize (>= 6, < 8)
-    govuk_app_config (9.20.1)
+    govuk_app_config (9.20.2)
       logstasher (~> 2.1)
       opentelemetry-exporter-otlp (>= 0.25, < 0.31)
-      opentelemetry-instrumentation-all (>= 0.39.1, < 0.81.0)
+      opentelemetry-instrumentation-all (>= 0.39.1, < 0.85.0)
       opentelemetry-sdk (~> 1.2)
       plek (>= 4, < 6)
       prometheus_exporter (~> 2.3)
-      puma (>= 5.6, < 7.0)
+      puma (>= 5.6, < 8.0)
       rack-proxy (~> 0.7)
       sentry-rails (~> 5.3)
       sentry-ruby (~> 5.3)
@@ -679,7 +679,7 @@ GEM
       date
       stringio
     public_suffix (6.0.2)
-    puma (6.6.1)
+    puma (7.0.4)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.1)
@@ -1078,7 +1078,7 @@ CHECKSUMS
   google-protobuf (4.32.1-x86_64-linux-musl) sha256=d5314aea8817bd372177205667b4f4442a5884212bcaccb1ba569ec8a1a06ec4
   googleapis-common-protos-types (1.21.0) sha256=c91b6f2b8a2dab6af4e249e7be8e8d5fe174d6e58e065803d740031880179d8f
   govspeak (10.6.4) sha256=14c7929098f1aeee4736b08472f01f46d5a7d0b0b93bc2485030c0248f29d3a4
-  govuk_app_config (9.20.1) sha256=3e9d66213aa002663f37450d8a55ea38486ae39b075bd7f669ce3eb647014698
+  govuk_app_config (9.20.2) sha256=80253e87a5dcf05362ed5afc217b9dcee1660ae81e853a68c8809c9378ceee2d
   govuk_frontend_toolkit (9.0.1) sha256=18fdae529c9003e023c3461d89a45ddaf5ac0df311705351743c9f1b7b48a2de
   govuk_personalisation (1.1.0) sha256=6e7a0dcfaec11570d95490160a95aff85150df5b667a586ecd7d5de04feac5dd
   govuk_publishing_components (61.1.1) sha256=2a82ae4a4c9bac1f1f7370781fe58a642c56a7487e28dfbbf7b6f895453b39c1
@@ -1223,7 +1223,7 @@ CHECKSUMS
   pry-rails (0.3.11) sha256=a69e28e24a34d75d1f60bcf241192a54253f8f7ef8a62cba1e75750a9653593d
   psych (5.2.6) sha256=814328aa5dcb6d604d32126a20bc1cbcf05521a5b49dbb1a8b30a07e580f316e
   public_suffix (6.0.2) sha256=bfa7cd5108066f8c9602e0d6d4114999a5df5839a63149d3e8b0f9c1d3558394
-  puma (6.6.1) sha256=b9b56e4a4ea75d1bfa6d9e1972ee2c9f43d0883f011826d914e8e37b3694ea1e
+  puma (7.0.4) sha256=b4c6ae11d1458052eeaa415176c3bf0000f4232287f413525ab2504446154b7a
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
   rack (3.2.1) sha256=30af3f7e5ec21b0d14d822cf24446048dba5f651b617c7e97405b604f20a9e33
   rack-protection (4.1.1) sha256=51a254a5d574a7f0ca4f0672025ce2a5ef7c8c3bd09c431349d683e825d7d16a
