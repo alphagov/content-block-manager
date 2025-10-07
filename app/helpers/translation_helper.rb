@@ -12,6 +12,19 @@ module TranslationHelper
     )
   end
 
+  def humanized_title(schema_name:, relative_key:, root_object: nil)
+    translation_path = [
+      schema_name,
+      root_object,
+      relative_key,
+    ].compact.join(".")
+
+    I18n.t(
+      "edition.titles.#{translation_path}",
+      default: relative_key.humanize.gsub("-", " "),
+    )
+  end
+
   def translated_value(key, value)
     default_path = "edition.values.#{value}"
     translation_path = "edition.values.#{key}.#{value}"
