@@ -416,7 +416,7 @@ class SchemaTest < ActiveSupport::TestCase
     end
   end
 
-  describe "#embeddable_fields" do
+  describe "#block_display_fields" do
     describe "when config exists for a schema" do
       before do
         Schema
@@ -424,14 +424,14 @@ class SchemaTest < ActiveSupport::TestCase
           .returns({
             "schemas" => {
               schema.id => {
-                "embeddable_fields" => %w[something else],
+                "block_display_fields" => %w[something else],
               },
             },
           })
       end
 
       it "returns the config values" do
-        assert_equal schema.embeddable_fields, %w[something else]
+        assert_equal schema.block_display_fields, %w[something else]
       end
     end
 
@@ -443,7 +443,7 @@ class SchemaTest < ActiveSupport::TestCase
       end
 
       it "returns an empty array" do
-        assert_equal schema.embeddable_fields, []
+        assert_equal schema.block_display_fields, []
       end
     end
   end

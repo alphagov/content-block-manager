@@ -11,9 +11,10 @@ class Document::Show::EmbeddedObjects::SubschemaItemComponentTest < ViewComponen
       "object": {
         "something": {
           "title": "Some title",
-          "embeddable_item_1": "Foo",
-          "embeddable_item_2": "Bar",
-          "something_else": "",
+          "item_1": "Foo",
+          "item_2": "Bar",
+          "item_blank": "",
+          "other_blank": "",
         },
       },
     }
@@ -33,17 +34,23 @@ class Document::Show::EmbeddedObjects::SubschemaItemComponentTest < ViewComponen
     )
   end
 
+  let(:metadata_response) { "METADATA" }
+  let(:block_response) { "BLOCKS" }
+
   before do
     edition.document.stubs(:schema).returns(schema)
     schema.stubs(:subschema).with(object_type).returns(subschema)
-    subschema.stubs(:embeddable_fields).returns(%w[embeddable_item_1 embeddable_item_2 something_else])
-    subschema.stubs(:field_ordering_rule).with("embeddable_item_1").returns(2)
-    subschema.stubs(:field_ordering_rule).with("embeddable_item_2").returns(1)
+    subschema.stubs(:block_display_fields).returns(%w[item_1 item_2 item_blank])
+    subschema.stubs(:field_ordering_rule).with("item_1").returns(2)
+    subschema.stubs(:field_ordering_rule).with("item_2").returns(1)
+    subschema.stubs(:field_ordering_rule).with("title").returns(3)
+
+    component.expects(:render).with(metadata_response).returns(metadata_response)
+    component.expects(:render).with(block_response).returns(block_response)
   end
 
-  it "renders the metadata and block components" do
-    metadata_response = "METADATA"
-    block_response = "BLOCKS"
+  it "renders non-blank fields apart from 'block_display_fields' with the MetadataComponent" do
+    Document::Show::EmbeddedObjects::BlocksComponent.stubs(:new).returns(block_response)
 
     Document::Show::EmbeddedObjects::MetadataComponent.expects(:new).with(
       items: { "title" => "Some title" },
@@ -52,20 +59,24 @@ class Document::Show::EmbeddedObjects::SubschemaItemComponentTest < ViewComponen
       schema: subschema,
     ).returns(metadata_response)
 
+    render_inline component
+
+    assert_text metadata_response
+  end
+
+  it "renders the (remaining) non-blank 'block_display_fields' with BlocksComponent" do
+    Document::Show::EmbeddedObjects::MetadataComponent.stubs(:new).returns(metadata_response)
+
     Document::Show::EmbeddedObjects::BlocksComponent.expects(:new).with(
-      items: { "embeddable_item_2" => "Bar", "embeddable_item_1" => "Foo" },
+      items: { "item_2" => "Bar", "item_1" => "Foo" },
       object_type:,
       schema_name:,
       object_title:,
       document: edition.document,
     ).returns(block_response)
 
-    component.expects(:render).with(metadata_response).returns(metadata_response)
-    component.expects(:render).with(block_response).returns(block_response)
-
     render_inline component
 
-    assert_text metadata_response
     assert_text block_response
   end
 end

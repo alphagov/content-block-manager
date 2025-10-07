@@ -11,16 +11,16 @@ private
   attr_reader :edition, :schema_name, :object_type, :object_title
 
   def metadata_items
-    object.reject { |k, _v| embeddable_fields.include?(k) }
+    object.reject { |k, v| v.blank? || block_display_fields.include?(k) }
   end
 
   def block_items
-    object.select { |k, v| v.present? && embeddable_fields.include?(k) }
+    object.select { |k, v| v.present? && block_display_fields.include?(k) }
           .sort_by { |k, _v| schema.field_ordering_rule(k) }.to_h
   end
 
-  def embeddable_fields
-    @embeddable_fields ||= schema.embeddable_fields
+  def block_display_fields
+    @block_display_fields ||= schema.block_display_fields
   end
 
   def schema
