@@ -131,6 +131,9 @@ schemas:
           country:
             component:
               country
+          street_address:
+            component:
+              textarea
           description:
             component:
               textarea
