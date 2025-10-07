@@ -4,6 +4,14 @@ Given("I am logged in") do
   login_as @user
 end
 
+Given("I am logged in as an E2E user") do
+  email = "e2euser@example.com"
+  ENV["E2E_USER_EMAILS"] = email
+  e2e_user = create(:user, email:)
+  e2e_user.save!
+  login_as e2e_user
+end
+
 Given(/^I have the "(.*?)" permission$/) do |perm|
   @user.permissions << perm
   @user.save!

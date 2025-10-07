@@ -124,3 +124,14 @@ Feature: Search for a content object
     When the block "example search title" has been updated
     And I visit the Content Block Manager home page
     Then the block "example search title" should appear as the first item in the list
+
+  Scenario: E2E documents are not shown
+    When the block "example search title" has testing_artefact set to true
+    And I visit the Content Block Manager home page
+    Then I should not see the content block with title "example search title" returned
+
+  Scenario: E2E documents are shown to E2E users
+    Given I am logged in as an E2E user
+    When the block "example search title" has testing_artefact set to true
+    And I visit the Content Block Manager home page
+    Then I should see the content block with title "example search title" returned
