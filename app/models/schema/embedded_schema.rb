@@ -38,6 +38,12 @@ class Schema
       end
     end
 
+    def embed_code_visible?(field_name:, nested_object_key: nil)
+      return top_level_embed_code_visible_on_field?(field_name) unless nested_object_key
+
+      embed_code_visible_on_field_for_nested_object?(nested_object_key, field_name)
+    end
+
     def govspeak_enabled?(field_name:, nested_object_key: nil)
       return top_level_govspeak_enabled_field?(field_name) unless nested_object_key
 
@@ -53,6 +59,14 @@ class Schema
     end
 
   private
+
+    def embed_code_visible_on_field_for_nested_object?(object_key, field_name)
+      config.dig("fields", object_key, "fields", field_name, Schema::EMBED_CODE_VISIBLE_PROPERTY_KEY) == true
+    end
+
+    def top_level_embed_code_visible_on_field?(field_name)
+      config.dig("fields", field_name, Schema::EMBED_CODE_VISIBLE_PROPERTY_KEY) == true
+    end
 
     def field_names
       sort_fields @body["properties"].keys

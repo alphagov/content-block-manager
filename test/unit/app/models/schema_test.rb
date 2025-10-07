@@ -102,6 +102,46 @@ class SchemaTest < ActiveSupport::TestCase
     end
   end
 
+  describe "#embed_code_visible?(field_name:)" do
+    let(:schema_id) { "content_block_contact" }
+
+    let(:body) do
+      {
+        "type" => "object",
+        "properties" => {},
+      }
+    end
+
+    let(:schema) { Schema.new(schema_id, body) }
+
+    let(:config) do
+      {
+        "schemas" => {
+          schema_id => {
+            "fields" => {
+              "field_1" => {},
+              "field_2" => { "embed_code_visible" => true },
+            },
+          },
+        },
+      }
+    end
+
+    before do
+      Schema
+        .stubs(:schema_settings)
+        .returns(config)
+    end
+
+    it "returns true if the given field is set as embed_code_visible" do
+      assert(schema.embed_code_visible?(field_name: "field_2"))
+    end
+
+    it "returns false if the given field is NOT set as embed_code_visible" do
+      assert_not(schema.embed_code_visible?(field_name: "field_1"))
+    end
+  end
+
   describe "#required_fields" do
     describe "when there are no required fields" do
       it "returns an empty array" do

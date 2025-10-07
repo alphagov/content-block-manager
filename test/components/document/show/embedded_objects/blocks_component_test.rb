@@ -16,7 +16,7 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
   let(:document) { build(:document, :pension) }
 
   let(:schema) { stub("schema", block_type: "schema") }
-  let(:subschema) { stub("schema", embeddable_as_block?: embeddable_as_block, block_type: "subschema") }
+  let(:subschema) { stub("schema", embeddable_as_block?: embeddable_as_block, block_type: "subschema", embed_code_visible?: false) }
   let(:schema_name) { "schema_name" }
 
   before do
@@ -43,8 +43,93 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
 
       assert_selector ".app-c-embedded-objects-blocks-component .govuk-summary-list__row", count: 2
 
-      expect_summary_list_row(test_id: "else_foo", key: "Foo", value: "bar", embed_code_suffix: "foo")
-      expect_summary_list_row(test_id: "else_fizz", key: "Fizz", value: "buzz", embed_code_suffix: "fizz")
+      expect_summary_list_row(test_id: "else_foo", key: "Foo", value: "bar", embed_code_suffix: nil)
+      expect_summary_list_row(test_id: "else_fizz", key: "Fizz", value: "buzz", embed_code_suffix: nil)
+    end
+
+    context "when the 'foo' field is set to display its embed code" do
+      before do
+        subschema.stubs(:embed_code_visible?)
+          .with(field_name: "foo", nested_object_key: nil).returns(true)
+        subschema.stubs(:embed_code_visible?)
+          .with(field_name: "fizz", nested_object_key: nil).returns(false)
+      end
+
+      it "displays the embed code" do
+        render_inline component
+
+        assert_selector ".app-c-embedded-objects-blocks-component .govuk-summary-list__row", count: 2
+        assert_selector ".app-c-embedded-objects-blocks-component__embed-code", count: 1
+
+        expect_summary_list_row(
+          test_id: "else_foo",
+          key: "Foo",
+          value: "bar",
+          embed_code_present: true,
+          embed_code_suffix: "foo",
+        )
+        expect_summary_list_row(
+          test_id: "else_fizz",
+          key: "Fizz",
+          value: "buzz",
+          embed_code_present: false,
+          embed_code_suffix: nil,
+        )
+      end
+
+      it "includes embed code in the row's data attrs along with name of JS module to be invoked" do
+        render_inline component
+
+        row = ".govuk-summary-list__row[data-testid='else_foo']"
+        embed_code = "[data-embed-code='{{embed:content_block_pension:/something/else/foo}}']"
+        js_module = "[data-module='copy-embed-code']"
+
+        assert_selector(row)
+        assert_selector("#{row}#{embed_code}")
+        assert_selector("#{row}#{js_module}")
+      end
+    end
+
+    context "when the 'foo' field is NOT set to display its embed code" do
+      before do
+        subschema.stubs(:embed_code_visible?).with(field_name: "foo").returns(false)
+        subschema.stubs(:embed_code_visible?).with(field_name: "fizz").returns(false)
+      end
+
+      it "does NOT display the embed code" do
+        render_inline component
+
+        assert_selector ".app-c-embedded-objects-blocks-component .govuk-summary-list__row", count: 2
+        assert_selector ".app-c-embedded-objects-blocks-component__embed-code", count: 0
+
+        expect_summary_list_row(
+          test_id: "else_foo",
+          key: "Foo",
+          value: "bar",
+          embed_code_present: false,
+          embed_code_suffix: nil,
+        )
+        expect_summary_list_row(
+          test_id: "else_fizz",
+          key: "Fizz",
+          value: "buzz",
+          embed_code_present: false,
+          embed_code_suffix: nil,
+        )
+      end
+
+      it "does NOT include embed code in the row's data attrs nor name of JS module to be invoked" do
+        render_inline component
+
+        row = ".govuk-summary-list__row[data-testid='else_foo']"
+        embed_code = "[data-embed-code='{{embed:content_block_pension:/something/else/foo}}']"
+        js_module = "[data-module='copy-embed-code']"
+
+        assert_selector(row)
+
+        refute_selector("#{row}#{embed_code}")
+        refute_selector("#{row}#{js_module}")
+      end
     end
 
     it "adds the correct class to the wrapper" do
@@ -108,6 +193,26 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
           expect_summary_list_row(test_id: "else_things/1/value", key: "Value", value: "Value 2", embed_code_suffix: "things/1/value", parent_container: summary_card)
         end
       end
+
+      describe "testing for visibility of embed code" do
+        before do
+          subschema.unstub(:embed_code_visible?)
+        end
+
+        it "decomposes the field key into i) nested_object_key and ii) field name" do
+          subschema.expects(:embed_code_visible?).with(
+            nested_object_key: "things",
+            field_name: "title",
+          ).at_least(2)
+
+          subschema.expects(:embed_code_visible?).with(
+            nested_object_key: "things",
+            field_name: "value",
+          ).at_least(2)
+
+          render_inline component
+        end
+      end
     end
   end
 
@@ -128,7 +233,7 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
 
         wrapper.assert_selector ".govuk-summary-list__row", count: 1
 
-        expect_summary_list_row(test_id: "else", key: "Something", value: "BLOCK_RESPONSE")
+        expect_summary_list_row(test_id: "else", key: "Something", value: "BLOCK_RESPONSE", embed_code_present: true)
       end
     end
 
@@ -139,7 +244,7 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
         wrapper.assert_selector ".govuk-details__summary-text", text: "All #{object_type} attributes"
         wrapper.assert_selector ".govuk-details__text", visible: false do |details|
           details.assert_selector ".app-c-embedded-objects-blocks-component__details-text",
-                                  text: "These are all the #{object_type} attributes that make up the #{object_type}. You can use the embed code for each attribute separately in your content if required.",
+                                  text: "These are all the #{object_type} attributes that make up the #{object_type}. You can use any available embed code for each attribute separately in your content if required.",
                                   visible: false
 
           details.assert_selector ".app-c-embedded-objects-blocks-component__details-summary-list", visible: false do |summary_list|
@@ -275,6 +380,7 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
     test_id:,
     key:,
     value:,
+    embed_code_present: false,
     embed_code_suffix: nil,
     visible: true,
     parent_container: page
@@ -283,7 +389,12 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
       row.assert_selector ".govuk-summary-list__key", text: key, visible: visible
       row.assert_selector ".govuk-summary-list__value", visible: visible do |col|
         col.assert_selector ".app-c-embedded-objects-blocks-component__content.govspeak", text: value, visible: visible
-        col.assert_selector ".app-c-embedded-objects-blocks-component__embed-code", text: document.embed_code_for_field([object_type, object_title, embed_code_suffix].compact.join("/")), visible: visible
+
+        if embed_code_present
+          col.assert_selector ".app-c-embedded-objects-blocks-component__embed-code", text: document.embed_code_for_field([object_type, object_title, embed_code_suffix].compact.join("/")), visible: visible
+        else
+          col.assert_no_selector ".app-c-embedded-objects-blocks-component__embed-code"
+        end
       end
     end
   end
