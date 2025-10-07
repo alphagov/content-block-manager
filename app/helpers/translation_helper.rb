@@ -1,28 +1,10 @@
 module TranslationHelper
   def humanized_label(schema_name:, relative_key:, root_object: nil)
-    translation_path = [
-      schema_name,
-      root_object,
-      relative_key,
-    ].compact.join(".")
-
-    I18n.t(
-      "edition.labels.#{translation_path}",
-      default: relative_key.humanize.gsub("-", " "),
-    )
+    humanized_translation(schema_name:, relative_key:, root_object:, scope: "labels")
   end
 
   def humanized_title(schema_name:, relative_key:, root_object: nil)
-    translation_path = [
-      schema_name,
-      root_object,
-      relative_key,
-    ].compact.join(".")
-
-    I18n.t(
-      "edition.titles.#{translation_path}",
-      default: relative_key.humanize.gsub("-", " "),
-    )
+    humanized_translation(schema_name:, relative_key:, root_object:, scope: "titles")
   end
 
   def translated_value(key, value)
@@ -44,5 +26,20 @@ module TranslationHelper
     ].compact.join(".")
 
     I18n.t("edition.hints.#{translation_lookup}", default: nil)
+  end
+
+private
+
+  def humanized_translation(schema_name:, relative_key:, root_object:, scope:)
+    translation_path = [
+      schema_name,
+      root_object,
+      relative_key,
+    ].compact.join(".")
+
+    I18n.t(
+      "edition.#{scope}.#{translation_path}",
+      default: relative_key.humanize.gsub("-", " "),
+    )
   end
 end

@@ -24,20 +24,19 @@ module SummaryListHelper
   end
 
   def key_to_label(key, schema_name, object_type = nil)
-    subject, count = key.split("/")
-    if count
-      humanized_label(schema_name:, relative_key: "#{subject.singularize} #{count.to_i + 1}", root_object: object_type)
-    else
-      humanized_label(schema_name:, relative_key: subject, root_object: object_type)
-    end
+    relative_key = parse_key(key)
+    humanized_label(schema_name:, relative_key:, root_object: object_type)
   end
 
   def key_to_title(key, schema_name, object_type = nil)
+    relative_key = parse_key(key)
+    humanized_title(schema_name:, relative_key:, root_object: object_type)
+  end
+
+private
+
+  def parse_key(key)
     subject, count = key.split("/")
-    if count
-      humanized_title(schema_name:, relative_key: "#{subject.singularize} #{count.to_i + 1}", root_object: object_type)
-    else
-      humanized_title(schema_name:, relative_key: subject, root_object: object_type)
-    end
+    count ? "#{subject.singularize} #{count.to_i + 1}" : subject
   end
 end
