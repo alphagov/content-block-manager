@@ -101,14 +101,3 @@ within that group. Taking the example above, clicking on "Add group" will show t
 #### `schemas.<schema_name>.subschemas.<subschema_name>.group_order`
 
 If provided, defines the order that a field is listed in when rendering a group.
-
-#### `schemas.<schema_name>.subschemas.<subschema_name>.embeddable_as_group`
-
-This defines if a subschema is embeddable as a group of fields. For example, if an address has a number of fields
-(street, city, postcode etc), the group embed code will embed all these fields together. Any other embeddable fields
-(as defined in [`schemas.<schema_name>.subschemas.<subschema_name>.embeddable_fields`](#schemasschema_namesubschemassubschema_nameembeddable_fields))
-will be shown below the group within a `details` component. For example:
-
-![A grouped address subschema](img/group_example_1.png)
-
-![A grouped address subschema with other attributes expanded](img/group_example_2.png)
