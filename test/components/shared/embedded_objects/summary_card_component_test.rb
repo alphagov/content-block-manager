@@ -28,7 +28,7 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
   let(:subschema) do
     stub(
       :subschema,
-      embeddable_fields: %w[name field-1 field-2],
+      block_display_fields: %w[name field-1 field-2],
       govspeak_enabled?: false,
       fields:,
       id: "subschema",

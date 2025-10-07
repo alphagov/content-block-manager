@@ -74,8 +74,8 @@ class Schema
     @block_type ||= id.delete_prefix("#{SCHEMA_PREFIX}_")
   end
 
-  def embeddable_fields
-    config["embeddable_fields"] || []
+  def block_display_fields
+    config["block_display_fields"] || []
   end
 
   def embeddable_as_block?

@@ -30,11 +30,11 @@ class Document::Show::SummaryListComponentTest < ViewComponent::TestCase
       stub("field", name: "something"),
     ]
   end
-  let(:schema_with_embeddable_fields) { stub(:schema, embeddable_fields: %w[foo], fields:) }
-  let(:schema_without_embeddable_fields) { stub(:schema, embeddable_fields: [], fields:) }
+  let(:schema_with_block_display_fields) { stub(:schema, block_display_fields: %w[foo], fields:) }
+  let(:schema_without_block_display_fields) { stub(:schema, block_display_fields: [], fields:) }
 
   before do
-    document.stubs(:schema).returns(schema_without_embeddable_fields)
+    document.stubs(:schema).returns(schema_without_block_display_fields)
     document.stubs(:latest_edition).returns(edition)
     Organisation.stubs(:all).returns([organisation])
   end
