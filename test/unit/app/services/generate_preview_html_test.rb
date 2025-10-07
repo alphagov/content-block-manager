@@ -11,9 +11,32 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
   let(:host_base_path) { "/test" }
   let(:uri_mock) { mock }
 
-  let(:fake_frontend_response) do
-    "<body class=\"govuk-body\"><p>test</p><span class=\"content-embed content-embed__content_block_contact\" data-content-block=\"\" data-document-type=\"content_block_contact\" data-embed-code=\"embed-code\" data-content-id=\"#{preview_content_id}\">example@example.com</span></body>"
+  let(:fake_body) do
+    <<-HTML
+    <body class=\"govuk-body\">
+        <p>test</p>
+        <span
+          class=\"content-embed content-embed__content_block_contact\"
+          data-content-block=\"\"
+          data-document-type=\"content_block_contact\"
+          data-embed-code=\"embed-code\"
+          data-content-id=\"#{preview_content_id}\">example@example.com</span>
+      </body>
+    HTML
   end
+
+  let(:fake_frontend_response) do
+    <<-HTML
+      <head>
+        <link rel="stylesheet" href="/assets/application.css">
+        <script src="/assets/application.js"></script>/
+      </head>
+      <body class="govuk-body">
+        #{fake_body}
+      </body>
+    HTML
+  end
+
   let(:block_render) do
     "<span class=\"content-embed content-embed__content_block_contact\" data-content-block=\"\" data-document-type=\"content_block_contact\" data-embed-code=\"embed-code\" data-content-id=\"#{preview_content_id}\"><a class=\"govuk-link\" href=\"mailto:new@new.com\">new@new.com</a></span>"
   end
@@ -45,6 +68,20 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
     assert_dom parsed_content, 'span.content-embed__content_block_contact[style="background-color: yellow;"]'
   end
 
+  it "appends the base path to the CSS and JS references" do
+    actual_content = GeneratePreviewHtml.new(
+      content_id: host_content_id,
+      edition: block_to_preview,
+      base_path: host_base_path,
+      locale: "en",
+    ).call
+
+    parsed_content = Nokogiri::HTML.parse(actual_content)
+
+    assert_dom parsed_content, "link[href='#{Plek.website_root}/assets/application.css']"
+    assert_dom parsed_content, "script[src='#{Plek.website_root}/assets/application.js']"
+  end
+
   describe "when the frontend throws an error" do
     before do
       exception = StandardError.new("Something went wrong")
@@ -52,7 +89,7 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
     end
 
     it "shows an error template" do
-      expected_content = Nokogiri::HTML.parse("<html><body class=\" draft\"><p>Preview not found</p></body></html>").to_s
+      expected_content = Nokogiri::HTML.parse("<html><head></head><body class=\" draft\"><p>Preview not found</p></body></html>").to_s
 
       actual_content = GeneratePreviewHtml.new(
         content_id: host_content_id,
@@ -66,7 +103,7 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
   end
 
   describe "when the frontend response contains links" do
-    let(:fake_frontend_response) do
+    let(:fake_body) do
       "
         <a href='/foo'>Internal link</a>
         <a href='https://example.com'>External link</a>
@@ -100,8 +137,8 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
   end
 
   describe "when the wrapper is a div" do
-    let(:fake_frontend_response) do
-      "<body class=\"govuk-body\"><p>test</p><div class=\"content-embed content-embed__content_block_contact\" data-content-block=\"\" data-document-type=\"content_block_contact\" data-embed-code=\"embed-code\" data-content-id=\"#{preview_content_id}\">example@example.com</div></body>"
+    let(:fake_body) do
+      "<p>test</p><div class=\"content-embed content-embed__content_block_contact\" data-content-block=\"\" data-document-type=\"content_block_contact\" data-embed-code=\"embed-code\" data-content-id=\"#{preview_content_id}\">example@example.com</div>"
     end
     let(:block_render) do
       "<div class=\"content-embed content-embed__content_block_contact\" data-content-block=\"\" data-document-type=\"content_block_contact\" data-embed-code=\"embed-code\" data-content-id=\"#{preview_content_id}\"><a class=\"govuk-link\" href=\"mailto:new@new.com\">new@new.com</a></div>"
@@ -119,6 +156,51 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
 
       assert_dom parsed_content, "body.draft"
       assert_dom parsed_content, 'div.content-embed__content_block_contact[style="background-color: yellow;"]'
+    end
+  end
+
+  describe "when in development mode" do
+    let(:rendering_app) { "government-frontend" }
+    let(:publishing_api_response) do
+      {
+        "foo" => "bar",
+        "rendering_app" => rendering_app,
+      }
+    end
+
+    before do
+      Rails.env.stubs(:development?).returns(true)
+      Services.publishing_api.stubs(:get_content).with(host_content_id).returns(publishing_api_response)
+    end
+
+    it "makes a request to the rendering app as reported by the Publishing API" do
+      Net::HTTP.expects(:get).with(URI("#{Plek.external_url_for(rendering_app)}#{host_base_path}")).returns(fake_frontend_response)
+
+      GeneratePreviewHtml.new(
+        content_id: host_content_id,
+        edition: block_to_preview,
+        base_path: host_base_path,
+        locale: "en",
+      ).call
+    end
+
+    describe "when the Publishing API does not report a rendering app" do
+      let(:publishing_api_response) do
+        {
+          "foo" => "bar",
+        }
+      end
+
+      it "defaults to frontend" do
+        Net::HTTP.expects(:get).with(URI("#{Plek.external_url_for('frontend')}#{host_base_path}")).returns(fake_frontend_response)
+
+        GeneratePreviewHtml.new(
+          content_id: host_content_id,
+          edition: block_to_preview,
+          base_path: host_base_path,
+          locale: "en",
+        ).call
+      end
     end
   end
 end

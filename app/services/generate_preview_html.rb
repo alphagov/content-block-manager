@@ -17,13 +17,15 @@ class GeneratePreviewHtml
     nokogiri_html = html_snapshot_from_frontend(uri)
     update_local_link_paths(nokogiri_html)
     add_draft_style(nokogiri_html)
+    update_css_hrefs(nokogiri_html)
+    update_js_srcs(nokogiri_html)
     replace_existing_content_blocks(nokogiri_html).to_s
   end
 
 private
 
   BLOCK_STYLE = "background-color: yellow;".freeze
-  ERROR_HTML = "<html><body><p>Preview not found</p></body></html>".freeze
+  ERROR_HTML = "<html><head></head><body><p>Preview not found</p></body></html>".freeze
 
   attr_reader :edition, :content_id, :base_path, :locale
 
@@ -32,7 +34,18 @@ private
   end
 
   def frontend_base_path
-    Rails.env.development? ? Plek.external_url_for("government-frontend") : Plek.website_root
+    @frontend_base_path ||= Rails.env.development? ? development_base_path : Plek.website_root
+  end
+
+  # There are multiple rendering apps for GOV.UK. In non-dev environments, the Router app determines the rendering app
+  # to use. We don't have access to this in dev, so we need to get the rendering app from the Publishing API and construct
+  # the base path that way.
+  def development_base_path
+    @development_base_path ||= begin
+      publishing_api_response = Services.publishing_api.get_content(content_id)
+      rendering_app = publishing_api_response["rendering_app"] || "frontend"
+      Plek.external_url_for(rendering_app)
+    end
   end
 
   def html_snapshot_from_frontend(uri)
@@ -60,6 +73,22 @@ private
     nokogiri_html.css("body").each do |body|
       body["class"] ||= ""
       body["class"] += " draft"
+    end
+    nokogiri_html
+  end
+
+  def update_css_hrefs(nokogiri_html)
+    head = nokogiri_html.at_css("head")
+    head.css("link[rel='stylesheet']").each do |link|
+      link[:href] = frontend_base_path + link[:href] if link[:href]
+    end
+    nokogiri_html
+  end
+
+  def update_js_srcs(nokogiri_html)
+    head = nokogiri_html.at_css("head")
+    head.css("script").each do |script|
+      script[:src] = frontend_base_path + script[:src] if script[:src]
     end
     nokogiri_html
   end
