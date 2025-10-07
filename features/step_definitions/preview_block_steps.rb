@@ -2,6 +2,10 @@ When(/^I click on Preview$/) do
   preview_block_button.click
 end
 
+Then("I should not see a preview button") do
+  expect(page).to_not have_selector("a[title='Preview block']", text: "Preview")
+end
+
 Then(/^I should see a preview of my contact$/) do
   within ".app-views-editions-preview" do
     assert_text @title
