@@ -62,21 +62,4 @@ class Document::Show::SummaryListComponentTest < ViewComponent::TestCase
       assert_selector ".govuk-summary-list__value p", text: "instructions"
     end
   end
-
-  describe "when there are embeddable fields in scheme" do
-    before do
-      document.stubs(:schema).returns(schema_with_embeddable_fields)
-    end
-
-    it "assembles the embed code functionality" do
-      render_inline(Document::Show::SummaryListComponent.new(document:))
-
-      assert_selector ".govuk-summary-list__row", count: 7
-
-      assert_selector ".govuk-summary-list__row[data-embed-code='#{document.embed_code_for_field('foo')}']", text: "Foo"
-      assert_selector ".govuk-summary-list__row[data-module='copy-embed-code']", text: "Foo"
-
-      assert_selector ".govuk-summary-list__row[data-embed-code-row='true']", text: document.embed_code_for_field("foo")
-    end
-  end
 end
