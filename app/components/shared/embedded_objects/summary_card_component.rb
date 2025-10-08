@@ -24,10 +24,6 @@ private
     "#{object_type.titleize.singularize.capitalize} details"
   end
 
-  def nested_item_title(key)
-    I18n.t("edition.titles.#{edition.schema.block_type}.#{schema.id}.#{key}", default: key.singularize.titleize)
-  end
-
   def items
     schema.fields.map { |field|
       [field.name, object[field.name]]
@@ -37,7 +33,7 @@ private
   def rows
     first_class_items(items).map do |key, value|
       {
-        field: key_to_title(key, object_type),
+        field: key_to_label(key, edition.schema.block_type, object_type),
         value: translated_value(key, value),
         data: {
           testid: [object_title.parameterize, key].compact.join("_").underscore,
