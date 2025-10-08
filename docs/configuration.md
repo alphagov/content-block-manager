@@ -59,13 +59,28 @@ A list of [subschemas](#schemasschema_namesubschemassubschema_name) for a specif
 
 An object that defines a subschema.
 
-#### `schemas.<schema_name>.subschemas.<subschema_name>.embeddable_fields`
+#### `schemas.<schema_name>.subschemas.<subschema_name>.block_display_fields`
 
-An array of strings that defines fields that can be embedded. This will ensure that field appears as a "Contact block"
-when viewing a content block item. For example, when a subschema has the fields `freqency`, `description` and `amount`,
-and only `amount` is an embeddable field, the subschema will be rendered like so:
+An array of strings that defines which fields will be:
 
-![embeddable_fields usage example](img/embeddable_fields.png)
+- omitted from the summary list of "metadata" and
+- consequently be included in the block which follows.
+
+In the example of a pension rate, we configure `amount` to be a `block_display_field` in
+`config/content_block_manager.yml`:
+
+```yml
+content_block_pension:
+  subschemas:
+    rates:
+      block_display_fields:
+        - amount
+```
+
+In this way we cause `amount` to be left off the metadata summary list and included
+in the representation of the subschema block:
+
+![block_display_fields usage example](img/block_display_fields.png)
 
 #### `schemas.<schema_name>.subschemas.<subschema_name>.field_order`
 
@@ -86,14 +101,3 @@ within that group. Taking the example above, clicking on "Add group" will show t
 #### `schemas.<schema_name>.subschemas.<subschema_name>.group_order`
 
 If provided, defines the order that a field is listed in when rendering a group.
-
-#### `schemas.<schema_name>.subschemas.<subschema_name>.embeddable_as_group`
-
-This defines if a subschema is embeddable as a group of fields. For example, if an address has a number of fields
-(street, city, postcode etc), the group embed code will embed all these fields together. Any other embeddable fields
-(as defined in [`schemas.<schema_name>.subschemas.<subschema_name>.embeddable_fields`](#schemasschema_namesubschemassubschema_nameembeddable_fields))
-will be shown below the group within a `details` component. For example:
-
-![A grouped address subschema](img/group_example_1.png)
-
-![A grouped address subschema with other attributes expanded](img/group_example_2.png)

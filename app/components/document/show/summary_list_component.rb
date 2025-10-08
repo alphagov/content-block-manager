@@ -47,27 +47,17 @@ private
       rows = [{
         field: key.humanize,
         value: edition.details[key],
-        data: data_attributes_for_row(key),
       }]
-      rows.push(embed_code_row(key, document)) if should_show_embed_code?(key)
       rows
     }.flatten
-  end
-
-  def data_attributes_for_row(key)
-    copy_embed_code_data_attributes(key, document) if should_show_embed_code?(key)
-  end
-
-  def should_show_embed_code?(key)
-    embeddable_fields.include?(key)
   end
 
   def schema
     @schema ||= document.schema
   end
 
-  def embeddable_fields
-    @embeddable_fields = schema.embeddable_fields
+  def block_display_fields
+    @block_display_fields = schema.block_display_fields
   end
 
   def status_item

@@ -46,8 +46,8 @@ private
     end
   end
 
-  def embeddable_fields
-    @embeddable_fields = schema.embeddable_fields
+  def block_display_fields
+    @block_display_fields = schema.block_display_fields
   end
 
   def object

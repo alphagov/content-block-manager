@@ -16,7 +16,7 @@ module IntegrationTestHelpers
       block_type:,
       permitted_params: %i[foo bar],
       subschemas:,
-      embeddable_fields: [],
+      block_display_fields: [],
       embeddable_as_block?: false,
     )
     subschemas.each do |subschema|

@@ -30,11 +30,11 @@ class Document::Show::SummaryListComponentTest < ViewComponent::TestCase
       stub("field", name: "something"),
     ]
   end
-  let(:schema_with_embeddable_fields) { stub(:schema, embeddable_fields: %w[foo], fields:) }
-  let(:schema_without_embeddable_fields) { stub(:schema, embeddable_fields: [], fields:) }
+  let(:schema_with_block_display_fields) { stub(:schema, block_display_fields: %w[foo], fields:) }
+  let(:schema_without_block_display_fields) { stub(:schema, block_display_fields: [], fields:) }
 
   before do
-    document.stubs(:schema).returns(schema_without_embeddable_fields)
+    document.stubs(:schema).returns(schema_without_block_display_fields)
     document.stubs(:latest_edition).returns(edition)
     Organisation.stubs(:all).returns([organisation])
   end
@@ -60,23 +60,6 @@ class Document::Show::SummaryListComponentTest < ViewComponent::TestCase
 
       assert_selector ".govuk-summary-list__key", text: "Instructions to publishers"
       assert_selector ".govuk-summary-list__value p", text: "instructions"
-    end
-  end
-
-  describe "when there are embeddable fields in scheme" do
-    before do
-      document.stubs(:schema).returns(schema_with_embeddable_fields)
-    end
-
-    it "assembles the embed code functionality" do
-      render_inline(Document::Show::SummaryListComponent.new(document:))
-
-      assert_selector ".govuk-summary-list__row", count: 7
-
-      assert_selector ".govuk-summary-list__row[data-embed-code='#{document.embed_code_for_field('foo')}']", text: "Foo"
-      assert_selector ".govuk-summary-list__row[data-module='copy-embed-code']", text: "Foo"
-
-      assert_selector ".govuk-summary-list__row[data-embed-code-row='true']", text: document.embed_code_for_field("foo")
     end
   end
 end
