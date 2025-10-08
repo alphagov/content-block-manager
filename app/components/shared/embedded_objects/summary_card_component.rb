@@ -33,7 +33,7 @@ private
   def rows
     first_class_items(items).map do |key, value|
       {
-        field: key_to_label(key, object_type),
+        field: key_to_label(key, edition.schema.block_type, object_type),
         value: translated_value(key, value),
         data: {
           testid: [object_title.parameterize, key].compact.join("_").underscore,

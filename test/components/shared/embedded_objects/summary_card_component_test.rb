@@ -84,9 +84,9 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
 
   describe "when there is a translated value" do
     it "returns a translated value" do
-      I18n.expects(:t).with("edition.labels.embedded-objects.name", default: "Name").returns("Name")
-      I18n.expects(:t).with("edition.labels.embedded-objects.field-1", default: "Field 1").returns("Field 1")
-      I18n.expects(:t).with("edition.labels.embedded-objects.field-2", default: "Field 2").returns("Field 2")
+      I18n.expects(:t).with("edition.labels.block_type.embedded-objects.name", default: "Name").returns("Name")
+      I18n.expects(:t).with("edition.labels.block_type.embedded-objects.field-1", default: "Field 1").returns("Field 1")
+      I18n.expects(:t).with("edition.labels.block_type.embedded-objects.field-2", default: "Field 2").returns("Field 2")
 
       component = Shared::EmbeddedObjects::SummaryCardComponent.new(
         edition:,
@@ -288,7 +288,7 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
           object_title: "my-embedded-object",
         )
 
-        component.expects(:key_to_label).with("name", "embedded-objects").returns("Name translated")
+        component.expects(:key_to_label).with("name", "block_type", "embedded-objects").returns("Name translated")
         component.expects(:translated_value).with("name", "My Embedded Object").returns("My Embedded Object translated")
 
         I18n.expects(:t).with("edition.titles.#{edition.schema.block_type}.#{subschema.id}.field", default: "Field").returns("Field translated")

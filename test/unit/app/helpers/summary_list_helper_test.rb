@@ -77,4 +77,22 @@ class SummaryListHelperTest < ActiveSupport::TestCase
       end
     end
   end
+
+  describe "#key_to_title" do
+    it "returns a titlelized version of a key without an index" do
+      assert_equal key_to_title("item", "schema_name"), "Item"
+    end
+
+    it "returns a titleized version with a count when an index is present" do
+      assert_equal key_to_title("items/1", "schema_name"), "Item 2"
+    end
+
+    describe "when there is a translation for the key" do
+      it "returns translated key" do
+        I18n.expects(:t).with("edition.titles.schema_name.object_type.item", default: "Item").returns("Item translated")
+
+        assert_equal key_to_title("item", "schema_name", "object_type"), "Item translated"
+      end
+    end
+  end
 end
