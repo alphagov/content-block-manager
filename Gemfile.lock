@@ -89,7 +89,7 @@ GEM
       erubi (~> 1.4)
       parser (>= 2.4)
       smart_properties
-    bigdecimal (3.3.0)
+    bigdecimal (3.3.1)
     binding_of_caller (1.0.1)
       debug_inspector (>= 1.2.0)
     bootsnap (1.18.6)
@@ -117,10 +117,10 @@ GEM
     coderay (1.1.3)
     concurrent-ruby (1.3.5)
     connection_pool (2.5.4)
-    content_block_tools (1.4.0)
-      actionview (>= 6, < 8.0.3)
+    content_block_tools (1.4.1)
+      actionview (>= 6, < 8.0.4)
       govspeak (>= 10.6.3)
-      rails (>= 6, < 8.0.3)
+      rails (>= 6, < 8.0.4)
       view_component (~> 4)
     crack (1.0.0)
       bigdecimal
@@ -245,8 +245,8 @@ GEM
       rake (>= 13)
     googleapis-common-protos-types (1.22.0)
       google-protobuf (~> 4.26)
-    govspeak (10.6.4)
-      actionview (>= 6, < 8.0.3)
+    govspeak (10.6.5)
+      actionview (>= 6, < 8.0.4)
       addressable (>= 2.3.8, < 2.8.8)
       govuk_publishing_components (>= 43)
       htmlentities (~> 4)
@@ -965,7 +965,7 @@ CHECKSUMS
   benchmark (0.4.1) sha256=d4ef40037bba27f03b28013e219b950b82bace296549ec15a78016552f8d2cce
   better_errors (2.10.1) sha256=f798f1bac93f3e775925b7fcb24cffbcf0bb62ee2210f5350f161a6b75fc0a73
   better_html (2.1.1) sha256=046c3551d1488a3f2939a7cac6fabf2bde08c32e135c91fcd683380118e5af55
-  bigdecimal (3.3.0) sha256=e116f692049da02a180f7b1d49859e828eb3a70d01e2efd8f78fb675738554f5
+  bigdecimal (3.3.1) sha256=eaa01e228be54c4f9f53bf3cc34fe3d5e845c31963e7fcc5bedb05a4e7d52218
   binding_of_caller (1.0.1) sha256=2b2902abff4246ddcfbc4da9b69bc4a019e22aeb300c2ff6289a173d4b90b29a
   bootsnap (1.18.6) sha256=0ae2393c1e911e38be0f24e9173e7be570c3650128251bf06240046f84a07d00
   brakeman (7.1.0) sha256=bbc708a75a53008490c8b9600b97fa85cb3d5a8818dd1560f18e0b89475d48af
@@ -978,7 +978,7 @@ CHECKSUMS
   coderay (1.1.3) sha256=dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b
   concurrent-ruby (1.3.5) sha256=813b3e37aca6df2a21a3b9f1d497f8cbab24a2b94cab325bffe65ee0f6cbebc6
   connection_pool (2.5.4) sha256=e9e1922327416091f3f6542f5f4446c2a20745276b9aa796dd0bb2fd0ea1e70a
-  content_block_tools (1.4.0) sha256=f4eeba88e8202480fd17e0bcbe075f81409392bbae0b49d86da84b9931a90110
+  content_block_tools (1.4.1) sha256=003f6037cf2973294ca8c19e6832b7d0200afa6fbfa33043a782b3e108033e34
   crack (1.0.0) sha256=c83aefdb428cdc7b66c7f287e488c796f055c0839e6e545fec2c7047743c4a49
   crass (1.0.6) sha256=dc516022a56e7b3b156099abc81b6d2b08ea1ed12676ac7a5657617f012bd45d
   cucumber (10.1.1) sha256=293be9e52e526824dc6157e1afe8ee3716fd2902f88a0f4ae0ae37a46e452271
@@ -1029,7 +1029,7 @@ CHECKSUMS
   google-protobuf (4.32.1-x86_64-linux-gnu) sha256=2d209c1980dbdeb4114c7d839a3305fb78dc90bde42fb9a22974c8a4841e0263
   google-protobuf (4.32.1-x86_64-linux-musl) sha256=d5314aea8817bd372177205667b4f4442a5884212bcaccb1ba569ec8a1a06ec4
   googleapis-common-protos-types (1.22.0) sha256=f97492b77bd6da0018c860d5004f512fe7cd165554d7019a8f4df6a56fbfc4c7
-  govspeak (10.6.4) sha256=14c7929098f1aeee4736b08472f01f46d5a7d0b0b93bc2485030c0248f29d3a4
+  govspeak (10.6.5) sha256=da0b30b54a0975a046f406e7278bb9653f38a1e8237f5fb5849b1f3faa30047e
   govuk_app_config (9.20.2) sha256=80253e87a5dcf05362ed5afc217b9dcee1660ae81e853a68c8809c9378ceee2d
   govuk_frontend_toolkit (9.0.1) sha256=18fdae529c9003e023c3461d89a45ddaf5ac0df311705351743c9f1b7b48a2de
   govuk_personalisation (1.1.0) sha256=6e7a0dcfaec11570d95490160a95aff85150df5b667a586ecd7d5de04feac5dd
