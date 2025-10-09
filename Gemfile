@@ -19,7 +19,7 @@ gem "pg", "~> 1.6"
 gem "pg_search"
 gem "plek"
 gem "puma", ">= 5.0"
-gem "rails", "~> 8.0.2", ">= 8.0.2.1"
+gem "rails", "~> 8.0.3"
 gem "record_tag_helper", require: false
 gem "rinku", require: "rails_rinku"
 gem "sentry-sidekiq"
