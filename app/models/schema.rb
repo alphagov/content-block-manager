@@ -6,7 +6,7 @@ class Schema
 
   CONFIG_PATH = Rails.root.join("config/content_block_manager.yml").to_s
 
-  EMBED_CODE_VISIBLE_PROPERTY_KEY = "embed_code_visible".freeze
+  HIDDEN_FIELD_PROPERTY_KEY = "hidden_field".freeze
   GOVSPEAK_ENABLED_PROPERTY_KEY = "govspeak_enabled".freeze
 
   class << self
@@ -86,8 +86,8 @@ class Schema
     @config ||= self.class.schema_settings.dig("schemas", @id) || {}
   end
 
-  def embed_code_visible?(field_name:)
-    config.dig("fields", field_name, EMBED_CODE_VISIBLE_PROPERTY_KEY) == true
+  def hidden_field?(field_name:)
+    config.dig("fields", field_name, HIDDEN_FIELD_PROPERTY_KEY) == true
   end
 
   def govspeak_enabled?(field_name:)
