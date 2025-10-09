@@ -1,5 +1,11 @@
 .app-c-govspeak-editor {
   margin-bottom: govuk-spacing(6);
+  .govuk-grid-column-full {
+    .govuk-hint {
+      margin-right: govuk-spacing(9);
+      padding-right: govuk-spacing(9);
+    }
+  }
 }
 
 .app-c-govspeak-editor__preview-button-wrapper {
