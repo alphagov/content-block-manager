@@ -20,7 +20,6 @@ schemas:
               textarea
             govspeak_enabled: true
           amount:
-            embed_code_visible: true
   content_block_contact:
     embeddable_as_block: true
     field_order:
@@ -49,7 +48,6 @@ schemas:
           - description
         fields:
           email_address:
-            embed_code_visible: true
           body:
             component:
               textarea
