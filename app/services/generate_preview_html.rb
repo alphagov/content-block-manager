@@ -72,7 +72,7 @@ private
   def add_draft_style(nokogiri_html)
     nokogiri_html.css("body").each do |body|
       body["class"] ||= ""
-      body["class"] += " draft"
+      body["class"] += " gem-c-layout-for-public--draft"
     end
     nokogiri_html
   end

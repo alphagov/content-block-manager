@@ -64,7 +64,7 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
 
     parsed_content = Nokogiri::HTML.parse(actual_content)
 
-    assert_dom parsed_content, "body.draft"
+    assert_dom parsed_content, "body.gem-c-layout-for-public--draft"
     assert_dom parsed_content, 'span.content-embed__content_block_contact[style="background-color: yellow;"]'
   end
 
@@ -89,7 +89,7 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
     end
 
     it "shows an error template" do
-      expected_content = Nokogiri::HTML.parse("<html><head></head><body class=\" draft\"><p>Preview not found</p></body></html>").to_s
+      expected_content = Nokogiri::HTML.parse("<html><head></head><body class=\" gem-c-layout-for-public--draft\"><p>Preview not found</p></body></html>").to_s
 
       actual_content = GeneratePreviewHtml.new(
         content_id: host_content_id,
@@ -154,7 +154,7 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
 
       parsed_content = Nokogiri::HTML.parse(actual_content)
 
-      assert_dom parsed_content, "body.draft"
+      assert_dom parsed_content, "body.gem-c-layout-for-public--draft"
       assert_dom parsed_content, 'div.content-embed__content_block_contact[style="background-color: yellow;"]'
     end
   end
