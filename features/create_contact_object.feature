@@ -325,9 +325,9 @@ Feature: Create a contact object
     And I should see the created embedded object of type "contact_link"
     When I view all the telephone attributes
     Then I should see that the call charges fields have been changed
-    And I should see that the video relay service info is to be shown
-    And I should see that the custom video relay info has been recorded
+    And I should see that the video relay service info has been changed
     And I should see that the BSL guidance fields have been changed
+    And I should see that the opening hours have been changed
 
   @javascript
   Scenario: GDS editor sees errors for invalid telephone objects
