@@ -2,11 +2,20 @@
   margin-bottom: govuk-spacing(6);
 }
 
+.app-c-govspeak-editor__label-hint-wrapper {
+  box-sizing: border-box;
+  float: left;
+}
+
 .app-c-govspeak-editor__preview-button-wrapper {
   text-align: right;
-  display: flex;
-  justify-content: end;
-  margin-top: govuk-spacing(-9);
+  box-sizing: border-box;
+  min-width: govuk-spacing(5);
+  float: right;
+
+  .govuk-button {
+    margin-left: auto;
+  }
 }
 
 .app-c-govspeak-editor__textarea--hidden {
