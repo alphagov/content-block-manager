@@ -24,13 +24,12 @@
 
   classes = "app-c-govspeak-editor govuk-form-group"
   classes += " govuk-form-group--error" if error_items
-
   dir = right_to_left ? "rtl" : nil
 %>
 
 <%= tag.div class: classes, data: data_attributes do %>
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full govuk-!-margin-bottom-3">
+    <div class="govuk-grid-column-full">
       <%= render "govuk_publishing_components/components/label", {
         id: label_id,
         html_for: id,
