@@ -75,12 +75,34 @@ class Edition::Details::Fields::ObjectComponentTest < BaseComponentTestClass
       ]
     end
 
+    # Ensure this edition belongs to a document with exactly one edition so defaults are applied
+    let(:edition) { create(:edition, :pension) }
+
     it "renders the field with the default values" do
       render_inline(component)
 
       assert_selector "input[name=\"edition[details][nested][label]\"][value=\"LABEL DEFAULT\"]"
       assert_selector "input[name=\"edition[details][nested][type]\"][value=\"TYPE DEFAULT\"]"
       assert_selector "input[name=\"edition[details][nested][email_address]\"][value=\"EMAIL DEFAULT\"]"
+    end
+
+    describe "but real values are also present" do
+      let(:form_value) do
+        {
+          "label" => "Real Label",
+          "type" => "Real Type",
+          "email_address" => "Real Email Address",
+        }
+      end
+
+      it "renders the real values instead of defaults" do
+        render_inline(component)
+
+        assert_selector "input[name=\"edition[details][nested][label]\"][value=\"Real Label\"]"
+        assert_selector "input[name=\"edition[details][nested][type]\"][value=\"Real Type\"]"
+        # Email address has no real value, so it should use the default
+        assert_selector "input[name=\"edition[details][nested][email_address]\"][value=\"Real Email Address\"]"
+      end
     end
   end
 
