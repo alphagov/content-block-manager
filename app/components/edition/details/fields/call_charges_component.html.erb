@@ -8,6 +8,7 @@
             name: name_for_field(label) ,
             id: id_for_field(label),
             value: value_for_field(label) || label.default_value,
+            error_items: errors_for_field(label),
           }) %>
 
     <%= render("govuk_publishing_components/components/input", {
@@ -17,6 +18,7 @@
               name: name_for_field(call_charges_info_url) ,
               id: id_for_field(call_charges_info_url),
               value: value_for_field(call_charges_info_url) || call_charges_info_url.default_value,
+              error_items: errors_for_field(call_charges_info_url),
             }) %>
   <% end %>
 
