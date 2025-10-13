@@ -155,6 +155,9 @@ schemas:
               textarea
         block_display_fields:
           - url
+          - label
+          - description
+          - title
         field_order:
           - title
           - label
