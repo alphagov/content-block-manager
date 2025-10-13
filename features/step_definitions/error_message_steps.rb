@@ -7,7 +7,11 @@ Then("I should see a permissions error") do
 end
 
 Then(/^I should see an error prompting me to choose an object type$/) do
-  assert_text I18n.t("activerecord.errors.models.document.attributes.block_type.blank")
+  assert_text "Select a content block"
+end
+
+Then(/^I should see an error prompting me to choose a contact method$/) do
+  assert_text "Select a contact method"
 end
 
 Then("I should see errors for the required fields") do
