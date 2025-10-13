@@ -129,5 +129,20 @@ class Edition::Details::Fields::CallChargesComponentTest < BaseComponentTestClas
         end
       end
     end
+
+    describe "when call charges errors are present" do
+      it "should show errors when present" do
+        edition.errors.add(:details_call_charges_label, "Some label is required")
+        edition.errors.add(:details_call_charges_call_charges_info_url, "Some URL is required")
+
+        render_inline(component)
+
+        assert_selector ".govuk-form-group--error", count: 2
+        assert_selector "input.govuk-input--error", count: 2
+
+        assert_selector ".govuk-error-message", text: "Some label is required"
+        assert_selector ".govuk-error-message", text: "Some URL is required"
+      end
+    end
   end
 end
