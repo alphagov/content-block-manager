@@ -16,7 +16,12 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
   let(:document) { build(:document, :pension) }
 
   let(:schema) { stub("schema", block_type: "schema") }
-  let(:subschema) { stub("schema", embeddable_as_block?: embeddable_as_block, block_type: "subschema") }
+  let(:subschema) do
+    stub("subschema",
+         embeddable_as_block?: embeddable_as_block,
+         block_type: "subschema",
+         hidden_field?: false)
+  end
   let(:schema_name) { "schema_name" }
 
   before do
@@ -120,6 +125,28 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
         assert_selector ".gem-c-summary-card[title='Thing 2']" do |summary_card|
           expect_summary_list_row(test_id: "else_things/1/title", key: "Title", value: "Title 2", embed_code_suffix: "things/1/title", parent_container: summary_card)
           expect_summary_list_row(test_id: "else_things/1/value", key: "Value", value: "Value 2", embed_code_suffix: "things/1/value", parent_container: summary_card)
+        end
+      end
+
+      context "when a field is configured to be 'hidden', e.g. it's an internal flag" do
+        before do
+          subschema.stubs(:hidden_field?)
+                   .with(field_name: "value", nested_object_key: "things")
+                   .returns(true)
+        end
+
+        it "is not displayed" do
+          render_inline component
+
+          assert_selector ".app-c-embedded-objects-blocks-component .govuk-summary-list__row", count: 2
+
+          assert_selector ".gem-c-summary-card[title='Thing 1']" do
+            refute_selector "[data-testid='else_things/0/value}']"
+          end
+
+          assert_selector ".gem-c-summary-card[title='Thing 2']" do
+            refute_selector "[data-testid='else_things/1/value}']"
+          end
         end
       end
     end

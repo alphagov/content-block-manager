@@ -66,12 +66,18 @@ private
   end
 
   def rows_for_nested_items(items, nested_name, index)
-    items.map do |key, value|
+    visible_fields(nested_item_name: nested_name, fields: items).map do |key, value|
       {
         key: key_to_label(key, schema_name, "#{object_type}.#{nested_name}"),
         value: content_for_row(embed_code_identifier(nested_name, index, key), translated_value(key, value)),
         data: data_attributes_for_row(embed_code_identifier(nested_name, index, key)),
       }
+    end
+  end
+
+  def visible_fields(nested_item_name:, fields:)
+    fields.reject do |field_name, _v|
+      schema.hidden_field?(nested_object_key: nested_item_name, field_name: field_name)
     end
   end
 
