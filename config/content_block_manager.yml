@@ -38,7 +38,11 @@ schemas:
         group_order: 2
         embeddable_as_block: true
         block_display_fields:
+          - title
           - email_address
+          - subject
+          - body
+          - description
         field_order:
           - title
           - label
