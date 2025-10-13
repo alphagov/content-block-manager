@@ -46,7 +46,7 @@ class DocumentsController < BaseController
     if params[:block_type].present?
       redirect_to new_edition_path(block_type: params.require(:block_type))
     else
-      redirect_to new_document_path, flash: { error: I18n.t("activerecord.errors.models.document.attributes.block_type.blank") }
+      redirect_to new_document_path, flash: { error: I18n.t("activerecord.errors.models.document.attributes.block_type.content_block.blank") }
     end
   end
 

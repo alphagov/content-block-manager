@@ -80,14 +80,13 @@ class Editions::EmbeddedObjectsController < BaseController
   end
 
   def new_embedded_objects_options_redirect
+    group = params.require(:group)
     if params[:object_type].present?
-      flash[:back_link] = new_embedded_objects_options_redirect_edition_path(
-        @edition,
-        group: params.require(:group),
-      )
+      flash[:back_link] = new_embedded_objects_options_redirect_edition_path(@edition, group:)
       redirect_to new_embedded_object_edition_path(@edition, object_type: params.require(:object_type))
     else
-      redirect_to new_embedded_object_edition_path(@edition, group: params.require(:group)), flash: { error: I18n.t("activerecord.errors.models.document.attributes.block_type.blank") }
+      redirect_to new_embedded_object_edition_path(@edition, group:),
+                  flash: { error: I18n.t("activerecord.errors.models.document.attributes.block_type.#{group}.blank") }
     end
   end
 

@@ -5,7 +5,10 @@ en:
         document:
           attributes:
             block_type:
-              blank: Select a contact method
+              content_block:
+                blank: Select a content block
+              contact_methods:
+                blank: Select a contact method
         edition:
           format: "%{message}"
           invalid: "Invalid %{attribute}"
