@@ -102,7 +102,7 @@ class SchemaTest < ActiveSupport::TestCase
     end
   end
 
-  describe "#embed_code_visible?(field_name:)" do
+  describe "#hidden_field?(field_name:)" do
     let(:schema_id) { "content_block_contact" }
 
     let(:body) do
@@ -120,7 +120,7 @@ class SchemaTest < ActiveSupport::TestCase
           schema_id => {
             "fields" => {
               "field_1" => {},
-              "field_2" => { "embed_code_visible" => true },
+              "field_2" => { "hidden_field" => true },
             },
           },
         },
@@ -133,12 +133,12 @@ class SchemaTest < ActiveSupport::TestCase
         .returns(config)
     end
 
-    it "returns true if the given field is set as embed_code_visible" do
-      assert(schema.embed_code_visible?(field_name: "field_2"))
+    it "returns true if the given field is set as hidden_field" do
+      assert(schema.hidden_field?(field_name: "field_2"))
     end
 
-    it "returns false if the given field is NOT set as embed_code_visible" do
-      assert_not(schema.embed_code_visible?(field_name: "field_1"))
+    it "returns false if the given field is NOT set as hidden_field" do
+      assert_not(schema.hidden_field?(field_name: "field_1"))
     end
   end
 

@@ -20,7 +20,6 @@ schemas:
               textarea
             govspeak_enabled: true
           amount:
-            embed_code_visible: true
   content_block_contact:
     embeddable_as_block: true
     field_order:
@@ -49,7 +48,6 @@ schemas:
           - description
         fields:
           email_address:
-            embed_code_visible: true
           body:
             component:
               textarea
@@ -86,21 +84,30 @@ schemas:
             fields:
               opening_hours:
                 govspeak_enabled: true
+              show_opening_hours:
+                hidden_field: true
           call_charges:
             component:
               call_charges
+            fields:
+              show_call_charges_info_url:
+                hidden_field: true
           bsl_guidance:
             component:
               bsl_guidance
             fields:
               value:
                 govspeak_enabled: true
+              show:
+                hidden_field: true
           video_relay_service:
             component:
               video_relay_service
             fields:
               prefix:
                 govspeak_enabled: true
+              show:
+                hidden_field: true
           telephone_numbers:
             field_order:
               - type

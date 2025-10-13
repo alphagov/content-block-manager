@@ -66,12 +66,18 @@ private
   end
 
   def rows_for_nested_items(items, nested_name, index)
-    items.map do |key, value|
+    visible_fields(nested_item_name: nested_name, fields: items).map do |key, value|
       {
         key: key_to_label(key, schema_name, "#{object_type}.#{nested_name}"),
         value: content_for_row(embed_code_identifier(nested_name, index, key), translated_value(key, value)),
         data: data_attributes_for_row(embed_code_identifier(nested_name, index, key)),
       }
+    end
+  end
+
+  def visible_fields(nested_item_name:, fields:)
+    fields.reject do |field_name, _v|
+      schema.hidden_field?(nested_object_key: nested_item_name, field_name: field_name)
     end
   end
 
@@ -93,41 +99,15 @@ private
 
   def content_for_row(key, value)
     content = content_tag(:p, value, class: "app-c-embedded-objects-blocks-component__content govspeak")
-
-    return content unless schema.embed_code_visible?(
-      field_name: field_name_from_key(key),
-      nested_object_key: nested_object_key_from_key(key),
-    )
-
     content << content_tag(:p, document.embed_code_for_field("#{object_type}/#{object_title}/#{key}"), class: "app-c-embedded-objects-blocks-component__embed-code")
     content
   end
 
-  def field_name_from_key(key)
-    key.split("/").last
-  end
-
-  def nested_object_key_from_key(key)
-    parts = key.split("/")
-    return nil if parts.size == 1
-
-    parts.first
-  end
-
   def data_attributes_for_row(key)
-    attrs = { testid: (object_title.parameterize + "_#{key}").underscore }
-
-    return attrs unless schema.embed_code_visible?(
-      field_name: field_name_from_key(key),
-      nested_object_key: nested_object_key_from_key(key),
-    )
-
-    attrs.merge(
-      {
-        testid: (object_title.parameterize + "_#{key}").underscore,
-        **copy_embed_code_data_attributes("#{object_type}/#{object_title}/#{key}", document),
-      },
-    )
+    {
+      testid: (object_title.parameterize + "_#{key}").underscore,
+      **copy_embed_code_data_attributes("#{object_type}/#{object_title}/#{key}", document),
+    }
   end
 
   def content_for_block_row
