@@ -38,7 +38,11 @@ schemas:
         group_order: 2
         embeddable_as_block: true
         block_display_fields:
+          - title
           - email_address
+          - subject
+          - body
+          - description
         field_order:
           - title
           - label
@@ -128,6 +132,7 @@ schemas:
         embeddable_as_block: true
         block_display_fields:
           - title
+          - recipient
           - street_address
           - town_or_city
           - state_or_county
@@ -155,6 +160,9 @@ schemas:
               textarea
         block_display_fields:
           - url
+          - label
+          - description
+          - title
         field_order:
           - title
           - label
