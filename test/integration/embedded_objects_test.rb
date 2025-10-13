@@ -114,14 +114,14 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
         post new_embedded_objects_options_redirect_edition_path(
           edition,
           object_type: nil,
-          group: "something",
+          group: "contact_methods",
         )
 
         assert_redirected_to new_embedded_object_edition_path(
           edition,
-          group: "something",
+          group: "contact_methods",
         )
-        assert_equal I18n.t("activerecord.errors.models.document.attributes.block_type.blank"), flash[:error]
+        assert_equal I18n.t("activerecord.errors.models.document.attributes.block_type.contact_methods.blank"), flash[:error]
       end
     end
   end

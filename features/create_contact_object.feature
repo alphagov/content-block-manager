@@ -335,6 +335,10 @@ Feature: Create a contact object
     When I save and continue
     Then I should see errors for the required nested "telephone_number" fields
 
+  Scenario: GDS editor sees errors when not selecting a contact method
+    When I save and continue
+    Then I should see an error prompting me to choose a contact method
+
   Scenario: GDS editor edits answers during creation of an object
     And I click on the "email_addresses" subschema
     And I complete the "email_address" form with the following fields:
