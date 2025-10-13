@@ -132,6 +132,7 @@ schemas:
         embeddable_as_block: true
         block_display_fields:
           - title
+          - recipient
           - street_address
           - town_or_city
           - state_or_county
