@@ -116,14 +116,27 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
 
   CopyEmbedCode.prototype.removeVisibleCodesRequiredOnlyIfJsDisabled =
     function () {
-      this.module
-        .querySelectorAll(
-          '.app-c-embedded-objects-blocks-component__embed-code'
-        )
-        .forEach((element) => {
-          element.remove()
-        })
+      this.removeEmbedCodesFromEmbeddedBlocks()
+      this.removeEmbedCodeFromDefaultBlock()
     }
+
+  CopyEmbedCode.prototype.removeEmbedCodesFromEmbeddedBlocks = function () {
+    this.module
+      .querySelectorAll('.app-c-embedded-objects-blocks-component__embed-code')
+      .forEach((element) => {
+        element.remove()
+      })
+  }
+
+  CopyEmbedCode.prototype.removeEmbedCodeFromDefaultBlock = function () {
+    this.module
+      .querySelectorAll(
+        '.app-c-content-block-manager-default-block__embed_code'
+      )
+      .forEach((element) => {
+        element.remove()
+      })
+  }
 
   Modules.CopyEmbedCode = CopyEmbedCode
 })(window.GOVUK.Modules)
