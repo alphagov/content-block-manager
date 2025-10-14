@@ -58,48 +58,12 @@ class DocumentTest < ActiveSupport::TestCase
     let(:content_id_alias) { "some-alias" }
     let(:document) { build(:document, :pension, content_id:, content_id_alias:) }
 
-    let(:strategy) { Flipflop::FeatureSet.current.test! }
-
-    before do
-      strategy.switch!(:use_friendly_embed_codes, use_friendly_embed_codes)
+    it "returns embed code for the document" do
+      assert_equal document.embed_code, "{{embed:content_block_pension:#{content_id_alias}}}"
     end
 
-    describe "when use_friendly_embed_codes? is false" do
-      let(:use_friendly_embed_codes) { false }
-
-      it "returns embed code for the document" do
-        assert_equal document.embed_code, "{{embed:content_block_pension:#{content_id}}}"
-      end
-
-      it "returns embed code for a particular field" do
-        assert_equal document.embed_code_for_field("rates/rate2/name"), "{{embed:content_block_pension:#{content_id}/rates/rate2/name}}"
-      end
-    end
-
-    describe "when use_friendly_embed_codes? is true" do
-      let(:use_friendly_embed_codes) { true }
-
-      it "returns embed code for the document" do
-        assert_equal document.embed_code, "{{embed:content_block_pension:#{content_id_alias}}}"
-      end
-
-      it "returns embed code for a particular field" do
-        assert_equal document.embed_code_for_field("rates/rate2/name"), "{{embed:content_block_pension:#{content_id_alias}/rates/rate2/name}}"
-      end
-    end
-
-    describe "when use_friendly_id is set manually" do
-      let(:use_friendly_embed_codes) { false }
-
-      it "returns embed code for the document" do
-        assert_equal document.embed_code(use_friendly_id: true), "{{embed:content_block_pension:#{content_id_alias}}}"
-        assert_equal document.embed_code(use_friendly_id: false), "{{embed:content_block_pension:#{content_id}}}"
-      end
-
-      it "returns embed code for a particular field" do
-        assert_equal document.embed_code_for_field("rates/rate2/name", use_friendly_id: true), "{{embed:content_block_pension:#{content_id_alias}/rates/rate2/name}}"
-        assert_equal document.embed_code_for_field("rates/rate2/name", use_friendly_id: false), "{{embed:content_block_pension:#{content_id}/rates/rate2/name}}"
-      end
+    it "returns embed code for a particular field" do
+      assert_equal document.embed_code_for_field("rates/rate2/name"), "{{embed:content_block_pension:#{content_id_alias}/rates/rate2/name}}"
     end
   end
 

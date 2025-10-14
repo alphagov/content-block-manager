@@ -16,16 +16,16 @@ class FindAndReplaceEmbedCodesServiceTest < ActiveSupport::TestCase
 
     html = "
       <p>Hello there</p>
-      <p>#{edition_2.document.embed_code(use_friendly_id: false)}</p>
-      <p>#{edition_1.document.embed_code(use_friendly_id: true)}</p>
-      <p>#{edition_2.document.embed_code(use_friendly_id: false)}</p>
+      <p>#{edition_2.document.embed_code}</p>
+      <p>#{edition_1.document.embed_code}</p>
+      <p>#{edition_2.document.embed_code}</p>
     "
 
     expected = "
       <p>Hello there</p>
-      <p>#{edition_2.render(edition_2.document.embed_code(use_friendly_id: false))}</p>
-      <p>#{edition_1.render(edition_1.document.embed_code(use_friendly_id: true))}</p>
-      <p>#{edition_2.render(edition_2.document.embed_code(use_friendly_id: false))}</p>
+      <p>#{edition_2.render(edition_2.document.embed_code)}</p>
+      <p>#{edition_1.render(edition_1.document.embed_code)}</p>
+      <p>#{edition_2.render(edition_2.document.embed_code)}</p>
     "
 
     result = FindAndReplaceEmbedCodesService.call(html)
