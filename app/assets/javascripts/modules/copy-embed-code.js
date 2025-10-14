@@ -45,7 +45,11 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
     embedCodeFlash.textContent = this.module.dataset.embedCode
     embedCodeFlash.classList.add('embed-code-flash')
 
-    return embedCodeFlash
+    const wrapper = document.createElement('div')
+    wrapper.classList.add('embed-code-flash__wrapper')
+    wrapper.append(embedCodeFlash)
+
+    return wrapper
   }
 
   CopyEmbedCode.prototype.copyCode = function (e) {

@@ -11,7 +11,7 @@
     color: govuk-colour("dark-grey");
   }
 
-  .embed-code-flash {
+  .embed-code-flash__wrapper {
     @include embed_codes.embed-code-flash;
   }
 
