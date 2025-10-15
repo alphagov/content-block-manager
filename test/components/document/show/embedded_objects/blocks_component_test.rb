@@ -52,6 +52,13 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
       expect_summary_list_row(test_id: "else_fizz", key: "Fizz", value: "buzz", embed_code_suffix: "fizz")
     end
 
+    it "calls key_to_label with the correct parameters for attribute rows" do
+      component.expects(:key_to_label).with("foo", schema_name, object_type).returns("Foo")
+      component.expects(:key_to_label).with("fizz", schema_name, object_type).returns("Fizz")
+
+      render_inline component
+    end
+
     it "includes embed code in the row's data attrs along with name of JS module to be invoked" do
       render_inline component
 
@@ -94,6 +101,13 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
         expect_summary_list_row(test_id: "else_things/0", key: "Thing 1", value: "foo", embed_code_suffix: "things/0")
         expect_summary_list_row(test_id: "else_things/1", key: "Thing 2", value: "bar", embed_code_suffix: "things/1")
       end
+
+      it "calls key_to_label with the correct parameters for array items" do
+        component.expects(:key_to_label).with("things/0", schema_name, object_type).returns("Thing 1")
+        component.expects(:key_to_label).with("things/1", schema_name, object_type).returns("Thing 2")
+
+        render_inline component
+      end
     end
 
     describe "when items contain an array of objects" do
@@ -128,6 +142,13 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
         end
       end
 
+      it "calls key_to_label with the correct parameters for nested items" do
+        component.expects(:key_to_label).with("title", schema_name, "#{object_type}.things").returns("Title").twice
+        component.expects(:key_to_label).with("value", schema_name, "#{object_type}.things").returns("Value").twice
+
+        render_inline component
+      end
+
       context "when a field is configured to be 'hidden', e.g. it's an internal flag" do
         before do
           subschema.stubs(:hidden_field?)
@@ -147,6 +168,13 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
           assert_selector ".gem-c-summary-card[title='Thing 2']" do
             refute_selector "[data-testid='else_things/1/value}']"
           end
+        end
+
+        it "calls key_to_label only for visible fields" do
+          component.expects(:key_to_label).with("title", schema_name, "#{object_type}.things").returns("Title").twice
+          component.expects(:key_to_label).with("value", schema_name, "#{object_type}.things").never
+
+          render_inline component
         end
       end
     end
@@ -208,6 +236,13 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
       end
     end
 
+    it "calls key_to_label with the correct parameters for attribute rows in details" do
+      component.expects(:key_to_label).with("foo", schema_name, object_type).returns("Foo")
+      component.expects(:key_to_label).with("fizz", schema_name, object_type).returns("Fizz")
+
+      render_inline component
+    end
+
     it "adds the correct class to the wrapper" do
       render_inline component
 
@@ -245,6 +280,13 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
             parent_container: summary_list,
           )
         end
+      end
+
+      it "calls key_to_label with the correct parameters for array items in details" do
+        component.expects(:key_to_label).with("things/0", schema_name, object_type).returns("Thing 1")
+        component.expects(:key_to_label).with("things/1", schema_name, object_type).returns("Thing 2")
+
+        render_inline component
       end
     end
 
@@ -308,6 +350,13 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
             )
           end
         end
+      end
+
+      it "calls key_to_label with the correct parameters for nested items in details" do
+        component.expects(:key_to_label).with("title", schema_name, "#{object_type}.things").returns("Title").twice
+        component.expects(:key_to_label).with("value", schema_name, "#{object_type}.things").returns("Value").twice
+
+        render_inline component
       end
     end
   end

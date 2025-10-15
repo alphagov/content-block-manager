@@ -32,7 +32,7 @@ private
   def attribute_rows(key_name = :key)
     first_class_items(items).map do |key, value|
       {
-        "#{key_name}": key_to_label(key, schema_name),
+        "#{key_name}": key_to_label(key, schema_name, object_type),
         value: content_for_row(key, value),
         data: data_attributes_for_row(key),
       }
