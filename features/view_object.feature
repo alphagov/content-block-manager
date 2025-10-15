@@ -83,16 +83,15 @@ Feature: View a content object
   @javascript
   Scenario: GDS Editor can copy embed code for a specific field
     When I visit the Content Block Manager home page
-    When I click to view the document with title "My pension"
-    Then I should not see the embed code displayed for the pension rate
+    And I click to view the document with title "My pension"
+    Then I should not see the pension rate embed code displayed
     
     When I click to copy the embed code for the pension rate
-    Then the embed code should be copied to my clipboard
-    And I should see the embed code flash up for an interval
+    Then the pension rate embed code should be copied to my clipboard
+    And I should see the pension rate embed code flash up for an interval
 
   Scenario: GDS Editor without javascript can see embed code
     When I visit the Content Block Manager home page
-    When I click to view the document with title "My pension"
-    Then the embed code for the pension rate should be visible
-
+    And I click to view the document with title "My pension"
+    Then the pension rate embed code should be visible
 
