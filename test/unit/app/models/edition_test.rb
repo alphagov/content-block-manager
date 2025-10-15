@@ -228,9 +228,13 @@ class EditionTest < ActiveSupport::TestCase
 
   describe "#add_object_to_details" do
     it "adds an object with the correct key to the details hash" do
-      edition.add_object_to_details("something", { "title" => "My thing", "something" => "else" })
+      edition.add_object_to_details("normal", { "title" => "My thing", "something" => "else" })
+      edition.add_object_to_details("underscores", { "title" => "some_other_thing" })
+      edition.add_object_to_details("plural", { "title" => "some_things" })
 
-      assert_equal edition.details["something"], { "my-thing" => { "title" => "My thing", "something" => "else" } }
+      assert_equal edition.details["normal"], { "my-thing" => { "title" => "My thing", "something" => "else" } }
+      assert_equal edition.details["underscores"], { "some-other-thing" => { "title" => "some_other_thing" } }
+      assert_equal edition.details["plural"], { "some-thing" => { "title" => "some_things" } }
     end
 
     it "appends to the object if it already exists" do
@@ -297,10 +301,22 @@ class EditionTest < ActiveSupport::TestCase
       it "creates a key using the object type" do
         edition.add_object_to_details("something", { "title" => "", "something" => "else" })
         edition.add_object_to_details("something", { "title" => "", "something" => "additional" })
+        edition.add_object_to_details("symbols", { "title" => "*#!" })
+        edition.add_object_to_details("single_symbol", { "title" => "*" })
+        edition.add_object_to_details("underscores", { "title" => "___" }) # underscores become dashes which are invalid on their own
 
         assert_equal edition.details["something"], {
           "something" => { "title" => "", "something" => "else" },
           "something-1" => { "title" => "", "something" => "additional" },
+        }
+        assert_equal edition.details["symbols"], {
+          "symbol" => { "title" => "*#!" },
+        }
+        assert_equal edition.details["single_symbol"], {
+          "single-symbol" => { "title" => "*" },
+        }
+        assert_equal edition.details["underscores"], {
+          "underscore" => { "title" => "___" },
         }
       end
     end

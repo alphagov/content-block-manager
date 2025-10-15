@@ -10,6 +10,7 @@ class Edition < ApplicationRecord
   include ValidatesDetails
   include HasLeadOrganisation
   include Workflow
+  include StringValidation
 
   scope :current_versions, lambda {
     joins(
@@ -40,19 +41,6 @@ class Edition < ApplicationRecord
 
   def update_object_with_details(object_type, object_title, body)
     details[object_type][object_title] = remove_destroyed body.to_h
-  end
-
-  def key_for_object(object_type, title)
-    base_key = (title.presence || object_type).parameterize
-    key = base_key
-    counter = 1
-
-    while details.dig(object_type, key).present?
-      key = "#{base_key}-#{counter}"
-      counter += 1
-    end
-
-    key
   end
 
   def has_entries_for_subschema_id?(subschema_id)
