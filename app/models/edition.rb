@@ -10,7 +10,7 @@ class Edition < ApplicationRecord
   include ValidatesDetails
   include HasLeadOrganisation
   include Workflow
-  include StringValidation
+  include ObjectKeyGeneration
 
   scope :current_versions, lambda {
     joins(

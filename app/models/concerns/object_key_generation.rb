@@ -1,5 +1,7 @@
-module StringValidation
+module ObjectKeyGeneration
   extend ActiveSupport::Concern
+
+private
 
   # Take an object type and a title and return a key that can be used to
   # store the object in the details hash.
