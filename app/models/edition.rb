@@ -32,7 +32,7 @@ class Edition < ApplicationRecord
   end
 
   def add_object_to_details(object_type, body)
-    key = key_for_object(object_type, body["title"])
+    key = ObjectKey.new(details, object_type, body["title"]).to_s
 
     details[object_type] ||= {}
     details[object_type][key] = remove_destroyed body.to_h
@@ -40,19 +40,6 @@ class Edition < ApplicationRecord
 
   def update_object_with_details(object_type, object_title, body)
     details[object_type][object_title] = remove_destroyed body.to_h
-  end
-
-  def key_for_object(object_type, title)
-    base_key = (title.presence || object_type).parameterize
-    key = base_key
-    counter = 1
-
-    while details.dig(object_type, key).present?
-      key = "#{base_key}-#{counter}"
-      counter += 1
-    end
-
-    key
   end
 
   def has_entries_for_subschema_id?(subschema_id)
