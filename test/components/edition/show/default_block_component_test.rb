@@ -7,6 +7,7 @@ class Edition::Show::DefaultBlockComponentTest < ViewComponent::TestCase
   let(:document) { build(:document, :pension) }
 
   let(:embed_code) { "EMBED_CODE" }
+  let(:embed_code_details) { "default block" }
   let(:default_block_output) { "DEFAULT_BLOCK_OUTPUT" }
 
   before do
@@ -22,5 +23,13 @@ class Edition::Show::DefaultBlockComponentTest < ViewComponent::TestCase
 
     assert_selector ".govuk-summary-list__row[data-module=\"copy-embed-code\"][data-embed-code=\"#{embed_code}\"] .govuk-summary-list__value .govspeak", text: default_block_output
     assert_selector ".govuk-summary-list__value .app-c-content-block-manager-default-block__embed_code", text: embed_code
+  end
+
+  it "includes detail on embed code in a data attr for use in visually hidden link info" do
+    render_inline(
+      Document::Show::DefaultBlockComponent.new(document:),
+    )
+
+    assert_selector ".govuk-summary-list__row[data-embed-code-details='#{embed_code_details}']", text: default_block_output
   end
 end
