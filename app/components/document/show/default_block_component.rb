@@ -12,12 +12,15 @@ private
   end
 
   def block_content
-    content_tag(:div, class: "govspeak") do
+    content = content_tag(:div, class: "govspeak") do
       edition.render(embed_code)
     end
+    content << embed_code_element
+
+    content
   end
 
-  def embed_code_row_value
+  def embed_code_element
     content_tag(:p, embed_code, class: "app-c-content-block-manager-default-block__embed_code")
   end
 
@@ -29,6 +32,7 @@ private
     {
       module: "copy-embed-code",
       "embed-code": embed_code,
+      "testid": "default_block",
     }
   end
 end

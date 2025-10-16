@@ -6,6 +6,9 @@ describe('GOVUK.Modules.CopyEmbedCode', function () {
     fixture = document.createElement('div')
     fixture.setAttribute('data-embed-code', embedCode)
     fixture.innerHTML = `
+      <p class="app-c-content-block-manager-default-block__embed_code">
+        {{embed:content_block_contact:block-name}}
+      </p>
       <dt class="govuk-summary-list__value">
         <div class="app-c-embedded-objects-blocks-component__content">
           <div data-embed-code="{{embed:content_block_contact:block-name}}">
@@ -38,11 +41,20 @@ describe('GOVUK.Modules.CopyEmbedCode', function () {
       expect(copyLink.textContent).toBe('Copy code')
     })
 
-    it('should remove the visible embed codes which are required for non-JS users', function () {
-      const ele = fixture.querySelector(
-        '.app-c-embedded-objects-blocks-component__embed-code'
-      )
-      expect(ele).not.toEqual(jasmine.anything())
+    describe('removing visible embed codes which are required for non-JS users', function () {
+      it('should remove the visible codes from the embedded objects', function () {
+        const ele = fixture.querySelector(
+          '.app-c-embedded-objects-blocks-component__embed-code'
+        )
+        expect(ele).not.toEqual(jasmine.anything())
+      })
+
+      it('should remove the visible code from the the default block', function () {
+        const ele = fixture.querySelector(
+          '.app-c-content-block-manager-default-block__embed_code'
+        )
+        expect(ele).not.toEqual(jasmine.anything())
+      })
     })
   })
 
