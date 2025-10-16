@@ -63,6 +63,7 @@
             url: workflow_path(@edition, step: :review),
             method: :put,
             id: "review",
+            **form_data_attributes,
             ) do %>
         <%= render "govuk_publishing_components/components/checkboxes", {
           name: "is_confirmed",

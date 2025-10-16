@@ -8,7 +8,7 @@
       @edition,
       object_type: @subschema.block_type,
       object_title: @object_title,
-    ), method: :put) do |form| %>
+    ), method: :put, **ga4_data_attributes(edition: @edition, section: "edit_#{@subschema.block_type}")) do |form| %>
   <%= form.hidden_field :redirect_url, value: @redirect_url %>
   <%= render partial: "editions/embedded_objects/shared/form", locals: { form: } %>
 <% end %>

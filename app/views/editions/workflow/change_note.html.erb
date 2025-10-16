@@ -14,7 +14,7 @@
     <%= form_with url: workflow_path(
       @edition,
       step: :change_note,
-      ), method: :put, id: "change_note" do %>
+      ), method: :put, id: "change_note", **form_data_attributes do %>
 
       <%= render "govuk_publishing_components/components/radio", {
         name: "edition[major_change]",

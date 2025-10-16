@@ -93,4 +93,24 @@ class Shared::SchedulePublishingComponentTest < ViewComponent::TestCase
       assert_selector "select[name='scheduled_at[scheduled_publication(5i)]'] option[value='#{scheduled_publication.min}'][selected='selected']"
     end
   end
+
+  describe "when data attributes are passed" do
+    let(:component) do
+      Shared::SchedulePublishingComponent.new(
+        edition:,
+        params:,
+        context:,
+        back_link:,
+        form_url:,
+        is_rescheduling: false,
+        data_attributes: { data: { test: "test" } },
+      )
+    end
+
+    it "renders the data attributes" do
+      render_inline(component)
+
+      assert_selector "form[data-test='test']"
+    end
+  end
 end

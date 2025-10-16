@@ -34,6 +34,11 @@ class Editions::WorkflowController < BaseController
   end
   helper_method :context
 
+  def form_data_attributes
+    helpers.ga4_data_attributes(edition: @edition, section: current_step&.show_action)
+  end
+  helper_method :form_data_attributes
+
 private
 
   def review_url
