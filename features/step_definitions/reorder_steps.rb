@@ -3,7 +3,7 @@ And(/^I click on reorder$/) do
 end
 
 And(/^I change the order of the contact methods$/) do
-  find("a[data-testid='email_addresses.email-us-move-up-button']").click
+  find("a[data-testid='email_addresses.email-the-team-move-up-button']").click
 end
 
 And(/^I click to save the order/) do
@@ -13,13 +13,13 @@ end
 And(/^the contact methods should be in the new order$/) do
   items = page.find_all(".content-block__contact-list--nested")
 
-  assert_equal "Email us", items[0].find_all(".content-block__contact-key")[0].text
+  assert_equal "Email The Team", items[0].find_all(".content-block__contact-key")[0].text
 end
 
 Then(/^I should see the contact methods in the new order$/) do
   Capybara.current_session.driver.with_playwright_page do |page|
     item = page.get_by_testid("reorder-item-0")
-    expect(item).to playwright_matchers.have_text("Email us")
+    expect(item).to playwright_matchers.have_text("Email The Team")
   end
 end
 
