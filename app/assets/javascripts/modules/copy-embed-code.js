@@ -67,7 +67,9 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
     )
 
     const embedCode = this.module.dataset.embedCode
-    this.writeToClipboard(embedCode).then(this.copySuccess.bind(this))
+    this.writeToClipboard(embedCode).then(
+      this.transitionThroughSuccessState.bind(this)
+    )
   }
 
   CopyEmbedCode.prototype.showEmbedCode = function (ele, target) {
@@ -84,7 +86,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
     }, this.delayIntervalInMs)
   }
 
-  CopyEmbedCode.prototype.copySuccess = function () {
+  CopyEmbedCode.prototype.transitionThroughSuccessState = function () {
     const originalText = this.copyLink.textContent
     this.copyLink.textContent = 'Code copied'
     this.copyLink.focus()
