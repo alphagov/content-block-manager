@@ -12,7 +12,7 @@
     <%= form_with url: workflow_path(
       @edition,
       step: :internal_note,
-      ), method: :put, id: "internal_note" do %>
+      ), method: :put, id: "internal_note", **form_data_attributes do %>
       <%= render "govuk_publishing_components/components/textarea", {
         label: {
           text: '<p class="govuk-body">Explain what changes you did or did not make and why.</p>'.html_safe,
