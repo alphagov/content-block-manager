@@ -3,6 +3,7 @@ module EmbedCodeHelper
     {
       module: "copy-embed-code",
       "embed-code": document.embed_code_for_field(key),
+      "embed-code-details": key,
     }
   end
 

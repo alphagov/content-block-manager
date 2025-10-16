@@ -59,16 +59,18 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
       render_inline component
     end
 
-    it "includes embed code in the row's data attrs along with name of JS module to be invoked" do
+    it "includes embed code and details in the row's data attrs along with name of JS module to be invoked" do
       render_inline component
 
       %w[foo fizz].each do |portion|
         row = ".govuk-summary-list__row[data-testid='else_#{portion}']"
         embed_code = "[data-embed-code='{{embed:content_block_pension:/something/else/#{portion}}}']"
+        embed_code_details_for_hidden_accessibility_info = "[data-embed-code-details='something/else/#{portion}']"
         js_module = "[data-module='copy-embed-code']"
 
         assert_selector(row)
         assert_selector("#{row}#{embed_code}")
+        assert_selector("#{row}#{embed_code_details_for_hidden_accessibility_info}")
         assert_selector("#{row}#{js_module}")
       end
     end
