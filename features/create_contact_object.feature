@@ -248,8 +248,8 @@ Feature: Create a contact object
   Scenario: GDS editor can reorder a Contact
     When I click on the "email_addresses" subschema
     And I complete the "email_address" form with the following fields:
-      | title     | label         | email_address    | subject  | body             |
-      | Email us  | Send an email | foo@example.com  | Your ref | Name and address |
+      | title           | label         | email_address    | subject  | body             |
+      | Email The Team  | Send an email | foo@example.com  | Your ref | Name and address |
     And I click to add another "contact_method"
     And I click on the "contact_links" subschema
     And I complete the "contact_link" form with the following fields:
