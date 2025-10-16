@@ -20,12 +20,19 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
   }
 
   CopyEmbedCode.prototype.createLink = function () {
+    const hiddenLinkDetails = document.createElement('span')
+    hiddenLinkDetails.classList.add('govuk-visually-hidden')
+    hiddenLinkDetails.textContent =
+      ' for ' + this.module.dataset.embedCodeDetails
+
     const copyLink = document.createElement('a')
+
     copyLink.classList.add('govuk-link')
     copyLink.classList.add('govuk-link__copy-link')
     copyLink.setAttribute('href', '#')
     copyLink.setAttribute('role', 'button')
     copyLink.textContent = 'Copy code'
+    copyLink.append(hiddenLinkDetails)
     copyLink.addEventListener('click', this.copyCode.bind(this))
     // Handle when a keyboard user highlights the link and clicks return
     copyLink.addEventListener(
