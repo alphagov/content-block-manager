@@ -64,6 +64,8 @@ schemas:
         group_order: 3
         embeddable_as_block: true
         block_display_fields:
+          - title
+          - description
           - telephone_numbers
           - video_relay_service
           - opening_hours
