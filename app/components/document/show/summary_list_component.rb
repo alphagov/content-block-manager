@@ -22,7 +22,10 @@ private
 
   def title_item
     {
-      field: "Title",
+      field: I18n.t(
+        "activerecord.attributes.edition/document.title.#{document.block_type}",
+        default: I18n.t("activerecord.attributes.edition/document.title.default"),
+      ),
       value: document.title,
     }
   end
