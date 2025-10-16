@@ -1,9 +1,12 @@
-<%= form_with url: documents_path, method: :get, class: "app-c-content-block-manager-filter-options" do %>
+<%= form_with url: helpers.documents_path,
+              method: :get,
+              class: "app-c-content-block-manager-filter-options",
+              data: data_attributes do %>
   <%= render "govuk_publishing_components/components/accordion", {
     items: [
       {
         heading: {
-          text: "Search by keyword",
+          text: heading,
         },
         content: {
           html: (
@@ -13,6 +16,7 @@
                 bold: true,
               },
               name: "keyword",
+              type: "search",
               id: "keyword_filter",
               value: @filters.present? && @filters[:keyword],
             }
