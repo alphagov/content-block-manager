@@ -10,7 +10,6 @@ class Edition < ApplicationRecord
   include ValidatesDetails
   include HasLeadOrganisation
   include Workflow
-  include ObjectKeyGeneration
 
   scope :current_versions, lambda {
     joins(
@@ -33,7 +32,7 @@ class Edition < ApplicationRecord
   end
 
   def add_object_to_details(object_type, body)
-    key = key_for_object(object_type, body["title"])
+    key = ObjectKey.new(details, object_type, body["title"]).to_s
 
     details[object_type] ||= {}
     details[object_type][key] = remove_destroyed body.to_h
