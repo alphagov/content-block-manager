@@ -149,6 +149,8 @@ And("I should see details of my {string}") do |object_type|
 end
 
 And("I click to add a new {string}") do |object_type|
+  @selected_subschemas ||= []
+  @selected_subschemas << object_type.pluralize
   @object_type = object_type
   click_on I18n.t("buttons.add", item: add_indefinite_article(object_type.humanize.downcase))
 end

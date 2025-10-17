@@ -11,6 +11,7 @@ Given("I am in the staging or integration environment") do
 end
 
 When("I click to create an object") do
+  @action = "create"
   click_link "Create content block"
 end
 
@@ -253,6 +254,7 @@ When("I click the first edit link") do
 end
 
 When("I click to edit the {string}") do |block_type|
+  @action = "update"
   click_link "Edit #{block_type}", match: :first
 end
 
