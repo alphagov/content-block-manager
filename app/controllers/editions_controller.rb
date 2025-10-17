@@ -1,5 +1,5 @@
 class EditionsController < BaseController
-  include Workflow::Steps
+  include Workflow::HasSteps
 
   skip_before_action :initialize_edition_and_schema
 
