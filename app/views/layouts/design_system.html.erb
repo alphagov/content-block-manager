@@ -14,6 +14,12 @@
     <%= javascript_include_tag "domain-config" %>
     <%= javascript_include_tag "govuk_publishing_components/load-analytics" %>
     <%= turbo_include_tags %>
+
+    <% if ENV["DEBUG_GA4"] %>
+      <script type="text/javascript">
+        window.GOVUK.analyticsGa4.showDebug = true
+      </script>
+    <% end %>
   <% end %>
 <% end %>
 
