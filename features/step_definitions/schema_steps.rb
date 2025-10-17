@@ -6,6 +6,8 @@ When("I click on the {string} schema") do |schema_id|
 end
 
 When("I click on the {string} subschema") do |schema_id|
+  @selected_subschemas ||= []
+  @selected_subschemas << schema_id
   schema = @schemas.values.last
   subschema = schema.subschema(schema_id)
   choose subschema.name.singularize

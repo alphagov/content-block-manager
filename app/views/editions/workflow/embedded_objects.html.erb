@@ -12,7 +12,7 @@
     <%= form_with url: workflow_path(
       @edition,
       step: @step_name,
-      ), method: :put, id: "embedded_objects" do %>
+      ), method: :put, id: "embedded_objects", **form_data_attributes do %>
 
       <% if @edition.details[@subschema.block_type] %>
         <%= render Shared::EmbeddedObjects::SummaryCardComponent.with_collection(

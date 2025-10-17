@@ -20,6 +20,7 @@ Feature: Edit a content object
     And a pension content block has been created
     And dependent content exists for a content block
 
+  @javascript
   Scenario: GDS Editor edits a content object
     When I visit the Content Block Manager home page
     And I click to view the document
@@ -51,6 +52,7 @@ Feature: Edit a content object
     And I should see 1 publish events on the timeline
     And I should see the notes on the timeline
     And I should see the edition diff in a table
+    And analytics messages should have been sent for each step in the workflow
 
   Scenario: GDS editor cancels the creation of an object when reviewing links
     When I visit the Content Block Manager home page

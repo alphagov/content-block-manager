@@ -63,6 +63,7 @@ Feature: Create a content object
     Then the edition should have been created successfully
     And I should be taken to the confirmation page for a new "pension"
 
+  @javascript
   Scenario: GDS editor creates a Pension with a rate
     When I visit the Content Block Manager home page
     And I click to create an object
@@ -81,6 +82,8 @@ Feature: Create a content object
     When I save and continue
     And I review and confirm my answers are correct
     Then I should be taken to the confirmation page for a new "pension"
+    And analytics messages should have been sent for each step in the workflow
+    And analytics messages should have been sent for each embedded object
 
   Scenario: GDS editor creates a Pension and cancels on the first rate
     When I visit the Content Block Manager home page

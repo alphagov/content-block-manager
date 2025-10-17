@@ -1,5 +1,5 @@
 class Editions::OrderController < BaseController
-  include Workflow::Steps
+  include Workflow::HasSteps
 
   def edit
     @redirect_path = params[:redirect_path] || request.referer

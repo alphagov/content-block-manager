@@ -1,16 +1,17 @@
 class Shared::SchedulePublishingComponent < ViewComponent::Base
-  def initialize(edition:, params:, context:, back_link:, form_url:, is_rescheduling:)
+  def initialize(edition:, params:, context:, back_link:, form_url:, is_rescheduling:, data_attributes: {})
     @edition = edition
     @params = params
     @context = context
     @back_link = back_link
     @form_url = form_url
     @is_rescheduling = is_rescheduling
+    @data_attributes = data_attributes
   end
 
 private
 
-  attr_reader :is_rescheduling, :edition, :params, :context, :back_link, :form_url
+  attr_reader :is_rescheduling, :edition, :params, :context, :back_link, :form_url, :data_attributes
 
   def year_param
     edition.scheduled_publication&.year || params.dig("scheduled_at", "scheduled_publication(1i)")

@@ -1,13 +1,12 @@
-module Workflow::Steps
-  extend ActiveSupport::Concern
+class Workflow::Steps
   include SchemaHelper
 
-  included do
-    before_action :initialize_edition_and_schema
+  def self.for(edition, schema)
+    new(edition, schema).all
   end
 
-  def steps
-    @steps ||= [
+  def all
+    @all ||= [
       *all_steps[0],
       *group_steps,
       *subschema_steps,
@@ -15,39 +14,27 @@ module Workflow::Steps
     ].compact
   end
 
-  def current_step
-    steps.find { |step| step.name == params[:step].to_sym }
-  end
-
-  def previous_step
-    steps[index - 1]
-  end
-
-  def next_step
-    steps[index + 1]
-  end
-
 private
 
+  def initialize(edition, schema)
+    @edition = edition
+    @schema = schema
+  end
+
+  def is_new_block?
+    @edition.document.is_new_block?
+  end
+
   def all_steps
-    if @edition.document.is_new_block?
+    if is_new_block?
       Workflow::Step::ALL.select { |s| s.included_in_create_journey == true }
     else
       Workflow::Step::ALL
     end
   end
 
-  def initialize_edition_and_schema
-    @edition = Edition.find(params[:id])
-    @schema = Schema.find_by_block_type(@edition.document.block_type)
-  end
-
-  def index
-    steps.find_index { |step| step.name == params[:step]&.to_sym } || 0
-  end
-
   def skip_subschema?(subschema)
-    !@edition.document.is_new_block? && !@edition.has_entries_for_subschema_id?(subschema.id)
+    !is_new_block? && !@edition.has_entries_for_subschema_id?(subschema.id)
   end
 
   def skip_group?(subschemas)

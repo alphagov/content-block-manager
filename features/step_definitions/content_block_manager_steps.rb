@@ -11,6 +11,7 @@ Given("I am in the staging or integration environment") do
 end
 
 When("I click to create an object") do
+  @action = "create"
   click_link "Create content block"
 end
 
@@ -47,17 +48,7 @@ When("I complete the form with the following fields:") do |table|
 
   fill_in label_for_title(@schema.block_type), with: @title if @title.present?
 
-  if @organisation.present?
-    if Capybara.current_session.driver.is_a?(Capybara::Playwright::Driver)
-      Capybara.current_session.driver.with_playwright_page do |page|
-        combobox = page.get_by_role("combobox", name: "Lead organisation")
-        combobox.click
-        combobox.get_by_role("option", name: @organisation).click
-      end
-    else
-      select @organisation, from: "edition_lead_organisation_id"
-    end
-  end
+  select_organisation(@organisation) if @organisation.present?
 
   fill_in "Instructions to publishers", with: @instructions_to_publishers if @instructions_to_publishers.present?
 
@@ -263,6 +254,7 @@ When("I click the first edit link") do
 end
 
 When("I click to edit the {string}") do |block_type|
+  @action = "update"
   click_link "Edit #{block_type}", match: :first
 end
 

@@ -18,4 +18,17 @@ private
       }
     end
   end
+
+  def data_attributes
+    {
+      data: {
+        module: "ga4-form-tracker",
+        ga4_form: {
+          type: "Content Block",
+          event_name: "create",
+          section: "select_schema",
+        },
+      },
+    }
+  end
 end

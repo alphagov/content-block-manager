@@ -1,7 +1,7 @@
 class Editions::WorkflowController < BaseController
   include CanScheduleOrPublish
 
-  include Workflow::Steps
+  include Workflow::HasSteps
   include Workflow::ShowMethods
   include Workflow::UpdateMethods
 
@@ -33,6 +33,11 @@ class Editions::WorkflowController < BaseController
     @edition.title
   end
   helper_method :context
+
+  def form_data_attributes
+    helpers.ga4_data_attributes(edition: @edition, section: current_step&.show_action)
+  end
+  helper_method :form_data_attributes
 
 private
 

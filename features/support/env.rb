@@ -5,6 +5,8 @@ SimpleCov.start "rails"
 SimpleCov.command_name "Cucumber"
 SimpleCov.merge_timeout 3600
 
+ENV["DEBUG_GA4"] = "true"
+
 require "cucumber/rails"
 
 # Capybara defaults to CSS3 selectors rather than XPath.
