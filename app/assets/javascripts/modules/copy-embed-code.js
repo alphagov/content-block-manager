@@ -20,24 +20,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
   }
 
   CopyEmbedCode.prototype.createLink = function () {
-    const linkText = document.createElement('span')
-    linkText.classList.add('link-text')
-
-    const hiddenLinkDetails = document.createElement('span')
-    hiddenLinkDetails.classList.add('govuk-visually-hidden')
-    hiddenLinkDetails.textContent =
-      ' for ' + this.module.dataset.embedCodeDetails
-
-    const copyLink = document.createElement('a')
-
-    copyLink.classList.add('govuk-link')
-    copyLink.classList.add('govuk-link__copy-link')
-    copyLink.setAttribute('href', '#')
-    copyLink.setAttribute('role', 'button')
-
-    linkText.textContent = 'Copy code'
-    copyLink.append(linkText)
-    copyLink.append(hiddenLinkDetails)
+    const copyLink = this.createCopyLink()
 
     copyLink.addEventListener('click', this.copyCode.bind(this))
     // Handle when a keyboard user highlights the link and clicks return
@@ -49,6 +32,37 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
         }
       }.bind(this)
     )
+
+    return copyLink
+  }
+
+  CopyEmbedCode.prototype.createLinkText = function () {
+    const linkText = document.createElement('span')
+    linkText.classList.add('link-text')
+    linkText.textContent = 'Copy code'
+
+    return linkText
+  }
+
+  CopyEmbedCode.prototype.createHiddenLinkDetails = function () {
+    const hiddenLinkDetails = document.createElement('span')
+    hiddenLinkDetails.classList.add('govuk-visually-hidden')
+    hiddenLinkDetails.textContent =
+      ' for ' + this.module.dataset.embedCodeDetails
+
+    return hiddenLinkDetails
+  }
+
+  CopyEmbedCode.prototype.createCopyLink = function () {
+    const copyLink = document.createElement('a')
+
+    copyLink.classList.add('govuk-link')
+    copyLink.classList.add('govuk-link__copy-link')
+    copyLink.setAttribute('href', '#')
+    copyLink.setAttribute('role', 'button')
+
+    copyLink.append(this.createLinkText())
+    copyLink.append(this.createHiddenLinkDetails())
 
     return copyLink
   }
