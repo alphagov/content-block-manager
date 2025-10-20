@@ -1,18 +1,14 @@
 class Editions::WorkflowController < BaseController
   include CanScheduleOrPublish
 
-  include Workflow::Steps
+  include Workflow::HasSteps
   include Workflow::ShowMethods
   include Workflow::UpdateMethods
 
   def show
-    action = current_step&.show_action
-
-    if action
-      send(action)
-    else
-      raise ActionController::RoutingError, "Step #{params[:step]} does not exist"
-    end
+    send(current_step.show_action)
+  rescue UnknownStepError => e
+    raise ActionController::RoutingError, e.message
   end
 
   def cancel
@@ -20,19 +16,20 @@ class Editions::WorkflowController < BaseController
   end
 
   def update
-    action = current_step&.update_action
-
-    if action
-      send(action)
-    else
-      raise ActionController::RoutingError, "Step #{params[:step]} does not exist"
-    end
+    send(current_step.update_action)
+  rescue UnknownStepError => e
+    raise ActionController::RoutingError, e.message
   end
 
   def context
     @edition.title
   end
   helper_method :context
+
+  def form_data_attributes
+    helpers.ga4_data_attributes(edition: @edition, section: current_step&.show_action)
+  end
+  helper_method :form_data_attributes
 
 private
 

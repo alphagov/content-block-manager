@@ -18,4 +18,8 @@ private
       }
     end
   end
+
+  def data_attributes
+    helpers.ga4_data_attributes(edition: nil, section: "select_schema")
+  end
 end

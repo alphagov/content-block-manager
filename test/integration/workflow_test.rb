@@ -15,6 +15,15 @@ class WorkflowTest < ActionDispatch::IntegrationTest
     end
   end
 
+  def self.it_has_the_correct_ga4_attributes(attributes)
+    it "has the correct GA4 attributes" do
+      visit workflow_path(id: edition.id, step:)
+
+      assert_selector "form[data-module='ga4-form-tracker']"
+      assert_selector "form[data-ga4-form='#{attributes.to_json}']"
+    end
+  end
+
   let(:details) do
     {
       foo: "Foo text",
@@ -47,6 +56,8 @@ class WorkflowTest < ActionDispatch::IntegrationTest
       describe "#show" do
         it_shows_the_correct_context
 
+        it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "create", section: "edit" })
+
         it "shows the correct back link" do
           get workflow_path(id: edition.id, step:)
 
@@ -61,6 +72,7 @@ class WorkflowTest < ActionDispatch::IntegrationTest
 
       describe "#show" do
         it_shows_the_correct_context
+        it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "create", section: "review" })
 
         it "shows the new edition for review" do
           get workflow_path(id: edition.id, step:)
@@ -111,6 +123,7 @@ class WorkflowTest < ActionDispatch::IntegrationTest
       describe "#show" do
         let(:step) { "embedded_subschema_1" }
 
+        it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "create", section: "embedded_subschema_1" })
         it_shows_the_correct_context
 
         it "shows the form for the first subschema" do
@@ -164,6 +177,7 @@ class WorkflowTest < ActionDispatch::IntegrationTest
 
       describe "#show" do
         it_shows_the_correct_context
+        it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "update", section: "edit" })
 
         it "shows the form" do
           get workflow_path(id: edition.id, step:)
@@ -259,6 +273,7 @@ class WorkflowTest < ActionDispatch::IntegrationTest
 
       describe "#show" do
         it_shows_the_correct_context
+        it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "update", section: "review_links" })
 
         it_returns_embedded_content do
           visit workflow_path(id: edition.id, step:)
@@ -304,6 +319,7 @@ class WorkflowTest < ActionDispatch::IntegrationTest
 
       describe "#show" do
         it_shows_the_correct_context
+        it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "update", section: "internal_note" })
 
         it "shows the form" do
           get workflow_path(id: edition.id, step:)
@@ -334,6 +350,7 @@ class WorkflowTest < ActionDispatch::IntegrationTest
 
       describe "#show" do
         it_shows_the_correct_context
+        it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "update", section: "change_note" })
 
         it "shows the form" do
           get workflow_path(id: edition.id, step:)
@@ -399,6 +416,10 @@ class WorkflowTest < ActionDispatch::IntegrationTest
         end
 
         describe "#show" do
+          let(:step) { "embedded_subschema_1" }
+
+          it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "update", section: "embedded_subschema_1" })
+
           it "shows the form for the first subschema" do
             get workflow_path(id: edition.id, step: "embedded_subschema_1")
 
@@ -443,6 +464,9 @@ class WorkflowTest < ActionDispatch::IntegrationTest
         end
 
         describe "#show" do
+          let(:step) { "embedded_subschema_1" }
+          it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "update", section: "embedded_subschema_1" })
+
           it "shows the form for the first subschema" do
             get workflow_path(id: edition.id, step: "embedded_subschema_1")
 
@@ -521,6 +545,7 @@ class WorkflowTest < ActionDispatch::IntegrationTest
 
       describe "#show" do
         it_shows_the_correct_context
+        it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "update", section: "schedule_publishing" })
 
         it "shows the form" do
           get workflow_path(id: edition.id, step:)
@@ -584,6 +609,7 @@ class WorkflowTest < ActionDispatch::IntegrationTest
     describe "when on the review step" do
       let(:step) { :review }
       it_shows_the_correct_context
+      it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "update", section: "review" })
 
       it "shows the correct context and confirmation text" do
         visit workflow_path(id: edition.id, step:)

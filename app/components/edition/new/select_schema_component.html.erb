@@ -1,9 +1,31 @@
-<%= render "govuk_publishing_components/components/radio", {
-  heading:,
-  heading_caption:,
-  name: "block_type",
-  id: "block_type",
-  heading_size: "xl",
-  items: items,
-  error_message:,
-} %>
+<%= form_with url: new_document_options_redirect_documents_path,
+              method: :post,
+              **data_attributes do %>
+  <%= hidden_field_tag :block_type, "" %>
+
+  <%= render "govuk_publishing_components/components/radio", {
+    heading:,
+    heading_caption:,
+    name: "block_type",
+    id: "block_type",
+    heading_size: "xl",
+    items: items,
+    error_message:,
+  } %>
+
+  <div class="govuk-button-group">
+    <%= render "govuk_publishing_components/components/button", {
+      text: I18n.t("buttons.save_and_continue"),
+      name: "save_and_continue",
+      value: I18n.t("buttons.save_and_continue"),
+      type: "submit",
+    } %>
+    <%= render "govuk_publishing_components/components/button", {
+      text: I18n.t("buttons.cancel"),
+      name: "cancel",
+      value: I18n.t("buttons.cancel"),
+      href: documents_path,
+      secondary_solid: true,
+    } %>
+  </div>
+<% end %>

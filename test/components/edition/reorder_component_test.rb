@@ -3,6 +3,7 @@ require "test_helper"
 class Edition::ReorderComponentTest < ViewComponent::TestCase
   extend Minitest::Spec::DSL
   include Rails.application.routes.url_helpers
+  include FormHelper
 
   let(:edition) { build_stubbed(:edition) }
   let(:order) do
@@ -206,6 +207,15 @@ class Edition::ReorderComponentTest < ViewComponent::TestCase
       ])
       items[5].assert_no_selector "a", text: "Down"
     end
+  end
+
+  it "renders the ga4 attributes" do
+    render_inline component
+
+    assert_selector "form[data-module='ga4-form-tracker']"
+
+    form_attributes = ga4_data_attributes(edition:, section: "reorder")[:data][:ga4_form]
+    assert_selector "form[data-ga4-form='#{form_attributes.to_json}']"
   end
 
   def assert_button_exists(wrapper:, label:, order:)

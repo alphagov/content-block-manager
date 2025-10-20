@@ -23,7 +23,7 @@
       <%= form_with url: workflow_path(
         @edition,
         step: @step_name,
-        ), method: :put, id: @step_name do %>
+        ), method: :put, id: @step_name, **form_data_attributes do %>
         <%= render Edition::Workflow::GroupComponent.new(
           edition: @edition,
           subschemas: @subschemas,

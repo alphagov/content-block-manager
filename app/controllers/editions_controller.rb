@@ -1,5 +1,5 @@
 class EditionsController < BaseController
-  include Workflow::Steps
+  include Workflow::HasSteps
 
   skip_before_action :initialize_edition_and_schema
 
@@ -23,7 +23,7 @@ class EditionsController < BaseController
   def create
     @schema = Schema.find_by_block_type(block_type_param)
     @edition = CreateEditionService.new(@schema).call(edition_params, document_id: params[:document_id])
-    redirect_to workflow_path(id: @edition.id, step: next_step.name)
+    redirect_to workflow_path(id: @edition.id, step: steps[1].name)
   rescue ActiveRecord::RecordInvalid => e
     @title = params[:document_id] ? e.record.document.title : "Create content block"
     @form = EditionForm.for(edition: e.record, schema: @schema)

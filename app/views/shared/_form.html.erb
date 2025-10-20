@@ -5,7 +5,8 @@
 <%= form_with(
       url: @form.url,
       method: @form.form_method,
-      model: @form.edition) do |f| %>
+      model: @form.edition,
+      **ga4_data_attributes(edition: @form.edition, section: @form.class.name.demodulize.downcase, block_type: @form.schema.block_type)) do |f| %>
   <%= hidden_field_tag "edition[document_attributes][block_type]",
                        @form.schema.block_type %>
 

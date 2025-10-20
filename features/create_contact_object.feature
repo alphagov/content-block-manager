@@ -328,6 +328,8 @@ Feature: Create a contact object
     And I should see that the video relay service info has been changed
     And I should see that the BSL guidance fields have been changed
     And I should see that the opening hours have been changed
+    And analytics messages should have been sent for each step in the workflow
+    And analytics messages should have been sent for each embedded object
 
   @javascript
   Scenario: GDS editor sees errors for invalid telephone objects

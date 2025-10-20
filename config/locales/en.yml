@@ -35,6 +35,8 @@ en:
           contact: Contact name
   document:
     index:
+      filter_options:
+        heading: Search by keyword
       errors:
         date:
           invalid: "%{attribute} is not a valid date"
@@ -142,6 +144,8 @@ en:
   buttons:
     add: "Add %{item}"
     add_another: "Add another %{item}"
+    save_and_continue: "Save and continue"
+    cancel: "Cancel"
   rollup:
     locations:
       title: Locations
