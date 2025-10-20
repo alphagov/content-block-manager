@@ -29,15 +29,25 @@ end
 Then(/I should see the ([^"]*) embed code flash up for an interval/) do |code_type|
   Capybara.current_session.driver.with_playwright_page do |p_page|
     block = p_page.get_by_testid(test_block_id_for(code_type))
+
     expect(block).to playwright_matchers.have_text(embed_code_for(code_type))
+    link_should_show_that_code_has_been_copied(block)
     # a short interval of time passes
     expect(block).not_to playwright_matchers.have_text(embed_code_for(code_type))
+    link_should_again_show_call_to_action_to_copy(block)
   end
 end
 
 def click_copy_code_link
   find("a", text: "Copy code").click
-  has_text?("Code copied")
+end
+
+def link_should_show_that_code_has_been_copied(block)
+  expect(block).to playwright_matchers.have_text("Code copied")
+end
+
+def link_should_again_show_call_to_action_to_copy(block)
+  expect(block).to playwright_matchers.have_text("Copy code")
 end
 
 def test_block_id_for(code_type)
