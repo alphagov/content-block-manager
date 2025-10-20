@@ -128,6 +128,19 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
     assert_selector ".govuk-summary-list__row", count: 3
   end
 
+  it "renders a summary list with an enumerated title" do
+    component = Shared::EmbeddedObjects::SummaryCardComponent.new(
+      object_title: "my-embedded-object",
+      edition:,
+      object_type: "embedded-objects",
+      object_count: 123,
+    )
+
+    render_inline component
+
+    assert_selector ".govuk-summary-card__title", text: "Embedded object details 123"
+  end
+
   it "renders a summary list with edit link" do
     component = Shared::EmbeddedObjects::SummaryCardComponent.new(
       edition:,

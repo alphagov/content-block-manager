@@ -19,9 +19,9 @@ class Edition::Workflow::GroupComponentTest < ViewComponent::TestCase
   end
   let(:edition) { build(:edition, :pension, details:) }
 
-  let(:subschema_1) { stub("subschema_1", id: "embedded-type-1", block_type: "embedded-type-1", name: "first embedded types", group_order: 1) }
-  let(:subschema_2) { stub("subschema_2", id: "embedded-type-1", block_type: "embedded-type-2", name: "second embedded types", group_order: 0) }
-  let(:subschema_3) { stub("subschema_3", id: "embedded-type-3", block_type: "embedded-type-3", name: "third embedded types", group_order: 2) }
+  let(:subschema_1) { stub("subschema_1", id: "embedded-1", block_type: "embedded-type-1", name: "first embedded types", group_order: 1) }
+  let(:subschema_2) { stub("subschema_2", id: "embedded-3", block_type: "embedded-type-2", name: "second embedded types", group_order: 0) }
+  let(:subschema_3) { stub("subschema_3", id: "embedded-6", block_type: "embedded-type-3", name: "third embedded types", group_order: 2) }
 
   let(:subschemas) do
     [
@@ -45,40 +45,45 @@ class Edition::Workflow::GroupComponentTest < ViewComponent::TestCase
   end
 
   it "should render a tab for each subschema that has content" do
-    summary_card_stub_1 = stub("SummaryCard")
-    summary_card_stub_2 = stub("SummaryCard")
+    summary_card_stub_1 = stub("SummaryCard", render_in: "<div>Summary card 1</div>")
+    summary_card_stub_2 = stub("SummaryCard", render_in: "<div>Summary card 2</div>")
 
-    Shared::EmbeddedObjects::SummaryCardComponent.expects(:with_collection).with(
-      %w[embedded-type-1-item-1 embedded-type-1-item-2],
+    Shared::EmbeddedObjects::SummaryCardComponent.expects(:new).with(
+      object_title: "embedded-type-1-item-1",
       edition: edition,
       object_type: subschema_1.block_type,
       redirect_url: request.fullpath,
+      object_count: 1,
+    ).returns(summary_card_stub_1)
+    Shared::EmbeddedObjects::SummaryCardComponent.expects(:new).with(
+      object_title: "embedded-type-1-item-2",
+      edition: edition,
+      object_type: subschema_1.block_type,
+      redirect_url: request.fullpath,
+      object_count: 2,
     ).returns(summary_card_stub_1)
 
-    Shared::EmbeddedObjects::SummaryCardComponent.expects(:with_collection).with(
-      %w[embedded-type-2-item-1 embedded-type-2-item-2 embedded-type-2-item-3],
+    Shared::EmbeddedObjects::SummaryCardComponent.expects(:new).with(
+      object_title: "embedded-type-2-item-1",
       edition: edition,
       object_type: subschema_2.block_type,
       redirect_url: request.fullpath,
+      object_count: 1,
     ).returns(summary_card_stub_2)
-
-    component.expects(:render).with(summary_card_stub_1).returns("summary_card_1_body")
-    component.expects(:render).with(summary_card_stub_2).returns("summary_card_2_body")
-
-    component.expects(:render).with("govuk_publishing_components/components/tabs", {
-      tabs: [
-        {
-          id: subschema_2.id,
-          label: "Second embedded type (3)",
-          content: "summary_card_2_body",
-        },
-        {
-          id: subschema_1.id,
-          label: "First embedded type (2)",
-          content: "summary_card_1_body",
-        },
-      ],
-    })
+    Shared::EmbeddedObjects::SummaryCardComponent.expects(:new).with(
+      object_title: "embedded-type-2-item-2",
+      edition: edition,
+      object_type: subschema_2.block_type,
+      redirect_url: request.fullpath,
+      object_count: 2,
+    ).returns(summary_card_stub_2)
+    Shared::EmbeddedObjects::SummaryCardComponent.expects(:new).with(
+      object_title: "embedded-type-2-item-3",
+      edition: edition,
+      object_type: subschema_2.block_type,
+      redirect_url: request.fullpath,
+      object_count: 3,
+    ).returns(summary_card_stub_2)
 
     render_inline component
   end
