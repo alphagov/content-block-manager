@@ -7,6 +7,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
     this.delayIntervalInMs = 2000
     this.copyLink = this.createLink.bind(this)()
     this.embedCodeFlash = this.createEmbedCodeFlash.bind(this)()
+    this.linkText = this.copyLink.querySelector('.link-text')
   }
 
   CopyEmbedCode.prototype.init = function () {
@@ -107,8 +108,8 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
   }
 
   CopyEmbedCode.prototype.transitionThroughSuccessState = function () {
-    const originalText = this.copyLink.querySelector('.link-text').textContent
-    this.copyLink.querySelector('.link-text').textContent = 'Code copied'
+    const originalText = this.linkText.textContent
+    this.linkText.textContent = 'Code copied'
     this.copyLink.focus()
 
     setTimeout(
@@ -118,7 +119,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
   }
 
   CopyEmbedCode.prototype.restoreText = function (originalText) {
-    this.copyLink.querySelector('.link-text').textContent = originalText
+    this.linkText.textContent = originalText
   }
 
   // This is a fallback for browsers that do not support the async clipboard API
