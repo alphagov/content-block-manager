@@ -47,46 +47,6 @@ class Edition::Workflow::GroupComponentTest < ViewComponent::TestCase
   it "should render a tab for each subschema that has content" do
     summary_card_stub_1 = stub("SummaryCard")
     summary_card_stub_2 = stub("SummaryCard")
-    # summary_card_stub_1 = stub("SummaryCard", render_in: "<div>Summary card 1</div>")
-    # summary_card_stub_2 = stub("SummaryCard", render_in: "<div>Summary card 2</div>")
-
-    # Shared::EmbeddedObjects::SummaryCardComponent.expects(:new).with(
-    #   object_title: "embedded-type-1-item-1",
-    #   edition: edition,
-    #   object_type: subschema_1.block_type,
-    #   redirect_url: request.fullpath,
-    #   object_count: 1,
-    # ).returns(summary_card_stub_1)
-    # Shared::EmbeddedObjects::SummaryCardComponent.expects(:new).with(
-    #   object_title: "embedded-type-1-item-2",
-    #   edition: edition,
-    #   object_type: subschema_1.block_type,
-    #   redirect_url: request.fullpath,
-    #   object_count: 2,
-    # ).returns(summary_card_stub_1)
-    #
-    # Shared::EmbeddedObjects::SummaryCardComponent.expects(:new).with(
-    #   object_title: "embedded-type-2-item-1",
-    #   edition: edition,
-    #   object_type: subschema_2.block_type,
-    #   redirect_url: request.fullpath,
-    #   object_count: 1,
-    # ).returns(summary_card_stub_2)
-    # Shared::EmbeddedObjects::SummaryCardComponent.expects(:new).with(
-    #   object_title: "embedded-type-2-item-2",
-    #   edition: edition,
-    #   object_type: subschema_2.block_type,
-    #   redirect_url: request.fullpath,
-    #   object_count: 2,
-    # ).returns(summary_card_stub_2)
-    # Shared::EmbeddedObjects::SummaryCardComponent.expects(:new).with(
-    #   object_title: "embedded-type-2-item-3",
-    #   edition: edition,
-    #   object_type: subschema_2.block_type,
-    #   redirect_url: request.fullpath,
-    #   object_count: 3,
-    # ).returns(summary_card_stub_2)
-
     Shared::EmbeddedObjects::SummaryCardComponent.expects(:with_collection).with(
       %w[embedded-type-1-item-1 embedded-type-1-item-2],
       edition: edition,
