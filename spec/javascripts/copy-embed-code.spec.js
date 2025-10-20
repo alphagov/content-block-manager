@@ -99,17 +99,22 @@ describe('GOVUK.Modules.CopyEmbedCode', function () {
       expect(removeSpy).toHaveBeenCalled()
     })
 
-    it('changes and restores the link text', async function () {
+    it('changes and restores the link text, ignoring the visually hidden details', async function () {
       jasmine.clock().install()
 
       await window.GOVUK.triggerEvent(copyLink, 'click')
 
       copyLink = document.querySelector('.govuk-link__copy-link')
+      const visibleLinkText = copyLink.querySelector('.link-text')
+      const hiddenLinkText = copyLink.querySelector('.govuk-visually-hidden')
 
-      expect(copyLink.textContent).toEqual('Code copied')
+      expect(visibleLinkText.textContent).toEqual('Code copied')
+      expect(hiddenLinkText.textContent).toEqual(' for block/field-name')
+
       jasmine.clock().tick(2000)
 
-      expect(copyLink.textContent).toEqual('Copy code for block/field-name')
+      expect(visibleLinkText.textContent).toEqual('Copy code')
+      expect(hiddenLinkText.textContent).toEqual(' for block/field-name')
 
       jasmine.clock().uninstall()
     })

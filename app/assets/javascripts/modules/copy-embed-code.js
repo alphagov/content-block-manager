@@ -20,6 +20,9 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
   }
 
   CopyEmbedCode.prototype.createLink = function () {
+    const linkText = document.createElement('span')
+    linkText.classList.add('link-text')
+
     const hiddenLinkDetails = document.createElement('span')
     hiddenLinkDetails.classList.add('govuk-visually-hidden')
     hiddenLinkDetails.textContent =
@@ -31,8 +34,11 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
     copyLink.classList.add('govuk-link__copy-link')
     copyLink.setAttribute('href', '#')
     copyLink.setAttribute('role', 'button')
-    copyLink.textContent = 'Copy code'
+
+    linkText.textContent = 'Copy code'
+    copyLink.append(linkText)
     copyLink.append(hiddenLinkDetails)
+
     copyLink.addEventListener('click', this.copyCode.bind(this))
     // Handle when a keyboard user highlights the link and clicks return
     copyLink.addEventListener(
@@ -87,8 +93,8 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
   }
 
   CopyEmbedCode.prototype.transitionThroughSuccessState = function () {
-    const originalText = this.copyLink.textContent
-    this.copyLink.textContent = 'Code copied'
+    const originalText = this.copyLink.querySelector('.link-text').textContent
+    this.copyLink.querySelector('.link-text').textContent = 'Code copied'
     this.copyLink.focus()
 
     setTimeout(
@@ -98,7 +104,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
   }
 
   CopyEmbedCode.prototype.restoreText = function (originalText) {
-    this.copyLink.textContent = originalText
+    this.copyLink.querySelector('.link-text').textContent = originalText
   }
 
   // This is a fallback for browsers that do not support the async clipboard API
