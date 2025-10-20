@@ -9,6 +9,20 @@ class Document::Index::FilterOptionsComponent < ViewComponent::Base
 
 private
 
+  def heading
+    I18n.t("document.index.filter_options.heading")
+  end
+
+  def data_attributes
+    {
+      module: "ga4-search-tracker",
+      ga4_search_type: "index-documents",
+      ga4_search_url: helpers.documents_path,
+      ga4_search_section: heading,
+      ga4_search_input_name: "keyword",
+    }
+  end
+
   def items_for_block_type
     Schema.valid_schemas.map do |schema_name|
       {

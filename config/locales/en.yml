@@ -35,6 +35,8 @@ en:
           contact: Contact name
   document:
     index:
+      filter_options:
+        heading: Search by keyword
       errors:
         date:
           invalid: "%{attribute} is not a valid date"

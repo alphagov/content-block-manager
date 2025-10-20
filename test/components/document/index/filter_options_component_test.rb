@@ -36,7 +36,7 @@ class Document::Index::FilterOptionsComponentTest < ViewComponent::TestCase
     )
 
     assert_selector ".govuk-accordion__section--expanded", text: "Keyword"
-    assert_selector "input[name='keyword'][value='ministry defense']"
+    assert_selector "input[name='keyword'][type='search'][value='ministry defense']"
   end
 
   it "renders checkbox items for all valid schemas" do
@@ -106,5 +106,21 @@ class Document::Index::FilterOptionsComponentTest < ViewComponent::TestCase
     )
 
     assert_selector ".govuk-accordion__section--expanded", text: "Last updated date"
+  end
+
+  it "adds the relevant GA4 data attributes" do
+    render_inline(
+      Document::Index::FilterOptionsComponent.new(
+        filters: {},
+      ),
+    )
+
+    assert_selector "form", count: 1
+
+    assert_selector "form[data-module='ga4-search-tracker']"
+    assert_selector "form[data-ga4-search-type='index-documents']"
+    assert_selector "form[data-ga4-search-url='#{helper_mock.documents_path}']"
+    assert_selector "form[data-ga4-search-section='#{I18n.t('document.index.filter_options.heading')}']"
+    assert_selector "form[data-ga4-search-input-name='keyword']"
   end
 end
