@@ -133,12 +133,12 @@ class Shared::EmbeddedObjects::SummaryCardComponentTest < ViewComponent::TestCas
       object_title: "my-embedded-object",
       edition:,
       object_type: "embedded-objects",
-      object_count: 123,
+      object_title_counter: 99,
     )
 
     render_inline component
 
-    assert_selector ".govuk-summary-card__title", text: "Embedded object details 123"
+    assert_selector ".govuk-summary-card__title", text: "Embedded object details 100"
   end
 
   it "renders a summary list with edit link" do
