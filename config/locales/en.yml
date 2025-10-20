@@ -144,6 +144,8 @@ en:
   buttons:
     add: "Add %{item}"
     add_another: "Add another %{item}"
+    save_and_continue: "Save and continue"
+    cancel: "Cancel"
   rollup:
     locations:
       title: Locations

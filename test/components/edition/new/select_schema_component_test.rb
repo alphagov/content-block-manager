@@ -17,7 +17,22 @@ class Edition::New::SelectSchemaComponentTest < ViewComponent::TestCase
     )
   end
 
-  test "renders a select component with all the schemas" do
+  it "renders a form and buttons" do
+    render_inline(component)
+
+    form_attributes = {
+      type: "Content Block",
+      tool_name: nil,
+      event_name: "create",
+      section: "select_schema",
+    }
+    assert_selector "form[data-module='ga4-form-tracker'][data-ga4-form='#{form_attributes.to_json}']"
+
+    assert_selector "button", text: "Save and continue"
+    assert_selector "a", text: "Cancel"
+  end
+
+  it "renders a select component with all the schemas" do
     render_inline(component)
 
     assert_selector ".govuk-fieldset__heading", text: heading
