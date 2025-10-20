@@ -8,13 +8,13 @@ class Shared::EmbeddedObjects::SummaryCardComponent < ViewComponent::Base
 
   with_collection_parameter :object_title
 
-  def initialize(edition:, object_type:, object_title:, redirect_url: nil, test_id_prefix: nil, object_count: nil)
+  def initialize(edition:, object_type:, object_title:, redirect_url: nil, test_id_prefix: nil, object_title_counter: 0)
     @edition = edition
     @object_type = object_type
     @object_title = object_title
     @redirect_url = redirect_url
     @test_id_prefix = test_id_prefix
-    @counter = object_count
+    @counter = object_title_counter + 1
   end
 
 private

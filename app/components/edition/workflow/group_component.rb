@@ -30,19 +30,12 @@ private
   end
 
   def content_for_tab(subschema, items)
-    block_type_counts = {}
-    items.keys.map { |key|
-      block_type_counts[subschema.block_type] = block_type_counts[subschema.block_type].to_i + 1
-      render(
-        Shared::EmbeddedObjects::SummaryCardComponent.new(
-          object_title: key,
-          edition: edition,
-          object_type: subschema.block_type,
-          redirect_url: request.fullpath,
-          object_count: block_type_counts[subschema.block_type],
-        ),
-      )
-    }.join.html_safe
+    render Shared::EmbeddedObjects::SummaryCardComponent.with_collection(
+      items.keys,
+      edition: edition,
+      object_type: subschema.block_type,
+      redirect_url: request.fullpath,
+    )
   end
 
   def items_for_subschema(subschema)
