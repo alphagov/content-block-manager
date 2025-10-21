@@ -7,6 +7,19 @@ that can be reused and kept up to date across various pieces of content.
 
 Use [GOV.UK Docker](https://github.com/alphagov/govuk-docker) to run any commands that follow.
 
+To run the application:
+
+```bash
+govuk-docker run content-block-manager-app
+```
+
+If you want to run the application with Whitehall, Publisher, Content Store and the frontend apps running (allowing
+you to test the whole publishing stack, as well as previewing content):
+
+```bash
+govuk-docker run content-block-manager-full
+```
+
 ## Technical documentation
 
 This is a Ruby on Rails app, and should follow [our Rails app conventions](https://docs.publishing.service.gov.uk/manual/conventions-for-rails-applications.html).
