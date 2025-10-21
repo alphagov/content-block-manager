@@ -238,6 +238,16 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
       end
     end
 
+    it "uses aria-label to distinguish the link to 'all attributes' of _else_ object of type _something_" do
+      render_inline component
+
+      assert_selector ".app-c-embedded-objects-blocks-component__details-wrapper" do |wrapper|
+        wrapper.assert_selector "summary[aria-label='else']" do |summary|
+          summary.assert_selector ".govuk-details__summary-text", text: "All something attributes"
+        end
+      end
+    end
+
     it "calls key_to_label with the correct parameters for attribute rows in details" do
       component.expects(:key_to_label).with("foo", schema_name, object_type).returns("Foo")
       component.expects(:key_to_label).with("fizz", schema_name, object_type).returns("Fizz")
