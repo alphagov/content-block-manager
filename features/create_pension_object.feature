@@ -68,22 +68,28 @@ Feature: Create a content object
     When I visit the Content Block Manager home page
     And I click to create an object
     Then I should see all the schemas listed
+    And there should be no accessibility errors
     When I click on the "pension" schema
     Then I should see a form for the schema
+    And there should be no accessibility errors
     When I complete the form with the following fields:
       | title            | description   | organisation        | instructions_to_publishers |
       | my basic pension | this is basic | Ministry of Example | this is important  |
+    Then there should be no accessibility errors
     When I click to add a new "rate"
     Then I should see a back link to the "embedded_rates" step
+    And there should be no accessibility errors
     And I complete the "rate" form with the following fields:
       | title    | amount  | frequency |
       | New rate | £127.91 | a month  |
     Then I should be on the "add_embedded_rates" step
     When I save and continue
+    Then there should be no accessibility errors
     And I review and confirm my answers are correct
     Then I should be taken to the confirmation page for a new "pension"
     And analytics messages should have been sent for each step in the workflow
     And analytics messages should have been sent for each embedded object
+    And there should be no accessibility errors
 
   Scenario: GDS editor creates a Pension and cancels on the first rate
     When I visit the Content Block Manager home page
