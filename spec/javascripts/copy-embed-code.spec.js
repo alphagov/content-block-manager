@@ -1,10 +1,17 @@
 describe('GOVUK.Modules.CopyEmbedCode', function () {
-  let fixture, embedCode, copyEmbedCode, copyLink, fakeTextarea
+  let fixture,
+    embedCode,
+    copyEmbedCode,
+    copyLink,
+    fakeTextarea,
+    embedCodeDetails
 
   beforeEach(function () {
     embedCode = '{embed:content_block_contact:block-name}'
+    embedCodeDetails = 'block/field-name'
     fixture = document.createElement('div')
     fixture.setAttribute('data-embed-code', embedCode)
+    fixture.setAttribute('data-embed-code-details', embedCodeDetails)
     fixture.innerHTML = `
       <p class="app-c-content-block-manager-default-block__embed_code">
         {{embed:content_block_contact:block-name}}
@@ -38,7 +45,14 @@ describe('GOVUK.Modules.CopyEmbedCode', function () {
   describe('on initialisation', function () {
     it('should add a link to copy the embed code', function () {
       expect(copyLink).toBeTruthy()
-      expect(copyLink.textContent).toBe('Copy code')
+      expect(copyLink.textContent).toBe('Copy code for block/field-name')
+    })
+
+    it('should include some visually hidden field details in the "Copy code" link', function () {
+      const hiddenLinkDetails = copyLink.querySelector(
+        'span.govuk-visually-hidden'
+      )
+      expect(hiddenLinkDetails.textContent).toBe(' for block/field-name')
     })
 
     describe('removing visible embed codes which are required for non-JS users', function () {
@@ -85,17 +99,22 @@ describe('GOVUK.Modules.CopyEmbedCode', function () {
       expect(removeSpy).toHaveBeenCalled()
     })
 
-    it('changes and restores the link text', async function () {
+    it('changes and restores the link text, ignoring the visually hidden details', async function () {
       jasmine.clock().install()
 
       await window.GOVUK.triggerEvent(copyLink, 'click')
 
       copyLink = document.querySelector('.govuk-link__copy-link')
+      const visibleLinkText = copyLink.querySelector('.link-text')
+      const hiddenLinkText = copyLink.querySelector('.govuk-visually-hidden')
 
-      expect(copyLink.textContent).toEqual('Code copied')
+      expect(visibleLinkText.textContent).toEqual('Code copied')
+      expect(hiddenLinkText.textContent).toEqual(' for block/field-name')
+
       jasmine.clock().tick(2000)
 
-      expect(copyLink.textContent).toEqual('Copy code')
+      expect(visibleLinkText.textContent).toEqual('Copy code')
+      expect(hiddenLinkText.textContent).toEqual(' for block/field-name')
 
       jasmine.clock().uninstall()
     })

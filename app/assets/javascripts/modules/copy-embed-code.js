@@ -7,6 +7,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
     this.delayIntervalInMs = 2000
     this.copyLink = this.createLink.bind(this)()
     this.embedCodeFlash = this.createEmbedCodeFlash.bind(this)()
+    this.linkText = this.copyLink.querySelector('.link-text')
   }
 
   CopyEmbedCode.prototype.init = function () {
@@ -20,12 +21,8 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
   }
 
   CopyEmbedCode.prototype.createLink = function () {
-    const copyLink = document.createElement('a')
-    copyLink.classList.add('govuk-link')
-    copyLink.classList.add('govuk-link__copy-link')
-    copyLink.setAttribute('href', '#')
-    copyLink.setAttribute('role', 'button')
-    copyLink.textContent = 'Copy code'
+    const copyLink = this.createCopyLink()
+
     copyLink.addEventListener('click', this.copyCode.bind(this))
     // Handle when a keyboard user highlights the link and clicks return
     copyLink.addEventListener(
@@ -36,6 +33,37 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
         }
       }.bind(this)
     )
+
+    return copyLink
+  }
+
+  CopyEmbedCode.prototype.createLinkText = function () {
+    const linkText = document.createElement('span')
+    linkText.classList.add('link-text')
+    linkText.textContent = 'Copy code'
+
+    return linkText
+  }
+
+  CopyEmbedCode.prototype.createHiddenLinkDetails = function () {
+    const hiddenLinkDetails = document.createElement('span')
+    hiddenLinkDetails.classList.add('govuk-visually-hidden')
+    hiddenLinkDetails.textContent =
+      ' for ' + this.module.dataset.embedCodeDetails
+
+    return hiddenLinkDetails
+  }
+
+  CopyEmbedCode.prototype.createCopyLink = function () {
+    const copyLink = document.createElement('a')
+
+    copyLink.classList.add('govuk-link')
+    copyLink.classList.add('govuk-link__copy-link')
+    copyLink.setAttribute('href', '#')
+    copyLink.setAttribute('role', 'button')
+
+    copyLink.append(this.createLinkText())
+    copyLink.append(this.createHiddenLinkDetails())
 
     return copyLink
   }
@@ -60,7 +88,9 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
     )
 
     const embedCode = this.module.dataset.embedCode
-    this.writeToClipboard(embedCode).then(this.copySuccess.bind(this))
+    this.writeToClipboard(embedCode).then(
+      this.transitionThroughSuccessState.bind(this)
+    )
   }
 
   CopyEmbedCode.prototype.showEmbedCode = function (ele, target) {
@@ -77,9 +107,9 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
     }, this.delayIntervalInMs)
   }
 
-  CopyEmbedCode.prototype.copySuccess = function () {
-    const originalText = this.copyLink.textContent
-    this.copyLink.textContent = 'Code copied'
+  CopyEmbedCode.prototype.transitionThroughSuccessState = function () {
+    const originalText = this.linkText.textContent
+    this.linkText.textContent = 'Code copied'
     this.copyLink.focus()
 
     setTimeout(
@@ -89,7 +119,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
   }
 
   CopyEmbedCode.prototype.restoreText = function (originalText) {
-    this.copyLink.textContent = originalText
+    this.linkText.textContent = originalText
   }
 
   // This is a fallback for browsers that do not support the async clipboard API

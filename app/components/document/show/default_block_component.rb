@@ -32,6 +32,7 @@ private
     {
       module: "copy-embed-code",
       "embed-code": embed_code,
+      "embed-code-details": "default block",
       "testid": "default_block",
     }
   end
