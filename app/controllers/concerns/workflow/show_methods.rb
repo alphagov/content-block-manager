@@ -6,11 +6,6 @@ module Workflow::ShowMethods
     @schema = Schema.find_by_block_type(@edition.document.block_type)
     @form = EditionForm::Edit.new(edition: @edition, schema: @schema)
 
-    action = @edition.document.is_new_block? ? "create" : "update"
-
-    @title = I18n.t("edition.#{action}.title", block_type: @form.schema.name.downcase)
-    @back_path = @edition.document.is_new_block? ? new_document_path : @form.back_path
-
     render :edit_draft
   end
 

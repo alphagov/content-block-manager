@@ -61,7 +61,8 @@ class EditionForm
 
   class Edit < EditionForm
     def title
-      I18n.t("edition.update.title", block_type: schema.name.downcase)
+      action = @edition.document.is_new_block? ? "create" : "update"
+      I18n.t("edition.#{action}.title", block_type: schema.name.downcase)
     end
 
     def url
@@ -69,7 +70,7 @@ class EditionForm
     end
 
     def back_path
-      document_path(@edition.document)
+      @edition.document.is_new_block? ? new_document_path : document_path(@edition.document)
     end
 
     def form_method
