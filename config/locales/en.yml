@@ -25,9 +25,12 @@ en:
                 blank: "Scheduled publication date cannot be blank"
               time:
                 blank: "Scheduled publication time cannot be blank"
+            opening_hours:
               opening_hours:
-                opening_hours:
-                  blank: "Opening hours cannot be blank"
+                blank: "Opening hours cannot be blank"
+            url:
+              blank: "URL cannot be blank"
+              invalid: "URL is invalid"
     attributes:
       edition/document:
         title:
