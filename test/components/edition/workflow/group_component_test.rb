@@ -82,4 +82,79 @@ class Edition::Workflow::GroupComponentTest < ViewComponent::TestCase
 
     render_inline component
   end
+
+  context "when there are multiple block types, each with more than one instance" do
+    let(:details) do
+      {
+        "addresses" => {
+          "main-address" => {},
+          "other-address" => {},
+        },
+        "telephones" => {
+          "office-number" => {},
+          "home-number" => {},
+          "overseas-number" => {},
+        },
+      }
+    end
+
+    let(:address_subschema) do
+      stub("addresses", {
+        id: "addresses",
+        block_type: "addresses",
+        name: "Addresses",
+        group_order: 1,
+        fields: [],
+      })
+    end
+
+    let(:phone_subschema) do
+      stub("telephones", {
+        id: "telephones",
+        block_type: "telephones",
+        name: "Telephones",
+        group_order: 0,
+        fields: [],
+      })
+    end
+
+    let(:subschemas) { [address_subschema, phone_subschema] }
+    let(:schema) { stub(:schema) }
+    let(:document) { stub(:document, schema: schema) }
+    let(:edition) { build(:edition, :pension, details: details, id: 1) }
+
+    before do
+      schema.stubs(:subschema).with("addresses").returns(address_subschema)
+      schema.stubs(:subschema).with("telephones").returns(phone_subschema)
+      edition.stubs(:document).returns(document)
+    end
+
+    describe "the headings" do
+      it "should be unique" do
+        render_inline component
+
+        h2_tags_text = page.find_all("h2.govuk-summary-card__title").map { |e| e.text.strip }
+
+        assert_equal  ["Telephone details 1",
+                       "Telephone details 2",
+                       "Telephone details 3",
+                       "Address details 1",
+                       "Address details 2"],
+                      h2_tags_text
+      end
+
+      it "should be sequentially numbered within each block type" do
+        render_inline component
+
+        telephone_heading_numbers = page.find_all(".govuk-tabs__panel#telephones h2.govuk-summary-card__title")
+                                      .map { |e| e.text.strip[-1].to_i }
+
+        address_heading_numbers = page.find_all(".govuk-tabs__panel#addresses h2.govuk-summary-card__title")
+                                    .map { |e| e.text.strip[-1].to_i }
+
+        assert_equal([1, 2, 3], telephone_heading_numbers)
+        assert_equal([1, 2], address_heading_numbers)
+      end
+    end
+  end
 end
