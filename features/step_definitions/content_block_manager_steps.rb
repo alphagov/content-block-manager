@@ -465,3 +465,9 @@ end
 Then("the block {string} should appear as the first item in the list") do |title|
   expect(find("div[data-testid='homepage-item-0']")).to have_content(title)
 end
+
+Then("I should see a title for the create flow") do
+  within("h1") do
+    assert_text I18n.t("edition.create.title", block_type: @schema.name.downcase)
+  end
+end

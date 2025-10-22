@@ -57,13 +57,6 @@ class WorkflowTest < ActionDispatch::IntegrationTest
         it_shows_the_correct_context
 
         it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "create", section: "edit" })
-
-        it "shows the correct back link" do
-          get workflow_path(id: edition.id, step:)
-
-          assert_equal I18n.t("edition.create.title", block_type: schema.name.downcase), assigns(:title)
-          assert_equal new_document_path, assigns(:back_path)
-        end
       end
     end
 
@@ -183,13 +176,6 @@ class WorkflowTest < ActionDispatch::IntegrationTest
           get workflow_path(id: edition.id, step:)
 
           assert_template "editions/workflow/edit_draft"
-        end
-
-        it "shows the correct title and back link" do
-          get workflow_path(id: edition.id, step:)
-
-          assert_equal I18n.t("edition.update.title", block_type: schema.name.downcase), assigns(:title)
-          assert_equal document_path(document), assigns(:back_path)
         end
       end
 

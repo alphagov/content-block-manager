@@ -114,6 +114,7 @@ Feature: Create a content object
     When I visit the Content Block Manager home page
     And I click to create an object
     And I click on the "pension" schema
+    Then I should see a title for the create flow
     When I complete the form with the following fields:
       | title            | description   | organisation        | instructions_to_publishers |
       | my basic pension | this is basic | Ministry of Example | this is important  |

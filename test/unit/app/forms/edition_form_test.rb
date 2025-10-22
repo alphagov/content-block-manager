@@ -148,5 +148,23 @@ class EditionFormTest < ActiveSupport::TestCase
         assert_not_includes result.edition.errors.map(&:attribute), "document.sluggable_string".to_sym
       end
     end
+
+    describe "when editing a new block" do
+      before do
+        document.stubs(:is_new_block?).returns(true)
+      end
+
+      describe "#title" do
+        it "returns a title for the create action" do
+          assert_equal I18n.t("edition.create.title", block_type: "pension"), result.title
+        end
+      end
+
+      describe "#back_path" do
+        it "returns the documents index path" do
+          assert_equal new_document_path, result.back_path
+        end
+      end
+    end
   end
 end
