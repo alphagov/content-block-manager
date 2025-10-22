@@ -113,6 +113,7 @@ en:
           title: Email name
         contact_links:
           title: Contact link name
+          url: URL
         telephones:
           title: Telephone name
           bsl_guidance:
