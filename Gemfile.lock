@@ -77,7 +77,7 @@ GEM
     ast (2.4.3)
     babosa (2.0.0)
     base64 (0.3.0)
-    benchmark (0.4.1)
+    benchmark (0.5.0)
     better_errors (2.10.1)
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
@@ -272,7 +272,7 @@ GEM
     govuk_personalisation (1.1.0)
       plek (>= 1.9.0)
       rails (>= 6, < 9)
-    govuk_publishing_components (61.3.0)
+    govuk_publishing_components (61.3.1)
       govuk_app_config
       govuk_personalisation (>= 0.7.0)
       kramdown
@@ -425,12 +425,12 @@ GEM
     opentelemetry-api (1.7.0)
     opentelemetry-common (0.23.0)
       opentelemetry-api (~> 1.0)
-    opentelemetry-exporter-otlp (0.31.0)
+    opentelemetry-exporter-otlp (0.31.1)
       google-protobuf (>= 3.18)
       googleapis-common-protos-types (~> 1.3)
       opentelemetry-api (~> 1.1)
       opentelemetry-common (~> 0.20)
-      opentelemetry-sdk (~> 1.2)
+      opentelemetry-sdk (~> 1.10)
       opentelemetry-semantic_conventions
     opentelemetry-helpers-mysql (0.3.0)
       opentelemetry-api (~> 1.7)
@@ -439,21 +439,21 @@ GEM
       opentelemetry-api (~> 1.7)
     opentelemetry-helpers-sql-obfuscation (0.4.0)
       opentelemetry-common (~> 0.21)
-    opentelemetry-instrumentation-action_mailer (0.5.0)
-      opentelemetry-instrumentation-active_support (~> 0.7)
-    opentelemetry-instrumentation-action_pack (0.14.1)
+    opentelemetry-instrumentation-action_mailer (0.6.0)
+      opentelemetry-instrumentation-active_support (~> 0.9)
+    opentelemetry-instrumentation-action_pack (0.15.0)
       opentelemetry-instrumentation-rack (~> 0.21)
-    opentelemetry-instrumentation-action_view (0.10.0)
-      opentelemetry-instrumentation-active_support (~> 0.7)
-    opentelemetry-instrumentation-active_job (0.9.2)
+    opentelemetry-instrumentation-action_view (0.11.0)
+      opentelemetry-instrumentation-active_support (~> 0.9)
+    opentelemetry-instrumentation-active_job (0.10.0)
       opentelemetry-instrumentation-base (~> 0.24)
     opentelemetry-instrumentation-active_model_serializers (0.23.0)
       opentelemetry-instrumentation-active_support (>= 0.7.0)
-    opentelemetry-instrumentation-active_record (0.10.1)
+    opentelemetry-instrumentation-active_record (0.11.0)
       opentelemetry-instrumentation-base (~> 0.24)
-    opentelemetry-instrumentation-active_storage (0.2.0)
-      opentelemetry-instrumentation-active_support (~> 0.7)
-    opentelemetry-instrumentation-active_support (0.9.1)
+    opentelemetry-instrumentation-active_storage (0.3.0)
+      opentelemetry-instrumentation-active_support (~> 0.9)
+    opentelemetry-instrumentation-active_support (0.10.0)
       opentelemetry-instrumentation-base (~> 0.24)
     opentelemetry-instrumentation-all (0.85.0)
       opentelemetry-instrumentation-active_model_serializers (~> 0.23.0)
@@ -787,9 +787,9 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
-    sentry-rails (5.28.0)
+    sentry-rails (5.28.1)
       railties (>= 5.0)
-      sentry-ruby (~> 5.28.0)
+      sentry-ruby (~> 5.28.1)
     sentry-ruby (5.28.1)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
@@ -963,7 +963,7 @@ CHECKSUMS
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
   babosa (2.0.0) sha256=a6218db8a4dc8fd99260dde8bc3d5fa1a0c52178196e236ebb31e41fbdcdb8a6
   base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
-  benchmark (0.4.1) sha256=d4ef40037bba27f03b28013e219b950b82bace296549ec15a78016552f8d2cce
+  benchmark (0.5.0) sha256=465df122341aedcb81a2a24b4d3bd19b6c67c1530713fd533f3ff034e419236c
   better_errors (2.10.1) sha256=f798f1bac93f3e775925b7fcb24cffbcf0bb62ee2210f5350f161a6b75fc0a73
   better_html (2.1.1) sha256=046c3551d1488a3f2939a7cac6fabf2bde08c32e135c91fcd683380118e5af55
   bigdecimal (3.3.1) sha256=eaa01e228be54c4f9f53bf3cc34fe3d5e845c31963e7fcc5bedb05a4e7d52218
@@ -1034,7 +1034,7 @@ CHECKSUMS
   govuk_app_config (9.20.5) sha256=d2840bd1cc68c8a70d1b721494ea37198ad3724c78becf11b40fa71ad5780004
   govuk_frontend_toolkit (9.0.1) sha256=18fdae529c9003e023c3461d89a45ddaf5ac0df311705351743c9f1b7b48a2de
   govuk_personalisation (1.1.0) sha256=6e7a0dcfaec11570d95490160a95aff85150df5b667a586ecd7d5de04feac5dd
-  govuk_publishing_components (61.3.0) sha256=7b61708947988b0aa1f02b14922699819268c6dc416a191316bb0cfcbf3154a8
+  govuk_publishing_components (61.3.1) sha256=a8aec1edaff4cee1b2bbf0bbc1dadd679b6ec100f020f9c7967abf55cb30a6c2
   govuk_schemas (6.2.0) sha256=9a5a7b672256664d1bef1b7db80926df92a3ce9196bfe00ce96b8fd8bacc56d2
   govuk_sidekiq (10.0.0) sha256=0d0485f6946f5e212eb5d6f5105c406a25f3cd059592a5b490b78f1d71818de8
   govuk_test (4.1.2) sha256=ab0318c625d0e4b9358092bb7add4c852dd1bc69a3ff2edcfe4bfa1d156c9bb9
@@ -1102,18 +1102,18 @@ CHECKSUMS
   omniauth-oauth2 (1.8.0) sha256=b2f8e9559cc7e2d4efba57607691d6d2b634b879fc5b5b6ccfefa3da85089e78
   opentelemetry-api (1.7.0) sha256=ccfd264ea6f2db5bf4185e3c07a1297977b44a944e2ce65457c4fe63a697214f
   opentelemetry-common (0.23.0) sha256=da721190479d57bae0ad2207468f47f3e2c3b9a91024b5bc32c9d280183eb32c
-  opentelemetry-exporter-otlp (0.31.0) sha256=eb92fe8c5b0f11f7a1c2c15b0964249c80f3ef852b5c9032f9fe0cf52d1ffb98
+  opentelemetry-exporter-otlp (0.31.1) sha256=5358be17d7849cbcc4f49e1fc24105edc780a6f96c8e57b64192ab9a8e47474a
   opentelemetry-helpers-mysql (0.3.0) sha256=cfe61bb3fe483f239b3d44fe0d2e49fca0def849dff9d3029a95d420692780ec
   opentelemetry-helpers-sql (0.2.0) sha256=9f23977bcac6ee7f8782a4821181ca75d75e635e6e01f2a0da7e2b5169bb884d
   opentelemetry-helpers-sql-obfuscation (0.4.0) sha256=7252199f13df8dabb0a44f6b856c0ed3393585b9ad055371da4227a88a2c2341
-  opentelemetry-instrumentation-action_mailer (0.5.0) sha256=c6b2311a6b687a0e7601c69a9c31ba7de2d35b9b82c5ed1a36dc0d5356c2386a
-  opentelemetry-instrumentation-action_pack (0.14.1) sha256=c6ec48256e33bc4d5ca22d65676476ed1b35db6071c7e4391fb3cd30ed2d5924
-  opentelemetry-instrumentation-action_view (0.10.0) sha256=da91f6e48286d3904246fbd9b445111471d46dd212206bb554914d679928b377
-  opentelemetry-instrumentation-active_job (0.9.2) sha256=b2c54bbf34950e05d39aa5fdde7df69d4c3b2390821aef43815a7e98f57fbdb8
+  opentelemetry-instrumentation-action_mailer (0.6.0) sha256=f79f9452cf81eb57f4c52cfb7261bab74b191af190476e242c1ab569205d3731
+  opentelemetry-instrumentation-action_pack (0.15.0) sha256=f54208af64d23a55ba9bb38dc617fde0a16801b419f11b596ae6229534fe0f46
+  opentelemetry-instrumentation-action_view (0.11.0) sha256=38dfc9764a56652d404037b08e5d4a05bec6743302bbf395aa1d4746926a017b
+  opentelemetry-instrumentation-active_job (0.10.0) sha256=4f5a4dc7e74a93e3bc8966de6b4f4d07314e8e1f17b8732a5f8cc6b79c7c5382
   opentelemetry-instrumentation-active_model_serializers (0.23.0) sha256=9caf0ed1306f6de9f939ee8049172553caefd7fe0d4039971f5ea617511faca2
-  opentelemetry-instrumentation-active_record (0.10.1) sha256=47fdd3dcc27d2c1a9335be7a393980a28eb532df127ab39966c8777e866d1afb
-  opentelemetry-instrumentation-active_storage (0.2.0) sha256=d8aff194b7469f3beb63a707d5fb3179fd24a02c84ee5ba4d428367e86764d66
-  opentelemetry-instrumentation-active_support (0.9.1) sha256=deab7f8583c30a50220452e2f5fa3e84d3f6eb5941f6f950d623a5e7db99b1e1
+  opentelemetry-instrumentation-active_record (0.11.0) sha256=6fda5a2e1f1b3ec9b6cf74f608ffc9f30c9c6e7f0e48239459d75121cbef3335
+  opentelemetry-instrumentation-active_storage (0.3.0) sha256=bfc0e644dd3d2a2f68f663a645eb7d5446fce523e5419f424354733bc75801f2
+  opentelemetry-instrumentation-active_support (0.10.0) sha256=03496daa9310a1e40b72eae109e707f901e4700b2d591c66d3f81d1dd4609805
   opentelemetry-instrumentation-all (0.85.0) sha256=a6cb390a8fbedac4ab9257a360d76ee33ed260d5ffec3ffd4f1a048609f8b6a0
   opentelemetry-instrumentation-anthropic (0.2.1) sha256=14efa524e14f1dd3af41c063c1d57d4381f76229852a028ae8c58187d3dc712b
   opentelemetry-instrumentation-aws_lambda (0.5.1) sha256=aab868448d18e4d38730257977490befabcc1ac0cf9266d4a714ca4d0dfa9f6e
@@ -1228,7 +1228,7 @@ CHECKSUMS
   sass-embedded (1.90.0-x86_64-linux-musl) sha256=fffd0ee0dff16fa2ce572228fa7d4f5ed1f9aff6b2b6a79af92cb2000a7b5a71
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
   selenium-webdriver (4.35.0) sha256=6fc920cec4b9e6263afeb4941289d8deb0853acbc49e0d6f7de91c86986d359b
-  sentry-rails (5.28.0) sha256=a0cbba7ce86312172db9d1b3c39c5302de07e446e7df3f68e4f4b1d240a91fc2
+  sentry-rails (5.28.1) sha256=43a5f884622c60fa459ba05dc8bd22fbd5f28daaced1d00dbcfc4669eaf93807
   sentry-ruby (5.28.1) sha256=1162d474271e8b82202c984b1116db234007a084c5b73293e921468898d07e99
   sentry-sidekiq (5.28.1) sha256=1873d6ca4ba49086baec7a8128b322ae2c26ce892563ed625b8bfc0fa1bcd968
   sidekiq (7.3.9) sha256=1108712e1def89002b28e3545d5ae15d4a57ffd4d2c25d97bb1360988826b5a7
