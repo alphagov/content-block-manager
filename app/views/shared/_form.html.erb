@@ -29,6 +29,7 @@
     render Edition::Details::FormComponent.new(
       edition: @form.edition,
       schema: @form.schema,
+      populate_with_defaults: is_new_record,
     )
   %>
 
