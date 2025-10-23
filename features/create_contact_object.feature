@@ -92,9 +92,9 @@ Feature: Create a contact object
               "type": "boolean",
               "default": false
             },
-            "prefix": {
+            "label": {
               "type": "string",
-              "default": "**Default** prefix: 18000 then"
+              "default": "Text relay: dial 18001 then:"
             },
             "telephone_number": {
               "type": "string",

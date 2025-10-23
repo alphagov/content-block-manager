@@ -129,7 +129,8 @@ en:
             opening_hours: Opening hours
           video_relay_service:
             show: Add text relay
-            prefix: Label
+            label: Label
+            source: Source
             telephone_number: Telephone number
           call_charges:
             show_call_charges_info_url: Add call charges

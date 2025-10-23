@@ -1,16 +1,13 @@
 <div class="app-c-content-block-manager-video-relay-service-component">
 
   <% video_relay_service_inputs = capture do %>
-    <%= render(
-      Edition::Details::Fields::TextareaComponent.new(
-        edition: edition,
-        value: value_for_field(prefix) ,
-        nested_object_key: field.name,
-        field: prefix,
-        schema: schema,
-        subschema: subschema,
-      ),
-    ) %>
+    <%= render("govuk_publishing_components/components/input", {
+      label: { text: label_for("label") },
+      name: name_for_field(label) ,
+      id: id_for_field(label),
+      value: value_for_field(label) || label.default_value,
+      error_items: errors_for_field(label),
+    }) %>
 
     <%= render("govuk_publishing_components/components/input", {
               label: { text: label_for("telephone_number") },

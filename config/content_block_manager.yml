@@ -110,8 +110,6 @@ schemas:
             component:
               video_relay_service
             fields:
-              prefix:
-                govspeak_enabled: true
               show:
                 hidden_field: true
           telephone_numbers:
