@@ -128,7 +128,7 @@ en:
             show_opening_hours: Add opening hours
             opening_hours: Opening hours
           video_relay_service:
-            show: Add Relay UK
+            show: Add text relay
             prefix: Label
             telephone_number: Telephone number
           call_charges:

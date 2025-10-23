@@ -78,12 +78,12 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
   describe "VideoRelayService component" do
     describe "'show' nested field" do
       it "shows a checkbox to toggle 'show' option" do
-        helper_stub.stubs(:humanized_label).returns("Add Relay UK")
+        helper_stub.stubs(:humanized_label).returns("Add text relay")
 
         render_inline(component)
 
         assert_selector(".app-c-content-block-manager-video-relay-service-component") do |component|
-          component.assert_selector("label", text: "Add Relay UK")
+          component.assert_selector("label", text: "Add text relay")
         end
       end
 
