@@ -96,9 +96,9 @@ en:
           telephone_numbers:
             label: For example, Telephone, Textphone, Welsh language.
           video_relay_service:
-            show: Only select this option if your organisation has subscribed to a relay service.
+            show: Only select this option if your organisation has subscribed to an interpreter service.
           bsl_guidance:
-            show: Only select this option if your organisation has subscribed to a relay service.
+            show: Only select this option if your organisation has subscribed to an interpreter service.
       pension:
         rates:
           amount: "Enter an exact amount, with the currency symbol - for example: £122.50"
