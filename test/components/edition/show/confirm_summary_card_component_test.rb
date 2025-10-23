@@ -19,10 +19,18 @@ class Edition::Show::ConfirmSummaryCardComponentTest < ViewComponent::TestCase
     ]
   end
   let(:schema) { stub(:schema, fields:) }
+  let(:helper_stub) { stub(:helpers) }
+
+  let(:component) do
+    Edition::Show::ConfirmSummaryCardComponent.new(edition:)
+  end
 
   before do
     document.expects(:schema).returns(schema)
     Organisation.stubs(:all).returns([organisation])
+    component.stubs(:helpers).returns(helper_stub)
+    helper_stub.stubs(:label_for_title).with(edition.block_type).returns("Translated title")
+    helper_stub.stubs(:workflow_path).with(id: edition.id, step: :edit_draft).returns("/some-path")
   end
 
   it "it renders instructions to publishers" do
@@ -39,13 +47,11 @@ class Edition::Show::ConfirmSummaryCardComponentTest < ViewComponent::TestCase
   it "renders a summary card component with the edition details to confirm" do
     document.stubs(:is_new_block?).returns(false)
 
-    render_inline(Edition::Show::ConfirmSummaryCardComponent.new(
-                    edition:,
-                  ))
+    render_inline(component)
 
     assert_selector ".govuk-summary-list__row", count: 4
 
-    assert_selector ".govuk-summary-list__row:nth-child(1) .govuk-summary-list__key", text: "Title"
+    assert_selector ".govuk-summary-list__row:nth-child(1) .govuk-summary-list__key", text: "Translated title"
     assert_selector ".govuk-summary-list__row:nth-child(1) .govuk-summary-list__value", text: "Some edition title"
 
     assert_selector ".govuk-summary-list__row:nth-child(2) .govuk-summary-list__key", text: "Interesting fact"
