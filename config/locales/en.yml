@@ -96,7 +96,7 @@ en:
           telephone_numbers:
             label: For example, Telephone, Textphone, Welsh language.
           video_relay_service:
-            show: Only select this option if your organisation has subscribed to a relay service.
+            show: Only select this option if your organisation has subscribed to an interpreter service.
           bsl_guidance:
             show: Only select this option if your organisation has subscribed to an interpreter service.
       pension:
@@ -128,8 +128,9 @@ en:
             show_opening_hours: Add opening hours
             opening_hours: Opening hours
           video_relay_service:
-            show: Add Relay UK
-            prefix: Label
+            show: Add text relay
+            label: Label
+            source: Source
             telephone_number: Telephone number
           call_charges:
             show_call_charges_info_url: Add call charges
