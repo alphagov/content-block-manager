@@ -22,8 +22,45 @@ class Edition::Details::EmbeddedObjects::FormComponentTest < ViewComponent::Test
 
   let(:schema) { stub(:schema) }
 
+  let(:params) { nil }
+  let(:populate_with_defaults) { true }
+  let(:object_title) { nil }
+
+  let(:component) do
+    Edition::Details::EmbeddedObjects::FormComponent.new(
+      edition:,
+      subschema:,
+      schema:,
+      params:,
+      populate_with_defaults:,
+      object_title:,
+    )
+  end
+
   before do
     subschema.stubs(:fields).returns([foo_field, bar_field, enum_field, textarea_field, boolean_field])
+
+    Edition::Details::Fields::StringComponent.stubs(:new).with(
+      has_entries(field: foo_field),
+    ).returns(foo_stub)
+
+    Edition::Details::Fields::StringComponent.stubs(:new).with(
+      has_entries(field: bar_field),
+    ).returns(bar_stub)
+
+    Edition::Details::Fields::EnumComponent.stubs(:new).with(
+      has_entries(field: enum_field),
+    ).returns(enum_stub)
+
+    Edition::Details::Fields::TextareaComponent.stubs(:new).with(
+      has_entries(field: textarea_field),
+    ).returns(enum_stub)
+
+    Edition::Details::Fields::BooleanComponent.stubs(:new).with(
+      has_entries(field: boolean_field),
+    ).returns(boolean_stub)
+
+    component.stubs(:render).with(anything)
   end
 
   it "renders fields for each property" do
@@ -46,6 +83,7 @@ class Edition::Details::EmbeddedObjects::FormComponentTest < ViewComponent::Test
       field: enum_field,
       subschema:,
       enum: ["some value", "another value"],
+      value: "some value",
       default: "some value",
       schema:,
     ).returns(enum_stub)
@@ -63,13 +101,6 @@ class Edition::Details::EmbeddedObjects::FormComponentTest < ViewComponent::Test
       subschema:,
       schema:,
     ).returns(boolean_stub)
-
-    component = Edition::Details::EmbeddedObjects::FormComponent.new(
-      edition:,
-      subschema:,
-      schema:,
-      params: nil,
-    )
 
     component.expects(:render).with(foo_stub)
     component.expects(:render).with(bar_stub)
@@ -80,122 +111,122 @@ class Edition::Details::EmbeddedObjects::FormComponentTest < ViewComponent::Test
     render_inline(component)
   end
 
-  it "sends the value of a field if present in the params argument" do
-    params = { "foo" => "something" }
+  describe "when params are present" do
+    let(:params) { { "foo" => "something" } }
 
-    Edition::Details::Fields::StringComponent.expects(:new).with(
-      edition:,
-      field: foo_field,
-      subschema:,
-      schema:,
-      value: "something",
-    ).returns(foo_stub)
+    it "sends the value of a field if present in the params argument" do
+      Edition::Details::Fields::StringComponent.expects(:new).with(
+        has_entries(field: foo_field, value: "something"),
+      ).returns(foo_stub)
 
-    Edition::Details::Fields::StringComponent.expects(:new).with(
-      edition:,
-      field: bar_field,
-      subschema:,
-      schema:,
-    ).returns(bar_stub)
-
-    Edition::Details::Fields::EnumComponent.expects(:new).with(
-      edition:,
-      field: enum_field,
-      subschema:,
-      schema:,
-      enum: ["some value", "another value"],
-      default: "some value",
-    ).returns(enum_stub)
-
-    Edition::Details::Fields::TextareaComponent.expects(:new).with(
-      edition:,
-      field: textarea_field,
-      subschema:,
-      schema:,
-    ).returns(textarea_stub)
-
-    Edition::Details::Fields::BooleanComponent.expects(:new).with(
-      edition:,
-      field: boolean_field,
-      subschema:,
-      schema:,
-    ).returns(boolean_stub)
-
-    component = Edition::Details::EmbeddedObjects::FormComponent.new(
-      edition:,
-      subschema:,
-      params:,
-      schema:,
-    )
-
-    component.expects(:render).with(foo_stub)
-    component.expects(:render).with(bar_stub)
-    component.expects(:render).with(enum_stub)
-    component.expects(:render).with(textarea_stub)
-    component.expects(:render).with(boolean_stub)
-
-    render_inline(component)
+      render_inline(component)
+    end
   end
 
-  it "sends the subschema's block_type as an `object_title` if provided" do
-    object_title = "something"
+  describe "when `object_title` is provided" do
+    let(:object_title) { "something" }
 
-    Edition::Details::Fields::StringComponent.expects(:new).with(
-      edition:,
-      field: foo_field,
-      subschema:,
-      schema:,
-      object_title:,
-    ).returns(foo_stub)
+    it "sends the subschema's block_type as an `object_title` if provided" do
+      Edition::Details::Fields::StringComponent.expects(:new).with(
+        has_entries(field: foo_field, object_title:),
+      ).returns(foo_stub)
 
-    Edition::Details::Fields::StringComponent.expects(:new).with(
-      edition:,
-      field: bar_field,
-      subschema:,
-      schema:,
-      object_title:,
-    ).returns(bar_stub)
+      Edition::Details::Fields::StringComponent.expects(:new).with(
+        has_entries(field: bar_field, object_title:),
+      ).returns(bar_stub)
 
-    Edition::Details::Fields::EnumComponent.expects(:new).with(
-      edition:,
-      field: enum_field,
-      subschema:,
-      schema:,
-      enum: ["some value", "another value"],
-      default: "some value",
-      object_title:,
-    ).returns(enum_stub)
+      Edition::Details::Fields::EnumComponent.expects(:new).with(
+        has_entries(field: enum_field, object_title:),
+      ).returns(enum_stub)
 
-    Edition::Details::Fields::TextareaComponent.expects(:new).with(
-      edition:,
-      field: textarea_field,
-      subschema:,
-      schema:,
-      object_title:,
-    ).returns(textarea_stub)
+      Edition::Details::Fields::TextareaComponent.expects(:new).with(
+        has_entries(field: textarea_field, object_title:),
+      ).returns(textarea_stub)
 
-    Edition::Details::Fields::BooleanComponent.expects(:new).with(
-      edition:,
-      field: boolean_field,
-      subschema:,
-      schema:,
-      object_title:,
-    ).returns(boolean_stub)
+      Edition::Details::Fields::BooleanComponent.expects(:new).with(
+        has_entries(field: boolean_field, object_title:),
+      ).returns(boolean_stub)
 
-    component = Edition::Details::EmbeddedObjects::FormComponent.new(
-      edition:,
-      subschema:,
-      schema:,
-      params: nil,
-      object_title:,
-    )
+      render_inline(component)
+    end
+  end
 
-    component.expects(:render).with(foo_stub)
-    component.expects(:render).with(bar_stub)
-    component.expects(:render).with(enum_stub)
-    component.expects(:render).with(textarea_stub)
-    component.expects(:render).with(boolean_stub)
+  describe "value" do
+    before do
+      foo_field.stubs(:default_value).returns(default_value)
+    end
 
-    render_inline(component)
+    describe "when a default value is available for a field" do
+      let(:default_value) { "default value" }
+
+      describe "and no value is present in the params" do
+        let(:params) { {} }
+
+        describe "and populate_with_defaults is true" do
+          let(:populate_with_defaults) { true }
+
+          it "sends the default value" do
+            Edition::Details::Fields::StringComponent.expects(:new).with(
+              has_entries(field: foo_field, value: default_value),
+            ).returns(foo_stub)
+
+            render_inline(component)
+          end
+        end
+
+        describe "and populate_with_defaults is false" do
+          let(:populate_with_defaults) { false }
+
+          it "does not send the default value" do
+            Edition::Details::Fields::StringComponent.expects(:new).with(
+              has_entries(field: foo_field),
+              Not(has_entries(value: anything)),
+            ).returns(foo_stub)
+
+            component.expects(:render).with(foo_stub)
+
+            render_inline(component)
+          end
+        end
+      end
+    end
+
+    describe "when a default value is not available for a field" do
+      let(:default_value) { nil }
+
+      describe "and no value is present in the params" do
+        let(:params) { {} }
+
+        describe "and populate_with_defaults is true" do
+          let(:populate_with_defaults) { true }
+
+          it "does not send a value" do
+            Edition::Details::Fields::StringComponent.expects(:new).with(
+              has_entries(field: foo_field),
+              Not(has_entries(value: anything)),
+            ).returns(foo_stub)
+
+            component.expects(:render).with(foo_stub)
+
+            render_inline(component)
+          end
+        end
+
+        describe "and populate_with_defaults is false" do
+          let(:populate_with_defaults) { false }
+
+          it "does not send a value" do
+            Edition::Details::Fields::StringComponent.expects(:new).with(
+              has_entries(field: foo_field),
+              Not(has_entries(value: anything)),
+            ).returns(foo_stub)
+
+            component.expects(:render).with(foo_stub)
+
+            render_inline(component)
+          end
+        end
+      end
+    end
   end
 end

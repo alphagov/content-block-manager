@@ -18,4 +18,9 @@ module FormHelper
 
     "update"
   end
+
+  def value_for_field(details:, field:, populate_with_defaults:)
+    default_value = populate_with_defaults ? field.default_value : nil
+    details&.dig(field.name) || default_value
+  end
 end
