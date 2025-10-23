@@ -24,7 +24,7 @@ private
 
   def title_item
     {
-      key: "Title",
+      key: helpers.label_for_title(edition.block_type),
       value: edition.title,
     }
   end
