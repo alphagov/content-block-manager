@@ -29,10 +29,11 @@ Feature: Create a contact object
     """
     {
       "type":"object",
-      "required": ["title", "email_address"],
+      "required": ["email_address"],
       "properties": {
         "title": {
-          "type": "string"
+          "type": "string",
+          "default": "Email address"
         },
         "label": {
           "type": "string"
@@ -367,6 +368,14 @@ Feature: Create a contact object
     And I confirm my answers are correct
     And I review and confirm my answers are correct
     And I should be taken to the confirmation page for a new "contact"
+
+  Scenario: Fields with default values are not repopulated when editing
+    When I click on the "email_addresses" subschema
+    And I complete the "email_address" form with the following fields:
+      | title     | email_address          |
+      |           | foo@example.com        |
+    When I click the first edit link
+    Then the "title" field should not be populated
 
   Scenario: Block editor sees expected Govspeak-enabled fields
     When I am creating a contact content block
