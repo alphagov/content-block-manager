@@ -4,9 +4,10 @@ end
 
 Given("I provide custom video relay service info where available") do
   within(".app-c-content-block-manager-video-relay-service-component") do
-    fill_in(label_for("prefix"), with: "**Custom** prefix: 12345 then")
-    should_be_able_to_preview_the_govspeak_enabled_field
+    fill_in(label_for("label"), with: "Custom label")
     fill_in(label_for("telephone_number"), with: "01777 123 1234")
+    fill_in(label_for("source"), with: "[Custom source](www.example.com)")
+    should_be_able_to_preview_the_govspeak_enabled_field
   end
 end
 
@@ -16,7 +17,8 @@ When("I should see that the video relay service info has been changed") do
     expect(page).to have_no_css("dt", text: "Yes")
 
     expect(page).to have_content("01777 123 1234")
-    expect(page).to have_content("**Custom** prefix: 12345 then")
+    expect(page).to have_content("Custom label")
+    expect(page).to have_content("[Custom source](www.example.com)")
   end
 end
 

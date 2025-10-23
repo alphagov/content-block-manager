@@ -16,6 +16,17 @@
               value: value_for_field(telephone_number) || telephone_number.default_value,
               error_items: errors_for_field(telephone_number),
     }) %>
+
+    <%= render(
+      Edition::Details::Fields::TextareaComponent.new(
+        edition: edition,
+        value: value_for_field(source) ,
+        nested_object_key: field.name,
+        field: source,
+        schema: schema,
+        subschema: subschema,
+        ),
+      ) %>
   <% end %>
 
   <input type="hidden" name="<%= name_for_field(show_video_relay_service) %>" value="false">

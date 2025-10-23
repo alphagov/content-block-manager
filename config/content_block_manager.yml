@@ -112,6 +112,8 @@ schemas:
             fields:
               show:
                 hidden_field: true
+              source:
+                govspeak_enabled: true
           telephone_numbers:
             field_order:
               - type

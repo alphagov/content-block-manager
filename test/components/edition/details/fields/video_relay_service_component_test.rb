@@ -19,6 +19,9 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
           "telephone_number" => {
             "type" => "string", "default" => "0800 123 4567"
           },
+          "source" => {
+            "type" => "string", "default" => "Provider: [Relay UK](https://www.relayuk.bt.com)"
+          },
         },
       },
     }
@@ -56,6 +59,7 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
       "show" => nil,
       "label" => nil,
       "telephone_number" => nil,
+      "source" => nil,
     }
   end
 
@@ -93,6 +97,7 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
             "show" => true,
             "label" => nil,
             "telephone_number" => nil,
+            "source" => nil,
           }
         end
 
@@ -111,6 +116,7 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
             "show" => false,
             "label" => nil,
             "telephone_number" => nil,
+            "source" => nil,
           }
         end
 
@@ -155,6 +161,7 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
             "show" => nil,
             "label" => "Custom label: 19222 then",
             "telephone_number" => nil,
+            "source" => nil,
           }
         end
 
@@ -177,6 +184,7 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
             "show" => nil,
             "label" => nil,
             "telephone_number" => nil,
+            "source" => nil,
           }
         end
 
@@ -201,6 +209,7 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
             "show" => nil,
             "label" => nil,
             "telephone_number" => "1234 987 6543",
+            "source" => nil,
           }
         end
 
@@ -223,6 +232,7 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
             "show" => nil,
             "label" => nil,
             "telephone_number" => nil,
+            "source" => nil,
           }
         end
 
@@ -245,11 +255,13 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
     before do
       edition.errors.add(:details_telephones_video_relay_service_label, "Label error")
       edition.errors.add(:details_telephones_video_relay_service_telephone_number, "Telephone error")
+      edition.errors.add(:details_telephones_video_relay_service_source, "Source error")
     end
 
     it "should show errors" do
       helper_stub.stubs(:humanized_label).with(schema_name: "schema", relative_key: "label", root_object: "telephones.video_relay_service").returns("Label")
       helper_stub.stubs(:humanized_label).with(schema_name: "schema", relative_key: "telephone_number", root_object: "telephones.video_relay_service").returns("Telephone number")
+      helper_stub.stubs(:humanized_label).with(schema_name: "schema", relative_key: "source", root_object: "telephones.video_relay_service").returns("Source")
 
       render_inline(component)
 
@@ -261,6 +273,11 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
       assert_selector ".govuk-form-group.govuk-form-group--error", text: /Telephone number/ do |form_group|
         form_group.assert_selector ".govuk-error-message", text: "Telephone error"
         form_group.assert_selector "input.govuk-input--error"
+      end
+
+      assert_selector ".govuk-form-group.govuk-form-group--error", text: /Source/ do |form_group|
+        form_group.assert_selector ".govuk-error-message", text: "Source error"
+        form_group.assert_selector "textarea.govuk-textarea--error"
       end
     end
   end
