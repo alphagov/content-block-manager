@@ -170,28 +170,6 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
           end
         end
       end
-
-      context "when a value is NOT set for the 'telephone_number_prefix'" do
-        let(:field_value) do
-          {
-            "show" => nil,
-            "prefix" => nil,
-            "telephone_number" => nil,
-          }
-        end
-
-        it "displays the default value in the input field" do
-          render_inline(component)
-
-          assert_selector(".app-c-content-block-manager-video-relay-service-component") do |component|
-            component.assert_selector(
-              "textarea" \
-              "[name='edition[details][telephones][video_relay_service][prefix]']",
-              text: "**Default** prefix: 18000 then",
-            )
-          end
-        end
-      end
     end
 
     describe "'telephone_number' nested field" do

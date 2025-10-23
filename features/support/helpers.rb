@@ -71,7 +71,7 @@ def select_organisation(organisation)
     Capybara.current_session.driver.with_playwright_page do |page|
       combobox = page.get_by_role("combobox", name: "Lead organisation")
       combobox.click
-      listbox = combobox.get_by_role("listbox")
+      listbox = combobox.locator(".choices__list").get_by_role("listbox")
       listbox.get_by_role("option", name: organisation).click
     end
   else
