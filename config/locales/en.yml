@@ -98,7 +98,7 @@ en:
           video_relay_service:
             show: Only select this option if your organisation has subscribed to a relay service.
           bsl_guidance:
-            show: Only select this option if your organisation has subscribed to a relay service.
+            show: Only select this option if your organisation has subscribed to an interpreter service.
       pension:
         rates:
           amount: "Enter an exact amount, with the currency symbol - for example: £122.50"
@@ -122,7 +122,7 @@ en:
         telephones:
           title: Telephone name
           bsl_guidance:
-            show: Add British Sign Language (BSL)
+            show: Add British Sign Language interpreter
             value: British Sign Language (BSL)
           opening_hours:
             show_opening_hours: Add opening hours
