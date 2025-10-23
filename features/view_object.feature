@@ -100,10 +100,12 @@ Feature: View a content object
     When I visit the Content Block Manager home page
     And I click to view the document with title "My contact"
     Then I should not see the contact default block embed code displayed
+    And there should be no accessibility errors
 
     When I click to copy the embed code for the contact's default block
     Then the contact default block embed code should be copied to my clipboard
     And I should see the contact default block embed code flash up for an interval
+    And there should be no accessibility errors
 
   Scenario: Editor without javascript can see embed code for default contact block
     When I visit the Content Block Manager home page

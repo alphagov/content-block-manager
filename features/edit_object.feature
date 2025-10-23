@@ -27,25 +27,32 @@ Feature: Edit a content object
     And I click to edit the "pension"
     Then I should be on the "edit" step
     And I should see a back link to the document page
+    And there should be no accessibility errors
     When I fill out the form
     Then I should be on the "review_links" step
     And I should see a back link to the "edit_draft" step
+    And there should be no accessibility errors
     When I continue after reviewing the links
     Then I should be on the "internal_note" step
     And I should see a back link to the "review_links" step
+    And there should be no accessibility errors
     When I add an internal note
     Then I should be on the "change_note" step
     And I should see a back link to the "internal_note" step
+    And there should be no accessibility errors
     When I add a change note
     Then I should be on the "schedule_publishing" step
     And I should see a back link to the "change_note" step
+    And there should be no accessibility errors
     When I choose to publish the change now
     Then I should be on the "review" step
     And I should see a back link to the "schedule_publishing" step
+    And there should be no accessibility errors
     Then I should see a button labelled "Publish"
     And I should not see a preview button
     When I review and confirm my answers are correct
     Then I should be taken to the confirmation page for a published block
+    And there should be no accessibility errors
     When I click to view the content block
     Then the edition should have been updated successfully
     And I should be taken back to the document page
@@ -53,6 +60,7 @@ Feature: Edit a content object
     And I should see the notes on the timeline
     And I should see the edition diff in a table
     And analytics messages should have been sent for each step in the workflow
+    And there should be no accessibility errors
 
   Scenario: GDS editor cancels the creation of an object when reviewing links
     When I visit the Content Block Manager home page

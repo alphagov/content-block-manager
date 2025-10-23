@@ -230,6 +230,7 @@ Feature: Create a contact object
   Scenario: GDS editor can preview a Contact
     When I click on Preview
     Then I should see a preview of my contact
+    And there should be no accessibility errors
     When I click to close the preview
     And I click on the "email_addresses" subschema
     And I complete the "email_address" form with the following fields:
@@ -262,7 +263,8 @@ Feature: Create a contact object
       | Recipient  | 123 Fake Street | Springfield  | ABC 123     |
     And I click on Preview
     And I click on reorder
-    And I change the order of the contact methods
+    Then there should be no accessibility errors
+    When I change the order of the contact methods
     Then I should see the contact methods in the new order
     When I click to save the order
     Then I should see a preview of my contact
@@ -287,12 +289,14 @@ Feature: Create a contact object
   @javascript
   Scenario: GDS editor creates a Contact with an email address and a telephone
     And I click on the "email_addresses" subschema
-    And I complete the "email_address" form with the following fields:
+    Then there should be no accessibility errors
+    When I complete the "email_address" form with the following fields:
       | title     | label         | email_address    | subject  | body             |
       | Email us  | Send an email | foo@example.com  | Your ref | Name and address |
     And I click to add another "contact_method"
-    And I click on the "telephones" subschema
-    And I fill in the "telephone" form with the following fields:
+    When I click on the "telephones" subschema
+    Then there should be no accessibility errors
+    When I fill in the "telephone" form with the following fields:
       | title            |
       | New phone number |
     And I add the following "telephone_numbers" to the form:
@@ -316,10 +320,13 @@ Feature: Create a contact object
       | Contact Form       | Contact Us | http://example.com | Description |
     When I save and continue
     Then I should be on the "add_group_contact_methods" step
+    And there should be no accessibility errors
     When I save and continue
-    And I review and confirm my answers are correct
+    Then there should be no accessibility errors
+    When I review and confirm my answers are correct
     Then I should be taken to the confirmation page for a new "contact"
     When I click to view the content block
+    Then there should be no accessibility errors
     And I should see the created embedded object of type "email_address"
     And I should see the created embedded object of type "telephone"
     And I should see the created embedded object of type "contact_link"

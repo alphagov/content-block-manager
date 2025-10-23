@@ -1,5 +1,6 @@
 Feature: Content block manager
 
+  @javascript
   Scenario: Correct layout is used
     Given I am logged in
     And the organisation "Ministry of Example" exists
@@ -8,3 +9,4 @@ Feature: Content block manager
     Then I should see the object store's title in the header
     And I should see the object store's navigation
     And I should see the object store's phase banner
+    And there should be no accessibility errors
