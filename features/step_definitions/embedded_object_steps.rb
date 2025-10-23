@@ -202,3 +202,8 @@ end
 Then("I should see the created embedded object of type {string}") do |object_type|
   assert_text "#{object_type.humanize.singularize} (1)"
 end
+
+Then("the {string} field should not be populated") do |field|
+  field = find("input[name='edition[details][#{@object_type.pluralize}][#{field}]']")
+  assert_nil field.value
+end
