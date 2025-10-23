@@ -12,7 +12,9 @@
       href: documents_path,
     } %>
   <% end %>
-  <% content_for :page_title, "Select a content block" %>
+
+  <% content_for :title, "Select a content block" %>
+  <% content_for :title_margin_bottom, 3 %>
 
   <%= render Edition::New::SelectSchemaComponent.new(
     heading: content_for(:page_title),
