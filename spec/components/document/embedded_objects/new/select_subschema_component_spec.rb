@@ -1,21 +1,17 @@
-require "test_helper"
-
-class Document::EmbeddedObjects::New::SelectSubschemaComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe Document::EmbeddedObjects::New::SelectSubschemaComponent, type: :component do
   let(:heading) { "Some heading" }
   let(:heading_caption) { "Caption" }
   let(:error_message) { nil }
   let(:schemas) do
     [
-      stub(:schema, id: "foo", name: "Foos"),
-      stub(:schema, id: "bar", name: "Bars"),
-      stub(:schema, id: "baz", name: "Bazzes"),
+      double(:schema, id: "foo", name: "Foos"),
+      double(:schema, id: "bar", name: "Bars"),
+      double(:schema, id: "baz", name: "Bazzes"),
     ]
   end
 
   let(:component) do
-    Document::EmbeddedObjects::New::SelectSubschemaComponent.new(
+    described_class.new(
       heading:,
       heading_caption:,
       error_message:,
@@ -23,40 +19,37 @@ class Document::EmbeddedObjects::New::SelectSubschemaComponentTest < ViewCompone
     )
   end
 
-  it "renders a select component with all the schemas" do
+  before do
     render_inline(component)
+  end
 
-    assert_selector ".govuk-fieldset__heading", text: heading
-    assert_selector ".govuk-caption-xl", text: heading_caption
-    assert_selector ".govuk-radios__item", count: 3
+  it "renders a select component with all the schemas" do
+    expect(page).to have_css ".govuk-fieldset__heading", text: heading
+    expect(page).to have_css ".govuk-caption-xl", text: heading_caption
+    expect(page).to have_css ".govuk-radios__item", count: 3
 
-    assert_no_selector ".govuk-error-message"
+    expect(page).not_to have_css ".govuk-error-message"
 
-    assert_selector ".govuk-radios" do |radios|
-      radios.assert_selector ".govuk-radios__item", text: /Foo/ do |item|
-        item.assert_selector "input[type='radio'][name='object_type'][value='foo']"
-        item.assert_selector ".govuk-radios__label", text: "Foo"
-      end
+    radios = page.find ".govuk-radios"
 
-      radios.assert_selector ".govuk-radios__item", text: /Bar/ do |item|
-        item.assert_selector "input[type='radio'][name='object_type'][value='bar']"
-        item.assert_selector ".govuk-radios__label", text: "Bar"
-      end
+    foo_item = radios.find ".govuk-radios__item", text: /Foo/
+    expect(foo_item).to have_css "input[type='radio'][name='object_type'][value='foo']"
+    expect(foo_item).to have_css ".govuk-radios__label", text: "Foo"
 
-      radios.assert_selector ".govuk-radios__item", text: /Baz/ do |item|
-        item.assert_selector "input[type='radio'][name='object_type'][value='baz']"
-        item.assert_selector ".govuk-radios__label", text: "Baz"
-      end
-    end
+    bar_item = radios.find ".govuk-radios__item", text: /Bar/
+    expect(bar_item).to have_css "input[type='radio'][name='object_type'][value='bar']"
+    expect(bar_item).to have_css ".govuk-radios__label", text: "Bar"
+
+    baz_item = radios.find ".govuk-radios__item", text: /Baz/
+    expect(baz_item).to have_css "input[type='radio'][name='object_type'][value='baz']"
+    expect(baz_item).to have_css ".govuk-radios__label", text: "Baz"
   end
 
   describe "when an error message is present" do
     let(:error_message) { "Some error" }
 
     it "shows the error message" do
-      render_inline(component)
-
-      assert_selector ".govuk-error-message", text: error_message
+      expect(page).to have_css ".govuk-error-message", text: error_message
     end
   end
 end
