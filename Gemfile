@@ -41,6 +41,7 @@ group :development, :test do
   gem "pry-rails"
   gem "rspec-rails"
   gem "rubocop-govuk"
+  gem "unparser", require: false
 end
 
 group :test do
