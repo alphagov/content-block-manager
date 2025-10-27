@@ -35,10 +35,6 @@ Then(/^I click on page ([^"]*)$/) do |page_number|
   click_link page_number
 end
 
-When("I click to view results") do
-  click_button "View results"
-end
-
 When("I complete the form with the following fields:") do |table|
   fields = table.hashes.first
   @title = fields.delete("title")
@@ -229,10 +225,6 @@ Then("I should not see the content block with title {string} returned") do |titl
   expect(page).to_not have_selector(".govuk-summary-card__title", text: title)
 end
 
-Then("{string} content blocks are returned in total") do |count|
-  assert_text "#{count} #{'result'.pluralize(count.to_i)}"
-end
-
 When("I click to view the document") do
   @schema = @schemas[@content_block.document.block_type]
   click_link href: document_path(@content_block.document)
@@ -321,14 +313,6 @@ end
 Then(/^I choose to publish the change now$/) do
   @is_scheduled = false
   publish_now
-end
-
-Then("I check the block type {string}") do |checkbox_name|
-  check checkbox_name
-end
-
-Then("I select the lead organisation {string}") do |organisation|
-  select organisation, from: "lead_organisation"
 end
 
 When("I make the changes") do

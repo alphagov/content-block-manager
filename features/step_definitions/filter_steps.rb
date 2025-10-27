@@ -27,3 +27,19 @@ end
 When("I enter the keyword {string}") do |keyword|
   fill_in "Keyword", with: keyword
 end
+
+Then("I check the block type {string}") do |checkbox_name|
+  check checkbox_name
+end
+
+Then("I select the lead organisation {string}") do |organisation|
+  select organisation, from: "lead_organisation"
+end
+
+Then("{string} content blocks are returned in total") do |count|
+  assert_text "#{count} #{'result'.pluralize(count.to_i)}"
+end
+
+When("I click to view results") do
+  click_button "View results"
+end
