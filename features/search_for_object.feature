@@ -61,21 +61,21 @@ Feature: Search for a content object
     And I enter the keyword "GDS"
     And I click to view results
     Then I should see the content block with title "a pension" returned
-    And "1" content blocks are returned in total
+    And "1" content block is returned in total
 
   Scenario: GDS Editor searches for a content object by keyword in title
     When I visit the Content Block Manager home page
     And I enter the keyword "example search"
     And I click to view results
     Then I should see the content block with title "example search title" returned
-    And "1" content blocks are returned in total
+    And "1" content block is returned in total
 
   Scenario: GDS Editor searches for a content object by keyword in details
     When I visit the Content Block Manager home page
     And I enter the keyword "ABC123"
     And I click to view results
     Then I should see the content block with title "a pension" returned
-    And "1" content blocks are returned in total
+    And "1" content block is returned in total
 
   Scenario: GDS Editor searches for a content object by block type
     When I visit the Content Block Manager home page
@@ -88,14 +88,14 @@ Feature: Search for a content object
     When I visit the Content Block Manager home page
     And I select the lead organisation "Ministry of Example"
     And I click to view results
-    And "1" content blocks are returned in total
+    And "1" content block is returned in total
 
   Scenario: GDS Editor searches for a content object by last updated date
     When one of the content blocks was updated 2 days ago
     When I visit the Content Block Manager home page
     And I add a filter for blocks updated two days ago
     And I click to view results
-    And "1" content blocks are returned in total
+    And "1" content block is returned in total
 
   Scenario: GDS Editor sees errors when searching by invalid dates
     When I visit the Content Block Manager home page

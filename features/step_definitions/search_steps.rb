@@ -36,7 +36,7 @@ Then("I select the lead organisation {string}") do |organisation|
   select organisation, from: "lead_organisation"
 end
 
-Then("{string} content blocks are returned in total") do |count|
+Then(/"(\d)" content blocks? .+ returned in total/) do |count|
   assert_text "#{count} #{'result'.pluralize(count.to_i)}"
 end
 
