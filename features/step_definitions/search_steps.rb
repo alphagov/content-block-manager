@@ -43,3 +43,15 @@ end
 When("I click to view results") do
   click_button "View results"
 end
+
+When("I search using the embed code for the pension block") do
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
+When("I search using part of the embed code for the contact block") do
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
+Then(/the ([^"]*) block is found/) do |_block_type|
+  pending # Write code here that turns the phrase above into concrete actions
+end
