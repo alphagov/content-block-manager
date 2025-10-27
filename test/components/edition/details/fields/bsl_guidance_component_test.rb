@@ -166,25 +166,6 @@ class Edition::Details::Fields::BSLGuidanceComponentTest < BaseComponentTestClas
           end
         end
       end
-
-      context "when a value is NOT set for the 'value'" do
-        let(:field_value) do
-          { "show" => nil,
-            "value" => nil }
-        end
-
-        it "displays the default value in the input field" do
-          render_inline(component)
-
-          assert_selector(".app-c-content-block-manager-bsl-guidance-component") do |component|
-            component.assert_selector(
-              "textarea" \
-              "[name='edition[details][telephones][bsl_guidance][value]']",
-              text: "DEFAULT VALUE",
-            )
-          end
-        end
-      end
     end
   end
 end

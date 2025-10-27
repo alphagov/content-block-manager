@@ -4,8 +4,7 @@ class Edition::Details::Fields::BooleanComponentTest < BaseComponentTestClass
   let(:described_class) { Edition::Details::Fields::BooleanComponent }
 
   let(:edition) { build(:edition, :pension) }
-  let(:default_value) { nil }
-  let(:field) { stub("field", name: "email_address", is_required?: true, default_value:) }
+  let(:field) { stub("field", name: "email_address", is_required?: true) }
   let(:schema) { stub(:schema, block_type: "schema") }
 
   before do
@@ -25,14 +24,6 @@ class Edition::Details::Fields::BooleanComponentTest < BaseComponentTestClass
     it "should not check the checkbox" do
       assert_selector "input[type=\"checkbox\"][value=\"true\"]"
       assert_no_selector "input[type=\"checkbox\"][value=\"true\"][checked=\"checked\"]"
-    end
-
-    describe "when the default value is true" do
-      let(:default_value) { "true" }
-
-      it "should check the checkbox" do
-        assert_selector "input[type=\"checkbox\"][value=\"true\"][checked=\"checked\"]"
-      end
     end
   end
 
