@@ -3,12 +3,16 @@ class Edition::Details::Fields::VideoRelayServiceComponent < Edition::Details::F
     field.nested_field("show")
   end
 
-  def prefix
-    field.nested_field("prefix")
+  def label
+    field.nested_field("label")
   end
 
   def telephone_number
     field.nested_field("telephone_number")
+  end
+
+  def source
+    field.nested_field("source")
   end
 
   def label_for(field_name)

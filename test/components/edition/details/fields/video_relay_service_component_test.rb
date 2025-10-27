@@ -13,11 +13,14 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
           "show" => {
             "type" => "boolean", "default" => false
           },
-          "prefix" => {
-            "type" => "string", "default" => "**Default** prefix: 18000 then"
+          "label" => {
+            "type" => "string", "default" => "Text relay: dial 18001 then:"
           },
           "telephone_number" => {
             "type" => "string", "default" => "0800 123 4567"
+          },
+          "source" => {
+            "type" => "string", "default" => "Provider: [Relay UK](https://www.relayuk.bt.com)"
           },
         },
       },
@@ -54,8 +57,9 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
   let(:field_value) do
     {
       "show" => nil,
-      "prefix" => nil,
+      "label" => nil,
       "telephone_number" => nil,
+      "source" => nil,
     }
   end
 
@@ -78,12 +82,12 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
   describe "VideoRelayService component" do
     describe "'show' nested field" do
       it "shows a checkbox to toggle 'show' option" do
-        helper_stub.stubs(:humanized_label).returns("Add Relay UK")
+        helper_stub.stubs(:humanized_label).returns("Add text relay")
 
         render_inline(component)
 
         assert_selector(".app-c-content-block-manager-video-relay-service-component") do |component|
-          component.assert_selector("label", text: "Add Relay UK")
+          component.assert_selector("label", text: "Add text relay")
         end
       end
 
@@ -91,8 +95,9 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
         let(:field_value) do
           {
             "show" => true,
-            "prefix" => nil,
+            "label" => nil,
             "telephone_number" => nil,
+            "source" => nil,
           }
         end
 
@@ -109,8 +114,9 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
         let(:field_value) do
           {
             "show" => false,
-            "prefix" => nil,
+            "label" => nil,
             "telephone_number" => nil,
+            "source" => nil,
           }
         end
 
@@ -148,13 +154,14 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
       end
     end
 
-    describe "'prefix' nested field" do
-      context "when a value is set for the 'prefix'" do
+    describe "'label' nested field" do
+      context "when a value is set for the 'label'" do
         let(:field_value) do
           {
             "show" => nil,
-            "prefix" => "**Custom** prefix: 19222 then",
+            "label" => "Custom label: 19222 then",
             "telephone_number" => nil,
+            "source" => nil,
           }
         end
 
@@ -163,20 +170,21 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
 
           assert_selector(".app-c-content-block-manager-video-relay-service-component") do |component|
             component.assert_selector(
-              "textarea" \
-              "[name='edition[details][telephones][video_relay_service][prefix]']",
-              text: "**Custom** prefix: 19222 then",
+              "input" \
+              "[name='edition[details][telephones][video_relay_service][label]']" \
+              "[value='Custom label: 19222 then']",
             )
           end
         end
       end
 
-      context "when a value is NOT set for the 'telephone_number_prefix'" do
+      context "when a value is NOT set for the 'telephone_number_label'" do
         let(:field_value) do
           {
             "show" => nil,
-            "prefix" => nil,
+            "label" => nil,
             "telephone_number" => nil,
+            "source" => nil,
           }
         end
 
@@ -185,9 +193,9 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
 
           assert_selector(".app-c-content-block-manager-video-relay-service-component") do |component|
             component.assert_selector(
-              "textarea" \
-              "[name='edition[details][telephones][video_relay_service][prefix]']",
-              text: "**Default** prefix: 18000 then",
+              "input" \
+              "[name='edition[details][telephones][video_relay_service][label]']" \
+              "[value='Text relay: dial 18001 then:']",
             )
           end
         end
@@ -199,8 +207,9 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
         let(:field_value) do
           {
             "show" => nil,
-            "prefix" => nil,
+            "label" => nil,
             "telephone_number" => "1234 987 6543",
+            "source" => nil,
           }
         end
 
@@ -221,8 +230,9 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
         let(:field_value) do
           {
             "show" => nil,
-            "prefix" => nil,
+            "label" => nil,
             "telephone_number" => nil,
+            "source" => nil,
           }
         end
 
@@ -243,24 +253,31 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
 
   describe "when errors are present" do
     before do
-      edition.errors.add(:details_telephones_video_relay_service_prefix, "Prefix error")
+      edition.errors.add(:details_telephones_video_relay_service_label, "Label error")
       edition.errors.add(:details_telephones_video_relay_service_telephone_number, "Telephone error")
+      edition.errors.add(:details_telephones_video_relay_service_source, "Source error")
     end
 
     it "should show errors" do
-      helper_stub.stubs(:humanized_label).with(schema_name: "schema", relative_key: "prefix", root_object: "telephones.video_relay_service").returns("Prefix")
+      helper_stub.stubs(:humanized_label).with(schema_name: "schema", relative_key: "label", root_object: "telephones.video_relay_service").returns("Label")
       helper_stub.stubs(:humanized_label).with(schema_name: "schema", relative_key: "telephone_number", root_object: "telephones.video_relay_service").returns("Telephone number")
+      helper_stub.stubs(:humanized_label).with(schema_name: "schema", relative_key: "source", root_object: "telephones.video_relay_service").returns("Source")
 
       render_inline(component)
 
-      assert_selector ".govuk-form-group.govuk-form-group--error", text: /Prefix/ do |form_group|
-        form_group.assert_selector ".govuk-error-message", text: "Prefix error"
-        form_group.assert_selector "textarea.govuk-textarea--error"
+      assert_selector ".govuk-form-group.govuk-form-group--error", text: /Label/ do |form_group|
+        form_group.assert_selector ".govuk-error-message", text: "Label error"
+        form_group.assert_selector "input.govuk-input--error"
       end
 
       assert_selector ".govuk-form-group.govuk-form-group--error", text: /Telephone number/ do |form_group|
         form_group.assert_selector ".govuk-error-message", text: "Telephone error"
         form_group.assert_selector "input.govuk-input--error"
+      end
+
+      assert_selector ".govuk-form-group.govuk-form-group--error", text: /Source/ do |form_group|
+        form_group.assert_selector ".govuk-error-message", text: "Source error"
+        form_group.assert_selector "textarea.govuk-textarea--error"
       end
     end
   end

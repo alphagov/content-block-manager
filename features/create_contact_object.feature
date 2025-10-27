@@ -92,13 +92,17 @@ Feature: Create a contact object
               "type": "boolean",
               "default": false
             },
-            "prefix": {
+            "label": {
               "type": "string",
-              "default": "**Default** prefix: 18000 then"
+              "default": "Text relay: dial 18001 then:"
             },
             "telephone_number": {
               "type": "string",
               "default": "0800 123 4567"
+            },
+            "source": {
+              "type": "string",
+              "default": "Provider: [Relay UK](0800 1234 1234)"
             }
           }
         },
@@ -375,7 +379,7 @@ Feature: Create a contact object
     Then I see that the contact email address description is Govspeak-enabled
     When I am creating a telephone
     Then I see that the contact telephone description is Govspeak-enabled
-    And I see that the telephone video relay service prefix is Govspeak-enabled
+    And I see that the telephone video relay service source is Govspeak-enabled
     And I see that the telephone bsl guidance value is Govspeak-enabled
     And I see that the telephone opening hours field is Govspeak-enabled
 
