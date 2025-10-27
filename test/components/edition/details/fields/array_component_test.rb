@@ -82,31 +82,6 @@ class Edition::Details::Fields::ArrayComponentTest < BaseComponentTestClass
     end
   end
 
-  describe "when a default value is present" do
-    let(:default_value) { %w[foo bar] }
-
-    it "renders a fieldset for each item and a template" do
-      render_inline component
-
-      assert_selector ".gem-c-add-another" do |component|
-        component.assert_selector ".js-add-another__fieldset", count: 2
-        component.assert_selector ".js-add-another__empty", count: 1
-
-        component.assert_selector ".js-add-another__fieldset", text: /Item 1/ do |fieldset|
-          expect_form_fields(fieldset, 0, "foo", 2)
-        end
-
-        component.assert_selector ".js-add-another__fieldset", text: /Item 2/ do |fieldset|
-          expect_form_fields(fieldset, 1, "bar", 2)
-        end
-
-        component.assert_selector ".js-add-another__empty", text: /Item 3/ do |fieldset|
-          expect_form_fields(fieldset, 2)
-        end
-      end
-    end
-  end
-
   describe "when an object title is provided" do
     let(:field_value) { %w[foo bar] }
     let(:object_title) { "field" }

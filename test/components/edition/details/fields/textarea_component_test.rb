@@ -108,77 +108,42 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
       end
     end
 
-    describe "default value" do
-      let(:properties) do
-        {
-          "rich_field" => { "type" => "string", "default" => "**Rich** field" },
-          "plain_field" => { "type" => "string" },
-        }
-      end
+    describe "error handling" do
+      context "when there is an error on the field" do
+        before do
+          edition.errors.add(
+            :details_rich_field,
+            "blank",
+          )
 
-      context "when there is NO value set for the textarea" do
-        let(:field_value) { nil }
+          I18n.expects(:t).with(
+            "activerecord.errors.models.edition" \
+              ".attributes.details_rich_field.format".to_sym,
+            has_entry(message: "blank"),
+          ).returns("Rich field must be present")
+        end
 
-        it "supplies the default value defined in the schema" do
+        it "adds an error class to the form group to highlight the area needing attention" do
+          render_inline component
+
+          assert_selector(COMPONENT_CLASS) do |component|
+            component.assert_selector(".govuk-form-group.govuk-form-group--error")
+          end
+        end
+
+        it "adds an error message to clarify the error and remedial action required" do
           render_inline component
 
           assert_selector(COMPONENT_CLASS) do |component|
             component.assert_selector(
-              "textarea",
-              text: "**Rich** field",
+              ".govuk-error-message",
+              text: "Rich field must be present",
             )
-          end
-        end
-      end
-
-      context "when there IS a value set for the textarea" do
-        let(:field_value) {  "Field value *set*" }
-
-        it "displays that value" do
-          render_inline component
-
-          assert_selector(COMPONENT_CLASS) do |component|
-            shows_set_value_in_textarea(component, "Field value *set*")
-          end
-        end
-      end
-
-      describe "error handling" do
-        context "when there is an error on the field" do
-          before do
-            edition.errors.add(
-              :details_rich_field,
-              "blank",
-            )
-
-            I18n.expects(:t).with(
-              "activerecord.errors.models.edition" \
-                ".attributes.details_rich_field.format".to_sym,
-              has_entry(message: "blank"),
-            ).returns("Rich field must be present")
-          end
-
-          it "adds an error class to the form group to highlight the area needing attention" do
-            render_inline component
-
-            assert_selector(COMPONENT_CLASS) do |component|
-              component.assert_selector(".govuk-form-group.govuk-form-group--error")
-            end
-          end
-
-          it "adds an error message to clarify the error and remedial action required" do
-            render_inline component
-
-            assert_selector(COMPONENT_CLASS) do |component|
-              component.assert_selector(
-                ".govuk-error-message",
-                text: "Rich field must be present",
-              )
-            end
           end
         end
       end
     end
+
     describe "'Govspeak supported' indicator" do
       context "when the field IS declared 'govspeak-enabled' in the config" do
         let(:component) do
@@ -402,66 +367,39 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
         end
       end
 
-      describe "default value" do
-        context "when there is NO value set for the textarea" do
-          let(:field_value) { nil }
+      context "when there is an error on the field" do
+        before do
+          edition.errors.add(
+            :details_telephones_video_relay_service_prefix,
+            "blank",
+          )
 
-          it "supplies the default value defined in the schema" do
-            render_inline component
+          I18n.expects(:t).with(
+            "activerecord.errors.models.edition" \
+              ".attributes.details_telephones_video_relay_service_prefix.format".to_sym,
+            has_entry(message: "blank"),
+          ).returns("Prefix must be present")
+        end
 
-            assert_selector(COMPONENT_CLASS) do |component|
-              shows_default_value_in_textarea(component)
-            end
+        it "adds an error class to the form group to highlight the area needing attention" do
+          render_inline component
+
+          assert_selector(COMPONENT_CLASS) do |component|
+            component.assert_selector(".govuk-form-group.govuk-form-group--error")
           end
         end
 
-        context "when there IS a value set for the textarea" do
-          let(:field_value) {  "Field value *set*" }
+        it "adds an error message to clarify the error and remedial action required" do
+          render_inline component
 
-          it "displays that value" do
-            render_inline component
-
-            assert_selector(COMPONENT_CLASS) do |component|
-              shows_set_value_in_textarea(component, "Field value *set*")
-            end
-          end
-        end
-
-        context "when there is an error on the field" do
-          before do
-            edition.errors.add(
-              :details_telephones_video_relay_service_prefix,
-              "blank",
+          assert_selector(COMPONENT_CLASS) do |component|
+            component.assert_selector(
+              ".govuk-error-message",
+              text: "Prefix must be present",
             )
-
-            I18n.expects(:t).with(
-              "activerecord.errors.models.edition" \
-                ".attributes.details_telephones_video_relay_service_prefix.format".to_sym,
-              has_entry(message: "blank"),
-            ).returns("Prefix must be present")
-          end
-
-          it "adds an error class to the form group to highlight the area needing attention" do
-            render_inline component
-
-            assert_selector(COMPONENT_CLASS) do |component|
-              component.assert_selector(".govuk-form-group.govuk-form-group--error")
-            end
-          end
-
-          it "adds an error message to clarify the error and remedial action required" do
-            render_inline component
-
-            assert_selector(COMPONENT_CLASS) do |component|
-              component.assert_selector(
-                ".govuk-error-message",
-                text: "Prefix must be present",
-              )
-            end
           end
         end
       end
-
       describe "'Govspeak supported' indicator" do
         context "when the field IS declared 'govspeak-enabled' in the config" do
           let(:config) do

@@ -8,7 +8,7 @@ class Edition::Details::Fields::BaseComponent < ViewComponent::Base
     @edition = edition
     @field = field
     @schema = schema
-    @value = value || field.default_value
+    @value = value
     @subschema = subschema
   end
 

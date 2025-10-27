@@ -111,4 +111,58 @@ class FormHelperTest < ActionView::TestCase
       end
     end
   end
+
+  describe "#value_for_field" do
+    let(:field1) { stub(name: "foo", default_value: nil) }
+    let(:field2) { stub(name: "bar", default_value: "baz") }
+    let(:details) { { "foo" => "bar" } }
+
+    describe "when populate_with_defaults is true" do
+      let(:populate_with_defaults) { true }
+
+      it "returns the value for the field if present" do
+        assert_equal "bar", value_for_field(details: details, field: field1, populate_with_defaults:)
+      end
+
+      it "returns the default value for the field if not present" do
+        assert_equal "baz", value_for_field(details: details, field: field2, populate_with_defaults:)
+      end
+
+      describe "when details is nil" do
+        let(:details) { nil }
+
+        it "returns nil if there is no default value" do
+          assert_equal nil, value_for_field(details: details, field: field1, populate_with_defaults:)
+        end
+
+        it "returns the default value for the field" do
+          assert_equal "baz", value_for_field(details: details, field: field2, populate_with_defaults:)
+        end
+      end
+    end
+
+    describe "when populate_with_defaults is false" do
+      let(:populate_with_defaults) { false }
+
+      it "returns the value for the field if present" do
+        assert_equal "bar", value_for_field(details: details, field: field1, populate_with_defaults:)
+      end
+
+      it "returns nil for the field if not present" do
+        assert_equal nil, value_for_field(details: details, field: field2, populate_with_defaults:)
+      end
+
+      describe "when details is nil" do
+        let(:details) { nil }
+
+        it "returns nil if there is no default value" do
+          assert_equal nil, value_for_field(details: details, field: field1, populate_with_defaults:)
+        end
+
+        it "returns nil if there is a default value" do
+          assert_equal nil, value_for_field(details: details, field: field2, populate_with_defaults:)
+        end
+      end
+    end
+  end
 end
