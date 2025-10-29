@@ -27,6 +27,9 @@
       <%= render "govuk_publishing_components/components/details", {
         title: "Details of changes",
         open: is_latest,
+        summary_aria_attributes: {
+          label: "Details of changes - #{title}",
+        },
       } do %>
         <%= details %>
       <% end %>
