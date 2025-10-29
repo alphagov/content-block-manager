@@ -72,6 +72,13 @@ jobs:
         run: |
           ./bin/minitest-ci
           
+      - name: Upload coverage
+        uses: actions/upload-artifact@v5
+        with:
+          name: minitest-coverage-${{ matrix.ci_node_index }}
+          path: coverage/
+          include-hidden-files: true
+
   run-minitest:
     name: Run Minitest
     needs: minitest-matrix
