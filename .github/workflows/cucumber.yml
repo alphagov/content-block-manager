@@ -70,6 +70,13 @@ jobs:
           name: capybara-screenshots
           path: tmp/capybara/capybara-*.png
 
+      - name: Upload coverage
+        uses: actions/upload-artifact@v5
+        with:
+          name: cucumber-coverage-${{ matrix.ci_node_index }}
+          path: coverage/
+          include-hidden-files: true
+
   run-cucumber:
     name: Run Cucumber
     needs: feature-test-matrix

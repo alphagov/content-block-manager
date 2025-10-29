@@ -18,8 +18,8 @@ end
 node_index = ENV["CI_NODE_INDEX"].to_i
 total_nodes = ENV["CI_NODE_TOTAL"].to_i
 
-if node_index == 0
-  # First CI node runs all isolated tests sequentially
+if node_index == 0 && isolated_tests.any?
+  # First CI node runs all isolated tests sequentially if available
   tests = isolated_tests
   exec({ "RUN_IN_PARALLEL" => "false" }, "bundle exec rails test #{tests.join(' ')}")
 else

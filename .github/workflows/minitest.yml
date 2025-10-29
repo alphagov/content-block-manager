@@ -68,9 +68,17 @@ jobs:
           TEST_DATABASE_URL: ${{ steps.setup-postgres.outputs.db-url }}
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+          COVERAGE: true
         run: |
           ./bin/minitest-ci
           
+      - name: Upload coverage
+        uses: actions/upload-artifact@v5
+        with:
+          name: minitest-coverage-${{ matrix.ci_node_index }}
+          path: coverage/
+          include-hidden-files: true
+
   run-minitest:
     name: Run Minitest
     needs: minitest-matrix

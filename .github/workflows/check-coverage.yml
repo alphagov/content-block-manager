@@ -1,0 +1,32 @@
+name: combine-coverage.yml
+on: workflow_call
+
+jobs:
+  combine-coverage:
+    name: Combine coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          show-progress: false
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Download coverage
+        uses: actions/download-artifact@v5
+        with:
+          pattern: "*-coverage-*"
+          path: coverage/
+      - name: Check coverage
+        env:
+          MINIMUM_COVERAGE: 99.37
+        run: bundle exec rake check_coverage
+      - name: Upload coverage
+        uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: coverage
+          path: coverage/
+          include-hidden-files: true
