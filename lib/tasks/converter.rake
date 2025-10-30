@@ -1,3 +1,4 @@
+# :nocov:
 require_relative "../parsers/convert_to_rspec"
 
 # example usage: bundle exec rake convert:to_rspec\["test/components","spec/views/components"\]
@@ -14,3 +15,4 @@ namespace :convert do
     converter.go!
   end
 end
+# :nocov:

@@ -1,3 +1,5 @@
+# :nocov:
+
 # Taken from https://github.com/alphagov/collections/blob/53f903ab6499c63fb8889e4aab8ee4e7c8e384a7/lib/parsers/convert_to_rspec.rb
 # - Taken from https://gist.github.com/seven1m/e375bcdf2864da0022f1
 
@@ -307,3 +309,4 @@ module Parsers
     end
   end
 end
+# :nocov:
