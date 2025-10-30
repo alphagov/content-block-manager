@@ -37,3 +37,24 @@ if Organisation.all.count.zero?
     print "."
   end
 end
+
+if WorldLocation.countries.count.zero?
+  print "Seeding countries from live GOV.UK Content Store"
+
+  countries_response = GdsApi::ContentStore.new("https://www.gov.uk/api")
+                                           .content_item("/world")
+
+  countries_response["details"]["world_locations"].each do |country|
+    Services.publishing_api.put_content(country["content_id"], {
+      "details" => {
+        "analytics_identifier" => country["analytics_identifier"],
+      },
+      "document_type" => "world_location",
+      "publishing_app" => "content-block-manager",
+      "schema_name" => "world_location",
+      "title" => country["name"],
+    })
+    Services.publishing_api.publish(country["content_id"], "major")
+    print "."
+  end
+end
