@@ -10,7 +10,7 @@ namespace :convert do
     MSG
     raise message unless args[:minitest_folder] && args[:rspec_folder]
 
-    converter = ConvertToRspec.new(args.minitest_folder, args.rspec_folder)
+    converter = Parsers::ConvertToRspec.new(args.minitest_folder, args.rspec_folder)
     converter.go!
   end
 end
