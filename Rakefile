@@ -5,21 +5,20 @@ require_relative "config/application"
 Rails.application.load_tasks
 
 unless Rails.env.production?
-  require "minitest/test_task"
   require "cucumber/rake/task"
+  require "rspec/core/rake_task"
+
   # We only set this var when running via Rake, so that we can get
   # sensible coverage reports when running a full test suite,
   # without overwriting them when we're just running a single test
   ENV["COVERAGE"] = "true"
 
-  Minitest::TestTask.create do |t|
-    t.test_globs = %w[test/**/*_test.rb]
-  end
+  RSpec::Core::RakeTask.new(:spec)
 
   Cucumber::Rake::Task.new(:cucumber) do |t|
-    t.cucumber_opts = "--format pretty" # Any valid command line option can go here.
+    t.cucumber_opts = "--format pretty"
   end
 
   Rake::Task[:default].clear if Rake::Task.task_defined?(:default)
-  task default: %i[lint test cucumber]
+  task default: %i[lint test spec cucumber]
 end
