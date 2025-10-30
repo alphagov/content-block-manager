@@ -24,6 +24,8 @@ inherit_mode:
 Rails/Output:
   Exclude:
     - 'db/data_migration/*.rb'
+    # We want the user to see output from the seed task
+    - 'db/seeds.rb'
 
 # This alerts on methods that aren't introduced until rails 6.0
 # it should be removed when we upgrade.
