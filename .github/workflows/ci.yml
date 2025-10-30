@@ -59,6 +59,10 @@ jobs:
     name: Test Ruby
     uses: ./.github/workflows/minitest.yml
 
+  test-rspec:
+    name: Test Ruby (Rspec)
+    uses: ./.github/workflows/rspec.yml
+
   test-features:
     name: Test features
     uses: ./.github/workflows/cucumber.yml
@@ -67,5 +71,6 @@ jobs:
     name: Check coverage
     needs:
       - test-ruby
+      - test-rspec
       - test-features
     uses: ./.github/workflows/check-coverage.yml
