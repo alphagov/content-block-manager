@@ -14,7 +14,16 @@ testing framework. The guidance from the [Govuk Developer Docs][dev-docs] is as 
 It was also noted in a previous ADR [# 3. Move out to new Application][converting] that we should look into converting tests
 off Minitest. As such, we need a plan for updating more than 100 test files from Minitest to RSpec.
 
-### Option 1
+## Considerations
+
+As responsible developers we want to consider several areas here including but not limited to:
+- How we divide up the workload
+- How we minimise the amount of manual work needed
+  - We know other teams have [scripted some/all of their changes][convert-to-rspec]
+- The use of AI to help us
+- Maintaining a high level of quality
+
+### Option 1 - Incremental, as we go
 - New files to use RSpec going forwards.
 - When a developer touches a test file using Minitest they convert it to RSpec first then add their tests.
 
@@ -30,7 +39,7 @@ off Minitest. As such, we need a plan for updating more than 100 test files from
 - Inconsistent test styles across the codebase for a while.
 - More cognitive load on developers to remember to convert tests when working in old files.
 
-### Option 2
+### Option 2 - Incremental, as Jira tickets
 - We make tasks in the backlog to convert Minitest files to RSpec and prioritise a few alongside each sprint.
 
 #### Pros
@@ -45,7 +54,7 @@ off Minitest. As such, we need a plan for updating more than 100 test files from
 
 ## Rejected Options
 
-### Option 3
+### Option 3 - Up front
 - We take the time out of sprint work to convert all the 100 files up-front now.
 
 ### Pros
@@ -57,7 +66,7 @@ off Minitest. As such, we need a plan for updating more than 100 test files from
 - Time spent on converting files ahead of feature work may delay other priorities. The team are unlikely to accept this level of
   delay in feature delivery.
 
-### Option 4
+### Option 4 - Do nothing
 - Keep Minitest as the testing framework for this application.
 
 #### Pros
@@ -68,13 +77,42 @@ off Minitest. As such, we need a plan for updating more than 100 test files from
 - New developers may be confused about which testing framework to use.
 - Goes against the guidance from the Govuk Developer Docs.
 
+### Option 5 - Vibe Coding
+- We run the codebase through some AI tooling like Junie or Cursor and ask it to do the conversion for us.
+- Fix any issues it can't fix.
+- Assumes we have ready access to these tools.
+
+#### Pros
+- This may be a quick and easy approach, if it works.
+
+#### Cons
+- If it doesn't work, it might be quite slow to un-pick.
+- Encourages us to understand less of our code base as we didn't really write it.
+  - Low ownership of the resulting code.
+- Doesn't improve our knowledge.
+
 ## Decision
 
-Option 1 gives us a good balance of minimising upfront time cost while still moving towards a consistent testing framework.
+Option 1 (converting files as we touch them) gives us a good balance of minimising upfront time cost while still moving
+towards a consistent testing framework.
+
+We have made some updates to the [rspec conversion script][convert-to-rspec] to handle our style of Minitest::Spec tests
+and will use this to minimise the amount of manual work needed. It won't fix absolutely everything but it's a good base
+to work from and we can add to it as we go. This should mean that a large portion of the work is automated by the script
+with a small amount of manual changes needed in addition. This also allows us to convert a whole directory of tests at
+once if desired.
+
+In addition, we have done the work to capture coverage from the new RSpec tests and combine it with the existing test to
+ensure that coverage doesn't drop as part of this work. This should help make sure we maintain a high quality level
+whilst doing this conversion work.
+
+In terms of AI, we've decided against using AI to convert the whole suite of test files in bulk, however developers are
+free to use AI as part of their day-to-day work. This means we can use it to help with the subtleties of our incremental
+conversion approach.
 
 ## Status
 
-Proposal
+Accepted
 
 ## Consequences
 
@@ -82,3 +120,4 @@ Proposal
 [minitest]: https://github.com/minitest/minitest
 [dev-docs]: https://github.com/alphagov/govuk-developer-docs/blob/main/source/manual/conventions-for-rails-applications.html.md#testing-utilities
 [converting]: https://github.com/alphagov/content-block-manager/blob/main/docs/architecture/decisions/0003-move-out-to-new-application.md#explore-converting-test-suite-to-rspec
+[convert-to-rspec]: https://github.com/alphagov/collections/blob/53f903ab6499c63fb8889e4aab8ee4e7c8e384a7/lib/parsers/convert_to_rspec.rb
