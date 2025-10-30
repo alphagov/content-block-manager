@@ -144,7 +144,7 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
     it "renders the table component unopened" do
       component
         .expects(:render)
-        .with("govuk_publishing_components/components/details", { title: "Details of changes", open: false })
+        .with("govuk_publishing_components/components/details", { title: "Details of changes", open: false, summary_aria_attributes: { label: "Details of changes - Published" } })
         .with_block_given
         .yields
 
@@ -157,7 +157,7 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
       it "renders the details as open" do
         component
           .expects(:render)
-          .with("govuk_publishing_components/components/details", { title: "Details of changes", open: true })
+          .with("govuk_publishing_components/components/details", { title: "Details of changes", open: true, summary_aria_attributes: { label: "Details of changes - Published" } })
 
         render_inline component
       end
@@ -213,7 +213,7 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
 
         component
           .expects(:render)
-          .with("govuk_publishing_components/components/details", { title: "Details of changes", open: false })
+          .with("govuk_publishing_components/components/details", { title: "Details of changes", open: false, summary_aria_attributes: { label: "Details of changes - Published" } })
           .with_block_given
           .yields
 
@@ -269,7 +269,7 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
 
         component
           .expects(:render)
-          .with("govuk_publishing_components/components/details", { title: "Details of changes", open: false })
+          .with("govuk_publishing_components/components/details", { title: "Details of changes", open: false, summary_aria_attributes: { label: "Details of changes - Published" } })
           .with_block_given
           .yields
 
@@ -326,6 +326,20 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
       assert_no_selector "summary"
       assert_selector ".timeline__embedded-item-list .timeline__embedded-item-list__item:nth-child(1) .timeline__embedded-item-list__key", text: "Field1:"
       assert_selector ".timeline__embedded-item-list .timeline__embedded-item-list__item:nth-child(1) .timeline__embedded-item-list__value", text: "Field 1 value"
+    end
+  end
+
+  describe "when there is no embedded update" do
+    it "uses aria-label to distinguish the summary of the details of the changes" do
+      version.stubs(:field_diffs).returns({ "foo" => DiffItem.new(previous_value: "previous value", new_value: "new value") })
+      version.stubs(:is_embedded_update?).returns(false)
+      version.stubs(:state).returns("Fiddled With")
+      component.stubs(:main_object_field_changes).returns("some main object field changes")
+
+      render_inline component
+
+      assert_selector "summary[aria-label='Details of changes - Pension Fiddled With']"
+      assert_selector "summary", text: "Details of changes"
     end
   end
 end
