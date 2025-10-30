@@ -285,9 +285,9 @@ class EditionsTest < ActionDispatch::IntegrationTest
     let(:edition) { build_stubbed(:edition, document: document) }
 
     before do
-      document.stubs(:embed_code).returns(embed_code)
+      document.stubs(:built_embed_code).returns(embed_code)
       Edition.stubs(:find).with(edition.id.to_s).returns(edition)
-      edition.stubs(:render).with(document.embed_code).returns("RENDERED_BLOCK")
+      edition.stubs(:render).with(document.built_embed_code).returns("RENDERED_BLOCK")
       edition.stubs(:has_entries_for_multiple_subschemas?).returns(true)
     end
 
