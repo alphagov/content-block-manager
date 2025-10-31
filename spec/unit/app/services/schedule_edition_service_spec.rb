@@ -1,8 +1,4 @@
-require "test_helper"
-
-class ScheduleEditionServiceTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe ScheduleEditionService do
   let(:content_id) { SecureRandom.uuid }
   let(:organisation) { build(:organisation) }
   let(:schema) { build(:schema, block_type: "content_block_type", body: { "properties" => { "foo" => "", "bar" => "" } }) }
@@ -15,28 +11,29 @@ class ScheduleEditionServiceTest < ActiveSupport::TestCase
            lead_organisation_id: organisation.id)
   end
 
-  setup do
-    Schema.stubs(:find_by_block_type)
-                                             .returns(schema)
+  before do
+    allow(Schema).to receive(:find_by_block_type).and_return(schema)
     stub_publishing_api_has_embedded_content(content_id:, total: 0, results: [], order: HostContentItem::DEFAULT_ORDER)
-    Organisation.stubs(:all).returns([organisation])
+    allow(Organisation).to receive(:all).and_return([organisation])
   end
 
   describe "#call" do
     it "schedules a new Edition via the Content Block Worker" do
-      SchedulePublishingWorker.expects(:dequeue).never
+      expect(SchedulePublishingWorker).to receive(:dequeue).never
 
-      SchedulePublishingWorker.expects(:queue).with do |expected_edition|
-        expected_edition.id = edition.id &&
-          expected_edition.scheduled_publication == edition.scheduled_publication &&
-          expected_edition.scheduled?
-      end
+      expect(SchedulePublishingWorker).to receive(:queue).with(
+        having_attributes(
+          id: edition.id,
+          scheduled_publication: edition.scheduled_publication,
+          scheduled?: true,
+        ),
+      )
 
       updated_edition = ScheduleEditionService
         .new(schema)
         .call(edition)
 
-      assert updated_edition.scheduled?
+      expect(updated_edition.scheduled?).to be_truthy
     end
 
     it "supersedes any previously scheduled editions" do
@@ -46,12 +43,10 @@ class ScheduleEditionServiceTest < ActiveSupport::TestCase
                                        lead_organisation_id: organisation.id,
                                        state: "scheduled")
 
-      SchedulePublishingWorker.expects(:queue).with do |expected_edition|
-        expected_edition.id = edition.id
-      end
+      expect(SchedulePublishingWorker).to receive(:queue).with(having_attributes(id: edition.id))
 
       scheduled_editions.each do |scheduled_edition|
-        SchedulePublishingWorker.expects(:dequeue).with(scheduled_edition)
+        expect(SchedulePublishingWorker).to receive(:dequeue).with(scheduled_edition)
       end
 
       ScheduleEditionService
@@ -59,7 +54,7 @@ class ScheduleEditionServiceTest < ActiveSupport::TestCase
         .call(edition)
 
       scheduled_editions.each do |scheduled_edition|
-        assert scheduled_edition.reload.superseded?
+        expect(scheduled_edition.reload).to be_superseded
       end
     end
 
@@ -69,31 +64,29 @@ class ScheduleEditionServiceTest < ActiveSupport::TestCase
         "An internal error message",
         "error" => { "message" => "Some backend error" },
       )
-      raises_exception = ->(*_args) { raise exception }
 
-      SchedulePublishingWorker.stub :queue, raises_exception do
-        assert_raises(GdsApi::HTTPErrorResponse) do
-          updated_edition = ScheduleEditionService
-            .new(schema)
-            .call(edition)
+      expect(SchedulePublishingWorker).to receive(:queue).and_raise(exception)
 
-          assert updated_edition.draft?
-          assert_nil updated_edition.scheduled_publication
-        end
-      end
+      expect {
+        updated_edition = ScheduleEditionService
+          .new(schema)
+          .call(edition)
+
+        expect(updated_edition.draft?).to be_truthy
+        expect(updated_edition.scheduled_publication).to be_nil
+      }.to raise_error(GdsApi::HTTPErrorResponse)
     end
 
     it "does not schedule the edition if the Whitehall creation fails" do
       exception = ArgumentError.new("Cannot find schema for block_type")
-      raises_exception = ->(*_args) { raise exception }
 
-      SchedulePublishingWorker.expects(:queue).never
+      expect(SchedulePublishingWorker).to receive(:queue).never
 
-      edition.stub :schedule!, raises_exception do
-        assert_raises(ArgumentError) do
-          ScheduleEditionService.new(schema).call(edition)
-        end
-      end
+      expect(edition).to receive(:schedule!).and_raise(exception)
+
+      expect {
+        ScheduleEditionService.new(schema).call(edition)
+      }.to raise_error(ArgumentError)
     end
 
     it "queues publishing intents for dependent content" do
@@ -115,7 +108,7 @@ class ScheduleEditionServiceTest < ActiveSupport::TestCase
 
       stub_publishing_api_has_embedded_content(content_id:, total: 0, results: dependent_content, order: HostContentItem::DEFAULT_ORDER)
 
-      PublishIntentWorker.expects(:perform_async).with(
+      expect(PublishIntentWorker).to receive(:perform_async).with(
         "/host-document",
         "example-app",
         Time.zone.local(2034, 9, 2, 10, 5, 0).to_s,
