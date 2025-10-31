@@ -17,6 +17,7 @@ class User < ApplicationRecord
 
   module Permissions
     SIGNIN = "signin".freeze
+    PRE_RELEASE_FEATURES_PERMISSION = "pre_release_features".freeze
   end
 
   def organisation
