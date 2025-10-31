@@ -1,12 +1,8 @@
-require "test_helper"
-
-class Edition::WorkflowTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe Edition::Workflow, type: :model do
   describe "transitions" do
     it "sets draft as the default state" do
       edition = create(:edition, document: create(:document, block_type: "pension"))
-      assert edition.draft?
+      expect(edition).to be_draft
     end
 
     it "transitions a scheduled edition into the published state when publishing" do
@@ -18,7 +14,7 @@ class Edition::WorkflowTest < ActiveSupport::TestCase
                        scheduled_publication: 7.days.since(Time.zone.now).to_date,
                        state: "scheduled")
       edition.publish!
-      assert edition.published?
+      expect(edition).to be_published
     end
 
     it "transitions into the scheduled state when scheduling" do
@@ -29,13 +25,19 @@ class Edition::WorkflowTest < ActiveSupport::TestCase
                          block_type: "pension",
                        ))
       edition.schedule!
-      assert edition.scheduled?
+      expect(edition).to be_scheduled
     end
 
     it "transitions into the superseded state when superseding" do
       edition = create(:edition, :pension, scheduled_publication: 7.days.since(Time.zone.now).to_date, state: "scheduled")
       edition.supersede!
-      assert edition.superseded?
+      expect(edition).to be_superseded
+    end
+
+    it "transitions into the awaiting_2i state when marking as ready for 2i" do
+      edition = create(:edition, document: create(:document, block_type: "pension"))
+      edition.ready_for_2i!
+      assert edition.awaiting_2i?
     end
   end
 
@@ -44,21 +46,21 @@ class Edition::WorkflowTest < ActiveSupport::TestCase
     let(:edition) { build(:edition, document: document) }
 
     it "validates when the state is scheduled" do
-      ScheduledPublicationValidator.any_instance.expects(:validate)
+      expect_any_instance_of(ScheduledPublicationValidator).to receive(:validate)
 
       edition.state = "scheduled"
       edition.valid?
     end
 
     it "does not validate when the state is not scheduled" do
-      ScheduledPublicationValidator.any_instance.expects(:validate).never
+      expect_any_instance_of(ScheduledPublicationValidator).not_to receive(:validate)
 
       edition.state = "draft"
       edition.valid?
     end
 
     it "validates when the validation scope is set to scheduling" do
-      ScheduledPublicationValidator.any_instance.expects(:validate)
+      expect_any_instance_of(ScheduledPublicationValidator).to receive(:validate)
 
       edition.state = "draft"
       edition.valid?(:scheduling)
