@@ -20,15 +20,19 @@ module Edition::Workflow
       state :published
       state :scheduled
       state :superseded
+      state :awaiting_2i
 
       event :publish do
-        transitions from: %i[draft scheduled], to: :published
+        transitions from: %i[draft awaiting_2i scheduled], to: :published
       end
       event :schedule do
         transitions from: %i[draft], to: :scheduled
       end
       event :supersede do
         transitions from: %i[scheduled], to: :superseded
+      end
+      event :ready_for_2i do
+        transitions from: %i[draft], to: :awaiting_2i
       end
     end
   end
