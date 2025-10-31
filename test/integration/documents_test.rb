@@ -122,22 +122,17 @@ class DocumentsTest < ActionDispatch::IntegrationTest
 
     before do
       stub_request_for_schema(document.block_type)
-    end
-
-    it "returns information about the document" do
       stub_publishing_api_has_embedded_content_for_any_content_id(
         results: [],
         total: 0,
         order: HostContentItem::DEFAULT_ORDER,
       )
+    end
 
+    it "returns information about the document" do
       visit document_path(document)
 
       assert_text document.title
-    end
-
-    it_returns_embedded_content do
-      visit document_path(document)
     end
   end
 
