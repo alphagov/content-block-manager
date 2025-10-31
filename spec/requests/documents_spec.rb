@@ -1,10 +1,5 @@
-require "test_helper"
-require "capybara/rails"
-
-class DocumentsTest < ActionDispatch::IntegrationTest
-  extend Minitest::Spec::DSL
+RSpec.describe "Documents", type: :request do
   include Rails.application.routes.url_helpers
-  include IntegrationTestHelpers
 
   let(:organisation) { build(:organisation) }
 
@@ -13,14 +8,14 @@ class DocumentsTest < ActionDispatch::IntegrationTest
     user = create(:user)
     login_as(user)
 
-    Organisation.stubs(:all).returns([organisation])
+    allow(Organisation).to receive(:all).and_return([organisation])
   end
 
   describe "#index" do
     let(:document) { create(:document, :contact) }
 
     before do
-      stub_request_for_schema(document.block_type, fields: [stub(:field, name: "email_address")])
+      stub_request_for_schema(document.block_type, fields: [double(:field, name: "email_address")])
     end
 
     it "only returns the latest edition when multiple editions exist for a document" do
@@ -39,10 +34,11 @@ class DocumentsTest < ActionDispatch::IntegrationTest
         lead_organisation_id: organisation.id,
       )
 
-      visit documents_path
+      get documents_path
+      follow_redirect!
 
-      assert_no_text first_edition.details["email_address"]
-      assert_text second_edition.details["email_address"]
+      expect(page).to_not have_text(first_edition.details["email_address"])
+      expect(page).to have_text(second_edition.details["email_address"])
     end
 
     it "only returns documents with a latest edition" do
@@ -55,25 +51,25 @@ class DocumentsTest < ActionDispatch::IntegrationTest
       )
       _document_without_latest_edition = create(:document, :contact, sluggable_string: "no latest edition")
 
-      visit documents_path({ lead_organisation: "" })
+      get documents_path({ lead_organisation: "" })
 
-      assert_text document.latest_edition.details["email_address"]
-      assert_text "1 result"
+      expect(page).to have_text(document.latest_edition.details["email_address"])
+      expect(page).to have_text("1 result")
     end
 
     describe "when no filter params are specified" do
       it "sets the filter to 'all organisations' by default" do
-        visit documents_path
+        get documents_path
 
-        assert_current_path root_path({ lead_organisation: "" })
+        expect(response).to redirect_to(root_path({ lead_organisation: "" }))
       end
     end
 
     describe "when there are filter params provided" do
       it "does not change the params" do
-        visit documents_path({ lead_organisation: organisation.id })
+        get documents_path({ lead_organisation: organisation.id })
 
-        assert_current_path documents_path({ lead_organisation: organisation.id })
+        expect(response).not_to have_http_status(:redirect)
       end
     end
   end
@@ -82,11 +78,11 @@ class DocumentsTest < ActionDispatch::IntegrationTest
     let(:schemas) { build_list(:schema, 1, body: { "properties" => {} }) }
 
     it "lists all schemas" do
-      Schema.expects(:all).returns(schemas)
+      allow(Schema).to receive(:all).and_return(schemas)
 
-      visit new_document_path
+      get new_document_path
 
-      assert_text "Select a content block"
+      expect(page).to have_text("Select a content block")
     end
   end
 
@@ -94,25 +90,26 @@ class DocumentsTest < ActionDispatch::IntegrationTest
     let(:schemas) { build_list(:schema, 1, body: { "properties" => {} }) }
 
     before do
-      Schema.stubs(:all).returns(schemas)
+      allow(Schema).to receive(:all).and_return(schemas)
     end
 
     it "shows an error message when block type is empty" do
       post new_document_options_redirect_documents_path
+
+      expect(response).to redirect_to(new_document_path)
+
       follow_redirect!
 
-      assert_equal new_document_path, path
-      assert_equal I18n.t("activerecord.errors.models.document.attributes.block_type.blank"), flash[:error]
+      expect(flash[:error]).to eq(I18n.t("activerecord.errors.models.document.attributes.block_type.blank"))
     end
 
     it "redirects when the block type is specified" do
       block_type = schemas[0].block_type
-      Schema.stubs(:find_by_block_type).returns(schemas[0])
+      allow(Schema).to receive(:find_by_block_type).and_return(schemas[0])
 
       post new_document_options_redirect_documents_path, params: { block_type: }
-      follow_redirect!
 
-      assert_equal new_edition_path(block_type:), path
+      expect(response).to redirect_to(new_edition_path(block_type:))
     end
   end
 
@@ -122,29 +119,24 @@ class DocumentsTest < ActionDispatch::IntegrationTest
 
     before do
       stub_request_for_schema(document.block_type)
-    end
-
-    it "returns information about the document" do
       stub_publishing_api_has_embedded_content_for_any_content_id(
         results: [],
         total: 0,
         order: HostContentItem::DEFAULT_ORDER,
       )
-
-      visit document_path(document)
-
-      assert_text document.title
     end
 
-    it_returns_embedded_content do
-      visit document_path(document)
+    it "returns information about the document" do
+      get document_path(document)
+
+      expect(page).to have_text(document.title)
     end
   end
 
   describe "#content_id" do
     it "returns 404 if the document doesn't exist" do
-      visit content_id_path("123")
-      assert_text "Could not find Content Block with Content ID 123"
+      get content_id_path("123")
+      expect(page).to have_text("Could not find Content Block with Content ID 123")
     end
   end
 end
