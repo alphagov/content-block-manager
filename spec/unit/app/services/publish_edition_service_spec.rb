@@ -1,8 +1,4 @@
-require "test_helper"
-
-class PublishEditionServiceTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe PublishEditionService do
   describe "#call" do
     let(:content_id) { "49453854-d8fd-41da-ad4c-f99dbac601c3" }
     let(:schema) { build(:schema, block_type: "content_block_type", body: { "properties" => { "foo" => "", "bar" => "" } }) }
@@ -22,26 +18,29 @@ class PublishEditionServiceTest < ActiveSupport::TestCase
       )
     end
 
-    setup do
-      Schema.stubs(:find_by_block_type).returns(schema)
-      Organisation.stubs(:all).returns([organisation])
+    before do
+      allow(Schema).to receive(:find_by_block_type).and_return(schema)
+      allow(Organisation).to receive(:all).and_return([organisation])
+      allow(Services.publishing_api).to receive(:put_content)
+      allow(Services.publishing_api).to receive(:publish)
     end
 
     it "returns a ContentBlockEdition" do
       result = PublishEditionService.new.call(edition)
-      assert_instance_of Edition, result
+
+      expect(result).to be_a(Edition)
     end
 
     it "publishes the Edition" do
-      SchedulePublishingWorker.expects(:dequeue).never
+      expect(SchedulePublishingWorker).to receive(:dequeue).never
 
       PublishEditionService.new.call(edition)
-      assert_equal "published", edition.state
-      assert_equal edition.id, document.live_edition_id
+      expect(edition.state).to eq("published")
+      expect(document.live_edition_id).to eq(edition.id)
     end
 
     it "creates an Edition in the Publishing API" do
-      Services.publishing_api.expects(:put_content).with(
+      expect(Services.publishing_api).to receive(:put_content).with(
         content_id,
         {
           schema_name: schema.id,
@@ -62,55 +61,54 @@ class PublishEditionServiceTest < ActiveSupport::TestCase
         },
       )
 
-      Services.publishing_api.expects(:publish).with(content_id)
+      expect(Services.publishing_api).to receive(:publish).with(content_id)
 
       PublishEditionService.new.call(edition)
 
-      assert_equal "published", edition.state
-      assert_equal edition.id, document.live_edition_id
+      expect(edition.state).to eq("published")
+      expect(document.live_edition_id).to eq(edition.id)
     end
 
     describe "when the change is not major" do
       let(:major_change) { false }
 
       it "sends a minor update_type with no change note to the Publishing API" do
-        Services.publishing_api.expects(:put_content).with do |_content_id, payload|
-          payload[:update_type]
-          payload[:change_note].nil?
-        end
-
-        Services.publishing_api.stubs(:publish)
+        expect(Services.publishing_api).to receive(:put_content).with(content_id, hash_including(update_type: "minor", change_note: nil))
+        allow(Services.publishing_api).to receive(:publish)
 
         PublishEditionService.new.call(edition)
 
-        assert_equal "published", edition.state
-        assert_equal edition.id, document.live_edition_id
+        expect(edition.state).to eq("published")
+        expect(document.live_edition_id).to eq(edition.id)
       end
     end
 
     it "rolls back the ContentBlockEdition and ContentBlockDocument if the publishing API request fails" do
-      Services.publishing_api.stubs(:put_content).raises(
-        GdsApi::HTTPErrorResponse.new(
-          422,
-          "An internal error message",
-          "error" => { "message" => "Some backend error" },
-        ),
-      )
+      allow(Services.publishing_api).to receive(:publish)
+                                    .and_raise(
+                                      GdsApi::HTTPErrorResponse.new(
+                                        422,
+                                        "An internal error message",
+                                        "error" => { "message" => "Some backend error" },
+                                      ),
+                                    )
 
-      assert_equal "draft", edition.state
-      assert_nil document.live_edition_id
+      expect(Services.publishing_api).to receive(:discard_draft).with(content_id)
 
-      assert_raises(GdsApi::HTTPErrorResponse) do
+      expect(edition.state).to eq("draft")
+      expect(document.live_edition_id).to be_nil
+
+      expect {
         PublishEditionService.new.call(edition)
-      end
+      }.to raise_error(PublishEditionService::PublishingFailureError)
 
-      assert_equal "draft", edition.state
-      assert_nil document.live_edition_id
+      expect(edition.state).to eq("draft")
+      expect(document.live_edition_id).to be_nil
     end
 
     it "discards the latest draft if the publish request fails" do
-      Services.publishing_api.stubs(:put_content)
-      Services.publishing_api.stubs(:publish).raises(
+      expect(Services.publishing_api).to receive(:put_content)
+      expect(Services.publishing_api).to receive(:publish).and_raise(
         GdsApi::HTTPErrorResponse.new(
           422,
           "An internal error message",
@@ -118,14 +116,14 @@ class PublishEditionServiceTest < ActiveSupport::TestCase
         ),
       )
 
-      Services.publishing_api.expects(:discard_draft).with(content_id)
+      expect(Services.publishing_api).to receive(:discard_draft).with(content_id)
 
-      assert_raises(PublishEditionService::PublishingFailureError, "Could not publish #{content_id} because: Some backend error") do
-        PublishEditionService.new.call(edition)
-      end
+      expect { PublishEditionService.new.call(edition) }.to raise_error(
+        PublishEditionService::PublishingFailureError, "Could not publish #{content_id} because: An internal error message"
+      )
 
-      assert_equal "draft", edition.state
-      assert_nil document.live_edition_id
+      expect(edition.state).to eq("draft")
+      expect(document.live_edition_id).to be_nil
     end
 
     it "supersedes any previously scheduled editions" do
@@ -136,13 +134,13 @@ class PublishEditionServiceTest < ActiveSupport::TestCase
                                        state: "scheduled")
 
       scheduled_editions.each do |scheduled_edition|
-        SchedulePublishingWorker.expects(:dequeue).with(scheduled_edition)
+        expect(SchedulePublishingWorker).to receive(:dequeue).with(scheduled_edition)
       end
 
       PublishEditionService.new.call(edition)
 
       scheduled_editions.each do |scheduled_edition|
-        assert scheduled_edition.reload.superseded?
+        expect(scheduled_edition.reload).to be_superseded
       end
     end
   end

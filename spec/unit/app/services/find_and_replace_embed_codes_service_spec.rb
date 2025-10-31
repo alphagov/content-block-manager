@@ -1,8 +1,4 @@
-require "test_helper"
-
-class FindAndReplaceEmbedCodesServiceTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe FindAndReplaceEmbedCodesService do
   it "finds and replaces embed codes" do
     document_1 = create(:document, :pension, content_id_alias: "something")
     edition_1 = create(:edition, :pension, state: "published", document: document_1)
@@ -30,7 +26,7 @@ class FindAndReplaceEmbedCodesServiceTest < ActiveSupport::TestCase
 
     result = FindAndReplaceEmbedCodesService.call(html)
 
-    assert_equal result, expected
+    expect(result).to eq(expected)
   end
 
   it "ignores blocks that aren't present in the database" do
@@ -39,7 +35,7 @@ class FindAndReplaceEmbedCodesServiceTest < ActiveSupport::TestCase
     html = edition.document.built_embed_code
 
     result = FindAndReplaceEmbedCodesService.call(html)
-    assert_equal result, html
+    expect(result).to eq(html)
   end
 
   it "ignores blocks that don't have a live version" do
@@ -48,6 +44,6 @@ class FindAndReplaceEmbedCodesServiceTest < ActiveSupport::TestCase
     html = edition.document.built_embed_code
 
     result = FindAndReplaceEmbedCodesService.call(html)
-    assert_equal result, html
+    expect(result).to eq(html)
   end
 end

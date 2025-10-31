@@ -1,15 +1,11 @@
-require "test_helper"
-
-class GeneratePreviewHtmlTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
+RSpec.describe GeneratePreviewHtml do
   include Rails.application.routes.url_helpers
-  include TextAssertions
 
   let(:host_content_id) { SecureRandom.uuid }
   let(:preview_content_id) { SecureRandom.uuid }
   let(:host_title) { "Test" }
   let(:host_base_path) { "/test" }
-  let(:uri_mock) { mock }
+  let(:uri_mock) { double }
 
   let(:fake_body) do
     <<-HTML
@@ -50,8 +46,8 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
   end
 
   before do
-    Net::HTTP.stubs(:get).with(URI("#{Plek.website_root}#{host_base_path}")).returns(fake_frontend_response)
-    block_to_preview.stubs(:render).returns(block_render)
+    allow(Net::HTTP).to receive(:get).with(URI("#{Plek.website_root}#{host_base_path}")).and_return(fake_frontend_response)
+    allow(block_to_preview).to receive(:render).and_return(block_render)
   end
 
   it "returns the preview html" do
@@ -64,8 +60,8 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
 
     parsed_content = Nokogiri::HTML.parse(actual_content)
 
-    assert_dom parsed_content, "body.gem-c-layout-for-public--draft"
-    assert_dom parsed_content, 'span.content-embed__content_block_contact[style="background-color: yellow;"]'
+    expect(parsed_content.at_css("body.gem-c-layout-for-public--draft")).to be_present
+    expect(parsed_content.at_css('span.content-embed__content_block_contact[style="background-color: yellow;"]')).to be_present
   end
 
   it "appends the base path to the CSS and JS references" do
@@ -78,14 +74,14 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
 
     parsed_content = Nokogiri::HTML.parse(actual_content)
 
-    assert_dom parsed_content, "link[href='#{Plek.website_root}/assets/application.css']"
-    assert_dom parsed_content, "script[src='#{Plek.website_root}/assets/application.js']"
+    expect(parsed_content.at_css("link[href='#{Plek.website_root}/assets/application.css']")).to be_present
+    expect(parsed_content.at_css("script[src='#{Plek.website_root}/assets/application.js']")).to be_present
   end
 
   describe "when the frontend throws an error" do
     before do
       exception = StandardError.new("Something went wrong")
-      Net::HTTP.expects(:get).with(URI("#{Plek.website_root}#{host_base_path}")).raises(exception)
+      expect(Net::HTTP).to receive(:get).with(URI("#{Plek.website_root}#{host_base_path}")).and_raise(exception)
     end
 
     it "shows an error template" do
@@ -98,7 +94,7 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
         locale: "en",
       ).call
 
-      assert_equal expected_content, actual_content
+      expect(actual_content).to eq(expected_content)
     end
   end
 
@@ -127,12 +123,12 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
       external_link = parsed_content.xpath("//a")[1]
       protocol_relative_link = parsed_content.xpath("//a")[2]
 
-      assert_equal internal_link.attribute("href").to_s, "#{url}?locale=en&base_path=/foo"
-      assert_equal internal_link.attribute("target").to_s, "_parent"
+      expect("#{url}?locale=en&base_path=/foo").to eq(internal_link.attribute("href").to_s)
+      expect("_parent").to eq(internal_link.attribute("target").to_s)
 
-      assert_equal external_link.attribute("href").to_s, "https://example.com"
+      expect("https://example.com").to eq(external_link.attribute("href").to_s)
 
-      assert_equal protocol_relative_link.attribute("href").to_s, "//example.com"
+      expect("//example.com").to eq(protocol_relative_link.attribute("href").to_s)
     end
   end
 
@@ -154,8 +150,8 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
 
       parsed_content = Nokogiri::HTML.parse(actual_content)
 
-      assert_dom parsed_content, "body.gem-c-layout-for-public--draft"
-      assert_dom parsed_content, 'div.content-embed__content_block_contact[style="background-color: yellow;"]'
+      expect(parsed_content.at_css("body.gem-c-layout-for-public--draft")).to be_present
+      expect(parsed_content.at_css('div.content-embed__content_block_contact[style="background-color: yellow;"]')).to be_present
     end
   end
 
@@ -169,12 +165,12 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
     end
 
     before do
-      Rails.env.stubs(:development?).returns(true)
-      Services.publishing_api.stubs(:get_content).with(host_content_id).returns(publishing_api_response)
+      allow(Rails.env).to receive(:development?).and_return(true)
+      allow(Services.publishing_api).to receive(:get_content).with(host_content_id).and_return(publishing_api_response)
     end
 
     it "makes a request to the rendering app as reported by the Publishing API" do
-      Net::HTTP.expects(:get).with(URI("#{Plek.external_url_for(rendering_app)}#{host_base_path}")).returns(fake_frontend_response)
+      expect(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for(rendering_app)}#{host_base_path}")).and_return(fake_frontend_response)
 
       GeneratePreviewHtml.new(
         content_id: host_content_id,
@@ -192,7 +188,7 @@ class GeneratePreviewHtmlTest < ActiveSupport::TestCase
       end
 
       it "defaults to frontend" do
-        Net::HTTP.expects(:get).with(URI("#{Plek.external_url_for('frontend')}#{host_base_path}")).returns(fake_frontend_response)
+        expect(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for('frontend')}#{host_base_path}")).and_return(fake_frontend_response)
 
         GeneratePreviewHtml.new(
           content_id: host_content_id,

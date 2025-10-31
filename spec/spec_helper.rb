@@ -7,6 +7,8 @@ require File.expand_path("../config/environment", __dir__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 
 require "rspec/rails"
+require "webmock/rspec"
+require "gds_api/test_helpers/publishing_api"
 require "factories"
 
 Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
@@ -20,6 +22,7 @@ RSpec.configure do |config|
   config.include ViewComponent::TestHelpers, type: :component
   config.include Capybara::RSpecMatchers, type: :component
   config.include FactoryBot::Syntax::Methods
+  config.include GdsApi::TestHelpers::PublishingApi
 
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
