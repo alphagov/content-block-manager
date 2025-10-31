@@ -33,6 +33,12 @@ RSpec.describe Edition::Workflow, type: :model do
       edition.supersede!
       expect(edition).to be_superseded
     end
+
+    it "transitions into the awaiting_2i state when marking as ready for 2i" do
+      edition = create(:edition, document: create(:document, block_type: "pension"))
+      edition.ready_for_2i!
+      assert edition.awaiting_2i?
+    end
   end
 
   describe "validation" do
