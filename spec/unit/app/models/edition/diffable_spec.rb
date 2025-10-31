@@ -1,8 +1,4 @@
-require "test_helper"
-
-class DiffableTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe Edition::Diffable do
   let(:document) { create(:document, :pension) }
 
   let(:organisation) { build(:organisation) }
@@ -14,26 +10,26 @@ class DiffableTest < ActiveSupport::TestCase
   end
 
   before do
-    Organisation.stubs(:all).returns([organisation])
+    allow(Organisation).to receive(:all).and_return([organisation])
   end
 
   describe "#generate_diff" do
     describe "when the document is a new block" do
       before do
-        edition.document.expects(:is_new_block?).returns(true)
+        expect(edition.document).to receive(:is_new_block?).and_return(true)
       end
 
-      it "returns an empty hash" do
-        assert_equal edition.generate_diff, {}
+      it "and_return an empty hash" do
+        expect({}).to eq(edition.generate_diff)
       end
     end
 
     describe "when the document is not a new block" do
       before do
-        edition.document.expects(:is_new_block?).returns(false)
+        expect(edition.document).to receive(:is_new_block?).and_return(false)
       end
 
-      it "returns a diff if the title has changed" do
+      it "and_return a diff if the title has changed" do
         previous_edition.title = "Something old"
         previous_edition.save!
 
@@ -47,10 +43,10 @@ class DiffableTest < ActiveSupport::TestCase
           ),
         }
 
-        assert_equal edition.generate_diff, expected_diff
+        expect(expected_diff).to eq(edition.generate_diff)
       end
 
-      it "returns a details diff if any items in the details have changed" do
+      it "and_return a details diff if any items in the details have changed" do
         previous_edition.details = { "email_address": "old@example.com" }
         previous_edition.save!
 
@@ -66,10 +62,10 @@ class DiffableTest < ActiveSupport::TestCase
           },
         }
 
-        assert_equal edition.generate_diff, expected_diff
+        expect(expected_diff).to eq(edition.generate_diff)
       end
 
-      it "returns a nested details diff for any changes to nested objects" do
+      it "and_return a nested details diff for any changes to nested objects" do
         previous_edition.details = {
           "rates" => {
             "rate-1" => {
@@ -119,14 +115,14 @@ class DiffableTest < ActiveSupport::TestCase
           },
         }
 
-        assert_equal edition.generate_diff, expected_diffs
+        expect(expected_diffs).to eq(edition.generate_diff)
       end
 
-      it "returns a diff if the organisation has changed" do
+      it "and_return a diff if the organisation has changed" do
         old_organisation = build(:organisation, name: "One Organisation")
         new_organisation = build(:organisation, name: "Another Organisation")
 
-        Organisation.stubs(:all).returns([old_organisation, new_organisation])
+        allow(Organisation).to receive(:all).and_return([old_organisation, new_organisation])
 
         previous_edition.lead_organisation_id = old_organisation.id
         previous_edition.save!
@@ -141,10 +137,10 @@ class DiffableTest < ActiveSupport::TestCase
           ),
         }
 
-        assert_equal edition.generate_diff, expected_diff
+        expect(expected_diff).to eq(edition.generate_diff)
       end
 
-      it "returns a diff if instructions_to_publishers has changed" do
+      it "and_return a diff if instructions_to_publishers has changed" do
         previous_edition.instructions_to_publishers = "Old instructions"
         previous_edition.save!
 
@@ -158,7 +154,7 @@ class DiffableTest < ActiveSupport::TestCase
           ),
         }
 
-        assert_equal edition.generate_diff, expected_diff
+        expect(expected_diff).to eq(edition.generate_diff)
       end
     end
   end
