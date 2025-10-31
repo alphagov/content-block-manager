@@ -16,16 +16,16 @@ class FindAndReplaceEmbedCodesServiceTest < ActiveSupport::TestCase
 
     html = "
       <p>Hello there</p>
-      <p>#{edition_2.document.embed_code}</p>
-      <p>#{edition_1.document.embed_code}</p>
-      <p>#{edition_2.document.embed_code}</p>
+      <p>#{edition_2.document.built_embed_code}</p>
+      <p>#{edition_1.document.built_embed_code}</p>
+      <p>#{edition_2.document.built_embed_code}</p>
     "
 
     expected = "
       <p>Hello there</p>
-      <p>#{edition_2.render(edition_2.document.embed_code)}</p>
-      <p>#{edition_1.render(edition_1.document.embed_code)}</p>
-      <p>#{edition_2.render(edition_2.document.embed_code)}</p>
+      <p>#{edition_2.render(edition_2.document.built_embed_code)}</p>
+      <p>#{edition_1.render(edition_1.document.built_embed_code)}</p>
+      <p>#{edition_2.render(edition_2.document.built_embed_code)}</p>
     "
 
     result = FindAndReplaceEmbedCodesService.call(html)
@@ -36,7 +36,7 @@ class FindAndReplaceEmbedCodesServiceTest < ActiveSupport::TestCase
   it "ignores blocks that aren't present in the database" do
     edition = build(:edition, :pension)
 
-    html = edition.document.embed_code
+    html = edition.document.built_embed_code
 
     result = FindAndReplaceEmbedCodesService.call(html)
     assert_equal result, html
@@ -45,7 +45,7 @@ class FindAndReplaceEmbedCodesServiceTest < ActiveSupport::TestCase
   it "ignores blocks that don't have a live version" do
     edition = create(:edition, :pension, state: "draft")
 
-    html = edition.document.embed_code
+    html = edition.document.built_embed_code
 
     result = FindAndReplaceEmbedCodesService.call(html)
     assert_equal result, html

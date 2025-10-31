@@ -27,7 +27,7 @@ class Document < ApplicationRecord
 
   scope :live, -> { where.not(latest_edition_id: nil) }
 
-  def embed_code
+  def built_embed_code
     "#{embed_code_prefix}}}"
   end
 

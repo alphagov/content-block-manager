@@ -21,7 +21,7 @@ class Edition < ApplicationRecord
     document.update!(latest_edition_id: id)
   end
 
-  def render(embed_code = document.embed_code)
+  def render(embed_code = document.built_embed_code)
     ContentBlockTools::ContentBlock.new(
       document_type: "content_block_#{block_type}",
       content_id: document.content_id,

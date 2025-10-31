@@ -219,7 +219,7 @@ class EditionTest < ActiveSupport::TestCase
                                        content_id: document.content_id,
                                        title:,
                                        details:,
-                                       embed_code: document.embed_code,
+                                       embed_code: document.built_embed_code,
                                      ).returns(stub_block)
 
       assert_equal edition.render, rendered_response
