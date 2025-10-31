@@ -40,26 +40,18 @@ RSpec.describe PublishEditionService do
     end
 
     it "creates an Edition in the Publishing API" do
-      expect(Services.publishing_api).to receive(:put_content).with(
-        content_id,
-        {
-          schema_name: schema.id,
-          document_type: schema.id,
-          publishing_app: ContentBlockManager::PublishingApp::CONTENT_BLOCK_MANAGER,
-          title: "Some Edition Title",
-          content_id_alias: "some-edition-title",
-          instructions_to_publishers: "instructions",
-          details: {
-            "foo" => "Foo text",
-            "bar" => "Bar text",
-          },
-          links: {
-            primary_publishing_organisation: [organisation.id],
-          },
-          update_type: "major",
-          change_note: edition.change_note,
-        },
-      )
+      presenter_stub = double(PublishingApi::ContentBlockPresenter)
+      presented_hash = double(hash: {})
+      expect(PublishingApi::ContentBlockPresenter).to receive(:new)
+                                                  .with(
+                                                    schema_id: schema.id,
+                                                    content_id_alias: "some-edition-title",
+                                                    edition: edition,
+                                                  )
+                                                  .and_return(presenter_stub)
+      expect(presenter_stub).to receive(:present).and_return(presented_hash)
+
+      expect(Services.publishing_api).to receive(:put_content).with(content_id, presented_hash)
 
       expect(Services.publishing_api).to receive(:publish).with(content_id)
 
@@ -67,20 +59,6 @@ RSpec.describe PublishEditionService do
 
       expect(edition.state).to eq("published")
       expect(document.live_edition_id).to eq(edition.id)
-    end
-
-    describe "when the change is not major" do
-      let(:major_change) { false }
-
-      it "sends a minor update_type with no change note to the Publishing API" do
-        expect(Services.publishing_api).to receive(:put_content).with(content_id, hash_including(update_type: "minor", change_note: nil))
-        allow(Services.publishing_api).to receive(:publish)
-
-        PublishEditionService.new.call(edition)
-
-        expect(edition.state).to eq("published")
-        expect(document.live_edition_id).to eq(edition.id)
-      end
     end
 
     it "rolls back the ContentBlockEdition and ContentBlockDocument if the publishing API request fails" do

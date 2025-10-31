@@ -39,22 +39,7 @@ private
   end
 
   def publishing_api_payload(schema_id, content_id_alias, edition)
-    {
-      schema_name: schema_id,
-      document_type: schema_id,
-      publishing_app: ContentBlockManager::PublishingApp::CONTENT_BLOCK_MANAGER,
-      title: edition.title,
-      instructions_to_publishers: edition.instructions_to_publishers,
-      content_id_alias:,
-      details: edition.details,
-      links: {
-        primary_publishing_organisation: [
-          edition.lead_organisation.id,
-        ],
-      },
-      update_type: edition.major_change ? "major" : "minor",
-      change_note: edition.major_change ? edition.change_note : nil,
-    }
+    PublishingApi::ContentBlockPresenter.new(schema_id:, content_id_alias:, edition:).present
   end
 
   def publish_publishing_api_edition(content_id:)
