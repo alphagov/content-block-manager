@@ -59,7 +59,7 @@ RSpec.describe Document::Index::FilterOptionsComponent, type: :component do
     expect(page).to have_css "input[type='checkbox'][name='block_type[]'][value='contact']"
   end
 
-  it "and_return organisations with an 'all organisations' option" do
+  it "returns organisations with an 'all organisations' option" do
     render_inline(described_class.new(filters: {}))
 
     expect(page).to have_css "select[name='lead_organisation']"

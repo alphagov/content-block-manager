@@ -63,7 +63,7 @@ RSpec.describe Document::Index::SummaryCardComponent, type: :component do
   end
 
   describe "when the edition is scheduled" do
-    it "and_return the scheduled value" do
+    it "returns the scheduled value" do
       edition.state = "scheduled"
       edition.scheduled_publication = Time.zone.now
 

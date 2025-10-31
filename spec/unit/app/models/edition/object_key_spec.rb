@@ -1,6 +1,4 @@
-require "test_helper"
-
-describe Edition::ObjectKey do
+RSpec.describe Edition::ObjectKey do
   before do
     @details = {}
     @object_type = "my_object_type"
@@ -8,23 +6,23 @@ describe Edition::ObjectKey do
 
   it "generates a dashed key from a title" do
     normal_key = Edition::ObjectKey.new(@details, @object_type, "My thing")
-    assert_equal "my-thing", normal_key.to_s
+    expect(normal_key.to_s).to eq("my-thing")
   end
 
   it "converts underscores to dashed singular" do
     key_from_underscores = Edition::ObjectKey.new(@details, @object_type, "some_other_thing")
-    assert_equal "some-other-thing", key_from_underscores.to_s
+    expect(key_from_underscores.to_s).to eq("some-other-thing")
   end
 
   it "converts plurals to dashed singular" do
     key_from_plural = Edition::ObjectKey.new(@details, @object_type, "some_things")
-    assert_equal "some-thing", key_from_plural.to_s
+    expect(key_from_plural.to_s).to eq("some-thing")
   end
 
   ["", nil, "*#!", "*", "___"].each do |title|
     it "falls back to the object type when title is invalid (#{title.inspect})" do
       invalid_key = Edition::ObjectKey.new(@details, @object_type, title)
-      assert_equal "my-object-type", invalid_key.to_s
+      expect(invalid_key.to_s).to eq("my-object-type")
     end
   end
 
@@ -32,6 +30,6 @@ describe Edition::ObjectKey do
     @details = { @object_type => { "my-thing" => "some stuff" } }
     duplicate_key = Edition::ObjectKey.new(@details, @object_type, "My thing")
 
-    assert_equal "my-thing-1", duplicate_key.to_s
+    expect(duplicate_key.to_s).to eq("my-thing-1")
   end
 end

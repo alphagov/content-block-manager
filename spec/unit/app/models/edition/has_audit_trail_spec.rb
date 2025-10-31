@@ -1,8 +1,4 @@
-require "test_helper"
-
-class HasAuditTrailTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe Edition::HasAuditTrail do
   let(:user) { create("user") }
   let(:organisation) { build(:organisation) }
   let(:document) { build(:document, :pension) }
@@ -16,14 +12,11 @@ class HasAuditTrailTest < ActiveSupport::TestCase
         document: create(:document, :pension),
       )
 
-      assert_changes -> { edition.versions.count }, from: 0, to: 1 do
-        edition.save
-      end
-
+      expect { edition.save }.to change { edition.versions.count }.from(0).to(1)
       version = edition.versions.first
 
-      assert_equal user.id.to_s, version.whodunnit
-      assert_equal "created", version.event
+      expect(version.whodunnit).to eq(user.id.to_s)
+      expect(version.event).to eq("created")
     end
   end
 
@@ -35,18 +28,16 @@ class HasAuditTrailTest < ActiveSupport::TestCase
         creator: user,
         document: create(:document, :pension),
       )
-      edition.scheduled_publication = Time.zone.now
-      edition.expects(:generate_diff).returns({})
+      edition.scheduled_publication = Time.zone.now + 1.day
+      expect(edition).to receive(:generate_diff).and_return({})
 
-      assert_changes -> { edition.versions.count }, from: 1, to: 2 do
-        edition.schedule!
-      end
+      expect { edition.schedule! }.to change { edition.versions.count }.from(1).to(2)
 
       version = edition.versions.first
 
-      assert_equal user.id.to_s, version.whodunnit
-      assert_equal "updated", version.event
-      assert_equal "scheduled", version.state
+      expect(version.whodunnit).to eq(user.id.to_s)
+      expect(version.event).to eq("updated")
+      expect(version.state).to eq("scheduled")
     end
 
     it "adds event details if provided" do
@@ -56,18 +47,16 @@ class HasAuditTrailTest < ActiveSupport::TestCase
         creator: user,
         document: create(:document, :pension),
       )
-      edition.expects(:generate_diff).returns({})
+      expect(edition).to receive(:generate_diff).and_return({})
       edition.updated_embedded_object_type = "something"
       edition.updated_embedded_object_title = "here"
 
-      assert_changes -> { edition.versions.count }, from: 1, to: 2 do
-        edition.publish!
-      end
+      expect { edition.publish! }.to change { edition.versions.count }.from(1).to(2)
 
       version = edition.versions.first
 
-      assert_equal edition.updated_embedded_object_type, version.updated_embedded_object_type
-      assert_equal edition.updated_embedded_object_title, version.updated_embedded_object_title
+      expect(version.updated_embedded_object_type).to eq(edition.updated_embedded_object_type)
+      expect(version.updated_embedded_object_title).to eq(edition.updated_embedded_object_title)
     end
 
     it "does not record a version when updating an existing draft" do
@@ -77,9 +66,7 @@ class HasAuditTrailTest < ActiveSupport::TestCase
         state: "draft",
       )
 
-      assert_no_changes -> { edition.versions.count } do
-        edition.update!(details: { "foo": "bar" })
-      end
+      expect { edition.update!(details: { "foo": "bar" }) }.not_to(change { edition.versions.count })
     end
 
     it "checks for any field_diffs" do
@@ -89,37 +76,36 @@ class HasAuditTrailTest < ActiveSupport::TestCase
         creator: user,
         document: create(:document, :pension),
       )
-      edition.scheduled_publication = Time.zone.now
+      edition.scheduled_publication = Time.zone.now + 1.day
 
-      edition.expects(:generate_diff).returns({})
+      expect(edition).to receive(:generate_diff).and_return({})
       edition.schedule!
     end
   end
 
   describe "acting_as" do
-    def setup
+    before do
       @user = create(:user)
       @user2 = create(:user)
     end
 
-    test "changes Current.user for the duration of the block, reverting to the original user afterwards" do
+    it "changes Current.user for the duration of the block, reverting to the original user afterwards" do
       Current.user = @user
 
       Edition::HasAuditTrail.acting_as(@user2) do
-        assert_equal @user2, Current.user
+        expect(Current.user).to eq(@user2)
       end
 
-      assert_equal @user, Current.user
+      expect(Current.user).to eq(@user)
     end
 
-    test "reverts Current.user, even when an exception is thrown" do
+    it "reverts Current.user, even when an exception is thrown" do
       Current.user = @user
 
-      assert_raises do
+      expect {
         Edition::HasAuditTrail.acting_as(@user2) { raise "Boom!" }
-      end
-
-      assert_equal @user, Current.user
+      }.to raise_error("Boom!")
+      expect(Current.user).to eq(@user)
     end
   end
 
@@ -140,9 +126,9 @@ class HasAuditTrailTest < ActiveSupport::TestCase
         created_at: 1.day.ago,
         item: edition,
       )
-      assert_equal edition.versions.first, newer_version
-      assert_equal edition.versions.last, oldest_version
-      assert_equal edition.versions[1], middle_version
+      expect(newer_version).to eq(edition.versions.first)
+      expect(oldest_version).to eq(edition.versions.last)
+      expect(middle_version).to eq(edition.versions.[](1))
     end
 
     it "returns versions in descending order based on id" do
@@ -159,9 +145,9 @@ class HasAuditTrailTest < ActiveSupport::TestCase
         :content_block_version,
         item: edition,
       )
-      assert_equal edition.versions.first, third_version
-      assert_equal edition.versions[1], second_version
-      assert_equal edition.versions.last, first_version
+      expect(third_version).to eq(edition.versions.first)
+      expect(second_version).to eq(edition.versions.[](1))
+      expect(first_version).to eq(edition.versions.last)
     end
   end
 end
