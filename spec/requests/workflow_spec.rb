@@ -675,23 +675,7 @@ def assert_edition_is_published(&block)
     double("http_response", code: 200, body: {}),
   )
 
-  payload = {
-    schema_name: "content_block_type",
-    document_type: "content_block_type",
-    publishing_app: "content-block-manager",
-    title: "Some Edition Title",
-    content_id_alias: "some-slug",
-    instructions_to_publishers: "instructions",
-    details: {
-      "foo" => "Foo text",
-      "bar" => "Bar text",
-    },
-    links: {
-      primary_publishing_organisation: [edition.lead_organisation_id],
-    },
-    update_type: "major",
-    change_note: edition.change_note,
-  }
+  payload = PublishingApi::ContentBlockPresenter.new(schema_id: "content_block_type", content_id_alias: "some-slug", edition: edition).present
 
   expect(Services.publishing_api).to receive(:put_content).with(@content_id, payload).and_return(fake_put_content_response)
   expect(Services.publishing_api).to receive(:publish).with(@content_id).and_return(fake_publish_content_response)
