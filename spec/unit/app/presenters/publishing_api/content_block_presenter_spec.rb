@@ -24,16 +24,26 @@ RSpec.describe PublishingApi::ContentBlockPresenter do
     let(:result) { presenter.present }
 
     it "returns a hash" do
-      expect(result).to be_a(Hash)
-      expect(result[:schema_name]).to eq(schema_id)
-      expect(result[:document_type]).to eq(schema_id)
-      expect(result[:publishing_app]).to eq(ContentBlockManager::PublishingApp::CONTENT_BLOCK_MANAGER)
-      expect(result[:title]).to eq(title)
-      expect(result[:instructions_to_publishers]).to eq(instructions_to_publishers)
-      expect(result[:content_id_alias]).to eq(content_id_alias)
-      expect(result[:details]).to eq(details)
-      expect(result[:links]).to eq({
-        primary_publishing_organisation: [lead_organisation.id],
+      expect(result).to eq({
+        schema_name: schema_id,
+        document_type: schema_id,
+        publishing_app: ContentBlockManager::PublishingApp::CONTENT_BLOCK_MANAGER,
+        title:,
+        instructions_to_publishers:,
+        content_id_alias:,
+        base_path: "/content-blocks/#{schema_id}/#{content_id_alias}",
+        change_note:,
+        details:,
+        update_type: "major",
+        links: {
+          primary_publishing_organisation: [lead_organisation.id],
+        },
+        routes: [
+          {
+            path: "/content-blocks/#{schema_id}/#{content_id_alias}",
+            type: "exact",
+          },
+        ],
       })
     end
 
