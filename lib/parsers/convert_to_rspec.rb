@@ -27,6 +27,7 @@ module Parsers
         body = remove_minitest_require(body)
 
         class_to_rspec_describe!(body)
+        component_class_to_rspec_describe!(body)
         assert_selector_to_expect!(body)
         class_name_to_described_class!(body)
         stubbed_method_to_allow!(body)
@@ -73,7 +74,7 @@ module Parsers
 
     def returns_to_and_return!(body)
       replace_line!(body) do |line|
-        if line =~ /^(.*)\breturns\b(.*)$/
+        if line =~ /^(.*)\.returns\((.*)$/
           "#{Regexp.last_match(1)}and_return#{Regexp.last_match(2)}"
         end
       end
@@ -120,8 +121,6 @@ module Parsers
     end
 
     def stubbed_method_at_least_once_to_allow!(body)
-      # convert from document.stubs(:latest_edition).at_least_once.returns(edition)
-      # to           expect(document).to receive(:latest_edition).at_least(:once).and_return(edition)
       replace_line!(body) do |line|
         if line =~ /(\s*)(.*)\.stubs\((.*)\).at_least_once(.*)/
           "#{Regexp.last_match(1)}expect(#{Regexp.last_match(2)}).to receive(#{Regexp.last_match(3)}).at_least(:once)#{Regexp.last_match(4)}"
@@ -140,10 +139,18 @@ module Parsers
       end
     end
 
-    def class_to_rspec_describe!(body)
+    def component_class_to_rspec_describe!(body)
       replace_line!(body) do |line|
         if line =~ /class ([:\w]+)Test < ViewComponent::TestCase\s*$/
           "RSpec.describe #{Regexp.last_match(1)}, type: :component do"
+        end
+      end
+    end
+
+    def class_to_rspec_describe!(body)
+      replace_line!(body) do |line|
+        if line =~ /class ([:\w]+)Test < ActiveSupport::TestCase\s*$/
+          "RSpec.describe #{Regexp.last_match(1)} do"
         end
       end
     end

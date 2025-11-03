@@ -1,10 +1,6 @@
-require "test_helper"
-
-class Edition::CloneableTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe Edition::Cloneable do
   before do
-    Organisation.stubs(:all).returns([])
+    allow(Organisation).to receive(:all).and_return([])
   end
 
   describe "#clone_edition" do
@@ -22,14 +18,14 @@ class Edition::CloneableTest < ActiveSupport::TestCase
 
       new_edition = edition.clone_edition(creator:)
 
-      assert_equal new_edition.state, "draft"
-      assert_nil new_edition.id
-      assert_equal new_edition.lead_organisation_id, edition.lead_organisation_id
-      assert_equal new_edition.creator, creator
-      assert_equal new_edition.title, edition.title
-      assert_equal new_edition.details, edition.details
-      assert_nil new_edition.change_note
-      assert_nil new_edition.internal_change_note
+      expect("draft").to eq(new_edition.state)
+      expect(new_edition.id).to be_nil
+      expect(edition.lead_organisation_id).to eq(new_edition.lead_organisation_id)
+      expect(creator).to eq(new_edition.creator)
+      expect(edition.title).to eq(new_edition.title)
+      expect(edition.details).to eq(new_edition.details)
+      expect(new_edition.change_note).to be_nil
+      expect(new_edition.internal_change_note).to be_nil
     end
   end
 
@@ -56,26 +52,26 @@ class Edition::CloneableTest < ActiveSupport::TestCase
           "block1" => { "content" => "test content 1" },
         },
       }
-      assert_equal expected_details, cloned.details
-      assert_nil cloned.title
+      expect(cloned.details).to eq(expected_details)
+      expect(cloned.title).to be_nil
     end
 
     it "maintains original edition details" do
       edition.clone_with_block("section_one.block1")
 
-      assert_equal details, edition.details
+      expect(edition.details).to eq(details)
     end
 
     it "returns empty details for non-existent block" do
       cloned = edition.clone_with_block("section_three.invalid_block")
 
-      assert_equal({ "section_three" => {} }, cloned.details)
+      expect(cloned.details).to eq({ "section_three" => {} })
     end
   end
 
   describe "#clone_without_blocks" do
-    let(:subschema) { stub(id: "subschema") }
-    let(:schema) { stub(subschemas: [subschema]) }
+    let(:subschema) { double(id: "subschema") }
+    let(:schema) { double(subschemas: [subschema]) }
     let(:document) { build(:document, schema:) }
     let(:details) { { "title" => "something", "subschema" => { "content" => "test content" } } }
     let(:edition) { build(:edition, details:, document:) }
@@ -83,13 +79,13 @@ class Edition::CloneableTest < ActiveSupport::TestCase
     it "creates a copy without subschema blocks" do
       cloned = edition.clone_without_blocks
 
-      assert_equal({ "title" => "something" }, cloned.details)
+      expect(cloned.details).to eq({ "title" => "something" })
     end
 
     it "does not modify the original edition" do
       edition.clone_without_blocks
 
-      assert_equal details, edition.details
+      expect(edition.details).to eq(details)
     end
   end
 end
