@@ -2,7 +2,6 @@ require "support/css_selectors"
 require "equivalent-xml"
 
 module HtmlAssertions
-  include Rails::Dom::Testing::Assertions::SelectorAssertions
   include CssSelectors
 
   def refute_select(selector, *args)

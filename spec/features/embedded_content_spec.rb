@@ -1,4 +1,4 @@
-class ActionDispatch::IntegrationTest
+RSpec.describe "Embedded content", type: :feature do
   def self.it_returns_embedded_content(&block)
     let(:host_content_items) do
       10.times.map do |i|
@@ -28,14 +28,14 @@ class ActionDispatch::IntegrationTest
         order: HostContentItem::DEFAULT_ORDER,
       )
 
-      SignonUser.stubs(:with_uuids).with(host_content_items.map { |i| i["last_edited_by_editor_id"] }).returns(host_content_item_users)
+      allow(SignonUser).to receive(:with_uuids).with(host_content_items.map { |i| i["last_edited_by_editor_id"] }).and_return(host_content_item_users)
     end
 
     it "returns host content items" do
       instance_exec(&block)
 
       host_content_items.each do |content_item|
-        assert_text content_item["title"]
+        expect(page).to have_content(content_item["title"])
       end
     end
 
@@ -127,6 +127,50 @@ class ActionDispatch::IntegrationTest
           should_be_sorted_by.call(field, :desc)
         end
       end
+    end
+  end
+
+  let(:organisation) { build(:organisation) }
+
+  before do
+    login_as_admin
+    allow(Organisation).to receive(:all).and_return([organisation])
+  end
+
+  describe "When in the workflow" do
+    let(:details) do
+      {
+        foo: "Foo text",
+        bar: "Bar text",
+      }
+    end
+
+    let(:document) { create(:document, :pension, content_id: @content_id, sluggable_string: "some-slug") }
+    let(:edition) { create(:edition, document:, details:, lead_organisation_id: organisation.id, instructions_to_publishers: "instructions", title: "Some Edition Title") }
+    let!(:schema) { stub_request_for_schema("pension") }
+
+    before do
+      @content_id = "49453854-d8fd-41da-ad4c-f99dbac601c3"
+
+      stub_publishing_api_has_embedded_content(content_id: @content_id, total: 0, results: [], order: HostContentItem::DEFAULT_ORDER)
+      allow_any_instance_of(Document).to receive(:is_new_block?).and_return(false)
+    end
+
+    it_returns_embedded_content do
+      visit workflow_path(id: edition.id, step: :review_links)
+    end
+  end
+
+  describe "When showing a document" do
+    let(:edition) { create(:edition, :contact, lead_organisation_id: organisation.id) }
+    let(:document) { edition.document }
+
+    before do
+      stub_request_for_schema(document.block_type)
+    end
+
+    it_returns_embedded_content do
+      visit document_path(document)
     end
   end
 end
