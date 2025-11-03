@@ -74,3 +74,14 @@ jobs:
       - test-rspec
       - test-features
     uses: ./.github/workflows/check-coverage.yml
+
+  notify-slack-if-failure-on-main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack if failure on main
+        if: ${{ failure() }}
+        uses: alphagov/govuk-infrastructure/.github/actions/report-run-failure@main
+        with:
+          slack_webhook_url: ${{ secrets.GOVUK_SLACK_WEBHOOK_URL }}
+          channel: govuk-whitehall-experience-tech
+          message: "Content Block Manager failed on 'main' and blocked the deployment. Investigate!"
