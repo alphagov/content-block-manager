@@ -74,7 +74,7 @@ module Parsers
 
     def returns_to_and_return!(body)
       replace_line!(body) do |line|
-        if line =~ /^(.*)\breturns\b(.*)$/
+        if line =~ /^(.*)\.returns\((.*)$/
           "#{Regexp.last_match(1)}and_return#{Regexp.last_match(2)}"
         end
       end
