@@ -51,3 +51,8 @@ Rails/SaveBang:
   Exclude:
     - 'Rakefile'
     - 'test/test_helper.rb'
+
+# Don't require Rails environment to be loaded in rake tasks that do not use the Rails environment.
+Rails/RakeEnvironment:
+  Exclude:
+    - 'lib/tasks/converter.rake'
