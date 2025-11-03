@@ -43,11 +43,3 @@ jobs:
       WEBHOOK_TOKEN: ${{ secrets.GOVUK_ARGO_EVENTS_WEBHOOK_TOKEN }}
       WEBHOOK_URL: ${{ secrets.GOVUK_ARGO_EVENTS_WEBHOOK_URL }}
       GH_TOKEN: ${{ secrets.GOVUK_CI_GITHUB_API_TOKEN }}
-  send-slack-notification:
-    if: ${{ failure() }}
-    uses: alphagov/govuk-infrastructure/.github/actions/report-run-failure@main
-    secrets:
-      slack_webhook_url: ${{ secrets.GOVUK_SLACK_WEBHOOK_URL }}
-    with:
-      channel: govuk-publishing-content-modelling-dev
-      message: "Content Block Manager deploy failed for ${{ inputs.gitRef || github.event.release.tag_name }}."
