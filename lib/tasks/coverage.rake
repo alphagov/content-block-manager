@@ -1,5 +1,5 @@
 desc "Check coverage of last test run"
-task check_coverage: :environment do
+task :check_coverage do
   require "simplecov"
 
   SimpleCov.collate Dir["coverage/**/.resultset.json"] do

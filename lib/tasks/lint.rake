@@ -1,6 +1,6 @@
 # :nocov:
 desc "Run all linters"
-task lint: :environment do
+task :lint do
   sh "bundle exec rubocop"
   if Rails.env.development?
     sh "bundle exec erb_lint --lint-all --autocorrect"
