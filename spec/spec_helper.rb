@@ -43,3 +43,11 @@ RSpec.configure do |config|
     end
   end
 end
+
+def expect_model_to_be_valid(model:, context: nil)
+  expect(model).to be_valid(context), "Expected #{model} in context(#{context}) to be valid."
+end
+
+def expect_model_not_to_be_valid(model:, context: nil)
+  expect(model).not_to be_valid(context), "Expected #{model} in context(#{context}) NOT to be valid."
+end
