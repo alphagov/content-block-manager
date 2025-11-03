@@ -928,6 +928,7 @@ DEPENDENCIES
   minitest-stub-const
   mocha
   mutex_m
+  parser
   pg (~> 1.6)
   pg_search
   plek
