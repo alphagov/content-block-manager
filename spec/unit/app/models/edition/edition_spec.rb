@@ -66,6 +66,18 @@ RSpec.describe Edition, type: :model do
     expect(edition.content_id).to eq(document.content_id)
   end
 
+  it "sets the #embed_code to the document using the 'friendly' form of #sluggable_string" do
+    edition.document[:sluggable_string] = "My block name"
+
+    edition.save!
+    edition.reload
+    edition.document
+
+    expect(edition.document.embed_code).to eq(
+      "{{embed:content_block_pension:my-block-name}}",
+    )
+  end
+
   it "creates a document" do
     edition.save!
     edition.reload
