@@ -27,3 +27,31 @@ end
 When("I enter the keyword {string}") do |keyword|
   fill_in "Keyword", with: keyword
 end
+
+Then("I check the block type {string}") do |checkbox_name|
+  check checkbox_name
+end
+
+Then("I select the lead organisation {string}") do |organisation|
+  select organisation, from: "lead_organisation"
+end
+
+Then(/"(\d)" content blocks? .+ returned in total/) do |count|
+  assert_text "#{count} #{'result'.pluralize(count.to_i)}"
+end
+
+When("I click to view results") do
+  click_button "View results"
+end
+
+When("I search using the embed code for the pension block") do
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
+When("I search using part of the embed code for the contact block") do
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
+Then(/the ([^"]*) block is found/) do |_block_type|
+  pending # Write code here that turns the phrase above into concrete actions
+end

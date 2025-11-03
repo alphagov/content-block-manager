@@ -59,7 +59,7 @@ class DocumentTest < ActiveSupport::TestCase
     let(:document) { build(:document, :pension, content_id:, content_id_alias:) }
 
     it "returns embed code for the document" do
-      assert_equal document.embed_code, "{{embed:content_block_pension:#{content_id_alias}}}"
+      assert_equal document.built_embed_code, "{{embed:content_block_pension:#{content_id_alias}}}"
     end
 
     it "returns embed code for a particular field" do
