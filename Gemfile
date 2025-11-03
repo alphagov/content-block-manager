@@ -37,6 +37,7 @@ group :development, :test do
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
   gem "erb_lint"
   gem "govuk_test"
+  gem "parser", require: false
   gem "pry-byebug"
   gem "pry-rails"
   gem "rspec-rails"
