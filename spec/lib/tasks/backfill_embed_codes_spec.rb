@@ -41,4 +41,44 @@ RSpec.describe "backfill_embed_codes", type: task do
       :embed_code, "{{embed:content_block_contact:block-2}}"
     )
   end
+
+  context "when an error is encountered" do
+    let(:error) do
+      ActiveRecord::RecordNotUnique.new("duplicate key value violates unique constraint")
+    end
+
+    let(:document) do
+      instance_double(
+        Document,
+        id: 123,
+        content_id_alias: "my-block",
+        built_embed_code: "{{embed:content_block_contact:my-block}}",
+      )
+    end
+
+    let(:documents_in_batches) do
+      double("AR batches").tap do |d|
+        allow(d).to receive(:find_each).and_yield(document)
+      end
+    end
+
+    before do
+      allow(document).to receive(:update_column).and_raise(error)
+      allow(GovukError).to receive(:notify)
+    end
+
+    it "logs the error and some useful details using GovukError" do
+      task.execute
+
+      expect(GovukError).to have_received(:notify).with(
+        error,
+        level: :error,
+        extras: {
+          document_id: 123,
+          content_id_alias: "my-block",
+          built_embed_code: "{{embed:content_block_contact:my-block}}",
+        },
+      )
+    end
+  end
 end
