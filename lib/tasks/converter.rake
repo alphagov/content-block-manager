@@ -1,10 +1,10 @@
 # :nocov:
-require_relative "../parsers/convert_to_rspec"
-
 # example usage: bundle exec rake convert:to_rspec\["test/components","spec/views/components"\]
 namespace :convert do
   desc "task to do some basic conversion of minitest syntax to rspec syntax"
   task :to_rspec, %i[minitest_folder rspec_folder] => [:environment] do |_, args|
+    require_relative "../parsers/convert_to_rspec"
+
     message = <<-MSG
       minitest_folder and rspec_folder args are required.
       Example usage: bundle exec rake convert:to_rspec\\["test/components","spec/views/components"\\]
