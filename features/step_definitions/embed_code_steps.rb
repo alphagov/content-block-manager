@@ -77,5 +77,5 @@ end
 def contact_default_block_embed_code
   @contact_default_block_embed_code ||=
     Document.find_by!(block_type: "contact")
-      .built_embed_code
+      .embed_code
 end

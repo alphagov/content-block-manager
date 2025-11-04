@@ -22,5 +22,13 @@ FactoryBot.define do
     after(:build) do |document, evaluator|
       allow(document).to receive(:schema).and_return(evaluator.schema)
     end
+
+    before(:create) do |document, _evaluator|
+      # this reproduces the #set_content_id_alias_and_embed_code callback
+      # run after validation in Edition::Documentable
+      document.valid?
+      document.content_id_alias = document.friendly_id
+      document.embed_code = document.built_embed_code
+    end
   end
 end

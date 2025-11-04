@@ -244,7 +244,7 @@ RSpec.describe Edition, type: :model do
           content_id: document.content_id,
           title:,
           details:,
-          embed_code: document.built_embed_code,
+          embed_code: document.embed_code,
         ).and_return(stub_block)
 
       expect(edition.render).to eq(rendered_response)
