@@ -72,5 +72,22 @@ RSpec.describe "SearchableByKeyword" do
         [document_with_keyword_in_title, document_with_keyword_in_details],
       )
     end
+
+    describe "search using embed_code" do
+      let!(:pension_doc) { create(:document, :pension, content_id_alias: "my-pension") }
+      let!(:_contact_doc) { create(:document, :contact, content_id_alias: "my-contact") }
+
+      it "should find document using full embed_code" do
+        expect(Document.with_keyword("{{embed:content_block_pension:my-pension}}")).to eq(
+          [pension_doc],
+        )
+      end
+
+      it "should find document using just the content_id_alias element of the embed code" do
+        expect(Document.with_keyword("my-pension")).to eq(
+          [pension_doc],
+        )
+      end
+    end
   end
 end
