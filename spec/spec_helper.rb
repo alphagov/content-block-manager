@@ -35,6 +35,7 @@ RSpec.configure do |config|
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
+    Rails.application.load_tasks
   end
 
   config.around(:each) do |example|
@@ -42,4 +43,12 @@ RSpec.configure do |config|
       example.run
     end
   end
+end
+
+def expect_model_to_be_valid(model:, context: nil)
+  expect(model).to be_valid(context), "Expected #{model} in context(#{context}) to be valid."
+end
+
+def expect_model_not_to_be_valid(model:, context: nil)
+  expect(model).not_to be_valid(context), "Expected #{model} in context(#{context}) NOT to be valid."
 end
