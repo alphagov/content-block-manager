@@ -45,13 +45,32 @@ When("I click to view results") do
 end
 
 When("I search using the embed code for the pension block") do
-  pending # Write code here that turns the phrase above into concrete actions
+  fill_in "Keyword", with: pension_block.embed_code
+  click_button "View results"
 end
 
-When("I search using part of the embed code for the contact block") do
-  pending # Write code here that turns the phrase above into concrete actions
+When("I search using the content_id_alias part of the embed code for the contact block") do
+  fill_in "Keyword", with: contact_block.content_id_alias
+  click_button "View results"
 end
 
-Then(/the ([^"]*) block is found/) do |_block_type|
-  pending # Write code here that turns the phrase above into concrete actions
+Then(/the ([^"]*) block is found/) do |block_type|
+  expect(page).to have_selector(".govuk-summary-card__title", text: block_for(block_type).title)
+end
+
+def pension_block
+  @pension_block ||= Document.find_by!(block_type: "pension")
+end
+
+def contact_block
+  @contact_block ||= Document.find_by!(block_type: "contact")
+end
+
+def block_for(block_type)
+  case block_type
+  when "pension"
+    pension_block
+  when "contact"
+    contact_block
+  end
 end
