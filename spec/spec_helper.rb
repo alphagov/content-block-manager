@@ -45,6 +45,10 @@ RSpec.configure do |config|
   end
 end
 
+FactoryBot::SyntaxRunner.class_eval do
+  include RSpec::Mocks::ExampleMethods
+end
+
 def expect_model_to_be_valid(model:, context: nil)
   expect(model).to be_valid(context), "Expected #{model} in context(#{context}) to be valid."
 end

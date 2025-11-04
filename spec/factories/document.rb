@@ -20,7 +20,7 @@ FactoryBot.define do
     end
 
     after(:build) do |document, evaluator|
-      document.define_singleton_method(:schema) { evaluator.schema }
+      allow(document).to receive(:schema).and_return(evaluator.schema)
     end
   end
 end
