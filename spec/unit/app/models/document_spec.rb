@@ -1,8 +1,4 @@
-require "test_helper"
-
-class DocumentTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe Document do
   it "exists with required data" do
     document = create(
       :document,
@@ -13,32 +9,36 @@ class DocumentTest < ActiveSupport::TestCase
       updated_at: Time.zone.local(2000, 12, 31, 23, 59, 59).utc,
     )
 
-    assert_equal "52084b2d-4a52-4e69-ba91-3052b07c7eb6", document.content_id
-    assert_equal "Title", document.sluggable_string
-    assert_equal "pension", document.block_type
-    assert_equal Time.zone.local(2000, 12, 31, 23, 59, 59).utc, document.created_at
-    assert_equal Time.zone.local(2000, 12, 31, 23, 59, 59).utc, document.updated_at
-    assert_equal "title", document.content_id_alias
+    aggregate_failures do
+      expect("52084b2d-4a52-4e69-ba91-3052b07c7eb6").to eq(document.content_id)
+      expect("Title").to eq(document.sluggable_string)
+      expect("pension").to eq(document.block_type)
+      expect(Time.zone.local(2000, 12, 31, 23, 59, 59).utc).to eq(document.created_at)
+      expect(Time.zone.local(2000, 12, 31, 23, 59, 59).utc).to eq(document.updated_at)
+      expect("title").to eq(document.content_id_alias)
+    end
   end
 
   it "does not allow the block type to be changed" do
     document = create(:document, :pension)
 
-    assert_raise ActiveRecord::ReadonlyAttributeError do
+    expect {
       document.update(block_type: "something_else")
-    end
+    }.to raise_error(ActiveRecord::ReadonlyAttributeError)
   end
 
   it "can store the id of the latest edition" do
     document = create(:document, :pension)
     document.update!(latest_edition_id: 1)
-    assert document.reload.latest_edition_id, 1
+
+    expect(document.reload.latest_edition_id).to eq(1)
   end
 
   it "can store the id of the live edition" do
     document = create(:document, :pension)
     document.update!(live_edition_id: 1)
-    assert document.reload.live_edition_id, 1
+
+    expect(document.reload.live_edition_id).to eq(1)
   end
 
   it "gets its version history from its editions" do
@@ -50,20 +50,22 @@ class DocumentTest < ActiveSupport::TestCase
     )
     document.update!(editions: [edition])
 
-    assert_equal document.versions.first.item.id, edition.id
+    expect(document.versions.first.item.id).to eq(edition.id)
   end
 
   describe "embed_code" do
     let(:content_id) { SecureRandom.uuid }
     let(:content_id_alias) { "some-alias" }
-    let(:document) { build(:document, :pension, content_id:, content_id_alias:) }
+    let(:document) { create(:document, :pension, content_id:, content_id_alias:) }
 
     it "returns embed code for the document" do
-      assert_equal document.built_embed_code, "{{embed:content_block_pension:#{content_id_alias}}}"
+      expect(document.embed_code).to eq("{{embed:content_block_pension:#{content_id_alias}}}")
     end
 
     it "returns embed code for a particular field" do
-      assert_equal document.embed_code_for_field("rates/rate2/name"), "{{embed:content_block_pension:#{content_id_alias}/rates/rate2/name}}"
+      expect(document.embed_code_for_field("rates/rate2/name")).to eq(
+        "{{embed:content_block_pension:#{content_id_alias}/rates/rate2/name}}",
+      )
     end
   end
 
@@ -73,7 +75,7 @@ class DocumentTest < ActiveSupport::TestCase
       _first_edition = create(:edition, document:)
       second_edition = create(:edition, document:)
 
-      assert_equal second_edition, document.latest_edition
+      expect(document.latest_edition).to eq(second_edition)
     end
   end
 
@@ -86,7 +88,7 @@ class DocumentTest < ActiveSupport::TestCase
 
       create(:document, :pension, latest_edition_id: nil)
 
-      assert_equal [document_with_latest_edition], Document.live
+      expect(Document.live).to eq([document_with_latest_edition])
     end
   end
 
@@ -98,7 +100,7 @@ class DocumentTest < ActiveSupport::TestCase
         sluggable_string: "This is a title",
       )
 
-      assert_equal "this-is-a-title", document.content_id_alias
+      expect(document.content_id_alias).to eq("this-is-a-title")
     end
 
     it "ensures content_id_aliases are unique" do
@@ -109,8 +111,8 @@ class DocumentTest < ActiveSupport::TestCase
         sluggable_string: "This is a title",
       )
 
-      assert_equal "this-is-a-title", documents[0].content_id_alias
-      assert_equal "this-is-a-title--2", documents[1].content_id_alias
+      expect(documents[0].content_id_alias).to eq("this-is-a-title")
+      expect(documents[1].content_id_alias).to eq("this-is-a-title--2")
     end
 
     it "does not change the alias if the sluggable string changes" do
@@ -123,7 +125,7 @@ class DocumentTest < ActiveSupport::TestCase
       document.sluggable_string = "Something else"
       document.save!
 
-      assert_equal "this-is-a-title", document.content_id_alias
+      expect(document.content_id_alias).to eq("this-is-a-title")
     end
   end
 
@@ -133,7 +135,7 @@ class DocumentTest < ActiveSupport::TestCase
       _oldest_edition = create(:edition, document:)
       latest_edition = create(:edition, document:, title: "I am the latest edition")
 
-      assert_equal latest_edition.title, document.title
+      expect(document.title).to eq(latest_edition.title)
     end
   end
 
@@ -141,13 +143,13 @@ class DocumentTest < ActiveSupport::TestCase
     it "returns true when there is one associated edition" do
       document = create(:document, :pension, editions: create_list(:edition, 1, :pension))
 
-      assert document.is_new_block?
+      expect(document.is_new_block?).to be true
     end
 
     it "returns false when there is more than one associated edition" do
       document = create(:document, :pension, editions: create_list(:edition, 2, :pension))
 
-      assert_not document.is_new_block?
+      expect(document.is_new_block?).to be false
     end
   end
 
@@ -160,7 +162,7 @@ class DocumentTest < ActiveSupport::TestCase
       document.latest_edition_id = edition.id
       document.save!
 
-      assert_not document.has_newer_draft?
+      expect(document.has_newer_draft?).to be false
     end
 
     it "returns true when the newest edition is not the same as the latest edition" do
@@ -169,7 +171,7 @@ class DocumentTest < ActiveSupport::TestCase
       document.latest_edition_id = edition.id
       document.save!
 
-      assert document.has_newer_draft?
+      expect(document.has_newer_draft?).to be true
     end
   end
 
@@ -181,7 +183,7 @@ class DocumentTest < ActiveSupport::TestCase
       newest_draft = create(:edition, :pension, created_at: Time.zone.now - 1.day, document:, state: "draft")
       _newest_edition = create(:edition, :pension, created_at: Time.zone.now, document:, state: "published")
 
-      assert_equal newest_draft, document.latest_draft
+      expect(document.latest_draft).to eq(newest_draft)
     end
   end
 
@@ -189,15 +191,17 @@ class DocumentTest < ActiveSupport::TestCase
     let(:document) { build(:document, :pension) }
     let(:schema) { build(:schema) }
 
+    before do
+      # remove the stubbing set in factory
+      allow(document).to receive(:schema).and_call_original
+    end
+
     it "returns a schema object" do
-      document.unstub(:schema)
-
-      Schema
-        .expects(:find_by_block_type)
+      allow(Schema).to receive(:find_by_block_type)
         .with(document.block_type)
-        .returns(schema)
+        .and_return(schema)
 
-      assert_equal document.schema, schema
+      expect(document.schema).to eq(schema)
     end
   end
 end
