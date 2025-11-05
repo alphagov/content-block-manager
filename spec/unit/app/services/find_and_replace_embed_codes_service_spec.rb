@@ -12,16 +12,16 @@ RSpec.describe FindAndReplaceEmbedCodesService do
 
     html = "
       <p>Hello there</p>
-      <p>#{edition_2.document.built_embed_code}</p>
-      <p>#{edition_1.document.built_embed_code}</p>
-      <p>#{edition_2.document.built_embed_code}</p>
+      <p>#{edition_2.document.embed_code}</p>
+      <p>#{edition_1.document.embed_code}</p>
+      <p>#{edition_2.document.embed_code}</p>
     "
 
     expected = "
       <p>Hello there</p>
-      <p>#{edition_2.render(edition_2.document.built_embed_code)}</p>
-      <p>#{edition_1.render(edition_1.document.built_embed_code)}</p>
-      <p>#{edition_2.render(edition_2.document.built_embed_code)}</p>
+      <p>#{edition_2.render(edition_2.document.embed_code)}</p>
+      <p>#{edition_1.render(edition_1.document.embed_code)}</p>
+      <p>#{edition_2.render(edition_2.document.embed_code)}</p>
     "
 
     result = FindAndReplaceEmbedCodesService.call(html)
@@ -30,9 +30,9 @@ RSpec.describe FindAndReplaceEmbedCodesService do
   end
 
   it "ignores blocks that aren't present in the database" do
-    edition = build(:edition, :pension)
+    edition = create(:edition, :pension)
 
-    html = edition.document.built_embed_code
+    html = edition.document.embed_code
 
     result = FindAndReplaceEmbedCodesService.call(html)
     expect(result).to eq(html)
@@ -41,7 +41,7 @@ RSpec.describe FindAndReplaceEmbedCodesService do
   it "ignores blocks that don't have a live version" do
     edition = create(:edition, :pension, state: "draft")
 
-    html = edition.document.built_embed_code
+    html = edition.document.embed_code
 
     result = FindAndReplaceEmbedCodesService.call(html)
     expect(result).to eq(html)

@@ -25,7 +25,7 @@ private
   end
 
   def embed_code
-    @embed_code ||= document.built_embed_code
+    @embed_code ||= document.embed_code
   end
 
   def data_attributes

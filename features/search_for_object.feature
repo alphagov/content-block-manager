@@ -96,16 +96,16 @@ Feature: Search for a content object
     And I add a filter for blocks updated two days ago
     And I click to view results
     And "1" content block is returned in total
-#
-#  Scenario: Editor searches for object by embed code
-#    When I visit the Content Block Manager home page
-#    And I search using the embed code for the pension block
-#    Then the pension block is found
-#    And "1" content block is returned in total
-#
-#    When I search using part of the embed code for the contact block
-#    Then the contact block is found
-#    And "1" content block is returned in total
+
+  Scenario: Editor searches for object by embed code
+    When I visit the Content Block Manager home page
+    And I search using the embed code for the pension block
+    Then the pension block is found
+    And "1" content block is returned in total
+
+    When I search using the content_id_alias part of the embed code for the contact block
+    Then the contact block is found
+    And "1" content block is returned in total
 
   Scenario: GDS Editor sees errors when searching by invalid dates
     When I visit the Content Block Manager home page
