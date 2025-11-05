@@ -198,5 +198,20 @@ RSpec.describe GeneratePreviewHtml do
         ).call
       end
     end
+
+    describe "when the frontend app is smart answers" do
+      let(:rendering_app) { "smartanswers" }
+
+      it "makes a request to smart-answers" do
+        expect(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for('smart-answers')}#{host_base_path}")).and_return(fake_frontend_response)
+
+        GeneratePreviewHtml.new(
+          content_id: host_content_id,
+          edition: block_to_preview,
+          base_path: host_base_path,
+          locale: "en",
+        ).call
+      end
+    end
   end
 end

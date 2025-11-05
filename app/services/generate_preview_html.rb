@@ -43,8 +43,16 @@ private
   def development_base_path
     @development_base_path ||= begin
       publishing_api_response = Services.publishing_api.get_content(content_id)
-      rendering_app = publishing_api_response["rendering_app"] || "frontend"
-      Plek.external_url_for(rendering_app)
+      Plek.external_url_for(rendering_app(publishing_api_response))
+    end
+  end
+
+  def rendering_app(publishing_api_response)
+    rendering_app = publishing_api_response["rendering_app"] || "frontend"
+    if rendering_app == "smartanswers"
+      "smart-answers"
+    else
+      rendering_app
     end
   end
 
