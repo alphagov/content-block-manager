@@ -79,6 +79,20 @@ RSpec.describe Document do
     end
   end
 
+  describe "#most_recent_edition" do
+    let(:document) { create(:document, :pension) }
+
+    before do
+      create(:edition, document: document, created_at: "2025-01-01", state: "superseded")
+      create(:edition, document: document, created_at: "2025-03-01", state: "draft")
+      create(:edition, document: document, created_at: "2025-02-01", state: "published")
+    end
+
+    it "returns the most recently created edition, regardless of state " do
+      expect(document.most_recent_edition.state).to eq("draft")
+    end
+  end
+
   describe ".live" do
     it "only returns documents with a latest edition" do
       document_with_latest_edition = create(:document, :pension)

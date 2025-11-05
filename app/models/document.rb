@@ -51,6 +51,10 @@ class Document < ApplicationRecord
     editions.where(state: :draft).order(created_at: :asc).last
   end
 
+  def most_recent_edition
+    editions.order(created_at: :asc).last
+  end
+
   def schema
     @schema ||= Schema.find_by_block_type(block_type)
   end
