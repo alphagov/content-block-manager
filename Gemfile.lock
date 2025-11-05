@@ -117,11 +117,11 @@ GEM
     coderay (1.1.3)
     concurrent-ruby (1.3.5)
     connection_pool (2.5.4)
-    content_block_tools (1.6.0)
-      actionview (>= 6, < 8.0.4)
+    content_block_tools (1.6.1)
+      actionview (>= 6, < 8.1.2)
       gds-api-adapters (~> 101.0.0)
       govspeak (>= 10.6.3)
-      rails (>= 6, < 8.0.4)
+      rails (>= 6, < 8.1.2)
       view_component (~> 4)
     crack (1.0.1)
       bigdecimal
@@ -300,7 +300,7 @@ GEM
     hashie (5.0.0)
     htmlentities (4.3.4)
     http-accept (1.7.0)
-    http-cookie (1.0.8)
+    http-cookie (1.1.0)
       domain_name (~> 0.5)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
@@ -366,7 +366,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2025.0826)
+    mime-types-data (3.2025.0924)
     mini_mime (1.1.5)
     minitest (5.25.5)
     minitest-fail-fast (0.1.0)
@@ -987,7 +987,7 @@ CHECKSUMS
   coderay (1.1.3) sha256=dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b
   concurrent-ruby (1.3.5) sha256=813b3e37aca6df2a21a3b9f1d497f8cbab24a2b94cab325bffe65ee0f6cbebc6
   connection_pool (2.5.4) sha256=e9e1922327416091f3f6542f5f4446c2a20745276b9aa796dd0bb2fd0ea1e70a
-  content_block_tools (1.6.0) sha256=14e7809e767fbd7f2ccf707f7b3eb809da70584942fbd6a4f5c941f7f20b53a6
+  content_block_tools (1.6.1) sha256=4880805b6e8e84a91d3f7d73cfe0eb97e0560a4eb209639d297094de2a15516d
   crack (1.0.1) sha256=ff4a10390cd31d66440b7524eb1841874db86201d5b70032028553130b6d4c7e
   crass (1.0.6) sha256=dc516022a56e7b3b156099abc81b6d2b08ea1ed12676ac7a5657617f012bd45d
   cucumber (10.1.1) sha256=293be9e52e526824dc6157e1afe8ee3716fd2902f88a0f4ae0ae37a46e452271
@@ -1051,7 +1051,7 @@ CHECKSUMS
   hashie (5.0.0) sha256=9d6c4e51f2a36d4616cbc8a322d619a162d8f42815a792596039fc95595603da
   htmlentities (4.3.4) sha256=125a73c6c9f2d1b62100b7c3c401e3624441b663762afa7fe428476435a673da
   http-accept (1.7.0) sha256=c626860682bfbb3b46462f8c39cd470fd7b0584f61b3cc9df5b2e9eb9972a126
-  http-cookie (1.0.8) sha256=b14fe0445cf24bf9ae098633e9b8d42e4c07c3c1f700672b09fbfe32ffd41aa6
+  http-cookie (1.1.0) sha256=38a5e60d1527eebc396831b8c4b9455440509881219273a6c99943d29eadbb19
   i18n (1.14.7) sha256=ceba573f8138ff2c0915427f1fc5bdf4aa3ab8ae88c8ce255eb3ecf0a11a5d0f
   io-console (0.8.1) sha256=1e15440a6b2f67b6ea496df7c474ed62c860ad11237f29b3bd187f054b925fcb
   irb (1.15.3) sha256=4349edff1efa7ff7bfd34cb9df74a133a588ba88c2718098b3b4468b81184aaa
@@ -1079,7 +1079,7 @@ CHECKSUMS
   memoist3 (1.0.0) sha256=686e42402cf150a362050c23143dc57b0ef88f8c344943ff8b7845792b50d56f
   method_source (1.1.0) sha256=181301c9c45b731b4769bc81e8860e72f9161ad7d66dd99103c9ab84f560f5c5
   mime-types (3.7.0) sha256=dcebf61c246f08e15a4de34e386ebe8233791e868564a470c3fe77c00eed5e56
-  mime-types-data (3.2025.0826) sha256=66baca9e2f464d084c8ff668f2bbe8afe30bebf12b52bce1f4b87b78eaaead35
+  mime-types-data (3.2025.0924) sha256=f276bca15e59f35767cbcf2bc10e023e9200b30bd6a572c1daf7f4cc24994728
   mini_mime (1.1.5) sha256=8681b7e2e4215f2a159f9400b5816d85e9d8c6c6b491e96a12797e798f8bccef
   minitest (5.25.5) sha256=391b6c6cb43a4802bfb7c93af1ebe2ac66a210293f4a3fb7db36f2fc7dc2c756
   minitest-fail-fast (0.1.0) sha256=25b75f85c52ec034f6494044ab960fdd264dfea8f10752a3fa617a1ef6e9fd4d
