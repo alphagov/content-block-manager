@@ -1,10 +1,6 @@
 class ScheduleEditionService
   include Dequeueable
 
-  def initialize(schema)
-    @schema = schema
-  end
-
   def call(edition)
     schedule_with_rollback do
       edition.update_document_reference_to_latest_edition!

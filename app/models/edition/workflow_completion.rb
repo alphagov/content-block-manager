@@ -29,8 +29,7 @@ private
   end
 
   def schedule
-    schema = Schema.find_by_block_type(@edition.document.block_type)
-    ScheduleEditionService.new(schema).call(@edition)
+    ScheduleEditionService.new.call(@edition)
     workflow_path(id: @edition.id, step: :confirmation, is_scheduled: true)
   end
 

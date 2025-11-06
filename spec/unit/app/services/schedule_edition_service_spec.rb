@@ -30,7 +30,7 @@ RSpec.describe ScheduleEditionService do
       )
 
       updated_edition = ScheduleEditionService
-        .new(schema)
+        .new
         .call(edition)
 
       expect(updated_edition.scheduled?).to be_truthy
@@ -50,7 +50,7 @@ RSpec.describe ScheduleEditionService do
       end
 
       ScheduleEditionService
-        .new(schema)
+        .new
         .call(edition)
 
       scheduled_editions.each do |scheduled_edition|
@@ -69,7 +69,7 @@ RSpec.describe ScheduleEditionService do
 
       expect {
         updated_edition = ScheduleEditionService
-          .new(schema)
+          .new
           .call(edition)
 
         expect(updated_edition.draft?).to be_truthy
@@ -85,7 +85,7 @@ RSpec.describe ScheduleEditionService do
       expect(edition).to receive(:schedule!).and_raise(exception)
 
       expect {
-        ScheduleEditionService.new(schema).call(edition)
+        ScheduleEditionService.new.call(edition)
       }.to raise_error(ArgumentError)
     end
 
@@ -115,7 +115,7 @@ RSpec.describe ScheduleEditionService do
       ).once
 
       ScheduleEditionService
-        .new(schema)
+        .new
         .call(edition)
     end
   end
