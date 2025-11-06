@@ -1,4 +1,4 @@
-module CanScheduleOrPublish
+module SchedulingValidator
   extend ActiveSupport::Concern
 
   def validate_scheduled_edition

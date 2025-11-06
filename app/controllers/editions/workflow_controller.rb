@@ -1,5 +1,5 @@
 class Editions::WorkflowController < BaseController
-  include CanScheduleOrPublish
+  include SchedulingValidator
 
   include Workflow::HasSteps
   include Workflow::ShowMethods

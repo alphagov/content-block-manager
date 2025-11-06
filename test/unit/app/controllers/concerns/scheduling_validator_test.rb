@@ -8,7 +8,7 @@ class EditionFormTestClass
     end
   end
 
-  include CanScheduleOrPublish
+  include SchedulingValidator
   include I18n::Base
 
   attr_reader :params, :edition

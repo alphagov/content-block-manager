@@ -1,5 +1,5 @@
 class Documents::ScheduleController < BaseController
-  include CanScheduleOrPublish
+  include SchedulingValidator
 
   def edit
     document = Document.find(params[:document_id])
