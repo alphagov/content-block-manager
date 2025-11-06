@@ -85,11 +85,31 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <%= render Shared::ContinueOrCancelButtonGroup.new(
-        form_id: "review",
-        button_text: button_text_submit_for(@edition),
-        edition: @edition,
-        ) %>
+      <div class="govuk-button-group govuk-!-margin-bottom-6">
+        <div>
+          <%= render "govuk_publishing_components/components/button", {
+            text: button_text_submit_for(@edition),
+            name: "confirm",
+            type: "submit",
+            form: "review",
+            data_attributes: {
+              "testid": "submit-button",
+            },
+          } %>
+        </div>
+        <% if current_user.has_permission?(User::Permissions::PRE_RELEASE_FEATURES_PERMISSION) %>
+          <div>
+            <%= render "govuk_publishing_components/components/button", {
+              text: "Save as draft",
+              href: document_path(@edition.document),
+              secondary_solid: true,
+            } %>
+          </div>
+        <% end %>
+        <div>
+          <%= render Shared::CancelButtonComponent.new(@edition) %>
+        </div>
+      </div>
     </div>
   </div>
 </div>

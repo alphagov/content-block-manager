@@ -11,19 +11,6 @@
     } %>
   </div>
   <div>
-    <% if is_editing? %>
-      <%= render "govuk_publishing_components/components/button", {
-        text: "Cancel",
-        href: helpers.cancel_workflow_index_path(edition),
-        secondary_solid: true,
-      } %>
-    <% else %>
-      <%= render Shared::CancelAndDeleteButtonComponent.new(
-        url: helpers.edition_path(
-          edition,
-          redirect_path: helpers.documents_path,
-        ),
-      ) %>
-    <% end %>
+    <%= render Shared::CancelButtonComponent.new(edition) %>
   </div>
 </div>
