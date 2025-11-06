@@ -96,7 +96,7 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
     it "removes steps not included in the create journey" do
       assert_equal workflow.steps, [
         Workflow::Step.new(:edit_draft, :edit_draft, :update_draft, true),
-        Workflow::Step.new(:review, :review, :validate_review_page, true),
+        Workflow::Step.new(:review, :review, :complete_workflow, true),
         Workflow::Step.new(:confirmation, :confirmation, nil, true),
       ].flatten
     end
@@ -225,7 +225,7 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
           Workflow::Step.new(:edit_draft, :edit_draft, :update_draft, true),
           Workflow::Step.new(:embedded_something, :embedded_something, :redirect_to_next_step, true),
           Workflow::Step.new(:embedded_something_else, :embedded_something_else, :redirect_to_next_step, true),
-          Workflow::Step.new(:review, :review, :validate_review_page, true),
+          Workflow::Step.new(:review, :review, :complete_workflow, true),
           Workflow::Step.new(:confirmation, :confirmation, nil, true),
         ].flatten
       end
@@ -379,7 +379,7 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
           Workflow::Step.new(:edit_draft, :edit_draft, :update_draft, true),
           Workflow::Step.new(:group_my_group, :group_my_group, :redirect_to_next_step, true),
           Workflow::Step.new(:embedded_ungrouped, :embedded_ungrouped, :redirect_to_next_step, true),
-          Workflow::Step.new(:review, :review, :validate_review_page, true),
+          Workflow::Step.new(:review, :review, :complete_workflow, true),
           Workflow::Step.new(:confirmation, :confirmation, nil, true),
         ].flatten
       end
