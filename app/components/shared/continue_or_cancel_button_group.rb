@@ -8,8 +8,4 @@ class Shared::ContinueOrCancelButtonGroup < ViewComponent::Base
 private
 
   attr_reader :button_text, :form_id, :edition
-
-  def is_editing?
-    edition.document.editions.count > 1
-  end
 end

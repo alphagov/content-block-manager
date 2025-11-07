@@ -1,5 +1,3 @@
-require "test_helper"
-
 class ParamsPreprocessorClass
   include ParamsPreprocessor
 
@@ -10,9 +8,7 @@ class ParamsPreprocessorClass
   end
 end
 
-class ParamsPreprocessorClassTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe ParamsPreprocessorClass do
   let(:params) { { object_type:, "something" => "else" } }
 
   let(:object) { ParamsPreprocessorClass.new(params) }
@@ -21,14 +17,14 @@ class ParamsPreprocessorClassTest < ActiveSupport::TestCase
     let(:object_type) { "telephones" }
 
     it "should call the TelephonePreprocessor" do
-      processed_params = stub(:processed_params)
-      preprocessor = stub(:preprocessor, processed_params:)
+      processed_params = double(:processed_params)
+      preprocessor = double(:preprocessor, processed_params:)
 
-      ParamsPreprocessors::TelephonePreprocessor.expects(:new)
+      expect(ParamsPreprocessors::TelephonePreprocessor).to receive(:new)
                                                 .with(params)
-                                                .returns(preprocessor)
+                                                .and_return(preprocessor)
 
-      assert_equal object.processed_params, processed_params
+      expect(processed_params).to eq(object.processed_params)
     end
   end
 end

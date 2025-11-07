@@ -9,7 +9,7 @@ module Workflow
       Step.new(:internal_note, :internal_note, :update_internal_note, false),
       Step.new(:change_note, :change_note, :update_change_note, false),
       Step.new(:schedule_publishing, :schedule_publishing, :validate_schedule, false),
-      Step.new(:review, :review, :validate_review_page, true),
+      Step.new(:review, :review, :complete_workflow, true),
       Step.new(:confirmation, :confirmation, nil, true),
     ].freeze
   end

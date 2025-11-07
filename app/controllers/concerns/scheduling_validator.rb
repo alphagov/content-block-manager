@@ -1,26 +1,5 @@
-module CanScheduleOrPublish
+module SchedulingValidator
   extend ActiveSupport::Concern
-
-  def self.included(base)
-    base.helper_method :is_scheduling?
-  end
-
-  def schedule_or_publish
-    @schema = Schema.find_by_block_type(@edition.document.block_type)
-
-    if is_scheduling?
-      ScheduleEditionService.new(@schema).call(@edition)
-    else
-      publish and return
-    end
-
-    redirect_to workflow_path(id: @edition.id, step: :confirmation, is_scheduled: true)
-  end
-
-  def publish
-    new_edition = PublishEditionService.new.call(@edition)
-    redirect_to workflow_path(id: new_edition.id, step: :confirmation)
-  end
 
   def validate_scheduled_edition
     case params[:schedule_publishing]
@@ -70,9 +49,5 @@ module CanScheduleOrPublish
       scheduled_publication_params["scheduled_publication(2i)"],
       scheduled_publication_params["scheduled_publication(3i)"],
     ]
-  end
-
-  def is_scheduling?
-    @edition.scheduled_publication.present?
   end
 end

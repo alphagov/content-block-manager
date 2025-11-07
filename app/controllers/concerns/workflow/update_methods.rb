@@ -47,13 +47,14 @@ module Workflow::UpdateMethods
     render :change_note, status: :unprocessable_content
   end
 
-  def validate_review_page
+  def complete_workflow
     if params[:is_confirmed].blank?
       @confirm_error_copy = I18n.t("edition.review_page.errors.confirm")
       @error_summary_errors = [{ text: @confirm_error_copy, href: "#is_confirmed-0" }]
       render :review, status: :unprocessable_content
     else
-      schedule_or_publish
+      next_path = Edition::WorkflowCompletion.new(@edition, params[:save_action]).call
+      redirect_to next_path
     end
   end
 

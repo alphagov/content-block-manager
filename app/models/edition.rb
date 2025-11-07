@@ -61,6 +61,10 @@ class Edition < ApplicationRecord
     }.flatten
   end
 
+  def is_scheduling?
+    scheduled_publication.present?
+  end
+
 private
 
   def remove_destroyed(item)

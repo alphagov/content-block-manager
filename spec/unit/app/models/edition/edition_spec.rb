@@ -557,4 +557,16 @@ RSpec.describe Edition, type: :model do
       )
     end
   end
+
+  describe "#is_scheduling?" do
+    it "should return true if the edition is being scheduled" do
+      edition.scheduled_publication = Time.zone.now
+      expect(edition.is_scheduling?).to be true
+    end
+
+    it "should return false if the edition is not being scheduled" do
+      edition.scheduled_publication = nil
+      expect(edition.is_scheduling?).to be false
+    end
+  end
 end

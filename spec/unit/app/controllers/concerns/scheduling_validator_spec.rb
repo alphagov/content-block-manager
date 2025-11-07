@@ -1,5 +1,3 @@
-require "test_helper"
-
 class EditionFormTestClass
   class << self
     def helper_method(method)
@@ -8,7 +6,7 @@ class EditionFormTestClass
     end
   end
 
-  include CanScheduleOrPublish
+  include SchedulingValidator
   include I18n::Base
 
   attr_reader :params, :edition
@@ -29,16 +27,14 @@ class EditionFormTestClass
   end
 end
 
-class EditionFormTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe EditionForm do
   def it_raises_a_validation_error(object, error_key)
     error = assert_raises ActiveRecord::RecordInvalid do
       object.validate_scheduled_edition
     end
 
-    assert_equal 1, error.record.errors.messages.count
-    assert_equal I18n.t("activerecord.errors.models.edition.attributes.#{error_key}"), error.record.errors.full_messages[0]
+    expect(error.record.errors.messages.count).to eq(1)
+    expect(error.record.errors.full_messages.first).to eq(I18n.t("activerecord.errors.models.edition.attributes.#{error_key}"))
   end
 
   describe "#validate_scheduled_edition" do

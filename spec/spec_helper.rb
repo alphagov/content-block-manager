@@ -23,6 +23,7 @@ RSpec.configure do |config|
   config.include Capybara::RSpecMatchers, type: :component
   config.include FactoryBot::Syntax::Methods
   config.include GdsApi::TestHelpers::PublishingApi
+  config.include ActiveSupport::Testing::Assertions
 
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true

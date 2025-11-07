@@ -20,7 +20,7 @@ class Workflow::StepsTest < ActiveSupport::TestCase
       it "returns only steps included in create journey" do
         expected_steps = [
           Workflow::Step.new(:edit_draft, :edit_draft, :update_draft, true),
-          Workflow::Step.new(:review, :review, :validate_review_page, true),
+          Workflow::Step.new(:review, :review, :complete_workflow, true),
           Workflow::Step.new(:confirmation, :confirmation, nil, true),
         ]
 
@@ -170,7 +170,7 @@ class Workflow::StepsTest < ActiveSupport::TestCase
         expected_steps = [
           Workflow::Step.new(:edit_draft, :edit_draft, :update_draft, true),
           Workflow::Step.new(:embedded_contact_details, :embedded_contact_details, :redirect_to_next_step, true),
-          Workflow::Step.new(:review, :review, :validate_review_page, true),
+          Workflow::Step.new(:review, :review, :complete_workflow, true),
           Workflow::Step.new(:confirmation, :confirmation, nil, true),
         ]
 
