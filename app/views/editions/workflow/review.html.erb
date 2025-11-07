@@ -89,7 +89,8 @@
         <div>
           <%= render "govuk_publishing_components/components/button", {
             text: button_text_submit_for(@edition),
-            name: "confirm",
+            name: "save_action",
+            value: save_action_value_for(@edition),
             type: "submit",
             form: "review",
             data_attributes: {
@@ -101,7 +102,10 @@
           <div>
             <%= render "govuk_publishing_components/components/button", {
               text: "Save as draft",
-              href: document_path(@edition.document),
+              name: "save_action",
+              value: "save_as_draft",
+              type: "submit",
+              form: "review",
               secondary_solid: true,
             } %>
           </div>

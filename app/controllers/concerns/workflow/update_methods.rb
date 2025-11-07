@@ -53,7 +53,8 @@ module Workflow::UpdateMethods
       @error_summary_errors = [{ text: @confirm_error_copy, href: "#is_confirmed-0" }]
       render :review, status: :unprocessable_content
     else
-      schedule_or_publish
+      next_path = Edition::WorkflowCompletion.new(@edition, params[:save_action]).call
+      redirect_to next_path
     end
   end
 

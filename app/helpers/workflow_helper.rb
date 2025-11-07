@@ -4,4 +4,8 @@ module WorkflowHelper
 
     edition.document.is_new_block? ? "Create" : "Publish"
   end
+
+  def save_action_value_for_edition
+    is_scheduling? ? "schedule" : "publish"
+  end
 end
