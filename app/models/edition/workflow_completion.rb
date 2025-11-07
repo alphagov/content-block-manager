@@ -14,6 +14,8 @@ class Edition::WorkflowCompletion
       publish
     when "schedule"
       schedule
+    when "save_as_draft"
+      save_as_draft
     else
       raise UnhandledSaveActionError, "Unknown save action: '#{@save_action}'"
     end
@@ -31,5 +33,9 @@ private
     ScheduleEditionService.new(schema).call(@edition)
     workflow_path(id: @edition.id, step: :confirmation, is_scheduled: true)
   end
-end
 
+  def save_as_draft
+    # No action needed here as we don't publish drafts to the Publishing API. Just redirect.
+    document_path(@edition.document)
+  end
+end
