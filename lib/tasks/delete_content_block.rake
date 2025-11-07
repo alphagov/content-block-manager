@@ -18,5 +18,9 @@ task :delete_content_block, [:content_id] => :environment do |_t, args|
 
   document.soft_delete
 
-  puts "Content block `#{content_id}` has been deleted."
+  # :nocov:
+  if ENV["RAILS_ENV"] != "test"
+    puts "Content block `#{content_id}` has been deleted."
+  end
+  # :nocov:
 end
