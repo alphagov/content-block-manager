@@ -39,6 +39,18 @@ RSpec.describe Edition::Workflow, type: :model do
       edition.ready_for_2i!
       assert edition.awaiting_2i?
     end
+
+    describe "translations for status tag" do
+      it "finds a status for each state's tag" do
+        aggregate_failures do
+          Edition.new.available_states.each do |state|
+            expect(I18n.t("edition.states.label.#{state}"))
+              .not_to match(/Translation missing/),
+                      "Translation not found for tag status for state '#{state}'"
+          end
+        end
+      end
+    end
   end
 
   describe "validation" do

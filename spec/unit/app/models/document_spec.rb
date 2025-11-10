@@ -70,12 +70,63 @@ RSpec.describe Document do
   end
 
   describe "latest_edition" do
-    it "returns the latest edition" do
-      document = create(:document, :pension)
-      _first_edition = create(:edition, document:)
-      second_edition = create(:edition, document:)
+    let(:document) { create(:document, :pension) }
 
-      expect(document.latest_edition).to eq(second_edition)
+    let(:latest_edition_1) { create(:edition, document: document) }
+    let(:latest_edition_2) { create(:edition, document: document) }
+
+    context "when the #latest_edition_id FK is set" do
+      before do
+        document.update!(latest_edition_id: latest_edition_1.id)
+      end
+
+      it "returns the associated edition" do
+        expect(document.reload.latest_edition).to eq(latest_edition_1)
+
+        document.update!(latest_edition_id: latest_edition_2.id)
+
+        expect(document.reload.latest_edition).to eq(latest_edition_2)
+      end
+    end
+
+    context "when the latest_edition_id FK is NOT set" do
+      before do
+        document.update!(latest_edition_id: nil)
+      end
+
+      it "returns nil" do
+        expect(document.reload.latest_edition).to be_nil
+      end
+    end
+
+    context "when an edition is assigned using latest_edition=" do
+      before do
+        document.latest_edition = latest_edition_1
+      end
+
+      it "does NOT set the given edition to be returned as #latest_edition" do
+        expect(document.latest_edition_id).to be_nil
+        expect(document.reload.latest_edition).to be_nil
+
+        document.latest_edition = latest_edition_2
+
+        expect(document.latest_edition_id).to be_nil
+        expect(document.reload.latest_edition).to be_nil
+      end
+    end
+  end
+
+  describe "#most_recent_edition" do
+    let(:document) { create(:document, :pension) }
+
+    before do
+      create(:edition, document: document, created_at: "2025-01-01", state: "superseded")
+      create(:edition, document: document, created_at: "2025-03-01", state: "draft")
+      create(:edition, document: document, created_at: "2025-02-01", state: "published")
+    end
+
+    it "returns the most recently created edition, regardless of state " do
+      expect(document.most_recent_edition.state).to eq("draft")
     end
   end
 
@@ -133,7 +184,7 @@ RSpec.describe Document do
     it "returns the latest edition's title" do
       document = create(:document, :pension)
       _oldest_edition = create(:edition, document:)
-      latest_edition = create(:edition, document:, title: "I am the latest edition")
+      latest_edition = create(:edition, :latest, document:, title: "I am the latest edition")
 
       expect(document.title).to eq(latest_edition.title)
     end
