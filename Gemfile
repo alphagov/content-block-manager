@@ -4,6 +4,7 @@ gem "babosa"
 gem "bootsnap", require: false
 gem "content_block_tools"
 gem "dartsass-rails"
+gem "faraday"
 gem "flipflop"
 gem "friendly_id"
 gem "gds-api-adapters"

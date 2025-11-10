@@ -909,6 +909,7 @@ DEPENDENCIES
   equivalent-xml
   erb_lint
   factory_bot
+  faraday
   flipflop
   friendly_id
   gds-api-adapters
