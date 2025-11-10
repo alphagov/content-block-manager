@@ -1,4 +1,3 @@
-require "test_helper"
 require "gds-sso/lint/user_test"
 
 class GDS::SSO::Lint::UserTest
@@ -11,14 +10,12 @@ class GDS::SSO::Lint::UserTest
   end
 end
 
-class UserTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe User do
   describe "validations" do
     it "validates the presence of a name" do
       user = build(:user, name: nil)
 
-      assert user.invalid?
+      expect(user).to be_invalid
     end
   end
 
@@ -26,7 +23,7 @@ class UserTest < ActiveSupport::TestCase
     it "returns Editor" do
       user = build(:user)
 
-      assert_equal "Editor", user.role
+      expect(user.role).to eq("Editor")
     end
   end
 
@@ -34,16 +31,16 @@ class UserTest < ActiveSupport::TestCase
     it "returns nil when organisation_content_id is nil" do
       user = build(:user)
 
-      assert_nil user.organisation
+      expect(user.organisation).to be_nil
     end
 
     it "returns an organisation when one exists" do
       organisation = build(:organisation, id: SecureRandom.uuid)
       user = build(:user, organisation_content_id: organisation.id)
 
-      Organisation.expects(:find).with(organisation.id).returns(organisation)
+      expect(Organisation).to receive(:find).with(organisation.id).and_return(organisation)
 
-      assert_equal user.organisation, organisation
+      expect(organisation).to eq(user.organisation)
     end
   end
 
@@ -66,8 +63,8 @@ class UserTest < ActiveSupport::TestCase
       user1 = build(:user, email: "e2euser@example.com")
       user2 = build(:user, email: "anothere2e@example.com")
 
-      assert user1.is_e2e_user?
-      assert user2.is_e2e_user?
+      expect(user1).to be_is_e2e_user
+      expect(user2).to be_is_e2e_user
     end
   end
 end

@@ -1,8 +1,4 @@
-require "test_helper"
-
-class HostContentItemTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe HostContentItem do
   describe ".for_document" do
     let(:described_class) { HostContentItem }
 
@@ -46,50 +42,50 @@ class HostContentItemTest < ActiveSupport::TestCase
 
     let(:fake_api_response) do
       GdsApi::Response.new(
-        stub("http_response", code: 200, body: response_body.to_json),
+        double("http_response", code: 200, body: response_body.to_json),
       )
     end
-    let(:publishing_api_mock) { stub("GdsApi::PublishingApi") }
-    let(:document) { mock("document", content_id: target_content_id) }
+    let(:publishing_api_mock) { double("GdsApi::PublishingApi") }
+    let(:document) { double("document", content_id: target_content_id) }
 
     before do
-      Services.expects(:publishing_api).returns(publishing_api_mock)
-      SignonUser.stubs(:with_uuids).returns([editor])
+      expect(Services).to receive(:publishing_api).and_return(publishing_api_mock)
+      allow(SignonUser).to receive(:with_uuids).and_return([editor])
     end
 
     it "calls the Publishing API for the content which embeds the target" do
-      publishing_api_mock.expects(:get_host_content_for_content_id)
+      expect(publishing_api_mock).to receive(:get_host_content_for_content_id)
                          .with(target_content_id, { order: described_class::DEFAULT_ORDER })
-                         .returns(fake_api_response)
+                         .and_return(fake_api_response)
 
       described_class.for_document(document)
     end
 
     it "supports pagination" do
-      publishing_api_mock.expects(:get_host_content_for_content_id)
+      expect(publishing_api_mock).to receive(:get_host_content_for_content_id)
                          .with(target_content_id, { page: 1, order: described_class::DEFAULT_ORDER })
-                         .returns(fake_api_response)
+                         .and_return(fake_api_response)
 
       described_class.for_document(document, page: 1)
     end
 
     it "supports sorting" do
-      publishing_api_mock.expects(:get_host_content_for_content_id)
+      expect(publishing_api_mock).to receive(:get_host_content_for_content_id)
                          .with(target_content_id, { order: "-abc" })
-                         .returns(fake_api_response)
+                         .and_return(fake_api_response)
 
       described_class.for_document(document, order: "-abc")
     end
 
     it "calls the editor finder with the correct argument" do
-      publishing_api_mock.expects(:get_host_content_for_content_id).returns(fake_api_response)
-      SignonUser.expects(:with_uuids).with([last_edited_by_editor_id]).returns([editor])
+      expect(publishing_api_mock).to receive(:get_host_content_for_content_id).and_return(fake_api_response)
+      expect(SignonUser).to receive(:with_uuids).with([last_edited_by_editor_id]).and_return([editor])
 
       described_class.for_document(document)
     end
 
     it "returns items" do
-      publishing_api_mock.expects(:get_host_content_for_content_id).returns(fake_api_response)
+      expect(publishing_api_mock).to receive(:get_host_content_for_content_id).and_return(fake_api_response)
 
       result = described_class.for_document(document)
 
@@ -99,44 +95,44 @@ class HostContentItemTest < ActiveSupport::TestCase
         "base_path" => response_body["results"][0]["primary_publishing_organisation"]["base_path"],
       }
 
-      assert_equal result.total, response_body["total"]
-      assert_equal result.total_pages, response_body["total_pages"]
+      expect(response_body["total"]).to eq(result.total)
+      expect(response_body["total_pages"]).to eq(result.total_pages)
 
-      assert_equal result.rollup.views, rollup.views
-      assert_equal result.rollup.locations, rollup.locations
-      assert_equal result.rollup.instances, rollup.instances
-      assert_equal result.rollup.organisations, rollup.organisations
+      expect(rollup.views).to eq(result.rollup.views)
+      expect(rollup.locations).to eq(result.rollup.locations)
+      expect(rollup.instances).to eq(result.rollup.instances)
+      expect(rollup.organisations).to eq(result.rollup.organisations)
 
-      assert_equal result[0].title, response_body["results"][0]["title"]
-      assert_equal result[0].base_path, response_body["results"][0]["base_path"]
-      assert_equal result[0].document_type, response_body["results"][0]["document_type"]
-      assert_equal result[0].publishing_app, response_body["results"][0]["publishing_app"]
-      assert_equal result[0].last_edited_by_editor, editor
-      assert_equal result[0].last_edited_at, Time.zone.parse(response_body["results"][0]["last_edited_at"])
-      assert_equal result[0].unique_pageviews, response_body["results"][0]["unique_pageviews"]
-      assert_equal result[0].instances, response_body["results"][0]["instances"]
-      assert_equal result[0].host_content_id, response_body["results"][0]["host_content_id"]
-      assert_equal result[0].host_locale, response_body["results"][0]["host_locale"]
+      expect(response_body["results"][0]["title"]).to eq(result[0].title)
+      expect(response_body["results"][0]["base_path"]).to eq(result[0].base_path)
+      expect(response_body["results"][0]["document_type"]).to eq(result[0].document_type)
+      expect(response_body["results"][0]["publishing_app"]).to eq(result[0].publishing_app)
+      expect(editor).to eq(result[0].last_edited_by_editor)
+      expect(Time.zone.parse(response_body["results"][0]["last_edited_at"])).to eq(result[0].last_edited_at)
+      expect(response_body["results"][0]["unique_pageviews"]).to eq(result[0].unique_pageviews)
+      expect(response_body["results"][0]["instances"]).to eq(result[0].instances)
+      expect(response_body["results"][0]["host_content_id"]).to eq(result[0].host_content_id)
+      expect(response_body["results"][0]["host_locale"]).to eq(result[0].host_locale)
 
-      assert_equal result[0].publishing_organisation, expected_publishing_organisation
+      expect(expected_publishing_organisation).to eq(result.[](0).publishing_organisation)
     end
 
     describe "when last_edited_by_editor_id is nil" do
       let(:last_edited_by_editor_id) { nil }
 
       it "returns nil for last_edited_by_editor" do
-        publishing_api_mock.expects(:get_host_content_for_content_id).returns(fake_api_response)
+        expect(publishing_api_mock).to receive(:get_host_content_for_content_id).and_return(fake_api_response)
 
-        SignonUser.expects(:with_uuids).never
+        expect(SignonUser).to receive(:with_uuids).never
 
         result = described_class.for_document(document)
 
-        assert_nil result[0].last_edited_by_editor
+        expect(result[0].last_edited_by_editor).to be_nil
       end
     end
 
     it "returns an error if the content that embeds the target can't be loaded" do
-      publishing_api_mock.expects(:get_host_content_for_content_id).raises(
+      allow(publishing_api_mock).to receive(:get_host_content_for_content_id).and_raise(
         GdsApi::HTTPErrorResponse.new(
           500,
           "An internal error message",
@@ -144,9 +140,7 @@ class HostContentItemTest < ActiveSupport::TestCase
         ),
       )
 
-      assert_raises(GdsApi::HTTPErrorResponse) do
-        described_class.for_document(document)
-      end
+      expect { described_class.for_document(document) }.to raise_error(GdsApi::HTTPErrorResponse)
     end
   end
 
@@ -155,8 +149,8 @@ class HostContentItemTest < ActiveSupport::TestCase
       last_edited_at = 4.days.ago
       host_content_item = build(:host_content_item, last_edited_at: last_edited_at.to_s)
 
-      assert host_content_item.last_edited_at.is_a?(ActiveSupport::TimeWithZone)
-      assert_equal host_content_item.last_edited_at, last_edited_at
+      expect(host_content_item.last_edited_at).to be_an_instance_of(ActiveSupport::TimeWithZone)
+      expect(last_edited_at).to eq(host_content_item.last_edited_at)
     end
   end
 end

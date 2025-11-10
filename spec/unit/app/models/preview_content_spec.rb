@@ -1,17 +1,13 @@
-require "test_helper"
-
-class PreviewContentTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe PreviewContent do
   let(:title) { "Ministry of Example" }
   let(:html) { "<p>Ministry of Example</p>" }
   let(:instances_count) { "2" }
   let(:preview_content) { build(:preview_content, title:, instances_count:, html:) }
 
   it "returns title, html and instances count" do
-    assert_equal preview_content.title, title
-    assert_equal preview_content.html, html
-    assert_equal preview_content.instances_count, instances_count
+    expect(title).to eq(preview_content.title)
+    expect(html).to eq(preview_content.html)
+    expect(instances_count).to eq(preview_content.instances_count)
   end
 
   describe ".for_content_id" do
@@ -26,46 +22,46 @@ class PreviewContentTest < ActiveSupport::TestCase
       build(:edition, :pension, document:, details: { "email_address" => "new@new.com" }, id: 1)
     end
     let(:metadata_response) do
-      stub(:response, parsed_content: { "instances" => 2 })
+      double(:response, parsed_content: { "instances" => 2 })
     end
-    let(:preview_response) { stub(:preview_response, call: html) }
+    let(:preview_response) { double(:preview_response, call: html) }
     let(:html) { "SOME_HTML" }
 
     describe "when a locale is not provided" do
-      setup do
+      before do
         stub_publishing_api_has_item(content_id: host_content_id, title: host_title, base_path: host_base_path)
-        Services.publishing_api.expects(:get_host_content_item_for_content_id)
+        allow(Services.publishing_api).to receive(:get_host_content_item_for_content_id)
                 .with(block_to_preview.document.content_id, host_content_id, { locale: "en" })
-                .returns(metadata_response)
+                .and_return(metadata_response)
       end
 
       it "returns the title of host document" do
-        GeneratePreviewHtml.expects(:new)
+        expect(GeneratePreviewHtml).to receive(:new)
                                                 .with(content_id: host_content_id,
                                                       edition: block_to_preview,
                                                       base_path: host_base_path,
                                                       locale: "en")
-                                                .returns(preview_response)
+                                                .and_return(preview_response)
 
         preview_content = PreviewContent.for_content_id(
           content_id: host_content_id,
           edition: block_to_preview,
         )
 
-        assert_equal host_title, preview_content.title
-        assert_equal 2, preview_content.instances_count
-        assert_equal html, preview_content.html
+        expect(preview_content.title).to eq(host_title)
+        expect(preview_content.instances_count).to eq(2)
+        expect(preview_content.html).to eq(html)
       end
 
       it "allows a base_path to be provided" do
         base_path = "/something/different"
 
-        GeneratePreviewHtml.expects(:new)
+        expect(GeneratePreviewHtml).to receive(:new)
                                                 .with(content_id: host_content_id,
                                                       edition: block_to_preview,
                                                       base_path:,
                                                       locale: "en")
-                                                .returns(preview_response)
+                                                .and_return(preview_response)
 
         PreviewContent.for_content_id(
           content_id: host_content_id,
@@ -76,20 +72,20 @@ class PreviewContentTest < ActiveSupport::TestCase
     end
 
     describe "when a locale is provided" do
-      setup do
+      before do
         stub_publishing_api_has_item(content_id: host_content_id, title: host_title, base_path: host_base_path, locale: "cy")
-        Services.publishing_api.expects(:get_host_content_item_for_content_id)
+        allow(Services.publishing_api).to receive(:get_host_content_item_for_content_id)
                 .with(block_to_preview.document.content_id, host_content_id, { locale: "cy" })
-                .returns(metadata_response)
+                .and_return(metadata_response)
       end
 
       it "returns the title of host document" do
-        GeneratePreviewHtml.expects(:new)
+        expect(GeneratePreviewHtml).to receive(:new)
                                                 .with(content_id: host_content_id,
                                                       edition: block_to_preview,
                                                       base_path: host_base_path,
                                                       locale: "cy")
-                                                .returns(preview_response)
+                                                .and_return(preview_response)
 
         preview_content = PreviewContent.for_content_id(
           content_id: host_content_id,
@@ -98,9 +94,9 @@ class PreviewContentTest < ActiveSupport::TestCase
           locale: "cy",
         )
 
-        assert_equal host_title, preview_content.title
-        assert_equal 2, preview_content.instances_count
-        assert_equal html, preview_content.html
+        expect(preview_content.title).to eq(host_title)
+        expect(preview_content.instances_count).to eq(2)
+        expect(preview_content.html).to eq(html)
       end
     end
   end

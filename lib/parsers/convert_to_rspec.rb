@@ -67,7 +67,7 @@ module Parsers
     end
 
     def remove_test_helper(body)
-      body.gsub(/require "test_helper"\n\n/, "")
+      body.gsub(/require "test_helper"(\n)+/, "")
     end
 
     def remove_minitest_require(body)
