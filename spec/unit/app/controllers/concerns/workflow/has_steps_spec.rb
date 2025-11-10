@@ -1,5 +1,3 @@
-require "test_helper"
-
 class WorkflowTestClass
   class << self
     def before_action(method)
@@ -20,10 +18,8 @@ class WorkflowTestClass
   end
 end
 
-class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
-  extend Minitest::Spec::DSL
-
-  include IntegrationTestHelpers
+RSpec.describe Workflow::HasSteps, type: :integration do
+  include IntegrationSpecHelpers
 
   let(:document) { build(:document, :pension) }
   let(:edition) { build(:edition, :pension, document: document) }
@@ -31,8 +27,8 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
   let!(:schema) { stub_request_for_schema(document.block_type) }
 
   before do
-    Edition.stubs(:find).with(edition.id).returns(edition)
-    document.stubs(:schema).returns(schema)
+    allow(Edition).to receive(:find).with(edition.id).and_return(edition)
+    allow(document).to receive(:schema).and_return(schema)
   end
 
   let(:workflow) { WorkflowTestClass.new({ id: edition.id, step: }) }
@@ -43,7 +39,7 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
         let(:step) { step.name }
 
         it "returns the step" do
-          assert_equal workflow.current_step, step
+          expect(step).to eq(workflow.current_step)
         end
       end
     end
@@ -62,7 +58,7 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
         let(:step) { current_step }
 
         it "returns #{expected_step} step" do
-          assert_equal workflow.next_step.name, expected_step
+          expect(expected_step).to eq(workflow.next_step.name)
         end
       end
     end
@@ -80,7 +76,7 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
         let(:step) { current_step }
 
         it "returns #{expected_step} step" do
-          assert_equal workflow.previous_step.name, expected_step
+          expect(expected_step).to eq(workflow.previous_step.name)
         end
       end
     end
@@ -90,15 +86,15 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
     let(:step) { "something" }
 
     before do
-      document.expects(:is_new_block?).at_least_once.returns(true)
+      expect(document).to receive(:is_new_block?).at_least(:once).and_return(true)
     end
 
     it "removes steps not included in the create journey" do
-      assert_equal workflow.steps, [
+      expect(workflow.steps).to eq([
         Workflow::Step.new(:edit_draft, :edit_draft, :update_draft, true),
         Workflow::Step.new(:review, :review, :complete_workflow, true),
         Workflow::Step.new(:confirmation, :confirmation, nil, true),
-      ].flatten
+      ].flatten)
     end
 
     describe "#next_step" do
@@ -110,7 +106,7 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
           let(:step) { current_step }
 
           it "returns #{expected_step} step" do
-            assert_equal workflow.next_step.name, expected_step
+            expect(expected_step).to eq(workflow.next_step.name)
           end
         end
       end
@@ -124,7 +120,7 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
           let(:step) { current_step }
 
           it "returns #{expected_step} step" do
-            assert_equal workflow.previous_step.name, expected_step
+            expect(expected_step).to eq(workflow.previous_step.name)
           end
         end
       end
@@ -134,8 +130,8 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
   describe "when a schema has subschemas" do
     let(:subschemas) do
       [
-        stub("subschema", id: "something", group: nil),
-        stub("subschema", id: "something_else", group: nil),
+        double("subschema", id: "something", group: nil),
+        double("subschema", id: "something_else", group: nil),
       ]
     end
 
@@ -144,32 +140,32 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
     let(:step) { "something" }
 
     before do
-      edition.stubs(:has_entries_for_subschema_id?).with("something").returns(true)
-      edition.stubs(:has_entries_for_subschema_id?).with("something_else").returns(true)
+      allow(edition).to receive(:has_entries_for_subschema_id?).with("something").and_return(true)
+      allow(edition).to receive(:has_entries_for_subschema_id?).with("something_else").and_return(true)
     end
 
     describe "#steps" do
       it "inserts the subschemas into the flow" do
-        assert_equal workflow.steps, [
+        expect(workflow.steps).to eq([
           Workflow::Step::ALL[0],
           Workflow::Step.new(:embedded_something, :embedded_something, :redirect_to_next_step, true),
           Workflow::Step.new(:embedded_something_else, :embedded_something_else, :redirect_to_next_step, true),
           Workflow::Step::ALL[1..],
-        ].flatten
+        ].flatten)
       end
 
       describe "when there are entries missing for a given subschema" do
         before do
-          edition.stubs(:has_entries_for_subschema_id?).with("something").returns(false)
-          edition.stubs(:has_entries_for_subschema_id?).with("something_else").returns(true)
+          allow(edition).to receive(:has_entries_for_subschema_id?).with("something").and_return(false)
+          allow(edition).to receive(:has_entries_for_subschema_id?).with("something_else").and_return(true)
         end
 
         it "skips the subschemas without data" do
-          assert_equal workflow.steps, [
+          expect(workflow.steps).to eq([
             Workflow::Step::ALL[0],
             Workflow::Step.new(:embedded_something_else, :embedded_something_else, :redirect_to_next_step, true),
             Workflow::Step::ALL[1..],
-          ].flatten
+          ].flatten)
         end
       end
     end
@@ -189,7 +185,7 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
           let(:step) { current_step }
 
           it "returns #{expected_step} step" do
-            assert_equal workflow.next_step.name, expected_step
+            expect(expected_step).to eq(workflow.next_step.name)
           end
         end
       end
@@ -209,7 +205,7 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
           let(:step) { current_step }
 
           it "returns #{expected_step} step" do
-            assert_equal workflow.previous_step.name, expected_step
+            expect(expected_step).to eq(workflow.previous_step.name)
           end
         end
       end
@@ -217,17 +213,17 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
 
     describe "and the content block is new" do
       before do
-        document.expects(:is_new_block?).at_least_once.returns(true)
+        expect(document).to receive(:is_new_block?).at_least(:once).and_return(true)
       end
 
       it "removes steps not included in the create journey" do
-        assert_equal workflow.steps, [
+        expect(workflow.steps).to eq([
           Workflow::Step.new(:edit_draft, :edit_draft, :update_draft, true),
           Workflow::Step.new(:embedded_something, :embedded_something, :redirect_to_next_step, true),
           Workflow::Step.new(:embedded_something_else, :embedded_something_else, :redirect_to_next_step, true),
           Workflow::Step.new(:review, :review, :complete_workflow, true),
           Workflow::Step.new(:confirmation, :confirmation, nil, true),
-        ].flatten
+        ].flatten)
       end
 
       describe "#next_step" do
@@ -241,7 +237,7 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
             let(:step) { current_step }
 
             it "returns #{expected_step} step" do
-              assert_equal workflow.next_step.name, expected_step
+              expect(expected_step).to eq(workflow.next_step.name)
             end
           end
         end
@@ -257,7 +253,7 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
             let(:step) { current_step }
 
             it "returns #{expected_step} step" do
-              assert_equal workflow.previous_step.name, expected_step
+              expect(expected_step).to eq(workflow.previous_step.name)
             end
           end
         end
@@ -268,9 +264,9 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
   describe "when a schema has grouped subschemas" do
     let(:subschemas) do
       [
-        stub("subschema", id: "something", group: "my_group"),
-        stub("subschema", id: "something_else", group: "my_group"),
-        stub("subschema", id: "ungrouped", group: nil),
+        double("subschema", id: "something", group: "my_group"),
+        double("subschema", id: "something_else", group: "my_group"),
+        double("subschema", id: "ungrouped", group: nil),
       ]
     end
 
@@ -279,50 +275,50 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
     let(:step) { "something" }
 
     before do
-      edition.stubs(:has_entries_for_subschema_id?).with("something").returns(true)
-      edition.stubs(:has_entries_for_subschema_id?).with("something_else").returns(true)
-      edition.stubs(:has_entries_for_subschema_id?).with("ungrouped").returns(true)
+      allow(edition).to receive(:has_entries_for_subschema_id?).with("something").and_return(true)
+      allow(edition).to receive(:has_entries_for_subschema_id?).with("something_else").and_return(true)
+      allow(edition).to receive(:has_entries_for_subschema_id?).with("ungrouped").and_return(true)
     end
 
     describe "#steps" do
       it "inserts the subschemas into the flow" do
-        assert_equal workflow.steps, [
+        expect(workflow.steps).to eq([
           Workflow::Step::ALL[0],
           Workflow::Step.new(:group_my_group, :group_my_group, :redirect_to_next_step, true),
           Workflow::Step.new(:embedded_ungrouped, :embedded_ungrouped, :redirect_to_next_step, true),
           Workflow::Step::ALL[1..],
-        ].flatten
+        ].flatten)
       end
 
       describe "when there are entries missing for a given subschema" do
         before do
-          edition.stubs(:has_entries_for_subschema_id?).with("something").returns(false)
-          edition.stubs(:has_entries_for_subschema_id?).with("something_else").returns(false)
-          edition.stubs(:has_entries_for_subschema_id?).with("ungrouped").returns(true)
+          allow(edition).to receive(:has_entries_for_subschema_id?).with("something").and_return(false)
+          allow(edition).to receive(:has_entries_for_subschema_id?).with("something_else").and_return(false)
+          allow(edition).to receive(:has_entries_for_subschema_id?).with("ungrouped").and_return(true)
         end
 
         it "skips the subschemas without data" do
-          assert_equal workflow.steps, [
+          expect(workflow.steps).to eq([
             Workflow::Step::ALL[0],
             Workflow::Step.new(:embedded_ungrouped, :embedded_ungrouped, :redirect_to_next_step, true),
             Workflow::Step::ALL[1..],
-          ].flatten
+          ].flatten)
         end
 
         describe "when there are entries missing for only some subschemas in a group" do
           before do
-            edition.stubs(:has_entries_for_subschema_id?).with("something").returns(false)
-            edition.stubs(:has_entries_for_subschema_id?).with("something_else").returns(true)
-            edition.stubs(:has_entries_for_subschema_id?).with("ungrouped").returns(true)
+            allow(edition).to receive(:has_entries_for_subschema_id?).with("something").and_return(false)
+            allow(edition).to receive(:has_entries_for_subschema_id?).with("something_else").and_return(true)
+            allow(edition).to receive(:has_entries_for_subschema_id?).with("ungrouped").and_return(true)
           end
 
           it "retains the group" do
-            assert_equal workflow.steps, [
+            expect(workflow.steps).to eq([
               Workflow::Step::ALL[0],
               Workflow::Step.new(:group_my_group, :group_my_group, :redirect_to_next_step, true),
               Workflow::Step.new(:embedded_ungrouped, :embedded_ungrouped, :redirect_to_next_step, true),
               Workflow::Step::ALL[1..],
-            ].flatten
+            ].flatten)
           end
         end
       end
@@ -343,7 +339,7 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
           let(:step) { current_step }
 
           it "returns #{expected_step} step" do
-            assert_equal workflow.next_step.name, expected_step
+            expect(expected_step).to eq(workflow.next_step.name)
           end
         end
       end
@@ -363,7 +359,7 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
           let(:step) { current_step }
 
           it "returns #{expected_step} step" do
-            assert_equal workflow.previous_step.name, expected_step
+            expect(expected_step).to eq(workflow.previous_step.name)
           end
         end
       end
@@ -371,17 +367,17 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
 
     describe "and the content block is new" do
       before do
-        document.expects(:is_new_block?).at_least_once.returns(true)
+        expect(document).to receive(:is_new_block?).at_least(:once).and_return(true)
       end
 
       it "removes steps not included in the create journey" do
-        assert_equal workflow.steps, [
+        expect(workflow.steps).to eq([
           Workflow::Step.new(:edit_draft, :edit_draft, :update_draft, true),
           Workflow::Step.new(:group_my_group, :group_my_group, :redirect_to_next_step, true),
           Workflow::Step.new(:embedded_ungrouped, :embedded_ungrouped, :redirect_to_next_step, true),
           Workflow::Step.new(:review, :review, :complete_workflow, true),
           Workflow::Step.new(:confirmation, :confirmation, nil, true),
-        ].flatten
+        ].flatten)
       end
 
       describe "#next_step" do
@@ -395,7 +391,7 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
             let(:step) { current_step }
 
             it "returns #{expected_step} step" do
-              assert_equal workflow.next_step.name, expected_step
+              expect(expected_step).to eq(workflow.next_step.name)
             end
           end
         end
@@ -411,7 +407,7 @@ class Workflow::HasStepsTest < ActionDispatch::IntegrationTest
             let(:step) { current_step }
 
             it "returns #{expected_step} step" do
-              assert_equal workflow.previous_step.name, expected_step
+              expect(expected_step).to eq(workflow.previous_step.name)
             end
           end
         end

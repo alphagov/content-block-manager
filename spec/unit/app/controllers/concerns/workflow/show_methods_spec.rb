@@ -1,5 +1,3 @@
-require "test_helper"
-
 class ShowMethodsTestClass
   class << self
     def helper_method(method)
@@ -20,8 +18,7 @@ class ShowMethodsTestClass
   end
 end
 
-class Workflow::ShowMethodsTest < ActionDispatch::IntegrationTest
-  extend Minitest::Spec::DSL
+RSpec.describe Workflow::ShowMethods, type: :integration do
   include Rails.application.routes.url_helpers
 
   describe "#back_path" do
@@ -30,15 +27,15 @@ class Workflow::ShowMethodsTest < ActionDispatch::IntegrationTest
     it "returns the name of the previous step" do
       expected_step_name = "something"
 
-      current_step = mock("Workflow::Step")
-      previous_step = mock("Workflow::Step", name: expected_step_name)
+      current_step = double("Workflow::Step")
+      previous_step = double("Workflow::Step", name: expected_step_name)
 
       test_class = ShowMethodsTestClass.new(current_step:, previous_step:, edition:)
 
-      assert_equal test_class.back_path, workflow_path(
-        edition,
-        step: expected_step_name,
-      )
+      expect(test_class.back_path).to eq(workflow_path(
+                                           edition,
+                                           step: expected_step_name,
+                                         ))
     end
   end
 end
