@@ -43,10 +43,6 @@ class Document < ApplicationRecord
     editions.count == 1
   end
 
-  def has_newer_draft?
-    latest_edition_id != editions.select(:id, :created_at).order(created_at: :asc).last.id
-  end
-
   def latest_draft
     editions.where(state: :draft).order(created_at: :asc).last
   end

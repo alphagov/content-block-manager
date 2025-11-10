@@ -2,6 +2,8 @@ Feature: Drafting a content block
 
   Background:
     Given I am logged in
+    # temporary until we release this feature:
+    And I have the "pre_release_features" permission
     And the organisation "Ministry of Example" exists
     And a schema "pension" exists:
     """
@@ -34,3 +36,9 @@ Feature: Drafting a content block
   Scenario: Draft documents are not listed
     And I visit the Content Block Manager home page
     Then I should not see the draft document
+
+  Scenario: GDS editor saves their edition as a draft
+    When I confirm my answers are correct
+    And I save a draft
+    And I save and open the page
+    Then I should be taken back to the document page

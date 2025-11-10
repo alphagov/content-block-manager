@@ -36,6 +36,18 @@ class HostContentItem < Data.define(
         total_pages: api_response["total_pages"],
         rollup: rollup(api_response),
       )
+    rescue GdsApi::HTTPNotFound
+      HostContentItem::Items.new(
+        items: [],
+        total: 0,
+        total_pages: 0,
+        rollup: HostContentItem::Items::Rollup.new(
+          views: 0,
+          locations: 0,
+          instances: 0,
+          organisations: 0,
+        ),
+      )
     end
 
   private
