@@ -43,6 +43,11 @@ RSpec.configure do |config|
     DatabaseCleaner.cleaning do
       example.run
     end
+    Timecop.freeze(2011, 11, 11, 11, 11, 11)
+  end
+
+  config.after(:each) do |_example|
+    Timecop.return
   end
 end
 

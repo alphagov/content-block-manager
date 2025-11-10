@@ -1,12 +1,8 @@
-require "test_helper"
-
-class WorldLocationTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe WorldLocation do
   let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
 
   before do
-    Rails.stubs(:cache).returns(memory_store)
+    allow(Rails).to receive(:cache).and_return(memory_store)
     Rails.cache.clear
   end
 
@@ -22,11 +18,11 @@ class WorldLocationTest < ActiveSupport::TestCase
     end
 
     it "fetches locations and orders them alphabetically" do
-      Services.publishing_api.expects(:get_content_items)
+      allow(Services.publishing_api).to receive(:get_content_items)
               .with(document_type: "world_location",
                     fields: %w[title],
                     per_page: "500")
-              .returns(response)
+              .and_return(response)
 
       expected_countries = [
         "France",
@@ -36,17 +32,17 @@ class WorldLocationTest < ActiveSupport::TestCase
 
       locations = WorldLocation.countries
 
-      assert_equal 3, locations.size
-      assert_equal expected_countries, locations.map(&:name)
+      expect(locations.size).to eq(3)
+      expect(locations.map(&:name)).to eq(expected_countries)
     end
 
     it "caches results" do
-      Services.publishing_api.expects(:get_content_items)
+      allow(Services.publishing_api).to receive(:get_content_items)
               .with(document_type: "world_location",
                     fields: %w[title],
                     per_page: "500")
               .once
-              .returns(response)
+              .and_return(response)
 
       assert(5.times { WorldLocation.countries })
     end

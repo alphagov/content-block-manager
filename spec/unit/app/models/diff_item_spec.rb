@@ -1,8 +1,4 @@
-require "test_helper"
-
-class DiffItemTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe DiffItem do
   describe ".from_hash" do
     it "returns a hash of typed objects from a hash" do
       hash = {
@@ -25,7 +21,7 @@ class DiffItemTest < ActiveSupport::TestCase
         },
       }
 
-      assert_equal expected, DiffItem.from_hash(hash)
+      expect(DiffItem.from_hash(hash)).to eq(expected)
     end
   end
 end

@@ -1,8 +1,4 @@
-require "test_helper"
-
-class EmbeddedObjectImmutabilityCheckTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe EmbeddedObjectImmutabilityCheck do
   let(:field_reference) { %w[foo bar baz] }
   let(:checker) { EmbeddedObjectImmutabilityCheck.new(edition:, field_reference:) }
 
@@ -25,12 +21,12 @@ class EmbeddedObjectImmutabilityCheckTest < ActiveSupport::TestCase
         end
 
         it "returns false if an item exists at that index" do
-          assert_equal false, checker.can_be_deleted?(0)
-          assert_equal false, checker.can_be_deleted?(1)
+          expect(checker.can_be_deleted?(0)).to eq(false)
+          expect(checker.can_be_deleted?(1)).to eq(false)
         end
 
         it "returns true if an item does not exist at that index" do
-          assert_equal true, checker.can_be_deleted?(2)
+          expect(checker.can_be_deleted?(2)).to eq(true)
         end
       end
 
@@ -38,7 +34,7 @@ class EmbeddedObjectImmutabilityCheckTest < ActiveSupport::TestCase
         let(:details) { {} }
 
         it "returns true" do
-          assert_equal true, checker.can_be_deleted?(0)
+          expect(checker.can_be_deleted?(0)).to eq(true)
         end
       end
     end
@@ -47,7 +43,7 @@ class EmbeddedObjectImmutabilityCheckTest < ActiveSupport::TestCase
       let(:edition) { nil }
 
       it "returns true" do
-        assert_equal true, checker.can_be_deleted?(0)
+        expect(checker.can_be_deleted?(0)).to eq(true)
       end
     end
   end

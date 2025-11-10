@@ -1,35 +1,31 @@
-require "test_helper"
-
-class SchemaTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe Schema do
   let(:body) { { "properties" => { "foo" => {}, "bar" => {}, "title" => {} } } }
   let(:schema) { build(:schema, :pension, body:) }
 
   it "generates a human-readable name" do
-    assert_equal schema.name, "Pension"
+    expect("Pension").to eq(schema.name)
   end
 
   it "generates a parameterized name for use in URLs" do
-    assert_equal schema.parameter, "pension"
+    expect("pension").to eq(schema.parameter)
   end
 
   it "returns a block type" do
-    assert_equal schema.block_type, "pension"
+    expect("pension").to eq(schema.block_type)
   end
 
   describe "#fields" do
     describe "when an order is not given in the config" do
       it "prioritises the title" do
-        assert_equal schema.fields.map(&:name), %w[title foo bar]
+        expect(%w[title foo bar]).to eq(schema.fields.map(&:name))
       end
     end
 
     describe "when an order is given in the config" do
       before do
-        Schema
-          .stubs(:schema_settings)
-          .returns({
+        allow(Schema)
+          .to receive(:schema_settings)
+          .and_return({
             "schemas" => {
               "content_block_pension" => {
                 "field_order" => %w[bar title foo],
@@ -39,14 +35,14 @@ class SchemaTest < ActiveSupport::TestCase
       end
 
       it "orders fields" do
-        assert_equal schema.fields.map(&:name), %w[bar title foo]
+        expect(%w[bar title foo]).to eq(schema.fields.map(&:name))
       end
 
       describe "when a field is missing from the order" do
         before do
-          Schema
-            .stubs(:schema_settings)
-            .returns({
+          allow(Schema)
+            .to receive(:schema_settings)
+            .and_return({
               "schemas" => {
                 "content_block_pension" => {
                   "field_order" => %w[bar foo],
@@ -56,7 +52,7 @@ class SchemaTest < ActiveSupport::TestCase
         end
 
         it "puts the missing field at the end" do
-          assert_equal schema.fields.map(&:name), %w[bar foo title]
+          expect(%w[bar foo title]).to eq(schema.fields.map(&:name))
         end
       end
     end
@@ -88,9 +84,9 @@ class SchemaTest < ActiveSupport::TestCase
     end
 
     before do
-      Schema
-        .stubs(:schema_settings)
-        .returns(config)
+      allow(Schema)
+        .to receive(:schema_settings)
+        .and_return(config)
     end
 
     it "returns true if the given field is govspeak_enabled" do
@@ -128,9 +124,9 @@ class SchemaTest < ActiveSupport::TestCase
     end
 
     before do
-      Schema
-        .stubs(:schema_settings)
-        .returns(config)
+      allow(Schema)
+        .to receive(:schema_settings)
+        .and_return(config)
     end
 
     it "returns true if the given field is set as hidden_field" do
@@ -145,14 +141,14 @@ class SchemaTest < ActiveSupport::TestCase
   describe "#required_fields" do
     describe "when there are no required fields" do
       it "returns an empty array" do
-        assert_equal [], schema.required_fields
+        expect(schema.required_fields).to eq([])
       end
     end
 
     describe "when there are required fields" do
       it "returns them as an array" do
         body["required"] = %w[foo]
-        assert_equal %w[foo], schema.required_fields
+        expect(schema.required_fields).to eq(%w[foo])
       end
     end
   end
@@ -186,7 +182,7 @@ class SchemaTest < ActiveSupport::TestCase
 
     describe "#fields" do
       it "removes object fields" do
-        assert_equal schema.fields.map(&:name), %w[foo]
+        expect(%w[foo]).to eq(schema.fields.map(&:name))
       end
     end
 
@@ -194,7 +190,7 @@ class SchemaTest < ActiveSupport::TestCase
       it "returns subschemas" do
         subschemas = schema.subschemas
 
-        assert_equal subschemas.map(&:id), %w[bar]
+        expect(%w[bar]).to eq(subschemas.map(&:id))
       end
     end
   end
@@ -215,14 +211,14 @@ class SchemaTest < ActiveSupport::TestCase
 
     describe "#fields" do
       it "excludes the order field" do
-        assert_equal schema.fields.map(&:name), %w[foo]
+        expect(%w[foo]).to eq(schema.fields.map(&:name))
       end
     end
   end
 
   describe ".permitted_params" do
     it "returns permitted params" do
-      assert_equal schema.permitted_params, %w[title foo bar]
+      expect(%w[title foo bar]).to eq(schema.permitted_params)
     end
   end
 
@@ -241,14 +237,14 @@ class SchemaTest < ActiveSupport::TestCase
       end
 
       it "only returns pensions" do
-        assert_equal Schema.valid_schemas, %w[pension]
+        expect(%w[pension]).to eq(Schema.valid_schemas)
       end
     end
   end
 
   describe ".all" do
-    let(:response) do
-      {
+    before(:each) do
+      allow(Services.publishing_api).to receive(:get_schemas).once.and_return({
         "something" => {},
         "something_else" => {},
         "content_block_foo" => {
@@ -277,21 +273,17 @@ class SchemaTest < ActiveSupport::TestCase
           },
         },
         "content_block_invalid" => {},
-      }
-    end
-
-    before(:all) do
-      Services.publishing_api.expects(:get_schemas).once.returns(response)
-      Schema.stubs(:is_valid_schema?).with(anything).returns(false)
-      Schema.stubs(:is_valid_schema?).with(any_of("content_block_foo", "content_block_bar")).returns(true)
+      })
+      allow(Schema).to receive(:is_valid_schema?).with(anything).and_return(false)
+      allow(Schema).to receive(:is_valid_schema?).with(satisfy { |arg| %w[content_block_foo content_block_bar].include?(arg) }).and_return(true)
     end
 
     it "returns a list of schemas with the content block prefix" do
       schemas = Schema.all
-      assert_equal schemas.map(&:id), %w[content_block_foo content_block_bar]
+      expect(%w[content_block_foo content_block_bar]).to eq(schemas.map(&:id))
       fields = schemas.map(&:fields)
-      assert_equal fields[0].map(&:name), %w[foo_field]
-      assert_equal fields[1].map(&:name), %w[bar_field bar_field2]
+      expect(%w[foo_field]).to eq(fields.[](0).map(&:name))
+      expect(%w[bar_field bar_field2]).to eq(fields.[](1).map(&:name))
     end
 
     it "memoizes the result" do
@@ -317,22 +309,22 @@ class SchemaTest < ActiveSupport::TestCase
       }
     end
 
-    setup do
-      Schema.stubs(:all).returns([
+    before do
+      allow(Schema).to receive(:all).and_return([
         build(:schema, block_type:, body:),
         build(:schema, block_type: "something_else", body: {}),
       ])
     end
 
-    test "it returns the schema when the block_type is valid" do
+    it "it returns the schema when the block_type is valid" do
       schema = Schema.find_by_block_type(block_type)
 
-      assert_equal schema.id, "content_block_#{block_type}"
-      assert_equal schema.block_type, block_type
-      assert_equal schema.fields.map(&:name), %w[email_address]
+      expect("content_block_#{block_type}").to eq(schema.id)
+      expect(block_type).to eq(schema.block_type)
+      expect(%w[email_address]).to eq(schema.fields.map(&:name))
     end
 
-    test "it throws an error when the schema  cannot be found for the block type" do
+    it "it throws an error when the schema  cannot be found for the block type" do
       block_type = "other_thing"
 
       assert_raises ArgumentError, "Cannot find schema for #{block_type}" do
@@ -345,30 +337,30 @@ class SchemaTest < ActiveSupport::TestCase
     it "returns true when the schema has correct prefix/suffix" do
       Schema.valid_schemas.each do |schema|
         schema_name = "#{Schema::SCHEMA_PREFIX}_#{schema}"
-        assert Schema.is_valid_schema?(schema_name)
+        expect(Schema.is_valid_schema?(schema_name)).to be
       end
     end
 
     it "returns false when given an invalid schema" do
       schema_name = "something_else"
-      assert_equal Schema.is_valid_schema?(schema_name), false
+      expect(false).to eq(Schema.is_valid_schema?(schema_name))
     end
 
     it "returns false when the schema has correct prefix but a suffix that is not valid" do
       schema_name = "#{Schema::SCHEMA_PREFIX}_something"
-      assert_equal Schema.is_valid_schema?(schema_name), false
+      expect(false).to eq(Schema.is_valid_schema?(schema_name))
     end
   end
 
   describe ".schema_settings" do
-    let(:stub_schema) { stub("schema_settings") }
+    let(:stub_schema) { double("schema_settings") }
 
     before do
-      YAML.expects(:load_file)
+      expect(YAML).to receive(:load_file)
           .with(Schema::CONFIG_PATH)
-          .returns(stub_schema)
+          .and_return(stub_schema)
 
-      # This removes any memoized schema_settings, so we can be sure the stub gets returned
+      # This removes any memoized schema_settings, so we can be sure the double gets returned
       Schema.instance_variable_set("@schema_settings", nil)
     end
 
@@ -378,7 +370,7 @@ class SchemaTest < ActiveSupport::TestCase
     end
 
     it "should return the schema settings" do
-      assert_equal Schema.schema_settings, stub_schema
+      expect(stub_schema).to eq(Schema.schema_settings)
     end
   end
 
@@ -411,7 +403,7 @@ class SchemaTest < ActiveSupport::TestCase
 
     describe "#fields" do
       it "removes object fields" do
-        assert_equal schema.fields.map(&:name), %w[foo]
+        expect(%w[foo]).to eq(schema.fields.map(&:name))
       end
     end
   end
@@ -419,9 +411,9 @@ class SchemaTest < ActiveSupport::TestCase
   describe "#block_display_fields" do
     describe "when config exists for a schema" do
       before do
-        Schema
-          .stubs(:schema_settings)
-          .returns({
+        allow(Schema)
+          .to receive(:schema_settings)
+          .and_return({
             "schemas" => {
               schema.id => {
                 "block_display_fields" => %w[something else],
@@ -431,19 +423,19 @@ class SchemaTest < ActiveSupport::TestCase
       end
 
       it "returns the config values" do
-        assert_equal schema.block_display_fields, %w[something else]
+        expect(%w[something else]).to eq(schema.block_display_fields)
       end
     end
 
     describe "when config does not exist for a schema" do
       before do
-        Schema
-          .stubs(:schema_settings)
-          .returns({})
+        allow(Schema)
+          .to receive(:schema_settings)
+          .and_return({})
       end
 
       it "returns an empty array" do
-        assert_equal schema.block_display_fields, []
+        expect([]).to eq(schema.block_display_fields)
       end
     end
   end
@@ -451,38 +443,38 @@ class SchemaTest < ActiveSupport::TestCase
   describe "#subschemas_for_group" do
     let(:group_1_subschemas) do
       [
-        stub(:subschema, group: "group_1", group_order: 2),
-        stub(:subschema, group: "group_1", group_order: 1),
+        double(:subschema, group: "group_1", group_order: 2),
+        double(:subschema, group: "group_1", group_order: 1),
       ]
     end
 
     let(:subschemas) do
       [
         *group_1_subschemas,
-        stub(:subschema, group: nil),
-        stub(:subschema, group: nil),
+        double(:subschema, group: nil),
+        double(:subschema, group: nil),
       ]
     end
 
     before do
-      schema.stubs(:subschemas).returns(subschemas)
+      allow(schema).to receive(:subschemas).and_return(subschemas)
     end
 
     it "returns subschemas for a group sorted by the group order" do
-      assert_equal schema.subschemas_for_group("group_1"), [group_1_subschemas[1], group_1_subschemas[0]]
+      expect([group_1_subschemas.[](1), group_1_subschemas.[](0)]).to eq(schema.subschemas_for_group("group_1"))
     end
 
     it "returns an empty array when no subschemas can be found" do
-      assert_equal schema.subschemas_for_group("group_2"), []
+      expect([]).to eq(schema.subschemas_for_group("group_2"))
     end
   end
 
   describe "#embeddable_as_block?" do
     describe "when the embeddable_as_block config value is set" do
       before do
-        Schema
-          .stubs(:schema_settings)
-          .returns({
+        allow(Schema)
+          .to receive(:schema_settings)
+          .and_return({
             "schemas" => {
               schema.id => {
                 "embeddable_as_block" => true,
@@ -492,15 +484,15 @@ class SchemaTest < ActiveSupport::TestCase
       end
 
       it "returns true" do
-        assert schema.embeddable_as_block?
+        expect(schema).to be_embeddable_as_block
       end
     end
 
     describe "when the embeddable_as_block config value is not set" do
       before do
-        Schema
-          .stubs(:schema_settings)
-          .returns({
+        allow(Schema)
+          .to receive(:schema_settings)
+          .and_return({
             "schemas" => {
               schema.id => {},
             },

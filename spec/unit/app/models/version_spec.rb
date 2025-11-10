@@ -1,8 +1,4 @@
-require "test_helper"
-
-class VersionTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe Version do
   let(:event) { "created" }
   let(:item) do
     create(
@@ -28,21 +24,21 @@ class VersionTest < ActiveSupport::TestCase
   it "exists with required data" do
     content_block_version.save!
 
-    assert_equal event, content_block_version.event
-    assert_equal item, content_block_version.item
-    assert_equal whodunnit, content_block_version.whodunnit
+    expect(content_block_version.event).to eq(event)
+    expect(content_block_version.item).to eq(item)
+    expect(content_block_version.whodunnit).to eq(whodunnit)
   end
 
   it "exists with optional state" do
     content_block_version.update!(state: "scheduled")
 
-    assert_equal "scheduled", content_block_version.state
+    expect(content_block_version.state).to eq("scheduled")
   end
 
   it "exists with optional field_diffs" do
     content_block_version.update!(field_diffs:)
 
-    assert_equal field_diffs, content_block_version.field_diffs
+    expect(content_block_version.field_diffs).to eq(field_diffs)
   end
 
   it "validates the presence of a correct event" do
@@ -62,13 +58,13 @@ class VersionTest < ActiveSupport::TestCase
 
       content_block_version.field_diffs = hash
 
-      assert_equal DiffItem.from_hash(hash), content_block_version.field_diffs
+      expect(content_block_version.field_diffs).to eq(DiffItem.from_hash(hash))
     end
 
     it "returns an empty hash when the value is nil" do
       content_block_version.field_diffs = nil
 
-      assert_equal ({}), content_block_version.field_diffs
+      expect(content_block_version.field_diffs).to eq(({}))
     end
   end
 
@@ -81,7 +77,7 @@ class VersionTest < ActiveSupport::TestCase
       content_block_version.updated_embedded_object_type = "something"
       content_block_version.updated_embedded_object_title = "something"
 
-      assert content_block_version.is_embedded_update?
+      expect(content_block_version).to be_is_embedded_update
     end
   end
 end
