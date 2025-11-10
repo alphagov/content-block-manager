@@ -28,6 +28,7 @@ module Parsers
 
         class_to_rspec_describe!(body)
         component_class_to_rspec_describe!(body)
+        integration_test_to_rspec_describe!(body)
         assert_selector_to_expect!(body)
         class_name_to_described_class!(body)
         stubbed_method_to_allow!(body)
@@ -37,6 +38,7 @@ module Parsers
         allow_any_instance!(body)
         class_expects_to_expect_class!(body)
         returns_to_and_return!(body)
+        at_least_once!(body)
 
         before!(body)
         context_to_describe!(body)
@@ -75,7 +77,7 @@ module Parsers
     def returns_to_and_return!(body)
       replace_line!(body) do |line|
         if line =~ /^(.*)\.returns\((.*)$/
-          "#{Regexp.last_match(1)}and_return#{Regexp.last_match(2)}"
+          "#{Regexp.last_match(1)}.and_return(#{Regexp.last_match(2)}"
         end
       end
     end
@@ -98,8 +100,8 @@ module Parsers
 
     def mock_to_double!(body)
       replace_line!(body) do |line|
-        if line =~ /(.*) mock (.*)/
-          "#{Regexp.last_match(1)} double #{Regexp.last_match(2)}"
+        if line =~ /(.*) mock(\s*)(.*)/
+          "#{Regexp.last_match(1)} double#{Regexp.last_match(2)}#{Regexp.last_match(3)}"
         end
       end
     end
@@ -147,6 +149,14 @@ module Parsers
       end
     end
 
+    def integration_test_to_rspec_describe!(body)
+      replace_line!(body) do |line|
+        if line =~ /class ([:\w]+)Test < ActionDispatch::IntegrationTest\s*$/
+          "RSpec.describe #{Regexp.last_match(1)}, type: :integration do"
+        end
+      end
+    end
+
     def class_to_rspec_describe!(body)
       replace_line!(body) do |line|
         if line =~ /class ([:\w]+)Test < ActiveSupport::TestCase\s*$/
@@ -183,6 +193,14 @@ module Parsers
       replace_line!(body) do |line|
         if line =~ /^(\s*)test (['"])(.*)(['"]) do\s*$/
           "#{Regexp.last_match(1)}it #{Regexp.last_match(2)}#{Regexp.last_match(3)}#{Regexp.last_match(4)} do"
+        end
+      end
+    end
+
+    def at_least_once!(body)
+      replace_line!(body) do |line|
+        if line =~ /(\s*)(.*)\.at_least_once(.*)/
+          "#{Regexp.last_match(1)}#{Regexp.last_match(2)}.at_least(:once)#{Regexp.last_match(3)}"
         end
       end
     end
@@ -302,7 +320,9 @@ module Parsers
           puts "line number #{index + 1}:"
           puts line.strip
           puts "----------------------------------------"
-          raise
+          # GCM: I've commented this out because I'd rather have the converter continue to process the file
+          # than just exit on the first parsing error.
+          # raise
         end
         lines[index] = new_line if new_line
       end
