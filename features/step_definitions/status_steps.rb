@@ -18,3 +18,12 @@ def should_see_status_for(state:)
     expect(page).to have_content(translated_state)
   end
 end
+
+Then(/the calls to action are suited to the ([^"]*) state/) do |state|
+  raise "Only the 'awaiting_2i' state is supported currently" unless state == "awaiting_2i"
+
+  within ".actions" do
+    expect(page).to have_link("Edit pension")
+    expect(page).to have_no_button("Send to 2i")
+  end
+end
