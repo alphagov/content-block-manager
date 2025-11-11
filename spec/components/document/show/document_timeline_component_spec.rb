@@ -90,4 +90,47 @@ RSpec.describe Document::Show::DocumentTimelineComponent, type: :component do
 
     expect(page).to have_text("version 4\n    version 3\n    version 2")
   end
+
+  context "where there is no published version" do
+    let(:item) do
+      build_stubbed(
+        :edition,
+        :pension,
+        document: build_stubbed(:document, :pension),
+        change_note: nil,
+        internal_change_note: nil,
+      )
+    end
+
+    let(:versions) do
+      [
+        build_stubbed(
+          :content_block_version,
+          event: "created",
+          whodunnit: 34,
+          created_at: 4.days.ago,
+          item:,
+        ),
+        build_stubbed(
+          :content_block_version,
+          event: "updated",
+          whodunnit: 34,
+          state: "awaiting_2i",
+          created_at: 3.days.ago,
+          item:,
+        ),
+      ]
+    end
+
+    let(:component) do
+      Document::Show::DocumentTimelineComponent.new(
+        content_block_versions: versions,
+        schema:,
+      )
+    end
+
+    it "handles the lack of 'first_published_version'" do
+      expect { render_inline component }.to_not raise_error
+    end
+  end
 end
