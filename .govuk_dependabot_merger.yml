@@ -1,0 +1,11 @@
+api_version: 2
+defaults:
+  allowed_semver_bumps:
+    - patch
+    - minor
+  auto_merge: true
+  update_external_dependencies: true
+overrides:
+  - dependency: rails
+    allowed_semver_bumps:
+      - patch # minor/major bumps should be upgraded manually. See https://docs.publishing.service.gov.uk/manual/keeping-software-current.html#rails
