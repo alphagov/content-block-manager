@@ -19,6 +19,14 @@ def should_see_status_for(state:)
   end
 end
 
+Then(/I see a notification that the transition to ([^"]*) was successful/) do |state|
+  message = "Edition has been moved into state '#{state}'"
+
+  within(".govuk-notification-banner--success") do
+    expect(page).to have_content(message)
+  end
+end
+
 Then(/the calls to action are suited to the ([^"]*) state/) do |state|
   raise "Only the 'awaiting_2i' state is supported currently" unless state == "awaiting_2i"
 

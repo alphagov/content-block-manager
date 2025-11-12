@@ -35,7 +35,8 @@ Feature: Editor sends edition to 2i
     # And I have a link to delete the edition
 
     When I opt to send the edition to 2i
-    Then I see that the edition is in awaiting_2i state
+    Then I see a notification that the transition to awaiting_2i was successful
+    And I see that the edition is in awaiting_2i state
     And I see the transition to the awaiting_2i state in the timeline
     And the calls to action are suited to the awaiting_2i state
 
@@ -48,5 +49,6 @@ Feature: Editor sends edition to 2i
     Then I see a principal call to action of 'Send to 2i'
 
     When I opt to send the edition to 2i
-    Then I see that the edition is in awaiting_2i state
+    Then I see a notification that the transition to awaiting_2i was successful
+    And I see that the edition is in awaiting_2i state
     And the calls to action are suited to the awaiting_2i state
