@@ -1,13 +1,10 @@
-require "test_helper"
-
-class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponent::TestCase
+RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :component do
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::UrlHelper
   include ApplicationHelper
-  extend Minitest::Spec::DSL
 
   let(:user) { create(:user) }
-  let(:schema) { stub(:schema, subschemas: []) }
+  let(:schema) { double(:schema, subschemas: []) }
 
   let(:edition) { build(:edition, :pension, change_note: nil, internal_change_note: nil) }
   let(:version) do
@@ -24,10 +21,10 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
   let(:is_latest) { false }
   let(:is_first_published_version) { false }
 
-  let(:table_stub) { stub("table_component") }
+  let(:table_stub) { double("table_component") }
 
   let(:component) do
-    Document::Show::DocumentTimeline::TimelineItemComponent.new(
+    described_class.new(
       version:,
       schema:,
       is_first_published_version:,
@@ -41,19 +38,19 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
     end
 
     it "renders a timeline item component" do
-      assert_selector ".timeline__title", text: "Published"
+      expect(page).to have_css ".timeline__title", text: "Published"
       page.find ".timeline__byline" do |byline|
         assert_includes byline.native.to_s, "by #{linked_author(user, { class: 'govuk-link' })}"
       end
-      assert_selector "time[datetime='#{version.created_at.iso8601}']", text: version.created_at.to_fs(:long_ordinal_with_at)
+      expect(page).to have_css "time[datetime='#{version.created_at.iso8601}']", text: version.created_at.to_fs(:long_ordinal_with_at)
     end
 
     it "does not show the latest tag" do
-      refute_selector ".timeline__latest", text: "Latest"
+      expect(page).to_not have_css ".timeline__latest", text: "Latest"
     end
 
     it "does not show the table component" do
-      refute_selector ".timeline__diff-table"
+      expect(page).to_not have_css ".timeline__diff-table"
     end
   end
 
@@ -66,7 +63,7 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
     end
 
     it "returns a created title" do
-      assert_selector ".timeline__title", text: "Pension created"
+      expect(page).to have_css ".timeline__title", text: "Pension created"
     end
   end
 
@@ -79,7 +76,7 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
     end
 
     it "shows the latest tag" do
-      assert_selector ".timeline__latest", text: "Latest"
+      expect(page).to have_css ".timeline__latest", text: "Latest"
     end
   end
 
@@ -91,7 +88,7 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
     end
 
     it "shows the change note" do
-      assert_selector ".timeline__note--public p", text: "changed a to b"
+      expect(page).to have_css ".timeline__note--public p", text: "changed a to b"
     end
   end
 
@@ -103,7 +100,7 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
     end
 
     it "shows the change note" do
-      assert_selector ".timeline__note--internal p", text: "changed x to y"
+      expect(page).to have_css ".timeline__note--internal p", text: "changed x to y"
     end
   end
 
@@ -129,24 +126,21 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
     end
 
     before do
-      Document::Show::DocumentTimeline::FieldChangesTableComponent
-        .expects(:new)
+      expect(Document::Show::DocumentTimeline::FieldChangesTableComponent)
+        .to receive(:new)
         .with(version:, schema:)
-        .returns(table_component)
+        .and_return(table_component)
 
-      component
-        .expects(:render)
+      expect(component)
+        .to receive(:render)
         .with(table_component)
         .once
-        .returns("TABLE COMPONENT")
+        .and_return("TABLE COMPONENT")
     end
 
     it "renders the table component unopened" do
-      component
-        .expects(:render)
-        .with("govuk_publishing_components/components/details", { title: "Details of changes", open: false, summary_aria_attributes: { label: "Details of changes - Published" } })
-        .with_block_given
-        .yields
+      expect(component).to receive(:render)
+                             .with("govuk_publishing_components/components/details", { title: "Details of changes", open: false, summary_aria_attributes: { label: "Details of changes - Published" } })
 
       render_inline component
     end
@@ -155,8 +149,8 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
       let(:is_latest) { true }
 
       it "renders the details as open" do
-        component
-          .expects(:render)
+        expect(component)
+          .to receive(:render)
           .with("govuk_publishing_components/components/details", { title: "Details of changes", open: true, summary_aria_attributes: { label: "Details of changes - Published" } })
 
         render_inline component
@@ -165,9 +159,9 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
   end
 
   describe "when there are embedded objects" do
-    let(:subschema1) { stub(:subschema, id: "embedded_schema") }
-    let(:subschema2) { stub(:subschema, id: "other_embedded_schema") }
-    let(:schema) { stub(:schema, subschemas: [subschema1, subschema2]) }
+    let(:subschema1) { double(:subschema, id: "embedded_schema") }
+    let(:subschema2) { double(:subschema, id: "other_embedded_schema") }
+    let(:schema) { double(:schema, subschemas: [subschema1, subschema2]) }
 
     describe "when there are field diffs" do
       let(:field_diffs) do
@@ -196,10 +190,10 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
       end
 
       it "renders the embedded table component" do
-        table_component = stub("table_component")
+        table_component = double("table_component")
 
-        Document::Show::DocumentTimeline::EmbeddedObject::FieldChangesTableComponent
-          .expects(:new)
+        expect(Document::Show::DocumentTimeline::EmbeddedObject::FieldChangesTableComponent)
+          .to receive(:new)
           .with(
             object_id: "something",
             field_diff: {
@@ -209,25 +203,23 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
             subschema_id: "embedded_schema",
             edition:,
           )
-          .returns(table_component)
+          .and_return(table_component)
 
-        component
-          .expects(:render)
+        expect(component)
+          .to receive(:render)
           .with("govuk_publishing_components/components/details", { title: "Details of changes", open: false, summary_aria_attributes: { label: "Details of changes - Published" } })
-          .with_block_given
-          .yields
 
-        component
-          .expects(:render)
+        expect(component)
+          .to receive(:render)
           .with(table_component)
           .once
-          .returns("TABLE COMPONENT 1")
+          .and_return("TABLE COMPONENT 1")
 
-        component
-          .expects(:render)
+        expect(component)
+          .to receive(:render)
           .with(anything)
           .once
-          .returns("TABLE COMPONENT 2")
+          .and_return("TABLE COMPONENT 2")
 
         render_inline component
       end
@@ -256,22 +248,20 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
       end
 
       it "renders the table component" do
-        Document::Show::DocumentTimeline::FieldChangesTableComponent
-          .expects(:new)
+        expect(Document::Show::DocumentTimeline::FieldChangesTableComponent)
+          .to receive(:new)
           .with(version:, schema:)
-          .returns(table_component)
+          .and_return(table_component)
 
-        component
-          .expects(:render)
+        expect(component)
+          .to receive(:render)
           .with(table_component)
           .once
-          .returns("TABLE COMPONENT")
+          .and_return("TABLE COMPONENT")
 
-        component
-          .expects(:render)
+        expect(component)
+          .to receive(:render)
           .with("govuk_publishing_components/components/details", { title: "Details of changes", open: false, summary_aria_attributes: { label: "Details of changes - Published" } })
-          .with_block_given
-          .yields
 
         render_inline component
       end
@@ -279,8 +269,8 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
   end
 
   describe "when the version is an embedded update" do
-    let(:subschema) { stub(:subschema, id: "embedded_schema", name: "Embedded schema") }
-    let(:schema) { stub(:schema, subschemas: [subschema]) }
+    let(:subschema) { double(:subschema, id: "embedded_schema", name: "Embedded schema") }
+    let(:schema) { double(:schema, subschemas: [subschema]) }
 
     let(:field_diffs) do
       {
@@ -310,36 +300,36 @@ class Document::Show::DocumentTimeline::TimelineItemComponentTest < ViewComponen
     end
 
     before do
-      schema.stubs(:subschema).with("embedded_schema").returns(subschema)
+      allow(schema).to receive(:subschema).with("embedded_schema").and_return(subschema)
     end
 
     it "renders the correct title" do
       render_inline component
 
-      assert_selector ".timeline__title", text: "Embedded schema added"
+      expect(page).to have_css ".timeline__title", text: "Embedded schema added"
     end
 
     it "renders the details of the updated object" do
       render_inline component
 
-      assert_selector ".timeline__embedded-item-list__item", count: 1
-      assert_no_selector "summary"
-      assert_selector ".timeline__embedded-item-list .timeline__embedded-item-list__item:nth-child(1) .timeline__embedded-item-list__key", text: "Field1:"
-      assert_selector ".timeline__embedded-item-list .timeline__embedded-item-list__item:nth-child(1) .timeline__embedded-item-list__value", text: "Field 1 value"
+      expect(page).to have_css ".timeline__embedded-item-list__item", count: 1
+      expect(page).to_not have_css "summary"
+      expect(page).to have_css ".timeline__embedded-item-list .timeline__embedded-item-list__item:nth-child(1) .timeline__embedded-item-list__key", text: "Field1:"
+      expect(page).to have_css ".timeline__embedded-item-list .timeline__embedded-item-list__item:nth-child(1) .timeline__embedded-item-list__value", text: "Field 1 value"
     end
   end
 
   describe "when there is no embedded update" do
     it "uses aria-label to distinguish the summary of the details of the changes" do
-      version.stubs(:field_diffs).returns({ "foo" => DiffItem.new(previous_value: "previous value", new_value: "new value") })
-      version.stubs(:is_embedded_update?).returns(false)
-      version.stubs(:state).returns("Fiddled With")
-      component.stubs(:main_object_field_changes).returns("some main object field changes")
+      allow(version).to receive(:field_diffs).and_return({ "foo" => DiffItem.new(previous_value: "previous value", new_value: "new value") })
+      allow(version).to receive(:is_embedded_update?).and_return(false)
+      allow(version).to receive(:state).and_return("Fiddled With")
+      allow(component).to receive(:main_object_field_changes).and_return("some main object field changes")
 
       render_inline component
 
-      assert_selector "summary[aria-label='Details of changes - Pension Fiddled With']"
-      assert_selector "summary", text: "Details of changes"
+      expect(page).to have_css "summary[aria-label='Details of changes - Pension Fiddled With']"
+      expect(page).to have_css "summary", text: "Details of changes"
     end
   end
 end

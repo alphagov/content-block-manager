@@ -30,6 +30,7 @@ module Parsers
         component_class_to_rspec_describe!(body)
         integration_test_to_rspec_describe!(body)
         assert_selector_to_expect!(body)
+        assert_text_to_expect!(body)
         class_name_to_described_class!(body)
         stubbed_method_to_allow!(body)
         stubbed_method_at_least_once_to_allow!(body)
@@ -169,6 +170,14 @@ module Parsers
       replace_line!(body) do |line|
         if line =~ /(\s*)assert_selector (.*)$/
           "#{Regexp.last_match(1)}expect(page).to have_css #{Regexp.last_match(2)}"
+        end
+      end
+    end
+
+    def assert_text_to_expect!(body)
+      replace_line!(body) do |line|
+        if line =~ /(\s*)assert_text (.*)$/
+          "#{Regexp.last_match(1)}expect(page).to have_text #{Regexp.last_match(2)}"
         end
       end
     end
