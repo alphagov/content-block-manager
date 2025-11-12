@@ -126,11 +126,22 @@ Feature: Edit a content object
 
   @javascript
   Scenario: GDS editor can preview a host document
+    Given there is a host document with a link
     When I revisit the edit page
     And I save and continue
     When I click on the first host document
     Then the preview page opens in a new tab
     When I click on a link within the frame
+    Then I should see the content of the linked page
+
+  @javascript
+  Scenario: GDS editor can preview a host document within a smart answer
+    Given there is a host document that is a smart answer
+    When I revisit the edit page
+    And I save and continue
+    When I click on the first host document
+    Then the preview page opens in a new tab
+    When I complete the smart answer form
     Then I should see the content of the linked page
 
   Scenario: GDS editor sees notification about an in-progress draft

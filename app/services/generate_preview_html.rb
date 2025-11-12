@@ -16,6 +16,7 @@ class GeneratePreviewHtml
     uri = URI(frontend_path)
     nokogiri_html = html_snapshot_from_frontend(uri)
     update_local_link_paths(nokogiri_html)
+    update_local_form_actions(nokogiri_html, uri.scheme, uri.host)
     add_draft_style(nokogiri_html)
     update_css_hrefs(nokogiri_html)
     update_js_srcs(nokogiri_html)
@@ -43,8 +44,16 @@ private
   def development_base_path
     @development_base_path ||= begin
       publishing_api_response = Services.publishing_api.get_content(content_id)
-      rendering_app = publishing_api_response["rendering_app"] || "frontend"
-      Plek.external_url_for(rendering_app)
+      Plek.external_url_for(rendering_app(publishing_api_response))
+    end
+  end
+
+  def rendering_app(publishing_api_response)
+    rendering_app = publishing_api_response["rendering_app"] || "frontend"
+    if rendering_app == "smartanswers"
+      "smart-answers"
+    else
+      rendering_app
     end
   end
 
@@ -64,6 +73,20 @@ private
 
       link[:href] = "#{url}&base_path=#{link[:href]}"
       link[:target] = "_parent"
+    end
+
+    nokogiri_html
+  end
+
+  def update_local_form_actions(nokogiri_html, scheme, host)
+    url = host_content_preview_form_handler_edition_path(id: edition.id, host_content_id: content_id, locale:)
+    nokogiri_html.css("main form").each do |form|
+      form[:action] = "#{url}&url=#{scheme}://#{host}#{form[:action]}&method=#{form[:method]}"
+      form[:target] = "_parent"
+      form[:method] = "post"
+      form.css("input").each do |input|
+        input[:name] = "body[#{input[:name]}]"
+      end
     end
 
     nokogiri_html
