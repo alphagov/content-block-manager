@@ -27,6 +27,18 @@ Then(/I see a notification that the transition to ([^"]*) was successful/) do |s
   end
 end
 
+Then(/I see an alert that the transition failed to transition to ([^"]*)/) do |state|
+  raise "Only the 'awaiting_2i' state is supported currently" unless state == "awaiting_2i"
+
+  message = "Error: we can not change the status of this edition."
+  error_details = "Can't fire event `ready_for_2i` in current state `awaiting_2i`"
+
+  within(".gem-c-error-alert__message") do
+    expect(page).to have_content(message)
+    expect(page).to have_content(error_details)
+  end
+end
+
 Then(/the calls to action are suited to the ([^"]*) state/) do |state|
   raise "Only the 'awaiting_2i' state is supported currently" unless state == "awaiting_2i"
 

@@ -40,6 +40,16 @@ Feature: Editor sends edition to 2i
     And I see the transition to the awaiting_2i state in the timeline
     And the calls to action are suited to the awaiting_2i state
 
+  Scenario: Attempt to make an invalid transition to 'ready_for_2i'
+    When I visit the Content Block Manager home page
+    And I click to view the document
+    Then I see that the edition is in draft state
+    And I see a principal call to action of 'Send to 2i'
+
+    Given the document has been put into the awaiting_2i state by another process
+    And I opt to send the edition to 2i
+    Then I see an alert that the transition failed to transition to awaiting_2i
+
   Scenario: Send to 2i from review step in workflow
     When I visit the Content Block Manager home page
     And I click to view the document

@@ -18,6 +18,11 @@ Then("I see a secondary call to action of 'Edit pension'") do
   )
 end
 
+Given("the document has been put into the awaiting_2i state by another process") do
+  # imagine it's a race condition...
+  edition.update_column(:state, :awaiting_2i)
+end
+
 When("I opt to send the edition to 2i") do
   click_button "Send to 2i"
 end
