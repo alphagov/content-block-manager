@@ -36,6 +36,7 @@ Feature: Editor sends edition to 2i
 
     When I opt to send the edition to 2i
     Then I see that the edition is in awaiting_2i state
+    And I see the transition to the awaiting_2i state in the timeline
 
   Scenario: Send to 2i from review step in workflow
     When I visit the Content Block Manager home page
