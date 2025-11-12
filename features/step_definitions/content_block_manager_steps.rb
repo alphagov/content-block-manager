@@ -35,6 +35,10 @@ Then(/^I click on page ([^"]*)$/) do |page_number|
   click_link page_number
 end
 
+When("I save a draft") do
+  click_on "Save as draft"
+end
+
 When("I complete the form with the following fields:") do |table|
   fields = table.hashes.first
   @title = fields.delete("title")

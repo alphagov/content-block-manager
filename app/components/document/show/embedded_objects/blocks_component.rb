@@ -130,7 +130,7 @@ private
   end
 
   def edition
-    @edition ||= document.latest_edition
+    @edition ||= document.most_recent_edition
   end
 
   def embed_code_identifier(*arr)

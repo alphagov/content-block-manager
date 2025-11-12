@@ -1,5 +1,5 @@
 <% content_for :page_full_width, true %>
-<% content_for :page_title, @document.title %>
+<% content_for :page_title, @document.most_recent_edition.title %>
 <% content_for :back_link do %>
   <%= render "govuk_publishing_components/components/back_link", {
     href: documents_path,
@@ -10,7 +10,7 @@
   <div class="govuk-grid-column-three-quarters govuk-!-margin-bottom-5">
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-1">
       <span class="govuk-caption-xl"><%= @document.schema.name %></span>
-      <%= @document.title %>
+      <%= @document.most_recent_edition.title %>
     </h1>
 
     <%= render(
@@ -27,16 +27,6 @@
       } %>
   </div>
 </div>
-
-<% if @document.has_newer_draft? %>
-  <%
-    content_for :banner, render("govuk_publishing_components/components/notice", {
-      title: "There’s a saved draft of this content block",
-      description_govspeak: sanitize("<p>#{link_to "Continue editing", workflow_path(@document.latest_draft, step: :edit_draft)}</p>"),
-      show_banner_title: false,
-    })
-  %>
-<% end %>
 
 <%=
   render(
@@ -92,7 +82,7 @@
         <h2 class="govuk-heading-l subschema-listing__heading"><%= h subschema.name %></h2>
 
         <%= render Document::Show::EmbeddedObjects::SubschemaItemsComponent.new(
-          edition: @document.latest_edition,
+          edition: @document.most_recent_edition,
           schema: @schema,
           subschema: subschema,
           ) %>
@@ -109,7 +99,7 @@
         host_content_items: @host_content_items,
         current_page: @page,
         order: @order,
-        edition: @document.latest_edition,
+        edition: @document.most_recent_edition,
       ),
     ) %>
   </div>
