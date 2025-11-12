@@ -4,11 +4,12 @@ class Document::Show::SummaryListComponent < ViewComponent::Base
 
   def initialize(document:)
     @document = document
+    @edition = document.latest_edition
   end
 
 private
 
-  attr_reader :document
+  attr_reader :document, :edition
 
   def items
     [
@@ -87,9 +88,5 @@ private
 
   def scheduled_value
     "Scheduled for publication at #{scheduled_date(edition)}".html_safe
-  end
-
-  def edition
-    @edition = document.latest_edition
   end
 end
