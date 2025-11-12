@@ -1,8 +1,4 @@
-require "test_helper"
-
-class Document::Show::EmbeddedObjects::MetadataComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe Document::Show::EmbeddedObjects::MetadataComponent, type: :component do
   let(:items) do
     {
       "foo" => "bar",
@@ -49,7 +45,7 @@ class Document::Show::EmbeddedObjects::MetadataComponentTest < ViewComponent::Te
   end
 
   let(:component) do
-    Document::Show::EmbeddedObjects::MetadataComponent.new(
+    described_class.new(
       items:,
       schema_name:,
       object_type:,
@@ -58,12 +54,12 @@ class Document::Show::EmbeddedObjects::MetadataComponentTest < ViewComponent::Te
   end
 
   before do
-    schema.stubs(:config).returns(schema_config)
+    allow(schema).to receive(:config).and_return(schema_config)
   end
 
   context "when NO field order is defined" do
     it "renders a summary list with the expected attributes with no field ordering" do
-      component.expects(:render).with(
+      expect(component).to receive(:render).with(
         "govuk_publishing_components/components/summary_list", {
           items: [
             {
@@ -76,11 +72,11 @@ class Document::Show::EmbeddedObjects::MetadataComponentTest < ViewComponent::Te
             },
           ],
         }
-      ).returns("STUB_RESPONSE")
+      ).and_return("STUB_RESPONSE")
 
       render_inline component
 
-      assert_text "STUB_RESPONSE"
+      expect(page).to have_text "STUB_RESPONSE"
     end
 
     context "when nested fields exist" do
@@ -94,7 +90,7 @@ class Document::Show::EmbeddedObjects::MetadataComponentTest < ViewComponent::Te
       end
 
       it "supports nested fields" do
-        component.expects(:render).with(
+        expect(component).to receive(:render).with(
           "govuk_publishing_components/components/summary_list", {
             items: [
               {
@@ -107,11 +103,11 @@ class Document::Show::EmbeddedObjects::MetadataComponentTest < ViewComponent::Te
               },
             ],
           }
-        ).returns("STUB_RESPONSE")
+        ).and_return("STUB_RESPONSE")
 
         render_inline component
 
-        assert_text "STUB_RESPONSE"
+        expect(page).to have_text "STUB_RESPONSE"
       end
     end
   end
@@ -124,7 +120,7 @@ class Document::Show::EmbeddedObjects::MetadataComponentTest < ViewComponent::Te
     end
 
     it "renders a summary list with the defined field ordering (case insensitive)" do
-      component.expects(:render).with(
+      expect(component).to receive(:render).with(
         "govuk_publishing_components/components/summary_list", {
           items: [
             {
@@ -137,39 +133,39 @@ class Document::Show::EmbeddedObjects::MetadataComponentTest < ViewComponent::Te
             },
           ],
         }
-      ).returns("STUB_RESPONSE")
+      ).and_return("STUB_RESPONSE")
 
       render_inline component
 
-      assert_text "STUB_RESPONSE"
+      expect(page).to have_text "STUB_RESPONSE"
     end
   end
 
   describe "when there is a translated field label" do
-    let(:helpers) { mock }
+    let(:helpers) { double }
 
     before do
-      component.stubs(:helpers).returns(helpers)
+      allow(component).to receive(:helpers).and_return(helpers)
     end
 
     it "uses translated label" do
-      helpers.expects(:humanized_label)
+      expect(helpers).to receive(:humanized_label)
                .with(schema_name:, relative_key: "foo", root_object: object_type)
-               .returns("Foo translated")
+               .and_return("Foo translated")
 
-      helpers.expects(:humanized_label)
+      expect(helpers).to receive(:humanized_label)
                .with(schema_name:, relative_key: "fizz", root_object: object_type)
-               .returns("Fizz translated")
+               .and_return("Fizz translated")
 
-      helpers.expects(:translated_value)
+      expect(helpers).to receive(:translated_value)
                .with("foo", "bar")
-               .returns("bar")
+               .and_return("bar")
 
-      helpers.expects(:translated_value)
+      expect(helpers).to receive(:translated_value)
                .with("fizz", "buzz")
-               .returns("buzz")
+               .and_return("buzz")
 
-      component.expects(:render).with(
+      expect(component).to receive(:render).with(
         "govuk_publishing_components/components/summary_list", {
           items: [
             {
@@ -182,39 +178,39 @@ class Document::Show::EmbeddedObjects::MetadataComponentTest < ViewComponent::Te
             },
           ],
         }
-      ).returns("STUB_RESPONSE")
+      ).and_return("STUB_RESPONSE")
 
       render_inline component
 
-      assert_text "STUB_RESPONSE"
+      expect(page).to have_text "STUB_RESPONSE"
     end
   end
 
   describe "when there is a translated field value" do
-    let(:helpers) { mock }
+    let(:helpers) { double }
 
     before do
-      component.stubs(:helpers).returns(helpers)
+      allow(component).to receive(:helpers).and_return(helpers)
     end
 
     it "uses translated label" do
-      helpers.expects(:humanized_label)
+      expect(helpers).to receive(:humanized_label)
                .with(schema_name:, relative_key: "foo", root_object: object_type)
-               .returns("Foo")
+               .and_return("Foo")
 
-      helpers.expects(:humanized_label)
+      expect(helpers).to receive(:humanized_label)
                .with(schema_name:, relative_key: "fizz", root_object: object_type)
-               .returns("Fizz")
+               .and_return("Fizz")
 
-      helpers.expects(:translated_value)
+      expect(helpers).to receive(:translated_value)
                .with("foo", "bar")
-               .returns("Bar translated")
+               .and_return("Bar translated")
 
-      helpers.expects(:translated_value)
+      expect(helpers).to receive(:translated_value)
                .with("fizz", "buzz")
-               .returns("Buzz translated")
+               .and_return("Buzz translated")
 
-      component.expects(:render).with(
+      expect(component).to receive(:render).with(
         "govuk_publishing_components/components/summary_list", {
           items: [
             {
@@ -227,11 +223,11 @@ class Document::Show::EmbeddedObjects::MetadataComponentTest < ViewComponent::Te
             },
           ],
         }
-      ).returns("STUB_RESPONSE")
+      ).and_return("STUB_RESPONSE")
 
       render_inline component
 
-      assert_text "STUB_RESPONSE"
+      expect(page).to have_text "STUB_RESPONSE"
     end
   end
 end

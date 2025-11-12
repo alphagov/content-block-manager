@@ -1,7 +1,4 @@
-require "test_helper"
-
-class Document::Show::HostEditionsTableComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
+RSpec.describe Document::Show::HostEditionsTableComponent, type: :component do
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::DateHelper
 
@@ -55,7 +52,7 @@ class Document::Show::HostEditionsTableComponentTest < ViewComponent::TestCase
         ),
       )
 
-      assert_selector "tbody .govuk-table__cell", text: "#{time_ago_in_words(host_content_item.last_edited_at)} ago by Unknown user"
+      expect(page).to have_css "tbody .govuk-table__cell", text: "#{time_ago_in_words(host_content_item.last_edited_at)} ago by Unknown user"
     end
   end
 
@@ -75,43 +72,44 @@ class Document::Show::HostEditionsTableComponentTest < ViewComponent::TestCase
         ),
       )
 
-      assert_selector ".govuk-table__caption", text: caption
+      expect(page).to have_css ".govuk-table__caption", text: caption
 
       headers = page.find_all(".govuk-table__header")
 
-      assert_equal 6, headers.count
+      expect(headers.count).to eq(6)
 
-      headers[0].assert_text "Title"
-      headers[1].assert_text "Type"
-      headers[2].assert_text "Instances"
-      headers[3].assert_text "Views (30 days)"
-      headers[4].assert_text "Lead organisation"
-      headers[5].assert_text "Last updated"
+      expect(headers[0]).to have_text "Title"
+      expect(headers[1]).to have_text "Type"
+      expect(headers[2]).to have_text "Instances"
+      expect(headers[3]).to have_text "Views (30 days)"
+      expect(headers[4]).to have_text "Lead organisation"
+      expect(headers[5]).to have_text "Last updated"
 
       rows = page.find_all("tbody .govuk-table__row")
 
-      assert_equal 1, rows.count
+      expect(rows.count).to eq(1)
 
       columns = rows[0].find_all(".govuk-table__cell")
 
-      assert_equal 6, columns.count
+      expect(columns.count).to eq(6)
 
-      columns[0].assert_selector ".govuk-link" do |link|
-        assert_equal "#{host_content_item.title} (opens in new tab)", link.text
-        assert_equal Plek.website_root + host_content_item.base_path, link[:href]
-        assert_equal "noopener", link[:rel]
-        assert_equal "_blank", link[:target]
+      expect(columns[0]).to have_css ".govuk-link" do |link|
+        expect(link.text).to eq("#{host_content_item.title} (opens in new tab)")
+        expect(link[:href]).to eq(Plek.website_root + host_content_item.base_path)
+        expect(link[:rel]).to eq("noopener")
+        expect(link[:target]).to eq("_blank")
       end
 
-      columns[1].assert_text host_content_item.document_type.humanize
-      columns[2].assert_text "1"
-      columns[3].assert_text "1.2m"
-      columns[4].assert_text host_content_item.publishing_organisation["title"]
+      expect(columns[1]).to have_text host_content_item.document_type.humanize
+      expect(columns[2]).to have_text "1"
+      expect(columns[3]).to have_text "1.2m"
+      expect(columns[4]).to have_text host_content_item.publishing_organisation["title"]
 
-      columns[5].assert_text "#{time_ago_in_words(host_content_item.last_edited_at)} ago by #{last_edited_by_editor.name}"
-      columns[5].assert_selector "a.govuk-link" do |link|
-        assert_equal last_edited_by_editor.name, link.text
-        assert_equal user_path(last_edited_by_editor.uid), link[:href]
+      expect(columns[5]).to have_text "#{time_ago_in_words(host_content_item.last_edited_at)} ago by #{last_edited_by_editor.name}"
+
+      expect(columns[5]).to have_css "a.govuk-link" do |link|
+        expect(link.text).to eq(last_edited_by_editor.name)
+        expect(link[:href]).to eq(user_path(last_edited_by_editor.uid))
       end
     end
 
@@ -133,7 +131,7 @@ class Document::Show::HostEditionsTableComponentTest < ViewComponent::TestCase
           ),
         )
 
-        assert_selector "tbody .govuk-table__cell", text: "Not set"
+        expect(page).to have_css "tbody .govuk-table__cell", text: "Not set"
       end
     end
 
@@ -155,7 +153,7 @@ class Document::Show::HostEditionsTableComponentTest < ViewComponent::TestCase
           ),
         )
 
-        assert_selector "tbody .govuk-table__cell", text: "0"
+        expect(page).to have_css "tbody .govuk-table__cell", text: "0"
       end
     end
 
@@ -185,7 +183,7 @@ class Document::Show::HostEditionsTableComponentTest < ViewComponent::TestCase
           ),
         )
 
-        assert_selector "tbody" do |tbody|
+        expect(page).to have_css "tbody" do |tbody|
           tbody.assert_no_selector ".govuk-link", text: "#{host_content_item.title} (opens in new tab)"
         end
       end
@@ -201,7 +199,7 @@ class Document::Show::HostEditionsTableComponentTest < ViewComponent::TestCase
           ),
         )
 
-        assert_selector "a.app-table__sort-link[href*='##{Document::Show::HostEditionsTableComponent::TABLE_ID}']", count: 6
+        expect(page).to have_css "a.app-table__sort-link[href*='##{Document::Show::HostEditionsTableComponent::TABLE_ID}']", count: 6
       end
 
       it "shows all the headers unordered by default" do
@@ -213,14 +211,14 @@ class Document::Show::HostEditionsTableComponentTest < ViewComponent::TestCase
           ),
         )
 
-        assert_selector "a.app-table__sort-link[href*='order=title']", text: "Title"
-        assert_selector "a.app-table__sort-link[href*='order=document_type']", text: "Type"
-        assert_selector "a.app-table__sort-link[href*='order=instances']", text: "Instances"
-        assert_selector "a.app-table__sort-link[href*='order=unique_pageviews']", text: "Views (30 days)"
-        assert_selector "a.app-table__sort-link[href*='order=primary_publishing_organisation_title']", text: "Lead organisation"
-        assert_selector "a.app-table__sort-link[href*='order=last_edited_at']", text: "Last updated"
+        expect(page).to have_css "a.app-table__sort-link[href*='order=title']", text: "Title"
+        expect(page).to have_css "a.app-table__sort-link[href*='order=document_type']", text: "Type"
+        expect(page).to have_css "a.app-table__sort-link[href*='order=instances']", text: "Instances"
+        expect(page).to have_css "a.app-table__sort-link[href*='order=unique_pageviews']", text: "Views (30 days)"
+        expect(page).to have_css "a.app-table__sort-link[href*='order=primary_publishing_organisation_title']", text: "Lead organisation"
+        expect(page).to have_css "a.app-table__sort-link[href*='order=last_edited_at']", text: "Last updated"
 
-        assert_selector ".govuk-table__header--active a", text: "Views (30 days)"
+        expect(page).to have_css ".govuk-table__header--active a", text: "Views (30 days)"
       end
 
       %w[title document_type unique_pageviews primary_publishing_organisation_title last_edited_at instances].each do |order|
@@ -234,7 +232,7 @@ class Document::Show::HostEditionsTableComponentTest < ViewComponent::TestCase
             ),
           )
 
-          assert_selector ".govuk-table__header--active a.app-table__sort-link.app-table__sort-link--ascending[href*='order=-#{order}']"
+          expect(page).to have_css ".govuk-table__header--active a.app-table__sort-link.app-table__sort-link--ascending[href*='order=-#{order}']"
         end
 
         it "shows the link as selected when #{order} is in descending order" do
@@ -247,7 +245,7 @@ class Document::Show::HostEditionsTableComponentTest < ViewComponent::TestCase
             ),
           )
 
-          assert_selector ".govuk-table__header--active a.app-table__sort-link.app-table__sort-link--descending[href*='order=#{order}']"
+          expect(page).to have_css ".govuk-table__header--active a.app-table__sort-link.app-table__sort-link--descending[href*='order=#{order}']"
         end
       end
     end
@@ -272,7 +270,7 @@ class Document::Show::HostEditionsTableComponentTest < ViewComponent::TestCase
             ),
           )
 
-          assert_no_selector ".govuk-pagination__list"
+          expect(page).not_to have_css ".govuk-pagination__list"
         end
       end
 
@@ -295,8 +293,8 @@ class Document::Show::HostEditionsTableComponentTest < ViewComponent::TestCase
             ),
           )
 
-          assert_selector "ul.govuk-pagination__list a.govuk-pagination__link[href*='##{Document::Show::HostEditionsTableComponent::TABLE_ID}']", count: 2
-          assert_selector ".govuk-pagination__next a.govuk-pagination__link[href*='##{Document::Show::HostEditionsTableComponent::TABLE_ID}']"
+          expect(page).to have_css "ul.govuk-pagination__list a.govuk-pagination__link[href*='##{Document::Show::HostEditionsTableComponent::TABLE_ID}']", count: 2
+          expect(page).to have_css ".govuk-pagination__next a.govuk-pagination__link[href*='##{Document::Show::HostEditionsTableComponent::TABLE_ID}']"
         end
 
         it "shows the first page as selected by default" do
@@ -308,8 +306,8 @@ class Document::Show::HostEditionsTableComponentTest < ViewComponent::TestCase
             ),
           )
 
-          assert_selector ".govuk-pagination__list"
-          assert_selector "a.govuk-pagination__link[aria-current='page']", text: "1"
+          expect(page).to have_css ".govuk-pagination__list"
+          expect(page).to have_css "a.govuk-pagination__link[aria-current='page']", text: "1"
         end
 
         it "shows the currently selected page" do
@@ -322,7 +320,7 @@ class Document::Show::HostEditionsTableComponentTest < ViewComponent::TestCase
             ),
           )
 
-          assert_selector "a.govuk-pagination__link[aria-current='page']", text: "2"
+          expect(page).to have_css "a.govuk-pagination__link[aria-current='page']", text: "2"
         end
       end
     end
