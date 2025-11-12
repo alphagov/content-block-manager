@@ -222,6 +222,9 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
           .and_return("TABLE COMPONENT 2")
 
         render_inline component
+
+        # We expect the table component to only be rendered with the details component, not anywhere else.
+        expect(page).to_not have_content "TABLE COMPONENT 1"
       end
     end
 

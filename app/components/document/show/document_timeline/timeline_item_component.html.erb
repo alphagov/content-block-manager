@@ -23,7 +23,7 @@
 
   <% if show_details_of_changes? %>
     <div class="timeline__diff-table">
-      <%= details = details_of_changes %>
+      <% details = details_of_changes %>
       <%= render "govuk_publishing_components/components/details", {
         title: "Details of changes",
         open: is_latest,
