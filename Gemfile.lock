@@ -372,7 +372,7 @@ GEM
     minitest-fail-fast (0.1.0)
       minitest (~> 5)
     minitest-stub-const (0.6)
-    mocha (2.7.1)
+    mocha (2.8.0)
       ruby2_keywords (>= 0.0.5)
     msgpack (1.8.0)
     multi_test (1.1.0)
@@ -1085,7 +1085,7 @@ CHECKSUMS
   minitest (5.25.5) sha256=391b6c6cb43a4802bfb7c93af1ebe2ac66a210293f4a3fb7db36f2fc7dc2c756
   minitest-fail-fast (0.1.0) sha256=25b75f85c52ec034f6494044ab960fdd264dfea8f10752a3fa617a1ef6e9fd4d
   minitest-stub-const (0.6) sha256=b39f34dd6b8e7045fcc36820083aceaa68075318e4c4f365b12f11bd5f34b279
-  mocha (2.7.1) sha256=8f7d538d5d3ebc75fc788b3d92fbab913a93a78462d2a3ce99d1bdde7af7f851
+  mocha (2.8.0) sha256=181af80fe8004f01912d3aa287e20498b45d32dc5e282b9d36952eeb2a193e37
   msgpack (1.8.0) sha256=e64ce0212000d016809f5048b48eb3a65ffb169db22238fb4b72472fecb2d732
   multi_test (1.1.0) sha256=e9e550cdd863fb72becfe344aefdcd4cbd26ebf307847f4a6c039a4082324d10
   multi_xml (0.7.2) sha256=307a96dc48613badb7b2fc174fd4e62d7c7b619bc36ea33bfd0c49f64f5787ce
