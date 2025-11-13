@@ -32,6 +32,7 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
   before do
     allow(document).to receive(:schema).and_return(schema_without_block_display_fields)
     allow(document).to receive(:latest_edition).and_return(edition)
+    allow(document).to receive(:most_recent_edition).and_return(edition)
     allow(Organisation).to receive(:all).and_return([organisation])
   end
 
@@ -190,7 +191,7 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
       component = described_class.new(document:)
 
       # Access edition multiple times
-      expect(document).to receive(:latest_edition).once.and_return(edition)
+      expect(document).to receive(:most_recent_edition).once.and_return(edition)
 
       render_inline(component)
     end

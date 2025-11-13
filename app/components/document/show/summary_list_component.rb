@@ -4,7 +4,7 @@ class Document::Show::SummaryListComponent < ViewComponent::Base
 
   def initialize(document:)
     @document = document
-    @edition = document.latest_edition
+    @edition ||= document.most_recent_edition
   end
 
 private
@@ -27,7 +27,7 @@ private
         "activerecord.attributes.edition/document.title.#{document.block_type}",
         default: I18n.t("activerecord.attributes.edition/document.title.default"),
       ),
-      value: document.title,
+      value: document.most_recent_edition.title,
     }
   end
 

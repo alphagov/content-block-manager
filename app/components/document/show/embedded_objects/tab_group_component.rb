@@ -1,6 +1,6 @@
 class Document::Show::EmbeddedObjects::TabGroupComponent < ViewComponent::Base
   def initialize(document:, schema:, subschemas:)
-    @edition = document.latest_edition
+    @edition = document.most_recent_edition
     @schema = schema
     @subschemas = subschemas
   end

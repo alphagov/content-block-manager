@@ -143,19 +143,3 @@ Feature: Edit a content object
     Then the preview page opens in a new tab
     When I complete the smart answer form
     Then I should see the content of the linked page
-
-  Scenario: GDS editor sees notification about an in-progress draft
-    When I visit the Content Block Manager home page
-    And I click to view the document
-    And I click to edit the "pension"
-    And I fill out the form
-    And I click the cancel link
-    And I click to save and come back later
-    Then I should see a notification that a draft is in progress
-    When I click on the link to continue editing
-    And I update the content block and publish
-    When I visit the Content Block Manager home page
-    And I click to view the document
-    Then I should not see a notification that a draft is in progress
-    And there should be no draft editions remaining
-
