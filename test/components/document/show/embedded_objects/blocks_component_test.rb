@@ -27,6 +27,7 @@ class Document::Show::EmbeddedObjects::BlocksComponentTest < ViewComponent::Test
   before do
     document.stubs(:schema).returns(schema)
     document.stubs(:latest_edition).returns(edition)
+    document.stubs(:most_recent_edition).returns(edition)
     schema.stubs(:subschema).with(object_type).returns(subschema)
   end
 

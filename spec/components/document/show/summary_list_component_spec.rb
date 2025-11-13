@@ -32,6 +32,7 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
   before do
     allow(document).to receive(:schema).and_return(schema_without_block_display_fields)
     allow(document).to receive(:latest_edition).and_return(edition)
+    allow(document).to receive(:most_recent_edition).and_return(edition)
     allow(Organisation).to receive(:all).and_return([organisation])
   end
 
@@ -189,13 +190,11 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
     it "memoizes the edition" do
       component = described_class.new(document:)
 
-      allow(document).to receive(:latest_edition).and_return(edition)
-
       render_inline(component)
 
       # GCM: Without memoization, this would have been called eight times. I'm not really sure why it's called twice and
       # not once but for the purposes of this test I think it's fine. It may be a quirk of the test setup we have here.
-      expect(document).to have_received(:latest_edition).twice
+      expect(document).to have_received(:most_recent_edition).twice
     end
   end
 

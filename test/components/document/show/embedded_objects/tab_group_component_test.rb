@@ -20,6 +20,7 @@ class Document::Show::EmbeddedObjects::TabGroupComponentTest < ViewComponent::Te
 
   before do
     document.stubs(:latest_edition).returns(edition)
+    document.stubs(:most_recent_edition).returns(edition)
   end
 
   let(:component) do

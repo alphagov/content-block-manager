@@ -8,7 +8,7 @@ private
   attr_reader :document
 
   def edition
-    @edition = document.latest_edition
+    @edition = document.most_recent_edition
   end
 
   def block_content

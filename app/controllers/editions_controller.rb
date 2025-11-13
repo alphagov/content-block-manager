@@ -8,7 +8,7 @@ class EditionsController < BaseController
       @document = Document.find(params[:document_id])
       @title = @document.title
       @schema = Schema.find_by_block_type(@document.block_type)
-      edition = @document.latest_edition
+      edition = @document.most_recent_edition
     else
       @title = "Create content block"
       @schema = Schema.find_by_block_type(params[:block_type].underscore)
