@@ -87,18 +87,22 @@
     <div class="govuk-grid-column-full">
       <div class="govuk-button-group govuk-!-margin-bottom-6">
         <div>
-          <%= render "govuk_publishing_components/components/button", {
-            text: button_text_submit_for(@edition),
-            name: "save_action",
-            value: save_action_value_for(@edition),
-            type: "submit",
-            form: "review",
-            data_attributes: {
-              "testid": "submit-button",
-            },
-          } %>
+          <% if pre_release_features? %>
+            <%= render Shared::TransitionButtonComponent.new(edition: @edition, transition: :ready_for_2i) %>
+          <% else %>
+            <%= render "govuk_publishing_components/components/button", {
+              text: button_text_submit_for(@edition),
+              name: "save_action",
+              value: save_action_value_for(@edition),
+              type: "submit",
+              form: "review",
+              data_attributes: {
+                "testid": "submit-button",
+              },
+            } %>
+          <% end %>
         </div>
-        <% if current_user.has_permission?(User::Permissions::PRE_RELEASE_FEATURES_PERMISSION) %>
+        <% if pre_release_features? %>
           <div>
             <%= render "govuk_publishing_components/components/button", {
               text: "Save as draft",

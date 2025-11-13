@@ -1,0 +1,19 @@
+<ul class="actions govuk-list govuk-!-text-align-centre">
+  <% if document.most_recent_edition.state == "draft" %>
+    <li>
+      <%= render Shared::TransitionButtonComponent.new(
+            edition: document.most_recent_edition,
+            transition: :ready_for_2i,
+      ) %>
+    </li>
+  <% end %>
+
+  <li>
+    <%= render "govuk_publishing_components/components/button", {
+      text: "Edit #{document.block_type.humanize.downcase}",
+      href: new_document_edition_path(document),
+      secondary_solid: true,
+      inline_layout: false,
+    } %>
+  </li>
+</ul>

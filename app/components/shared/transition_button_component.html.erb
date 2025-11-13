@@ -1,0 +1,9 @@
+<%= form_tag(edition_status_transitions_path(edition), method: :post) do %>
+  <%= hidden_field_tag :transition, transition %>
+  <%= render "govuk_publishing_components/components/button", {
+    text: call_to_action,
+    type: "submit",
+    inline_layout: false,
+    margin_bottom: 3,
+  } %>
+<% end %>
