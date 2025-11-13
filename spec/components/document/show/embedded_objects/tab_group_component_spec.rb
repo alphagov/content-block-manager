@@ -16,6 +16,7 @@ RSpec.describe Document::Show::EmbeddedObjects::TabGroupComponent, type: :compon
 
   before do
     allow(document).to receive(:latest_edition).and_return(edition)
+    allow(document).to receive(:most_recent_edition).and_return(edition)
   end
 
   let(:component) do

@@ -204,28 +204,6 @@ RSpec.describe Document do
     end
   end
 
-  describe "#has_newer_draft?" do
-    let(:document) { create(:document, :pension) }
-
-    it "returns false when the newest edition is the same as the latest edition" do
-      _older_edition = create(:edition, :pension, created_at: Time.zone.now - 2.days, document:)
-      edition = create(:edition, :pension, created_at: Time.zone.now, document:)
-      document.latest_edition_id = edition.id
-      document.save!
-
-      expect(document.has_newer_draft?).to be false
-    end
-
-    it "returns true when the newest edition is not the same as the latest edition" do
-      edition = create(:edition, :pension, created_at: Time.zone.now - 2.days, document:)
-      _newer_edition = create(:edition, :pension, created_at: Time.zone.now, document:)
-      document.latest_edition_id = edition.id
-      document.save!
-
-      expect(document.has_newer_draft?).to be true
-    end
-  end
-
   describe "#latest_draft" do
     let(:document) { create(:document, :pension) }
 

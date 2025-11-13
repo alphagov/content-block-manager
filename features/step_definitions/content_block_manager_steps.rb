@@ -35,6 +35,10 @@ Then(/^I click on page ([^"]*)$/) do |page_number|
   click_link page_number
 end
 
+When("I save a draft") do
+  click_on "Save as draft"
+end
+
 When("I complete the form with the following fields:") do |table|
   fields = table.hashes.first
   @title = fields.delete("title")
@@ -327,14 +331,6 @@ end
 
 When(/^I add an internal note$/) do
   add_internal_note
-end
-
-Then(/^I should see a notification that a draft is in progress$/) do
-  expect(page).to have_content("There’s a saved draft of this content block")
-end
-
-Then(/^I should not see a notification that a draft is in progress$/) do
-  expect(page).to_not have_content("There’s a saved draft of this content block")
 end
 
 Then("there should be no draft editions remaining") do
