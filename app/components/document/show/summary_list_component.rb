@@ -90,6 +90,6 @@ private
   end
 
   def edition
-    @edition = document.latest_edition
+    @edition ||= document.latest_edition
   end
 end
