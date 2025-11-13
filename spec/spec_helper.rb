@@ -62,3 +62,7 @@ end
 def expect_model_not_to_be_valid(model:, context: nil)
   expect(model).not_to be_valid(context), "Expected #{model} in context(#{context}) NOT to be valid."
 end
+
+def expect_elements_to_intersect(array1, array2)
+  expect(array1.to_set).to eq(array2.to_set), "Different elements in #{array1.inspect} and #{array2}.inspect"
+end
