@@ -1,14 +1,11 @@
-require "test_helper"
 require "capybara/rails"
 
-class Admin::ErrorsControllerTest < ActionDispatch::IntegrationTest
-  extend Minitest::Spec::DSL
-
-  setup do
+RSpec.describe ErrorsController, type: :request do
+  before do
     login_as_admin
   end
 
-  ERROR_LOOKUPS = {
+  error_codes = {
     "400": :bad_request,
     "403": :forbidden,
     "404": :not_found,
@@ -16,7 +13,7 @@ class Admin::ErrorsControllerTest < ActionDispatch::IntegrationTest
     "500": :internal_server_error,
   }.freeze
 
-  ERROR_LOOKUPS.each do |error_code, error|
+  error_codes.each do |error_code, error|
     it "should show the #{error} page" do
       get "/#{error_code}"
 

@@ -1,11 +1,9 @@
-require "test_helper"
 require "capybara/rails"
 
-class UsersTest < ActionDispatch::IntegrationTest
-  extend Minitest::Spec::DSL
+RSpec.describe "Users", type: :feature do
   include Rails.application.routes.url_helpers
 
-  setup do
+  before do
     logout
     user = create(:user)
     login_as(user)
@@ -14,8 +12,8 @@ class UsersTest < ActionDispatch::IntegrationTest
   describe "#show" do
     let(:user_uuid) { SecureRandom.uuid }
 
-    it "returns 404 if the user doesn't exist" do
-      SignonUser.expects(:with_uuids).with([user_uuid]).returns([])
+    scenario "returns 404 if the user doesn't exist" do
+      expect(SignonUser).to receive(:with_uuids).with([user_uuid]).and_return([])
       visit user_path(user_uuid)
       assert_text "Could not find User with ID #{user_uuid}"
     end
