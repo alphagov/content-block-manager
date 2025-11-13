@@ -10,6 +10,11 @@ module LoginHelpers
   def login_as_admin
     login_as(create(:user, name: "admin-name", email: "admin@example.com"))
   end
+
+  def logout
+    GDS::SSO.test_user = nil
+    super
+  end
 end
 
 RSpec.configure do |config|
