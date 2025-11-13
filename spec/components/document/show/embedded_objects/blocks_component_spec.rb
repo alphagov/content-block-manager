@@ -22,7 +22,7 @@ RSpec.describe Document::Show::EmbeddedObjects::BlocksComponent, type: :componen
 
   before do
     allow(document).to receive(:schema).and_return(schema)
-    allow(document).to receive(:latest_edition).and_return(edition)
+    allow(document).to receive(:latest_published_edition).and_return(edition)
     allow(document).to receive(:most_recent_edition).and_return(edition)
     allow(schema).to receive(:subschema).with(object_type).and_return(subschema)
   end

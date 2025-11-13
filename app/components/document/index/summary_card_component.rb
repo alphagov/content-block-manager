@@ -79,6 +79,6 @@ private
   end
 
   def edition
-    @edition = document.latest_edition
+    @edition = document.latest_published_edition
   end
 end

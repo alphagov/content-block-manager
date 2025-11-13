@@ -3,12 +3,12 @@ class Documents::ScheduleController < BaseController
 
   def edit
     document = Document.find(params[:document_id])
-    @edition = document.latest_edition
+    @edition = document.latest_published_edition
   end
 
   def update
     document = Document.find(params[:document_id])
-    @edition = document.latest_edition.clone_edition(creator: current_user)
+    @edition = document.latest_published_edition.clone_edition(creator: current_user)
 
     validate_scheduled_edition
 

@@ -18,7 +18,7 @@ class Document < ApplicationRecord
 
   validates :block_type, :sluggable_string, presence: true
 
-  has_one :latest_edition,
+  has_one :latest_published_edition,
           -> { joins(:document).where("documents.latest_edition_id = editions.id") },
           class_name: "Edition",
           inverse_of: :document
@@ -36,7 +36,7 @@ class Document < ApplicationRecord
   end
 
   def title
-    @title ||= latest_edition&.title
+    @title ||= latest_published_edition&.title
   end
 
   def is_new_block?

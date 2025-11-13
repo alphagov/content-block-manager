@@ -3,7 +3,7 @@ class ScheduleEditionService
 
   def call(edition)
     schedule_with_rollback do
-      edition.update_document_reference_to_latest_edition!
+      edition.update_document_reference_to_latest_published_edition!
       edition
     end
     send_publish_intents_for_host_documents(edition: edition)

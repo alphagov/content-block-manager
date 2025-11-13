@@ -18,7 +18,7 @@ private
       Edition.new(edition_params)
     else
       document = Document.find(document_id)
-      new_edition = document.latest_edition.dup
+      new_edition = document.latest_published_edition.dup
       Edition.new(
         document_id:,
         title: edition_params[:title],
@@ -33,8 +33,8 @@ private
   def build_params(edition_params, document_id)
     unless document_id.nil?
       document = Document.find(document_id)
-      latest_edition = document.latest_edition
-      edition_params[:details] = latest_edition.details.merge(edition_params[:details])
+      latest_published_edition = document.latest_published_edition
+      edition_params[:details] = latest_published_edition.details.merge(edition_params[:details])
     end
     edition_params
   end

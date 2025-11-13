@@ -11,7 +11,7 @@ class Edition::Show::DefaultBlockComponentTest < ViewComponent::TestCase
   let(:default_block_output) { "DEFAULT_BLOCK_OUTPUT" }
 
   before do
-    document.stubs(:latest_edition).returns(edition)
+    document.stubs(:latest_published_edition).returns(edition)
     document.stubs(:most_recent_edition).returns(edition)
     document.stubs(:embed_code).returns(embed_code)
     edition.stubs(:render).with(embed_code).returns(default_block_output)

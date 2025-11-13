@@ -273,8 +273,8 @@ end
 
 When("one of the content blocks was updated 2 days ago") do
   document = Document.all.last
-  document.latest_edition.updated_at = 2.days.before(Time.zone.now)
-  document.latest_edition.save!
+  document.latest_published_edition.updated_at = 2.days.before(Time.zone.now)
+  document.latest_published_edition.save!
 end
 
 Then("the published state of the object should be shown") do
@@ -378,8 +378,8 @@ end
 
 When("the block {string} has been updated") do |title|
   document = Edition.find_by(title:).document
-  document.latest_edition.updated_at = Time.zone.now
-  document.latest_edition.save!
+  document.latest_published_edition.updated_at = Time.zone.now
+  document.latest_published_edition.save!
 end
 
 When("the block {string} has testing_artefact set to true") do |title|

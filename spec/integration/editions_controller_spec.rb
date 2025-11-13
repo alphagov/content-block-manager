@@ -24,7 +24,7 @@ RSpec.describe EditionsController, type: :request do
     let!(:schema) { stub_request_for_schema("pension") }
 
     before do
-      document.latest_edition = original_edition
+      document.latest_published_edition = original_edition
       document.save!
       allow(Organisation).to receive(:all).and_return([organisation])
       allow(Document).to receive(:find).and_return(document)

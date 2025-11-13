@@ -17,7 +17,7 @@ class Edition < ApplicationRecord
     ).where(state: "published")
   }
 
-  def update_document_reference_to_latest_edition!
+  def update_document_reference_to_latest_published_edition!
     document.update!(latest_edition_id: id)
   end
 

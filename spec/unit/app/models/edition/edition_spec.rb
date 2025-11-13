@@ -196,12 +196,12 @@ RSpec.describe Edition, type: :model do
     end
   end
 
-  describe "#update_document_reference_to_latest_edition!" do
+  describe "#update_document_reference_to_latest_published_edition!" do
     it "updates the document reference to the latest edition" do
-      latest_edition = create(:edition, document: edition.document)
-      latest_edition.update_document_reference_to_latest_edition!
+      latest_published_edition = create(:edition, document: edition.document)
+      latest_published_edition.update_document_reference_to_latest_published_edition!
 
-      expect(latest_edition.id).to eq(latest_edition.document.latest_edition_id)
+      expect(latest_published_edition.id).to eq(latest_published_edition.document.latest_edition_id)
     end
   end
 
@@ -211,7 +211,7 @@ RSpec.describe Edition, type: :model do
       edition = create(:edition, :pension, state: "published", document: document)
       draft_edition = create(:edition, :pension, state: "draft", document: document)
 
-      document.latest_edition = draft_edition
+      document.latest_published_edition = draft_edition
       document.save!
 
       expect(Edition.current_versions.to_a).to eq([edition])

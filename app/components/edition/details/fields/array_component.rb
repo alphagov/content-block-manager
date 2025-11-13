@@ -65,7 +65,7 @@ private
 
   def immutability_checker
     @immutability_checker ||= EmbeddedObjectImmutabilityCheck.new(
-      edition: edition.document.latest_edition,
+      edition: edition.document.latest_published_edition,
       field_reference: [subschema_block_type, @object_title, field.name].compact,
     )
   end

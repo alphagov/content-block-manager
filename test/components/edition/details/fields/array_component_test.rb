@@ -86,10 +86,10 @@ class Edition::Details::Fields::ArrayComponentTest < BaseComponentTestClass
     let(:field_value) { %w[foo bar] }
     let(:object_title) { "field" }
 
-    let(:latest_edition) { build(:edition, :contact, details:) }
+    let(:latest_published_edition) { build(:edition, :contact, details:) }
 
     before do
-      edition.document.stubs(:latest_edition).returns(latest_edition)
+      edition.document.stubs(:latest_published_edition).returns(latest_published_edition)
     end
 
     describe "when all items have previously been published" do

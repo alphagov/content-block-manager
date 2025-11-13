@@ -44,7 +44,7 @@ RSpec.describe "Documents", type: :request do
     end
 
     it "only returns documents with a latest edition" do
-      document.latest_edition = create(
+      document.latest_published_edition = create(
         :edition,
         :contact,
         :latest,
@@ -53,11 +53,11 @@ RSpec.describe "Documents", type: :request do
         document: document,
         lead_organisation_id: organisation.id,
       )
-      _document_without_latest_edition = create(:document, :contact, sluggable_string: "no latest edition")
+      _document_without_latest_published_edition = create(:document, :contact, sluggable_string: "no latest edition")
 
       get documents_path({ lead_organisation: "" })
 
-      expect(page).to have_text(document.latest_edition.details["email_address"])
+      expect(page).to have_text(document.latest_published_edition.details["email_address"])
       expect(page).to have_text("1 result")
     end
 
