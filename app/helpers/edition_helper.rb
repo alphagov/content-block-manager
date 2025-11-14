@@ -28,4 +28,28 @@ module EditionHelper
       "None"
     end
   end
+
+  def current_state_label(edition)
+    label = label_for_state(edition)
+    return label.html_safe if label
+
+    raise ArgumentError, "No status label found for #{edition.state}"
+  end
+
+private
+
+  def label_for_state(edition)
+    case edition.state
+    when "scheduled"
+      "Scheduled for publication at #{scheduled_date(edition)}"
+    when "published"
+      "Published on #{published_date(edition)} by #{edition.creator.name}"
+    when "draft"
+      "Drafted on #{published_date(edition)} by #{edition.creator.name}"
+    when "awaiting_2i"
+      "Sent for 2i review on #{published_date(edition)} by #{edition.creator.name}"
+    when "superseded"
+      "Superseded on #{published_date(edition)}"
+    end
+  end
 end
