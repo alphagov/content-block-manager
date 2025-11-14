@@ -2,9 +2,11 @@ module Edition::Workflow
   extend ActiveSupport::Concern
   include DateValidation
 
-  module ClassMethods
+  STATES = %w[draft published scheduled superseded awaiting_2i].freeze
+
+  class_methods do
     def valid_state?(state)
-      %w[draft published scheduled superseded].include?(state)
+      STATES.include?(state)
     end
   end
 
@@ -16,11 +18,7 @@ module Edition::Workflow
     validates_with ScheduledPublicationValidator, if: -> { validation_context == :scheduling || state == "scheduled" }
 
     state_machine auto_scopes: true do
-      state :draft
-      state :published
-      state :scheduled
-      state :superseded
-      state :awaiting_2i
+      STATES.each { |state_name| state state_name.to_sym }
 
       event :publish do
         transitions from: %i[draft awaiting_2i scheduled], to: :published
