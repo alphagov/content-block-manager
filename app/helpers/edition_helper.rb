@@ -28,4 +28,12 @@ module EditionHelper
       "None"
     end
   end
+
+  def current_state_label(edition)
+    if edition.state == "scheduled"
+      "Scheduled for publication at #{scheduled_date(edition)}".html_safe
+    else
+      "Published on #{published_date(edition)} by #{edition.creator.name}".html_safe
+    end
+  end
 end
