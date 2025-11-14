@@ -52,4 +52,25 @@ RSpec.describe EditionHelper, type: :helper do
       expect(formatted_instructions_to_publishers(edition).squish).to eq(expected.squish)
     end
   end
+
+  describe "#current_state_label" do
+    Edition.new.available_states.each do |state|
+      context "when the Edition has a known state" do
+        let(:edition) { build(:edition, state: state, scheduled_publication: Time.zone.now) }
+
+        it "should return a string label" do
+          expect { current_state_label(edition) }.not_to raise_error
+          expect(current_state_label(edition)).to be_a(String)
+        end
+      end
+    end
+
+    context "when the Edition has an unknown state" do
+      let(:edition) { build(:edition, state: "ready_to_publish") }
+
+      it "should raise an error" do
+        expect { current_state_label(edition) }.to raise_error(ArgumentError)
+      end
+    end
+  end
 end

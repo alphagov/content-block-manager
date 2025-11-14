@@ -30,10 +30,18 @@ module EditionHelper
   end
 
   def current_state_label(edition)
-    if edition.state == "scheduled"
-      "Scheduled for publication at #{scheduled_date(edition)}".html_safe
-    else
-      "Published on #{updated_date(edition)} by #{edition.creator.name}".html_safe
-    end
+    label = label_for_state(edition)
+    return label.html_safe if label
+
+    raise ArgumentError, "No status label found for #{edition.state}"
+  end
+
+private
+
+  def label_for_state(edition)
+    I18n.t("edition.states.label_extended.#{edition.state}",
+           user: edition.creator.name,
+           date: edition.state == "scheduled" ? scheduled_date(edition) : updated_date(edition),
+           default: nil)
   end
 end

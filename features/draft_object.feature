@@ -41,3 +41,4 @@ Feature: Drafting a content block
     When I confirm my answers are correct
     And I save a draft
     Then I should be taken back to the document page
+    And the draft state of the object should be shown
