@@ -1,10 +1,6 @@
-require "test_helper"
-
-class PaginationHelperTest < ActionView::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe PaginationHelper, type: :helper do
   it "returns nil if only one page of objects" do
-    assert_nil PaginationHelper.pagination_hash(current_page: 1, total_pages: 1, path: path_for_page(1))
+    expect(described_class.pagination_hash(current_page: 1, total_pages: 1, path: path_for_page(1))).to be_nil
   end
 
   it "it returns the correct objects when total pages are less than 5" do
@@ -35,7 +31,7 @@ class PaginationHelperTest < ActionView::TestCase
       ],
     }
 
-    assert_equal expected_hash, PaginationHelper.pagination_hash(current_page: 3, total_pages: 5, path: path_for_page(3))
+    expect(described_class.pagination_hash(current_page: 3, total_pages: 5, path: path_for_page(3))).to eq(expected_hash)
   end
 
   [*1..3].each do |page|
@@ -80,7 +76,7 @@ class PaginationHelperTest < ActionView::TestCase
         ],
       }
 
-      assert_equal expected_hash, PaginationHelper.pagination_hash(current_page: page, total_pages: 10, path: path_for_page(page))
+      expect(described_class.pagination_hash(current_page: page, total_pages: 10, path: path_for_page(page))).to eq(expected_hash)
     end
   end
 
@@ -129,7 +125,7 @@ class PaginationHelperTest < ActionView::TestCase
         ],
       }
 
-      assert_equal expected_hash, PaginationHelper.pagination_hash(current_page: page, total_pages: 10, path: path_for_page(page))
+      expect(described_class.pagination_hash(current_page: page, total_pages: 10, path: path_for_page(page))).to eq(expected_hash)
     end
   end
 
@@ -175,7 +171,7 @@ class PaginationHelperTest < ActionView::TestCase
         ],
       }
 
-      assert_equal expected_hash, PaginationHelper.pagination_hash(current_page: page, total_pages: 10, path: path_for_page(page))
+      expect(described_class.pagination_hash(current_page: page, total_pages: 10, path: path_for_page(page))).to eq(expected_hash)
     end
   end
 
@@ -197,7 +193,7 @@ class PaginationHelperTest < ActionView::TestCase
       ],
     }
 
-    assert_equal expected_hash, PaginationHelper.pagination_hash(current_page: 1, total_pages: 2, path:)
+    expect(described_class.pagination_hash(current_page: 1, total_pages: 2, path:)).to eq(expected_hash)
   end
 
   it "still constructs the pagination links correctly when a path with no per_page query param is passed in" do
@@ -218,7 +214,7 @@ class PaginationHelperTest < ActionView::TestCase
       ],
     }
 
-    assert_equal expected_hash, PaginationHelper.pagination_hash(current_page: 1, total_pages: 2, path:)
+    expect(described_class.pagination_hash(current_page: 1, total_pages: 2, path:)).to eq(expected_hash)
   end
 
   it "constructs the url correctly when the request has an anchor and but query strings" do
@@ -239,7 +235,7 @@ class PaginationHelperTest < ActionView::TestCase
       ],
     }
 
-    assert_equal expected_hash, PaginationHelper.pagination_hash(current_page: 1, total_pages: 2, path:)
+    expect(described_class.pagination_hash(current_page: 1, total_pages: 2, path:)).to eq(expected_hash)
   end
 
   it "constructs the url correctly when the request has an anchor but and query strings" do
@@ -261,7 +257,7 @@ class PaginationHelperTest < ActionView::TestCase
       ],
     }
 
-    assert_equal expected_hash, PaginationHelper.pagination_hash(current_page: 1, total_pages: 2, path:)
+    expect(described_class.pagination_hash(current_page: 1, total_pages: 2, path:)).to eq(expected_hash)
   end
 
   def path_for_page(page)

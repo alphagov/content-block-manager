@@ -29,6 +29,7 @@ module Parsers
         class_to_rspec_describe!(body)
         component_class_to_rspec_describe!(body)
         integration_test_to_rspec_describe!(body)
+        helper_test_to_rspec_describe!(body)
         assert_selector_to_expect!(body)
         assert_text_to_expect!(body)
         class_name_to_described_class!(body)
@@ -57,7 +58,9 @@ module Parsers
         assert_not!(body)
         assert!(body)
 
+        body = fix_indexing(body)
         body = trim_body(body)
+
         FileUtils.mkdir_p(rspec_folder)
         File.open(new_path, "w") { |f| f.write(body) }
       end
@@ -69,6 +72,10 @@ module Parsers
 
     def remove_test_helper(body)
       body.gsub(/require "test_helper"(\n)+/, "")
+    end
+
+    def fix_indexing(body)
+      body.gsub(/\.\[\]\((:?\w+)\)/, '[\1]')
     end
 
     def remove_minitest_require(body)
@@ -162,6 +169,14 @@ module Parsers
       replace_line!(body) do |line|
         if line =~ /class ([:\w]+)Test < ActiveSupport::TestCase\s*$/
           "RSpec.describe #{Regexp.last_match(1)} do"
+        end
+      end
+    end
+
+    def helper_test_to_rspec_describe!(body)
+      replace_line!(body) do |line|
+        if line =~ /class ([:\w]+)Test < ActionView::TestCase\s*$/
+          "RSpec.describe #{Regexp.last_match(1)}, type: :helper do"
         end
       end
     end
