@@ -283,6 +283,11 @@ Then("the published state of the object should be shown") do
   expect(page).to have_selector(".govuk-summary-list__value", text: "Published")
 end
 
+Then("the draft state of the object should be shown") do
+  expect(page).to have_selector(".govuk-summary-list__key", text: "Status")
+  expect(page).to have_selector(".govuk-summary-list__value", text: "Drafted")
+end
+
 Then("I should see the scheduled date on the object") do
   expect(page).to have_selector(".govuk-summary-list__key", text: "Status")
   expect(page).to have_selector(".govuk-summary-list__value", text: @future_date.to_fs(:long_ordinal_with_at).squish)
