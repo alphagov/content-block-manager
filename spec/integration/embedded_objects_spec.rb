@@ -1,31 +1,47 @@
-require "test_helper"
 require "capybara/rails"
 
-class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
-  extend Minitest::Spec::DSL
+RSpec.describe EmbeddedObjects, type: :request do
   include Rails.application.routes.url_helpers
 
   let(:organisation) { build(:organisation) }
 
-  setup do
+  before do
     logout
     user = create(:user)
     login_as(user)
 
-    Organisation.stubs(:all).returns([organisation])
+    allow(Organisation).to receive(:all).and_return([organisation])
   end
 
-  let(:edition) { create(:edition, :pension, details: { "something" => { "embedded" => { "title" => "Embedded", "is" => "here" } } }) }
+  let(:edition) do
+    create(:edition,
+           :pension,
+           details: {
+             "something" => {
+               "embedded" => { "title" => "Embedded",
+                               "is" => "here" },
+             },
+           })
+  end
+
   let(:group) { nil }
 
-  let(:stub_schema) { stub("schema", body: [], name: "Schema") }
-  let(:stub_subschema) { stub("subschema", name: "Something", block_type: object_type, fields: [], permitted_params: %w[title is], id: "something", group:) }
+  let(:stub_schema) { double("schema", body: [], name: "Schema") }
+  let(:stub_subschema) do
+    double("subschema",
+           name: "Something",
+           block_type: object_type,
+           fields: [],
+           permitted_params: %w[title is],
+           id: "something",
+           group: group)
+  end
 
   let(:object_type) { "something" }
 
   before do
-    Schema.stubs(:find_by_block_type).with(edition.document.block_type).returns(stub_schema)
-    stub_schema.stubs(:subschema).with(object_type).returns(stub_subschema)
+    allow(Schema).to receive(:find_by_block_type).with(edition.document.block_type).and_return(stub_schema)
+    allow(stub_schema).to receive(:subschema).with(object_type).and_return(stub_subschema)
   end
 
   describe "#new" do
@@ -36,9 +52,9 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
           object_type,
         )
 
-        assert_equal assigns(:edition), edition
-        assert_equal assigns(:schema), stub_schema
-        assert_equal assigns(:subschema), stub_subschema
+        expect(edition).to eq(assigns(:edition))
+        expect(stub_schema).to eq(assigns(:schema))
+        expect(stub_subschema).to eq(assigns(:subschema))
 
         assert_template :new
       end
@@ -50,23 +66,25 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
           group = "my_group"
           subschemas = [stub_subschema]
 
-          stub_schema.stubs(:subschemas_for_group).with(group).returns(subschemas)
+          allow(stub_schema).to receive(:subschemas_for_group).with(group).and_return(subschemas)
 
           get new_embedded_object_edition_path(
             edition,
             group:,
           )
 
-          assert_equal assigns(:edition), edition
-          assert_equal assigns(:schema), stub_schema
-          assert_equal assigns(:group), group
-          assert_equal assigns(:subschemas), subschemas
-          assert_equal assigns(:back_link), workflow_path(
-            edition,
-            step: "group_#{group}",
+          expect(edition).to eq(assigns(:edition))
+          expect(stub_schema).to eq(assigns(:schema))
+          expect(group).to eq(assigns(:group))
+          expect(subschemas).to eq(assigns(:subschemas))
+          expect(assigns(:back_link)).to eq(
+            workflow_path(
+              edition,
+              step: "group_#{group}",
+            ),
           )
-          assert_equal assigns(:redirect_path), new_embedded_objects_options_redirect_edition_path(edition)
-          assert_equal assigns(:context), edition.title
+          expect(new_embedded_objects_options_redirect_edition_path(edition)).to eq(assigns(:redirect_path))
+          expect(edition.title).to eq(assigns(:context))
 
           assert_template "shared/embedded_objects/select_subschema"
         end
@@ -74,14 +92,14 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
         it "404s if no schemas exist for a given group" do
           group = "my_group"
           subschemas = []
-          stub_schema.stubs(:subschemas_for_group).with(group).returns(subschemas)
+          allow(stub_schema).to receive(:subschemas_for_group).with(group).and_return(subschemas)
 
           get new_embedded_object_edition_path(
             edition,
             group:,
           )
 
-          assert_equal response.status, 404
+          expect(404).to eq(response.status)
         end
       end
     end
@@ -98,14 +116,16 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
       end
 
       it "redirects to the path for that object" do
-        assert_redirected_to new_embedded_object_edition_path(edition, object_type: "something")
+        expect(response).to redirect_to(new_embedded_object_edition_path(edition, object_type: "something"))
       end
 
       it "sets the back link as a flash" do
-        assert_equal new_embedded_objects_options_redirect_edition_path(
-          edition,
-          group: "something",
-        ), flash[:back_link]
+        expect(flash[:back_link]).to eq(
+          new_embedded_objects_options_redirect_edition_path(
+            edition,
+            group: "something",
+          ),
+        )
       end
     end
 
@@ -117,11 +137,13 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
           group: "contact_methods",
         )
 
-        assert_redirected_to new_embedded_object_edition_path(
-          edition,
-          group: "contact_methods",
+        expect(response).to redirect_to(
+          new_embedded_object_edition_path(
+            edition,
+            group: "contact_methods",
+          ),
         )
-        assert_equal I18n.t("activerecord.errors.models.document.attributes.block_type.contact_methods.blank"), flash[:error]
+        expect(flash[:error]).to eq(I18n.t("activerecord.errors.models.document.attributes.block_type.contact_methods.blank"))
       end
     end
   end
@@ -142,23 +164,25 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
         },
       }
 
-      assert_redirected_to workflow_path(
-        edition, step: "#{Workflow::Step::SUBSCHEMA_PREFIX}#{object_type}"
+      expect(response).to redirect_to(
+        workflow_path(edition, step: "#{Workflow::Step::SUBSCHEMA_PREFIX}#{object_type}"),
       )
 
       updated_edition = edition.reload
 
-      assert_equal updated_edition.details, {
-        "something" => {
-          "embedded" => {
-            "title" => "Embedded", "is" => "here"
-          },
-          "new-thing" => {
-            "title" => "New Thing", "is" => "something"
+      expect(updated_edition.details).to eq(
+        {
+          "something" => {
+            "embedded" => {
+              "title" => "Embedded", "is" => "here"
+            },
+            "new-thing" => {
+              "title" => "New Thing", "is" => "something"
+            },
           },
         },
-      }
-      assert_equal "Something added. You can add another something or finish creating the schema block.", flash[:notice]
+      )
+      expect(flash.[](:notice)).to eq("Something added. You can add another something or finish creating the schema block.")
     end
 
     describe "when the subschema belongs to a group" do
@@ -179,10 +203,10 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
           },
         }
 
-        assert_redirected_to workflow_path(
-          edition, step: "#{Workflow::Step::GROUP_PREFIX}#{group}"
+        expect(response).to redirect_to(
+          workflow_path(edition, step: "#{Workflow::Step::GROUP_PREFIX}#{group}"),
         )
-        assert_equal "Something added. You can add another some group or finish creating the schema block.", flash[:notice]
+        expect(flash.[](:notice)).to eq("Something added. You can add another some group or finish creating the schema block.")
       end
     end
   end
@@ -195,11 +219,11 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
         object_title: "embedded",
       )
 
-      assert_equal assigns(:edition), edition
-      assert_equal assigns(:schema), stub_schema
-      assert_equal assigns(:subschema), stub_subschema
-      assert_equal assigns(:object_title), "embedded"
-      assert_equal assigns(:object), { "is" => "here", "title" => "Embedded" }
+      expect(edition).to eq(assigns(:edition))
+      expect(stub_schema).to eq(assigns(:schema))
+      expect(stub_subschema).to eq(assigns(:subschema))
+      expect("embedded").to eq(assigns(:object_title))
+      expect({ "is" => "here", "title" => "Embedded" }).to eq(assigns(:object))
     end
 
     it "should assign the redirect_url if given" do
@@ -210,11 +234,11 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
         redirect_url: "https://example.com",
       )
 
-      assert_equal assigns(:redirect_url), "https://example.com"
+      expect("https://example.com").to eq(assigns(:redirect_url))
     end
 
     it "should 404 if the subschema does not exist" do
-      stub_schema.stubs(:subschema).with("something_else").returns(nil)
+      allow(stub_schema).to receive(:subschema).with("something_else").and_return(nil)
 
       get edit_embedded_object_edition_path(
         edition,
@@ -222,11 +246,11 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
         object_title: "embedded",
       )
 
-      assert_equal response.status, 404
+      expect(404).to eq(response.status)
     end
 
     it "should 404 if the object cannot be found" do
-      stub_schema.stubs(:subschema).with("something_else").returns(nil)
+      allow(stub_schema).to receive(:subschema).with("something_else").and_return(nil)
 
       get edit_embedded_object_edition_path(
         edition,
@@ -234,7 +258,7 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
         object_title: "something_else",
       )
 
-      assert_equal response.status, 404
+      expect(404).to eq(response.status)
     end
   end
 
@@ -256,8 +280,8 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
         },
       }
 
-      assert_redirected_to documents_path
-      assert_equal "Something edited. You can add another something or finish creating the schema block.", flash[:notice]
+      expect(response).to redirect_to(documents_path)
+      expect(flash.[](:notice)).to eq("Something edited. You can add another something or finish creating the schema block.")
     end
 
     describe "when the subschema belongs to a group" do
@@ -280,8 +304,8 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
           },
         }
 
-        assert_redirected_to documents_path
-        assert_equal "Something edited. You can add another some group or finish creating the schema block.", flash[:notice]
+        expect(response).to redirect_to(documents_path)
+        expect(flash.[](:notice)).to eq("Something edited. You can add another some group or finish creating the schema block.")
       end
     end
 
@@ -302,15 +326,15 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
         },
       }
 
-      assert_redirected_to documents_path
+      expect(response).to redirect_to(documents_path)
 
       updated_edition = edition.reload
 
-      assert_equal updated_edition.details, { "something" => { "embedded" => { "title" => "New Name", "is" => "different" } } }
+      expect({ "something" => { "embedded" => { "title" => "New Name", "is" => "different" } } }).to eq(updated_edition.details)
     end
 
     it "should render errors if a validation error is thrown" do
-      Edition.any_instance.stubs(:save!).raises(ActiveRecord::RecordInvalid)
+      allow_any_instance_of(Edition).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
 
       put embedded_object_edition_path(
         edition,
@@ -327,16 +351,18 @@ class Editions::EmbeddedObjectsTest < ActionDispatch::IntegrationTest
         },
       }
 
-      assert_equal assigns(:edition), edition
-      assert_equal assigns(:schema), stub_schema
-      assert_equal assigns(:subschema), stub_subschema
-      assert_equal assigns(:object_title), "embedded"
-      assert_equal assigns(:object).to_h, {
-        "title" => "New Name",
-        "is" => "different",
-      }
+      expect(edition).to eq(assigns(:edition))
+      expect(stub_schema).to eq(assigns(:schema))
+      expect(stub_subschema).to eq(assigns(:subschema))
+      expect("embedded").to eq(assigns(:object_title))
+      expect(assigns(:object).to_h).to eq(
+        {
+          "title" => "New Name",
+          "is" => "different",
+        },
+      )
 
-      assert_template :edit
+      expect(response).to render_template(:edit)
     end
   end
 end
