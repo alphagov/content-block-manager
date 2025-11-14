@@ -1,8 +1,4 @@
-require "test_helper"
-
-class EditionHelperTest < ActionView::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe EditionHelper, type: :helper do
   include ERB::Util
   include EditionHelper
 
@@ -14,32 +10,32 @@ class EditionHelperTest < ActionView::TestCase
 
   describe "#published_date" do
     it "calls the time tag helper with the `updated_at` value of the edition" do
-      tag.expects(:time).with(
+      allow(tag).to receive(:time).with(
         edition.updated_at.to_fs(:long_ordinal_with_at),
         class: "date",
         datetime: edition.updated_at.iso8601,
         lang: "en",
-      ).returns("STUB")
+      ).and_return("STUB")
 
-      assert_equal "STUB", published_date(edition)
+      expect(published_date(edition)).to eq("STUB")
     end
   end
 
   describe "#scheduled_date" do
     it "calls the time tag helper with the `scheduled_publication` value of the edition" do
-      tag.expects(:time).with(
+      allow(tag).to receive(:time).with(
         edition.scheduled_publication.to_fs(:long_ordinal_with_at),
         class: "date",
         datetime: edition.scheduled_publication.iso8601,
         lang: "en",
-      ).returns("STUB")
+      ).and_return("STUB")
 
-      assert_equal "STUB", scheduled_date(edition)
+      expect(scheduled_date(edition)).to eq("STUB")
     end
   end
 
   describe "#formatted_instructions_to_publishers" do
-    test "it adds line breaks and links to instructions to publishers" do
+    it "it adds line breaks and links to instructions to publishers" do
       edition.instructions_to_publishers = "
         Hello
         There
@@ -53,7 +49,7 @@ class EditionHelperTest < ActionView::TestCase
       </p>
       "
 
-      assert_equal expected.squish, formatted_instructions_to_publishers(edition).squish
+      expect(formatted_instructions_to_publishers(edition).squish).to eq(expected.squish)
     end
   end
 end
