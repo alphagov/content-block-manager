@@ -2,9 +2,9 @@ module Edition::Workflow
   extend ActiveSupport::Concern
   include DateValidation
 
-  module ClassMethods
+  class_methods do
     def valid_state?(state)
-      %w[draft published scheduled superseded].include?(state)
+      edition.available_states.include?(state)
     end
   end
 

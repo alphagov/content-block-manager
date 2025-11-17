@@ -40,5 +40,5 @@ Feature: Drafting a content block
   Scenario: GDS editor saves their edition as a draft
     When I confirm my answers are correct
     And I save a draft
-    And I save and open the page
     Then I should be taken back to the document page
+    And the draft state of the object should be shown

@@ -1,5 +1,5 @@
 module EditionHelper
-  def published_date(edition)
+  def updated_date(edition)
     tag.time(
       edition.updated_at.to_fs(:long_ordinal_with_at),
       class: "date",
@@ -27,5 +27,21 @@ module EditionHelper
     else
       "None"
     end
+  end
+
+  def current_state_label(edition)
+    label = label_for_state(edition)
+    return label.html_safe if label
+
+    raise ArgumentError, "No status label found for #{edition.state}"
+  end
+
+private
+
+  def label_for_state(edition)
+    I18n.t("edition.states.label_extended.#{edition.state}",
+           user: edition.creator.name,
+           date: edition.state == "scheduled" ? scheduled_date(edition) : updated_date(edition),
+           default: nil)
   end
 end
