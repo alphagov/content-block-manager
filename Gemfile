@@ -4,6 +4,7 @@ gem "babosa"
 gem "bootsnap", require: false
 gem "content_block_tools"
 gem "dartsass-rails"
+gem "fact_check", path: "engines/fact_check"
 gem "faraday"
 gem "flipflop"
 gem "friendly_id"

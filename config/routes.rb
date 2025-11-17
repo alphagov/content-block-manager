@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   get "/healthcheck/live", to: proc { [200, {}, %w[OK]] }
   get "/healthcheck/ready", to: GovukHealthcheck.rack_response
   mount Flipflop::Engine => "/flipflop"
+  mount FactCheck::Engine => "/fact-check"
 
   scope via: :all do
     match "/400", to: "errors#bad_request"
