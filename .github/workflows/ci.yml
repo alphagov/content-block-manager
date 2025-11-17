@@ -49,6 +49,10 @@ jobs:
     name: Lint ERB
     uses: ./.github/workflows/linterb.yml
 
+  packwerk:
+    name: Run Packwerk
+    uses: ./.github/workflows/packwerk.yml
+
   test-javascript:
     name: Test JavaScript
     uses: alphagov/govuk-infrastructure/.github/workflows/jasmine.yml@main

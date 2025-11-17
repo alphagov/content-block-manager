@@ -1,0 +1,34 @@
+name: Run Packwerk
+
+on: workflow_call
+
+jobs:
+  run-erb-lint:
+    name: Run Packwerk checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Postgres
+        id: setup-postgres
+        uses: alphagov/govuk-infrastructure/.github/actions/setup-postgres@main
+
+      - name: Setup Redis
+        uses: alphagov/govuk-infrastructure/.github/actions/setup-redis@main
+
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Initialize database
+        env:
+          RAILS_ENV: test
+          TEST_DATABASE_URL: ${{ steps.setup-postgres.outputs.db-url }}
+        run: bundle exec rails db:setup
+
+      - name: Run Packwerk
+        env:
+          TEST_DATABASE_URL: ${{ steps.setup-postgres.outputs.db-url }}
+        run: bin/packwerk check
