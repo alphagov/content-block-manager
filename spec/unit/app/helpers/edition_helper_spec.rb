@@ -8,7 +8,7 @@ RSpec.describe EditionHelper, type: :helper do
           scheduled_publication: Time.zone.now + 3.days)
   end
 
-  describe "#published_date" do
+  describe "#updated_date" do
     it "calls the time tag helper with the `updated_at` value of the edition" do
       allow(tag).to receive(:time).with(
         edition.updated_at.to_fs(:long_ordinal_with_at),
@@ -17,7 +17,7 @@ RSpec.describe EditionHelper, type: :helper do
         lang: "en",
       ).and_return("STUB")
 
-      expect(published_date(edition)).to eq("STUB")
+      expect(updated_date(edition)).to eq("STUB")
     end
   end
 

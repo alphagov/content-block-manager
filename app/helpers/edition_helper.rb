@@ -1,5 +1,5 @@
 module EditionHelper
-  def published_date(edition)
+  def updated_date(edition)
     tag.time(
       edition.updated_at.to_fs(:long_ordinal_with_at),
       class: "date",
@@ -33,7 +33,7 @@ module EditionHelper
     if edition.state == "scheduled"
       "Scheduled for publication at #{scheduled_date(edition)}".html_safe
     else
-      "Published on #{published_date(edition)} by #{edition.creator.name}".html_safe
+      "Published on #{updated_date(edition)} by #{edition.creator.name}".html_safe
     end
   end
 end
