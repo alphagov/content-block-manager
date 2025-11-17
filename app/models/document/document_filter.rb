@@ -74,7 +74,6 @@ private
     documents = Document
     documents = documents.where(block_type: Schema.valid_schemas)
     documents = documents.where(testing_artefact: false) unless Current.user&.is_e2e_user?
-    documents = documents.live
     documents = documents.joins(:latest_edition)
     documents = documents.where(id: ids_with_keyword(@filters[:keyword])) if @filters[:keyword].present?
     documents = documents.where(block_type: @filters[:block_type]) if @filters[:block_type].present?

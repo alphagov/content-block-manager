@@ -17,6 +17,10 @@ class Edition < ApplicationRecord
     ).where(state: "published")
   }
 
+  scope :latest_per_document, lambda {
+    where(id: Edition.select("MAX(id)").group(:document_id))
+  }
+
   def update_document_reference_to_latest_edition!
     document.update!(latest_edition_id: id)
   end
