@@ -24,7 +24,11 @@ class Edition::WorkflowCompletion
 private
 
   def publish
-    new_edition = PublishEditionService.new.call(@edition)
+    new_edition = if @edition.state != "published"
+                    PublishEditionService.new.call(@edition)
+                  else
+                    @edition
+                  end
     workflow_path(id: new_edition.id, step: :confirmation)
   end
 

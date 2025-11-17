@@ -8,6 +8,13 @@ RSpec.describe Edition::WorkflowCompletion do
           document: document,
           lead_organisation_id: organisation.id)
   end
+  let(:published_edition) do
+    build(:edition,
+          id: 123,
+          document: document,
+          state: "published",
+          lead_organisation_id: organisation.id)
+  end
 
   before do
     allow(Schema).to receive(:find_by_block_type).and_return(schema)
@@ -27,20 +34,42 @@ RSpec.describe Edition::WorkflowCompletion do
     end
 
     describe "when the save_action is 'publish'" do
-      let(:service) { double(PublishEditionService) }
+      describe "when the edition has not yet been published" do
+        let(:service) { double(PublishEditionService) }
 
-      it "should call the PublishEditionService with the Edition" do
-        allow(PublishEditionService).to receive(:new).and_return(service)
-        allow(service).to receive(:call).and_return(edition)
+        it "should call the PublishEditionService with the Edition" do
+          allow(PublishEditionService).to receive(:new).and_return(service)
+          allow(service).to receive(:call).and_return(edition)
 
-        described_class.new(edition, "publish").call
+          described_class.new(edition, "publish").call
 
-        expect(service).to have_received(:call).with(edition)
+          expect(service).to have_received(:call).with(edition)
+        end
+
+        it "should return the edition's confirmation page path to redirect to" do
+          path = described_class.new(edition, "publish").call
+          expect(path).to eq("/editions/123/workflow/confirmation")
+        end
       end
+    end
 
-      it "should return the edition's confirmation page path to redirect to" do
-        path = described_class.new(edition, "publish").call
-        expect(path).to eq("/editions/123/workflow/confirmation")
+    describe "when the save_action is 'publish'" do
+      describe "when the edition has already been published" do
+        let(:service) { double(PublishEditionService) }
+
+        it "should not call the PublishEditionService with the Edition" do
+          allow(PublishEditionService).to receive(:new).and_return(service)
+          allow(service).to receive(:call).and_return(published_edition)
+
+          described_class.new(published_edition, "publish").call
+
+          expect(service).not_to have_received(:call).with(published_edition)
+        end
+
+        it "should return the edition's confirmation page path to redirect to" do
+          path = described_class.new(published_edition, "publish").call
+          expect(path).to eq("/editions/123/workflow/confirmation")
+        end
       end
     end
 
