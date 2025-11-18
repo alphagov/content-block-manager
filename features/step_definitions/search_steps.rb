@@ -49,6 +49,11 @@ When("I search using the embed code for the pension block") do
   click_button "View results"
 end
 
+When("I search using the embed code for the pension block with an attribute reference") do
+  fill_in "Keyword", with: pension_block.embed_code_for_field("rates/my-rate/amount")
+  click_button "View results"
+end
+
 When("I search using the content_id_alias part of the embed code for the contact block") do
   fill_in "Keyword", with: contact_block.content_id_alias
   click_button "View results"

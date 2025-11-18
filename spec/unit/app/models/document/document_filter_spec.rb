@@ -47,20 +47,44 @@ RSpec.describe Document::DocumentFilter do
 
       describe "when a keyword filter is given" do
         let(:keyword_spy) { spy }
+        let(:keyword) { "ministry of example" }
+        let(:ids) { [1, 2, 3] }
 
         before do
           allow(Document).to receive(:with_keyword).and_return(keyword_spy)
+          allow(keyword_spy).to receive(:pluck).with(:id).and_return(ids)
         end
 
         it "returns live documents with keyword" do
-          ids = [1, 2, 3]
-          allow(keyword_spy).to receive(:pluck).with(:id).and_return(ids)
+          Document::DocumentFilter.new({ keyword: }).paginated_documents
 
-          Document::DocumentFilter.new({ keyword: "ministry of example" }).paginated_documents
-
-          expect(Document).to have_received(:with_keyword).with("ministry of example")
+          expect(Document).to have_received(:with_keyword).with(keyword)
           expect(document_scope_spy).to have_received(:where).with(id: ids)
           expect(document_scope_spy).to have_received(:page).with(1)
+        end
+
+        describe "when a keyword is an embed code with an attribute reference" do
+          let(:keyword) { "{{embed:content_block_pension:basic-state-pension/rates/full-basic-state-pension-amount/amount}}" }
+
+          it "searches with the attribute reference stripped from the embed code" do
+            Document::DocumentFilter.new({ keyword: }).paginated_documents
+
+            expect(Document).to have_received(:with_keyword).with("{{embed:content_block_pension:basic-state-pension}}")
+            expect(document_scope_spy).to have_received(:where).with(id: ids)
+            expect(document_scope_spy).to have_received(:page).with(1)
+          end
+        end
+
+        describe "when a keyword is an embed code without an attribute reference" do
+          let(:keyword) { "{{embed:content_block_pension:basic-state-pension}}" }
+
+          it "searches with the embed code intact" do
+            Document::DocumentFilter.new({ keyword: }).paginated_documents
+
+            expect(Document).to have_received(:with_keyword).with(keyword)
+            expect(document_scope_spy).to have_received(:where).with(id: ids)
+            expect(document_scope_spy).to have_received(:page).with(1)
+          end
         end
       end
 

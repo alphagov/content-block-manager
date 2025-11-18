@@ -107,6 +107,10 @@ Feature: Search for a content object
     Then the contact block is found
     And "1" content block is returned in total
 
+    When I search using the embed code for the pension block with an attribute reference
+    Then the pension block is found
+    And "1" content block is returned in total
+
   Scenario: GDS Editor sees errors when searching by invalid dates
     When I visit the Content Block Manager home page
     And I input invalid dates to filter by
