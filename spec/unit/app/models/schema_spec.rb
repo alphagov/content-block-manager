@@ -232,8 +232,7 @@ RSpec.describe Schema do
 
     describe "when the show_all_content_block_types feature flag is turned off" do
       before do
-        test_strategy = Flipflop::FeatureSet.current.test!
-        test_strategy.switch!(:show_all_content_block_types, false)
+        allow(Flipflop).to receive(:show_all_content_block_types?).and_return(false)
       end
 
       it "only returns pensions" do
