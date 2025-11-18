@@ -8,6 +8,7 @@ ENV JWT_AUTH_SECRET=unused_yet_required
 
 WORKDIR $APP_HOME
 COPY Gemfile* .ruby-version ./
+COPY engines/fact_check ./engines/fact_check
 RUN bundle install
 COPY package.json yarn.lock ./
 RUN yarn install --production --frozen-lockfile --non-interactive --link-duplicates
