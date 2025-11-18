@@ -12,6 +12,7 @@ private
   def rows
     [
       title_item,
+      state_tag,
       *details_items,
       organisation_item,
       status_item,
@@ -63,6 +64,13 @@ private
         value: value,
       }
     end
+  end
+
+  def state_tag
+    {
+      key: "State",
+      value: render(Shared::DocumentStatusTagComponent.new(document: document)),
+    }
   end
 
   def title
