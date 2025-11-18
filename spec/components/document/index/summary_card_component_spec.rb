@@ -44,7 +44,7 @@ RSpec.describe Document::Index::SummaryCardComponent, type: :component do
 
     expect(page).to have_css ".govuk-link", text: "View"
 
-    expect(page).to have_css ".govuk-summary-list__row", count: 5
+    expect(page).to have_css ".govuk-summary-list__row", count: 6
 
     expect(page).to have_css ".govuk-summary-list__key", text: "Title"
     expect(page).to have_css ".govuk-summary-list__value", text: edition.title
@@ -69,7 +69,7 @@ RSpec.describe Document::Index::SummaryCardComponent, type: :component do
 
       render_inline(described_class.new(document:))
 
-      expect(page).to have_css ".govuk-summary-list__row", count: 5
+      expect(page).to have_css ".govuk-summary-list__row", count: 6
 
       expect(page).to have_css ".govuk-summary-list__key", text: "Status"
       expect(page).to have_css ".govuk-summary-list__value", text: "Scheduled for publication at #{strip_tags scheduled_date(edition)}"
