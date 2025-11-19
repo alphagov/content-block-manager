@@ -39,7 +39,7 @@ fields:
 ...
 ```
 
-The [Boolean](https://github.com/alphagov/whitehall/blob/main/lib/engines/content_block_manager/app/components/content_block_manager/content_block_edition/details/fields/boolean_component.rb) component will be used.
+The [Boolean](https://github.com/alphagov/content-block-manager/blob/main/app/components/edition/details/fields/boolean_component.html.erb) component will be used.
 
 #### `schemas.<schema_name>.fields.<field_name>.field_order`
 
