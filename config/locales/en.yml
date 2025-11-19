@@ -66,6 +66,8 @@ en:
       updated:
         banner: "%{block_type} published"
         detail: You can now view the updated content block.
+      drafted:
+        banner: Block has been saved as draft
     review_page:
       errors:
         confirm: Tick box to confirm details are correct
