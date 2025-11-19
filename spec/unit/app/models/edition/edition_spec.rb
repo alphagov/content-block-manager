@@ -208,13 +208,15 @@ RSpec.describe Edition, type: :model do
   describe ".current_versions" do
     it "returns current published versions" do
       document = create(:document, :pension)
-      edition = create(:edition, :pension, state: "published", document: document)
-      draft_edition = create(:edition, :pension, state: "draft", document: document)
+      published_edition = create(:edition, :pension, :published, document: document)
+      additional_published_edition = create(:edition, :pension, :published, document: document)
+      draft_edition = create(:edition, :pension, :draft, document: document)
 
-      document.latest_published_edition = draft_edition
-      document.save!
-
-      expect(Edition.current_versions.to_a).to eq([edition])
+      aggregate_failures do
+        expect(Edition.current_versions.to_a).to include(additional_published_edition)
+        expect(Edition.current_versions.to_a).to include(published_edition)
+        expect(Edition.current_versions.to_a).not_to include(draft_edition)
+      end
     end
   end
 

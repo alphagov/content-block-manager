@@ -38,7 +38,7 @@ Feature: Schedule a content object
     And I schedule the change for 5 days in the future
     When I review and confirm my answers are correct
     When I click to view the content block
-    Then I should see the scheduled date on the object
+    Then I should see the scheduled date in the object's change history
     And there should only be one job scheduled
 
   @disable-sidekiq-test-mode

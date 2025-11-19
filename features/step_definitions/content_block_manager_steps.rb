@@ -293,6 +293,15 @@ Then("I should see the scheduled date on the object") do
   expect(page).to have_selector(".govuk-summary-list__value", text: @future_date.to_fs(:long_ordinal_with_at).squish)
 end
 
+Then("I should see the scheduled date in the object's change history") do
+  date_time = @future_date.to_fs(:long_ordinal_with_at).squish
+  message = "Scheduled for publishing on #{date_time}"
+
+  within ".timeline" do
+    expect(page).to have_selector(".timeline__title", text: message)
+  end
+end
+
 When("I continue after reviewing the links") do
   click_save_and_continue
 end
@@ -326,8 +335,20 @@ Then(/^I should still see the live edition on the homepage$/) do
   end
 end
 
+Then("I should still see the draft edition on the homepage") do
+  within(".govuk-summary-card", text: @content_block.document.title) do
+    Edition.draft.most_recent.details.values.each do |value|
+      expect(page).to have_content(value)
+    end
+  end
+end
+
 Then(/^I should not see the draft document$/) do
   expect(page).not_to have_content(@title)
+end
+
+Then(/^I should see the draft document$/) do
+  expect(page).to have_content(@title)
 end
 
 Then("I should see the content block manager home page") do

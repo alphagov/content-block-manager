@@ -33,9 +33,9 @@ Feature: Drafting a content block
     And no draft Content Block Edition has been created
     And no draft Content Block Document has been created
 
-  Scenario: Draft documents are not listed
+  Scenario: Draft documents are listed
     And I visit the Content Block Manager home page
-    Then I should not see the draft document
+    Then I should see the draft document
 
   Scenario: GDS editor saves their edition as a draft
     When I confirm my answers are correct

@@ -18,21 +18,21 @@ RSpec.describe "Documents", type: :request do
       stub_request_for_schema(document.block_type, fields: [double(:field, name: "email_address")])
     end
 
-    it "only returns the latest edition when multiple editions exist for a document" do
+    it "only returns the most recent edition when multiple editions exist for a document" do
       first_edition = create(
         :edition,
         :contact,
         details: { "email_address" => "first_edition@example.com" },
         document: document,
+        updated_at: 1.hour.ago,
         lead_organisation_id: organisation.id,
       )
-      second_edition = create(
+      most_recent_edition = create(
         :edition,
         :contact,
-        :latest,
-        state: "published",
-        details: { "email_address" => "second_edition@example.com" },
+        details: { "email_address" => "most_recent_edition@example.com" },
         document: document,
+        updated_at: Time.current,
         lead_organisation_id: organisation.id,
       )
 
@@ -40,25 +40,33 @@ RSpec.describe "Documents", type: :request do
       follow_redirect!
 
       expect(page).to_not have_text(first_edition.details["email_address"])
-      expect(page).to have_text(second_edition.details["email_address"])
+      expect(page).to have_text(most_recent_edition.details["email_address"])
     end
 
-    it "only returns documents with a latest edition" do
-      document.latest_published_edition = create(
+    it "returns documents with an edition in any state" do
+      published_document = create(:document, :contact)
+      draft_document = create(:document, :contact)
+      create(
         :edition,
         :contact,
-        :latest,
-        state: "published",
-        details: { "email_address" => "live_edition@example.com" },
-        document: document,
+        :published,
+        details: { "email_address" => "published_edition@example.com" },
+        document: published_document,
         lead_organisation_id: organisation.id,
       )
-      _document_without_latest_published_edition = create(:document, :contact, sluggable_string: "no latest edition")
+      create(
+        :edition,
+        :contact,
+        :draft,
+        details: { "email_address" => "draft_edition@example.com" },
+        document: draft_document,
+        lead_organisation_id: organisation.id,
+      )
 
       get documents_path({ lead_organisation: "" })
 
-      expect(page).to have_text(document.latest_published_edition.details["email_address"])
-      expect(page).to have_text("1 result")
+      expect(page).to have_text("published_edition")
+      expect(page).to have_text("draft_edition")
     end
 
     describe "when no filter params are specified" do
