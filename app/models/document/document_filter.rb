@@ -76,7 +76,7 @@ private
     documents = documents.where(testing_artefact: false) unless Current.user&.is_e2e_user?
     documents = documents.live
     documents = documents.joins(:latest_edition)
-    documents = documents.where(id: ids_with_keyword(@filters[:keyword])) if @filters[:keyword].present?
+    documents = documents.where(id: ids_with_keyword(keyword)) if keyword.present?
     documents = documents.where(block_type: @filters[:block_type]) if @filters[:block_type].present?
     documents = documents.with_lead_organisation(@filters[:lead_organisation]) if @filters[:lead_organisation].present?
     documents = documents.last_updated_after(from_date) if valid? && from_date
@@ -86,5 +86,21 @@ private
 
   def ids_with_keyword(filter)
     Document.with_keyword(filter).pluck(:id)
+  end
+
+  def keyword
+    @keyword ||= if @filters[:keyword] && embed_code_from_keyword.present?
+                   "{{embed:#{embed_code_from_keyword.document_type}:#{embed_code_from_keyword.identifier}}}"
+                 else
+                   @filters[:keyword]
+                 end
+  end
+
+  def embed_code_from_keyword
+    @embed_code_from_keyword ||= begin
+      ContentBlockTools::ContentBlockReference.from_string(@filters[:keyword])
+    rescue ContentBlockTools::InvalidEmbedCodeError
+      nil
+    end
   end
 end

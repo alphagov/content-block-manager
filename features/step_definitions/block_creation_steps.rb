@@ -49,7 +49,7 @@ Given(/^([^"]*) content blocks of type ([^"]*) have been created with the fields
   instructions_to_publishers = fields.delete("instructions_to_publishers")
 
   (1..count.to_i).each do |_i|
-    document = create(:document, block_type.to_sym, sluggable_string: title.parameterize(separator: "_"))
+    document = create(:document, block_type.to_sym, sluggable_string: title.parameterize(separator: "-"))
 
     editions = create_list(
       :edition,
