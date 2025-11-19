@@ -20,7 +20,7 @@ RSpec.describe Document::DocumentFilter do
       allow(document_scope_spy).to receive(:with_lead_organisation).and_return(document_scope_spy)
       allow(document_scope_spy).to receive(:last_updated_after).and_return(document_scope_spy)
       allow(document_scope_spy).to receive(:last_updated_before).and_return(document_scope_spy)
-      allow(document_scope_spy).to receive(:joins).with(:latest_published_edition).and_return(document_scope_spy)
+      allow(document_scope_spy).to receive(:joins).with(:editions).and_return(document_scope_spy)
       allow(document_scope_spy).to receive(:page).and_return(document_scope_spy)
       allow(document_scope_spy).to receive(:order).with("editions.updated_at DESC").and_return(document_scope_spy)
       allow(document_scope_spy).to receive(:per).with(Document::DocumentFilter::DEFAULT_PAGE_SIZE).and_return([])

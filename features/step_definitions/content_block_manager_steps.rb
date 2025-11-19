@@ -271,10 +271,15 @@ When("I am updating a content block") do
   add_change_note
 end
 
-When("one of the content blocks was updated 2 days ago") do
-  document = Document.all.last
-  document.latest_published_edition.updated_at = 2.days.before(Time.zone.now)
-  document.latest_published_edition.save!
+When("there is a block with a new edition created 2 days ago") do
+  document = Document.last
+  org = document.editions.first.lead_organisation
+  document.editions.destroy_all
+
+  document.editions = [
+    create(:edition, :contact, document: document, lead_organisation_id: org.id, updated_at: 1.year.ago),
+    create(:edition, :contact, document: document, lead_organisation_id: org.id, updated_at: 2.days.ago),
+  ]
 end
 
 Then("the published state of the object should be shown") do
