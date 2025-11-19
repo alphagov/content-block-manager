@@ -126,7 +126,7 @@ RSpec.describe "Documents", type: :request do
   end
 
   describe "#show" do
-    let(:edition) { create(:edition, :contact, :latest, lead_organisation_id: organisation.id) }
+    let(:edition) { create(:edition, :contact, lead_organisation_id: organisation.id) }
     let(:document) { edition.document }
 
     before do

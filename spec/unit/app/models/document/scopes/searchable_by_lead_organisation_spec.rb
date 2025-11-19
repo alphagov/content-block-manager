@@ -6,8 +6,7 @@ RSpec.describe Document::Scopes::SearchableByLeadOrganisation do
       document_with_org = create(:document, :pension)
       _edition_with_org = create(:edition,
                                  :pension,
-                                 :latest,
-                                 state: "published",
+                                 :published,
                                  document: document_with_org,
                                  lead_organisation_id: matching_organisation.id)
       document_without_org = create(:document, :pension)

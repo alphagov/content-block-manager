@@ -78,7 +78,7 @@ RSpec.describe CreateEditionService do
       describe "when a previous edition has details that are not provided in the params" do
         let!(:previous_edition) do
           create(
-            :edition, :pension, :latest,
+            :edition, :pension, :published,
             document:,
             details: { "foo" => "Old text", "bar" => "Old text", "something" => { "else" => { "is" => "here" } } }
           )

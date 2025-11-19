@@ -56,6 +56,7 @@ Given(/^([^"]*) content blocks of type ([^"]*) have been created with the fields
       3,
       block_type.to_sym,
       document:,
+      state: "published",
       lead_organisation_id: organisation.id,
       details: fields,
       creator: @user,
