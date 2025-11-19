@@ -47,7 +47,7 @@ RSpec.describe Edition::WorkflowCompletion do
         end
 
         it "should return the edition's confirmation page path to redirect to" do
-          path = described_class.new(edition, "publish").call
+          described_class.new(edition, "publish").call => { path: }
           expect(path).to eq("/editions/123/workflow/confirmation")
         end
       end
@@ -67,7 +67,7 @@ RSpec.describe Edition::WorkflowCompletion do
         end
 
         it "should return the edition's confirmation page path to redirect to" do
-          path = described_class.new(published_edition, "publish").call
+          described_class.new(published_edition, "publish").call => { path: }
           expect(path).to eq("/editions/123/workflow/confirmation")
         end
       end
@@ -86,14 +86,14 @@ RSpec.describe Edition::WorkflowCompletion do
       end
 
       it "should return the edition's confirmation page path to redirect to" do
-        path = described_class.new(edition, "publish").call
+        described_class.new(edition, "publish").call => { path: }
         expect(path).to eq("/editions/123/workflow/confirmation")
       end
     end
 
     describe "when the save_action is 'save_as_draft'" do
       it "should return the document's view page path to redirect to" do
-        path = described_class.new(edition, "save_as_draft").call
+        described_class.new(edition, "save_as_draft").call => { path: }
         expect(path).to eq("/567")
       end
     end

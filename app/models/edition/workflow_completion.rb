@@ -29,16 +29,17 @@ private
                   else
                     @edition
                   end
-    workflow_path(id: new_edition.id, step: :confirmation)
+    { path: workflow_path(id: new_edition.id, step: :confirmation) }
   end
 
   def schedule
     ScheduleEditionService.new.call(@edition)
-    workflow_path(id: @edition.id, step: :confirmation, is_scheduled: true)
+    { path: workflow_path(id: @edition.id, step: :confirmation, is_scheduled: true) }
   end
 
   def save_as_draft
     # No action needed here as we don't publish drafts to the Publishing API. Just redirect.
-    document_path(@edition.document)
+    { path: document_path(@edition.document),
+      flash: { notice: I18n.t("edition.confirmation_page.drafted.banner") } }
   end
 end
