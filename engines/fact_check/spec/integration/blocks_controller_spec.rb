@@ -1,6 +1,12 @@
 RSpec.describe FactCheck::BlocksController, type: :feature do
   include FactCheck::Engine.routes.url_helpers
 
+  before do
+    logout
+    user = create(:user)
+    login_as(user)
+  end
+
   describe "#show" do
     it "returns information about a block" do
       block = build(:content_block)
