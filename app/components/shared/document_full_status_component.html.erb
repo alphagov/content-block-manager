@@ -1,0 +1,4 @@
+<div class="govuk-!-margin-bottom-2">
+  <%= render(Shared::DocumentStatusTagComponent.new(document: @document)) %>
+</div>
+<%= current_state_label(@edition) %>
