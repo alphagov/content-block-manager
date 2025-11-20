@@ -28,6 +28,9 @@ Feature: Schedule a content object
     When I click to view the content block
     And I should see the scheduled date on the object
     And I should see the scheduled event on the timeline
+    And I return to the homepage
+    Then I should see the content block with title "Changed title" returned
+    And I should see a tag containing "Scheduled"
 
   @disable-sidekiq-test-mode
   Scenario: GDS Editor publishes a new version of a previously scheduled content object
