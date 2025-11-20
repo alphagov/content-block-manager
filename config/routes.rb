@@ -25,6 +25,11 @@ Rails.application.routes.draw do
     collection do
       post :new_document_options_redirect
     end
+
+    member do
+      get "published_edition", to: "published_edition#show"
+    end
+
     resources :editions, only: %i[new create]
     get "schedule/edit", to: "documents/schedule#edit", as: :schedule_edit
     put "schedule", to: "documents/schedule#update", as: :update_schedule

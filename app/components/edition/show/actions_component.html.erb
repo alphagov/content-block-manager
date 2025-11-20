@@ -16,4 +16,10 @@
       inline_layout: false,
     } %>
   </li>
+
+  <% if state != "published" && document.has_published_edition? %>
+    <li class="govuk-!-static-margin-top-3">
+      <%= link_to("Go to published edition", published_edition_document_path(document), class: "govuk-link") %>
+    </li>
+  <% end %>
 </ul>
