@@ -46,7 +46,7 @@ private
   end
 
   def status_item
-    value = current_state_label(edition)
+    value = full_status
     if edition.state == "scheduled"
       {
         key: "Status",
@@ -63,6 +63,10 @@ private
         value: value,
       }
     end
+  end
+
+  def full_status
+    render(Shared::DocumentFullStatusComponent.new(document: document))
   end
 
   def title

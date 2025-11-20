@@ -75,4 +75,43 @@ RSpec.describe Document::Index::SummaryCardComponent, type: :component do
       expect(page).to have_css ".govuk-summary-list__value", text: "Scheduled for publication at #{strip_tags scheduled_date(edition)}"
     end
   end
+
+  describe "when the edition is awaiting 2i" do
+    it "renders a summary block as awaiting 2i" do
+      edition.state = "awaiting_2i"
+
+      render_inline(described_class.new(document:))
+
+      expect(page).to have_css ".govuk-summary-list__row", count: 5
+
+      expect(page).to have_css ".govuk-summary-list__key", text: "Status"
+      expect(page).to have_css ".govuk-summary-list__value", text: "Sent for 2i review on #{strip_tags updated_date(edition)} by #{edition.creator.name}"
+    end
+  end
+
+  describe "when the edition is in draft" do
+    it "renders a summary block as draft" do
+      edition.state = "draft"
+
+      render_inline(described_class.new(document:))
+
+      expect(page).to have_css ".govuk-summary-list__row", count: 5
+
+      expect(page).to have_css ".govuk-summary-list__key", text: "Status"
+      expect(page).to have_css ".govuk-summary-list__value", text: "Drafted on #{strip_tags updated_date(edition)} by #{edition.creator.name}"
+    end
+  end
+
+  describe "when the edition is superseded" do
+    it "renders a summary block as superseded" do
+      edition.state = "superseded"
+
+      render_inline(described_class.new(document:))
+
+      expect(page).to have_css ".govuk-summary-list__row", count: 5
+
+      expect(page).to have_css ".govuk-summary-list__key", text: "Status"
+      expect(page).to have_css ".govuk-summary-list__value", text: "Superseded on #{strip_tags updated_date(edition)}"
+    end
+  end
 end
