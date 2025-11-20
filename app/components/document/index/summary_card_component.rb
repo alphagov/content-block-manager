@@ -46,23 +46,16 @@ private
   end
 
   def status_item
-    value = full_status
-    if edition.state == "scheduled"
-      {
-        key: "Status",
-        value: value,
-        edit: {
-          href: helpers.document_schedule_edit_path(document),
-          link_text: sanitize("Edit <span class='govuk-visually-hidden'>schedule</span>"),
-          link_text_no_enhance: true,
-        },
-      }
-    else
-      {
-        key: "Status",
-        value: value,
-      }
-    end
+    status_item = { key: "Status", value: full_status }
+    return status_item if edition.state != "scheduled"
+
+    status_item.merge({
+      edit: {
+        href: helpers.document_schedule_edit_path(document),
+        link_text: sanitize("Edit <span class='govuk-visually-hidden'>schedule</span>"),
+        link_text_no_enhance: true,
+      },
+    })
   end
 
   def full_status
