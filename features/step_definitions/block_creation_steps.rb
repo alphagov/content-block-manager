@@ -56,6 +56,7 @@ Given(/^([^"]*) content blocks of type ([^"]*) have been created with the fields
       3,
       block_type.to_sym,
       document:,
+      state: "published",
       lead_organisation_id: organisation.id,
       details: fields,
       creator: @user,
@@ -63,7 +64,7 @@ Given(/^([^"]*) content blocks of type ([^"]*) have been created with the fields
       title:,
     )
 
-    document.latest_edition = editions.last
+    document.latest_published_edition = editions.last
     document.save!
   end
 end

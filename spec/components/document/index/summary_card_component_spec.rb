@@ -30,7 +30,7 @@ RSpec.describe Document::Index::SummaryCardComponent, type: :component do
   let(:schema) { double(:schema, fields:) }
 
   before do
-    expect(document).to receive(:latest_edition).at_least(:once).and_return(edition)
+    expect(document).to receive(:most_recent_edition).at_least(:once).and_return(edition)
     allow(edition).to receive(:schema).and_return(schema)
     allow(Organisation).to receive(:all).and_return([organisation])
   end

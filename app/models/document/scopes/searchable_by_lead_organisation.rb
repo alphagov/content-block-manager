@@ -4,7 +4,8 @@ module Document::Scopes::SearchableByLeadOrganisation
   included do
     scope :with_lead_organisation,
           lambda { |id|
-            joins(:latest_edition).where("editions.lead_organisation_id = :id", id:)
+            joins(:editions).merge(Edition.most_recent_for_document)
+              .where("editions.lead_organisation_id = :id", id:)
           }
   end
 end

@@ -271,10 +271,15 @@ When("I am updating a content block") do
   add_change_note
 end
 
-When("one of the content blocks was updated 2 days ago") do
-  document = Document.all.last
-  document.latest_edition.updated_at = 2.days.before(Time.zone.now)
-  document.latest_edition.save!
+When("there is a block with a new edition created 2 days ago") do
+  document = Document.last
+  org = document.editions.first.lead_organisation
+  document.editions.destroy_all
+
+  document.editions = [
+    create(:edition, :contact, document: document, lead_organisation_id: org.id, updated_at: 1.year.ago),
+    create(:edition, :contact, document: document, lead_organisation_id: org.id, updated_at: 2.days.ago),
+  ]
 end
 
 Then("the published state of the object should be shown") do
@@ -291,6 +296,15 @@ end
 Then("I should see the scheduled date on the object") do
   expect(page).to have_selector(".govuk-summary-list__key", text: "Status")
   expect(page).to have_selector(".govuk-summary-list__value", text: @future_date.to_fs(:long_ordinal_with_at).squish)
+end
+
+Then("I should see the scheduled date in the object's change history") do
+  date_time = @future_date.to_fs(:long_ordinal_with_at).squish
+  message = "Scheduled for publishing on #{date_time}"
+
+  within ".timeline" do
+    expect(page).to have_selector(".timeline__title", text: message)
+  end
 end
 
 When("I continue after reviewing the links") do
@@ -326,8 +340,20 @@ Then(/^I should still see the live edition on the homepage$/) do
   end
 end
 
+Then("I should still see the draft edition on the homepage") do
+  within(".govuk-summary-card", text: @content_block.document.title) do
+    Edition.draft.most_recent.details.values.each do |value|
+      expect(page).to have_content(value)
+    end
+  end
+end
+
 Then(/^I should not see the draft document$/) do
   expect(page).not_to have_content(@title)
+end
+
+Then(/^I should see the draft document$/) do
+  expect(page).to have_content(@title)
 end
 
 Then("I should see the content block manager home page") do
@@ -378,8 +404,8 @@ end
 
 When("the block {string} has been updated") do |title|
   document = Edition.find_by(title:).document
-  document.latest_edition.updated_at = Time.zone.now
-  document.latest_edition.save!
+  document.latest_published_edition.updated_at = Time.zone.now
+  document.latest_published_edition.save!
 end
 
 When("the block {string} has testing_artefact set to true") do |title|

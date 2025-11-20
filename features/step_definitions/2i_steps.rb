@@ -1,14 +1,12 @@
 When("I follow the workflow steps through to the final review step") do
   create_new_edition
-  complete_note_step
-  complete_change_note_step
-  complete_scheduling_step
   expect(page).to have_content("Review pension")
 end
 
 Then("I see a principal call to action of 'Send to 2i'") do
-  within("form[action='#{edition_status_transitions_path(edition)}']")
-  expect(page).to have_button("Send to 2i")
+  within("form[action='#{edition_status_transitions_path(Edition.last)}']") do
+    expect(page).to have_button("Send to 2i")
+  end
 end
 
 Then("I see a secondary call to action of 'Edit pension'") do
@@ -29,7 +27,9 @@ end
 
 def create_new_edition
   click_link("Edit pension")
-  expect(page).to have_content("Edit pension")
+  # creating a new edition when editing a draft is perhaps wrong
+  # but we'll tackle this in a future piece of work
+  expect(current_path).to eq(new_document_edition_path(edition.document))
   click_button("Save and continue")
 end
 

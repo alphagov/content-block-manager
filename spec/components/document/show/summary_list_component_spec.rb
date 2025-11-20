@@ -31,13 +31,13 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
 
   before do
     allow(document).to receive(:schema).and_return(schema_without_block_display_fields)
-    allow(document).to receive(:latest_edition).and_return(edition)
+    allow(document).to receive(:latest_published_edition).and_return(edition)
     allow(document).to receive(:most_recent_edition).and_return(edition)
     allow(Organisation).to receive(:all).and_return([organisation])
   end
 
   it "renders a scheduled content block correctly" do
-    document.latest_edition.state = "scheduled"
+    document.latest_published_edition.state = "scheduled"
 
     render_inline(described_class.new(document:))
 
@@ -51,7 +51,7 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
 
   describe "when there are instructions to publishers" do
     it "renders them" do
-      document.latest_edition.instructions_to_publishers = "instructions"
+      document.latest_published_edition.instructions_to_publishers = "instructions"
 
       render_inline(described_class.new(document:))
 

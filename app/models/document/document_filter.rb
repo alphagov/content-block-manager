@@ -74,8 +74,7 @@ private
     documents = Document
     documents = documents.where(block_type: Schema.valid_schemas)
     documents = documents.where(testing_artefact: false) unless Current.user&.is_e2e_user?
-    documents = documents.live
-    documents = documents.joins(:latest_edition)
+    documents = documents.joins(:editions).merge(Edition.most_recent_for_document)
     documents = documents.where(id: ids_with_keyword(keyword)) if keyword.present?
     documents = documents.where(block_type: @filters[:block_type]) if @filters[:block_type].present?
     documents = documents.with_lead_organisation(@filters[:lead_organisation]) if @filters[:lead_organisation].present?

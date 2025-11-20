@@ -8,6 +8,6 @@ When("I visit a block's content ID endpoint") do
 end
 
 When("I revisit the edit page") do
-  @content_block = @content_block.document.latest_edition
+  @content_block = @content_block.document.most_recent_edition
   visit_edit_page
 end

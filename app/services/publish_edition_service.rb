@@ -23,7 +23,7 @@ private
     )
     dequeue_all_previously_queued_editions(edition)
     publish_publishing_api_edition(content_id:)
-    update_document_with_latest_edition(edition)
+    update_document_with_latest_published_edition(edition)
     edition.public_send(:publish!)
     edition
   rescue PublishingFailureError => e
@@ -48,7 +48,7 @@ private
     raise PublishingFailureError, "Could not publish #{content_id} because: #{e.message}"
   end
 
-  def update_document_with_latest_edition(edition)
+  def update_document_with_latest_published_edition(edition)
     edition.document.update!(
       latest_edition_id: edition.id,
       live_edition_id: edition.id,

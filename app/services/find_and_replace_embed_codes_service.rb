@@ -34,9 +34,9 @@ private
 
   def content_blocks
     @content_blocks ||= begin
-      scope = Edition.current_versions
-      scope.where(document: { content_id: identifiers })
-           .or(scope.where(document: { content_id_alias: identifiers }))
+      scope = Edition.current_versions.joins(:document)
+      scope.where(documents: { content_id: identifiers })
+           .or(scope.where(documents: { content_id_alias: identifiers }))
     end
   end
 end

@@ -119,10 +119,10 @@ Feature: Edit a content object
     When I click to view the content block
     Then the edition should have been updated successfully
 
-  Scenario: GDS editor still sees live edition when abandoning an edit
+  Scenario: GDS editor still sees draft edition when abandoning an edit
     When I am updating a content block
     And I visit the Content Block Manager home page
-    Then I should still see the live edition on the homepage
+    Then I should still see the draft edition on the homepage
 
   @javascript
   Scenario: GDS editor can preview a host document

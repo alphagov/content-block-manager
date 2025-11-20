@@ -18,14 +18,15 @@ class Document < ApplicationRecord
 
   validates :block_type, :sluggable_string, presence: true
 
-  has_one :latest_edition,
-          -> { joins(:document).where("documents.latest_edition_id = editions.id") },
-          class_name: "Edition",
-          inverse_of: :document
-
   has_many :versions, through: :editions, source: :versions
 
-  scope :live, -> { where.not(latest_edition_id: nil) }
+  has_one :latest_published_edition,
+          -> { published.most_recent_first }, class_name: "Edition"
+
+  has_one :most_recent_edition,
+          -> { most_recent_first }, class_name: "Edition"
+
+  scope :live, -> { joins(:editions).merge(Edition.published.most_recent_first) }
 
   def built_embed_code
     "#{embed_code_prefix}}}"
@@ -36,19 +37,19 @@ class Document < ApplicationRecord
   end
 
   def title
-    @title ||= latest_edition&.title
+    @title ||= most_recent_edition&.title
   end
 
   def is_new_block?
     editions.count == 1
   end
 
-  def latest_draft
-    editions.where(state: :draft).order(created_at: :asc).last
+  def has_published_edition?
+    editions.published.any?
   end
 
-  def most_recent_edition
-    editions.order(created_at: :asc).last
+  def latest_draft
+    editions.where(state: :draft).order(created_at: :asc).last
   end
 
   def schema

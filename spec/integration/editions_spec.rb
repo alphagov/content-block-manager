@@ -19,7 +19,7 @@ RSpec.describe Editions, type: :feature do
       let(:document) { create(:document, :pension) }
 
       before do
-        document.latest_edition = original_edition
+        document.latest_published_edition = original_edition
         document.save!
       end
 

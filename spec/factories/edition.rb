@@ -32,12 +32,9 @@ FactoryBot.define do
       end
     end
 
-    trait :latest do
-      after(:create) do |edition, _evaluator|
-        document_update_params = {
-          latest_edition_id: edition.id,
-        }
-        edition.document.update!(document_update_params)
+    Edition.available_states.each do |state|
+      trait state.to_sym do
+        state { state }
       end
     end
   end

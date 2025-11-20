@@ -12,12 +12,24 @@ class Edition < ApplicationRecord
   include Workflow
 
   scope :current_versions, lambda {
-    joins(
-      "LEFT JOIN documents document ON document.latest_edition_id = editions.id",
-    ).where(state: "published")
+    published
   }
 
-  def update_document_reference_to_latest_edition!
+  scope :published, -> { where(state: "published") }
+
+  scope :most_recent_for_document, lambda {
+    where(updated_at: Edition.select("MAX(updated_at)").group(:document_id))
+  }
+
+  scope :most_recent_first, lambda {
+    order(updated_at: :desc)
+  }
+
+  def self.most_recent
+    most_recent_first.first
+  end
+
+  def update_document_reference_to_latest_published_edition!
     document.update!(latest_edition_id: id)
   end
 

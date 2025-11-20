@@ -7,7 +7,9 @@ class EditionForm
   attr_reader :schema
 
   def self.for(edition:, schema:)
-    edition.document&.latest_edition_id ? Update.new(edition:, schema:) : Create.new(edition:, schema:)
+    return Update.new(edition:, schema:) if edition.document&.has_published_edition?
+
+    Create.new(edition:, schema:)
   end
 
   def initialize(edition:, schema:)
