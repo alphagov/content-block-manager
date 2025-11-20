@@ -21,8 +21,14 @@
   </div>
 
   <div class="govuk-grid-column-one-quarter content-block-manager-header--column-right">
+
     <% if pre_release_features? %>
-      <%= render partial: "actions", locals: { document: @document } %>
+      <%= render(
+          Edition::Show::ActionsComponent.new(
+            edition: @document.most_recent_edition,
+          ),
+        ) %>
+
     <% else %>
       <%= render "govuk_publishing_components/components/button", {
         text: "Edit #{@document.block_type.humanize.downcase}",

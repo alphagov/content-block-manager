@@ -1,9 +1,9 @@
 <ul class="actions govuk-list govuk-!-text-align-centre">
-  <% if document.most_recent_edition.state == "draft" %>
+  <% if state == "draft" %>
     <li>
       <%= render Shared::TransitionButtonComponent.new(
-            edition: document.most_recent_edition,
-            transition: :ready_for_2i,
+        edition: edition,
+        transition: :ready_for_2i,
       ) %>
     </li>
   <% end %>
