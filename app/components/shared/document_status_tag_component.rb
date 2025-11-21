@@ -7,6 +7,7 @@ class Shared::DocumentStatusTagComponent < ViewComponent::Base
     scheduled: "light-blue",
     published: "green",
     superseded: "orange",
+    deleted: "red",
   }.freeze
 
   def initialize(document:)

@@ -5,13 +5,21 @@
 ```mermaid
 stateDiagram-v2
     [*] --> draft
+
+    draft --> deleted: delete
+    awaiting_2i --> deleted: delete
+    awaiting_factcheck --> deleted: delete
+    scheduled --> deleted: delete
+
     draft --> awaiting_2i: ready_for_2i
     awaiting_2i --> awaiting_factcheck: ready_for_factcheck
     awaiting_factcheck --> scheduled: schedule
+
     scheduled --> superseded: supersede
+    published --> superseded: supersede
+
     scheduled --> published: publish
     awaiting_factcheck --> published: publish
-    published --> superseded: supersede
 ```
 
 ## Notes
@@ -50,6 +58,11 @@ Once the Edition has been published, it is no longer editable. Moving an Edition
 
 When a user makes an edit to a Scheduled or Published Edition, the original Edition is marked as superseded.
 
+### deleted
+
+When a user deletes an Edition, it is marked as deleted. Rather than having a `deleted_at` column, we use a `state`.
+This allows us to easily restrict which states allow deletion and follows conventions set by other publishing apps.
+
 ## Transitions
 
 ### ready_for_2i
@@ -67,3 +80,7 @@ Schedule an Edition for publication.
 ### publish
 
 Publish an Edition to the Publishing API.
+
+### delete
+
+Delete an Edition.

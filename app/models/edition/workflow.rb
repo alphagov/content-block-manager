@@ -21,6 +21,7 @@ module Edition::Workflow
       state :scheduled
       state :superseded
       state :awaiting_2i
+      state :deleted
 
       event :publish do
         transitions from: %i[draft awaiting_2i scheduled], to: :published
@@ -33,6 +34,9 @@ module Edition::Workflow
       end
       event :ready_for_2i do
         transitions from: %i[draft], to: :awaiting_2i
+      end
+      event :delete do
+        transitions from: %i[draft awaiting_2i scheduled], to: :deleted
       end
     end
   end
