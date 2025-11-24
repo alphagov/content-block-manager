@@ -92,7 +92,7 @@
         <h2 class="govuk-heading-l subschema-listing__heading"><%= h subschema.name %></h2>
 
         <%= render Document::Show::EmbeddedObjects::SubschemaItemsComponent.new(
-          edition: @document.most_recent_edition,
+          edition: @edition,
           schema: @schema,
           subschema: subschema,
           ) %>
