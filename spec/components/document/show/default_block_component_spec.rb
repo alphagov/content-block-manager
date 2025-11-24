@@ -1,21 +1,19 @@
 RSpec.describe Document::Show::DefaultBlockComponent, type: :component do
-  let(:edition) { build(:edition, :pension) }
   let(:document) { build(:document, :pension) }
+  let(:edition) { build(:edition, :pension, document: document) }
 
   let(:embed_code) { "EMBED_CODE" }
   let(:embed_code_details) { "default block" }
   let(:default_block_output) { "DEFAULT_BLOCK_OUTPUT" }
 
   before do
-    allow(document).to receive(:latest_published_edition).and_return(edition)
-    allow(document).to receive(:most_recent_edition).and_return(edition)
     allow(document).to receive(:embed_code).and_return(embed_code)
     allow(edition).to receive(:render).with(embed_code).and_return(default_block_output)
   end
 
   it "renders the default block" do
     render_inline(
-      Document::Show::DefaultBlockComponent.new(document:),
+      Document::Show::DefaultBlockComponent.new(edition: edition),
     )
 
     expect(page).to have_css(
@@ -31,7 +29,7 @@ RSpec.describe Document::Show::DefaultBlockComponent, type: :component do
 
   it "includes detail on embed code in a data attr for use in visually hidden link info" do
     render_inline(
-      Document::Show::DefaultBlockComponent.new(document:),
+      Document::Show::DefaultBlockComponent.new(edition: edition),
     )
 
     expect(page).to have_css(
