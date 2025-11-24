@@ -79,6 +79,10 @@ class Edition < ApplicationRecord
     scheduled_publication.present?
   end
 
+  def active?
+    self.class.active.cover?(self)
+  end
+
 private
 
   def remove_destroyed(item)
