@@ -342,6 +342,9 @@ Feature: Create a contact object
     And I should see that the opening hours have been changed
     And analytics messages should have been sent for each step in the workflow
     And analytics messages should have been sent for each embedded object
+    When I return to the homepage
+    Then I should see the content block with title "my basic contact" returned
+    And I should see a tag containing "Published"
 
   @javascript
   Scenario: GDS editor sees errors for invalid telephone objects

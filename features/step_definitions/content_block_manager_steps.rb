@@ -385,6 +385,10 @@ And(/^I click the back link$/) do
   click_on "Back"
 end
 
+And(/^I return to the homepage$/) do
+  visit root_path
+end
+
 Given(/^my pension content block has no rates$/) do
   @content_block.details["rates"] = {}
   @content_block.save!
@@ -422,4 +426,8 @@ Then("I should see a title for the create flow") do
   within("h1") do
     assert_text I18n.t("edition.create.title", block_type: @schema.name.downcase)
   end
+end
+
+Then("I should see a tag containing {string}") do |string|
+  expect(page).to have_selector(".govuk-tag", text: string)
 end
