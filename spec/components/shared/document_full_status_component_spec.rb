@@ -1,8 +1,7 @@
 RSpec.describe Shared::DocumentFullStatusComponent, type: :component do
   let(:dave) { create(:user, name: "dave") }
   let(:edition) { double(:edition) }
-  let(:document) { double(Document, most_recent_edition: edition) }
-  let(:component) { described_class.new(document: document) }
+  let(:component) { described_class.new(edition: edition) }
 
   before do
     allow(edition).to receive(:updated_at).and_return(Time.zone.at(0))

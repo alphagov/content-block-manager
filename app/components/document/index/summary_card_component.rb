@@ -59,7 +59,7 @@ private
   end
 
   def full_status
-    render(Shared::DocumentFullStatusComponent.new(document: document))
+    render(Shared::DocumentFullStatusComponent.new(edition: edition))
   end
 
   def title
