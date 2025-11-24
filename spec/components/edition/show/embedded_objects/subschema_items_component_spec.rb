@@ -1,4 +1,4 @@
-RSpec.describe Document::Show::EmbeddedObjects::SubschemaItemsComponent, type: :component do
+RSpec.describe Edition::Show::EmbeddedObjects::SubschemaItemsComponent, type: :component do
   include Rails.application.routes.url_helpers
 
   let(:details) do
@@ -49,14 +49,14 @@ RSpec.describe Document::Show::EmbeddedObjects::SubschemaItemsComponent, type: :
       summary_list_stub_1 = "my-embedded-object"
       summary_list_stub_2 = "my-other-embedded-object"
 
-      expect(Document::Show::EmbeddedObjects::SubschemaItemComponent).to receive(:new).with(
+      expect(Edition::Show::EmbeddedObjects::SubschemaItemComponent).to receive(:new).with(
         edition:,
         object_type: subschema.id,
         schema_name: schema.block_type,
         object_title: "my-embedded-object",
       ).and_return(summary_list_stub_1)
 
-      expect(Document::Show::EmbeddedObjects::SubschemaItemComponent).to receive(:new).with(
+      expect(Edition::Show::EmbeddedObjects::SubschemaItemComponent).to receive(:new).with(
         edition:,
         object_type: subschema.id,
         schema_name: schema.block_type,

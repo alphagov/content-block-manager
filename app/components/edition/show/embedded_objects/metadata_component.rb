@@ -1,4 +1,4 @@
-class Document::Show::EmbeddedObjects::MetadataComponent < ViewComponent::Base
+class Edition::Show::EmbeddedObjects::MetadataComponent < ViewComponent::Base
   include TranslationHelper
   def initialize(items:, object_type:, schema_name:, schema:)
     @items = items

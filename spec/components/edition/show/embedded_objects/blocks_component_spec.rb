@@ -1,4 +1,4 @@
-RSpec.describe Document::Show::EmbeddedObjects::BlocksComponent, type: :component do
+RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component do
   let(:items) do
     {
       "foo" => "bar",

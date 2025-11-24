@@ -1,4 +1,4 @@
-class Document::Show::EmbeddedObjects::TabGroupComponent < ViewComponent::Base
+class Edition::Show::EmbeddedObjects::TabGroupComponent < ViewComponent::Base
   def initialize(edition:, schema:, subschemas:)
     @edition = edition
     @schema = schema
@@ -25,7 +25,7 @@ private
   end
 
   def component_for_subschema(subschema)
-    Document::Show::EmbeddedObjects::SubschemaItemsComponent.new(
+    Edition::Show::EmbeddedObjects::SubschemaItemsComponent.new(
       edition:,
       schema:,
       subschema:,

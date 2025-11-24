@@ -1,4 +1,4 @@
-class Document::Show::EmbeddedObjects::BlocksComponent < ViewComponent::Base
+class Edition::Show::EmbeddedObjects::BlocksComponent < ViewComponent::Base
   include EmbedCodeHelper
   include SummaryListHelper
 

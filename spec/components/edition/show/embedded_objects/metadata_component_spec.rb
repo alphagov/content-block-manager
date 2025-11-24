@@ -1,4 +1,4 @@
-RSpec.describe Document::Show::EmbeddedObjects::MetadataComponent, type: :component do
+RSpec.describe Edition::Show::EmbeddedObjects::MetadataComponent, type: :component do
   let(:items) do
     {
       "foo" => "bar",

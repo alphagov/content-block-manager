@@ -1,4 +1,4 @@
-RSpec.describe Document::Show::EmbeddedObjects::SubschemaItemComponent, type: :component do
+RSpec.describe Edition::Show::EmbeddedObjects::SubschemaItemComponent, type: :component do
   let(:schema) { double("schema") }
   let(:subschema) { double("schema") }
 
@@ -46,9 +46,9 @@ RSpec.describe Document::Show::EmbeddedObjects::SubschemaItemComponent, type: :c
   end
 
   it "renders non-blank fields apart from 'block_display_fields' with the MetadataComponent" do
-    allow(Document::Show::EmbeddedObjects::BlocksComponent).to receive(:new).and_return(block_response)
+    allow(Edition::Show::EmbeddedObjects::BlocksComponent).to receive(:new).and_return(block_response)
 
-    expect(Document::Show::EmbeddedObjects::MetadataComponent).to receive(:new).with(
+    expect(Edition::Show::EmbeddedObjects::MetadataComponent).to receive(:new).with(
       items: { "title" => "Some title" },
       object_type:,
       schema_name:,
@@ -61,9 +61,9 @@ RSpec.describe Document::Show::EmbeddedObjects::SubschemaItemComponent, type: :c
   end
 
   it "renders the (remaining) non-blank 'block_display_fields' with BlocksComponent" do
-    allow(Document::Show::EmbeddedObjects::MetadataComponent).to receive(:new).and_return(metadata_response)
+    allow(Edition::Show::EmbeddedObjects::MetadataComponent).to receive(:new).and_return(metadata_response)
 
-    expect(Document::Show::EmbeddedObjects::BlocksComponent).to receive(:new).with(
+    expect(Edition::Show::EmbeddedObjects::BlocksComponent).to receive(:new).with(
       items: { "item_2" => "Bar", "item_1" => "Foo" },
       object_type:,
       schema_name:,
