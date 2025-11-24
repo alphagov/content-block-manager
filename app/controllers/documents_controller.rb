@@ -16,6 +16,7 @@ class DocumentsController < BaseController
 
   def show
     @document = Document.find(params[:id])
+    @edition = @document.most_recent_edition
     @schema = Schema.find_by_block_type(@document.block_type)
     @content_block_versions = @document.versions
     @order = params[:order]
