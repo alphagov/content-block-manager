@@ -76,7 +76,7 @@ RSpec.describe Document::Show::HostEditionsTableComponent, type: :component do
 
       headers = page.find_all(".govuk-table__header")
 
-      expect(headers.count).to eq(6)
+      expect(headers.count).to eq(7)
 
       expect(headers[0]).to have_text "Title"
       expect(headers[1]).to have_text "Type"
@@ -84,6 +84,7 @@ RSpec.describe Document::Show::HostEditionsTableComponent, type: :component do
       expect(headers[3]).to have_text "Views (30 days)"
       expect(headers[4]).to have_text "Lead organisation"
       expect(headers[5]).to have_text "Last updated"
+      expect(headers[6]).to have_text "Preview (opens in new tab)"
 
       rows = page.find_all("tbody .govuk-table__row")
 
@@ -91,7 +92,7 @@ RSpec.describe Document::Show::HostEditionsTableComponent, type: :component do
 
       columns = rows[0].find_all(".govuk-table__cell")
 
-      expect(columns.count).to eq(6)
+      expect(columns.count).to eq(7)
 
       expect(columns[0]).to have_css ".govuk-link" do |link|
         expect(link.text).to eq("#{host_content_item.title} (opens in new tab)")
