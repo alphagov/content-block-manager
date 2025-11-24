@@ -11,3 +11,8 @@ When("I revisit the edit page") do
   @content_block = @content_block.document.most_recent_edition
   visit_edit_page
 end
+
+Given("I am viewing the draft edition") do
+  edition = Document.last.editions.draft.most_recent
+  visit document_path(edition.document)
+end

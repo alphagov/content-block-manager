@@ -1,28 +1,17 @@
 Given("a pension content block has been drafted") do
-  @content_block = create(
-    :edition,
-    :pension,
-    details: { description: "Some text" },
-    creator: @user,
-    lead_organisation_id: @organisation.id,
-    title: "My pension",
-  )
+  create_draft_pension_edition
 end
 
 Given("a pension content block has been created") do
-  @content_blocks ||= []
-  @content_block = create(
-    :edition,
-    :pension,
-    details: { description: "Some text" },
-    creator: @user,
-    lead_organisation_id: @organisation.id,
-    title: "My pension",
-  )
-  Edition::HasAuditTrail.acting_as(@user) do
-    @content_block.publish!
-  end
-  @content_blocks.push(@content_block)
+  create_published_pension_edition
+end
+
+Given("a published contact edition exists") do
+  create_published_contact_edition
+end
+
+Given("a draft contact edition exists") do
+  create_draft_contact_edition
 end
 
 Given("a contact content block has been created") do
@@ -67,4 +56,92 @@ Given(/^([^"]*) content blocks of type ([^"]*) have been created with the fields
     document.latest_published_edition = editions.last
     document.save!
   end
+end
+
+def create_draft_pension_edition
+  @content_block = create(
+    :edition,
+    :pension,
+    document: pension_document,
+    details: { description: "Some text" },
+    creator: @user,
+    lead_organisation_id: organisation_id,
+    title: "My pension",
+  )
+end
+
+def create_draft_contact_edition
+  @content_block = create(
+    :edition,
+    :contact,
+    document: contact_document,
+    details: {
+      "description" => "Further edition (Draft)",
+      "contact_links" => {
+        "contact-link-draft" => {
+          "title" => "Contact link (Draft)",
+          "label" => "Draft Link",
+          "url" => "https://draft.example.com",
+        },
+      },
+    },
+    creator: @user,
+    lead_organisation_id: organisation_id,
+    title: "My contact (draft)",
+  )
+end
+
+def create_published_pension_edition
+  @content_blocks ||= []
+  @content_block = create(
+    :edition,
+    :pension,
+    document: pension_document,
+    details: { description: "Some text" },
+    creator: @user,
+    lead_organisation_id: organisation_id,
+    title: "My pension",
+  )
+  Edition::HasAuditTrail.acting_as(@user) do
+    @content_block.publish!
+  end
+  @content_blocks.push(@content_block)
+end
+
+def create_published_contact_edition
+  @content_blocks ||= []
+  @content_block = create(
+    :edition,
+    :contact,
+    document: contact_document,
+    details: {
+      "description" => "Published edition (Published)",
+      "contact_links" => {
+        "contact-link-published" => {
+          "title" => "Contact link (Published)",
+          "label" => "Published Link",
+          "url" => "https://published.example.com",
+        },
+      },
+    },
+    creator: @user,
+    lead_organisation_id: organisation_id,
+    title: "My contact (published)",
+  )
+  Edition::HasAuditTrail.acting_as(@user) do
+    @content_block.publish!
+  end
+  @content_blocks.push(@content_block)
+end
+
+def organisation_id
+  Organisation.all.first.id
+end
+
+def pension_document
+  @pension_document ||= create(:document, :pension)
+end
+
+def contact_document
+  @contact_document ||= create(:document, :contact)
 end
