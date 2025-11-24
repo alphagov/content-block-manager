@@ -9,8 +9,8 @@ class Shared::DocumentStatusTagComponent < ViewComponent::Base
     superseded: "orange",
   }.freeze
 
-  def initialize(document:)
-    @edition = document.most_recent_edition
+  def initialize(edition:)
+    @edition = edition
   end
 
   def status
