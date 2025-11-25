@@ -45,12 +45,26 @@ end
 
 def shows_content_in_summary_list_for(state:)
   within ".gem-c-summary-list" do
-    expect(page).to have_content(state.to_s.titleize)
+    expect(page).to have_content(edition_for(state).title)
   end
 end
 
 def shows_content_in_embedded_object_for(state:)
   within ".app-c-embedded-objects-blocks-component" do
-    expect(page).to have_content(state.to_s.titleize)
+    expect(page).to have_content(edition_for(state).title)
   end
+end
+
+def edition_for(state)
+  return published_edition if state == :published
+
+  draft_edition
+end
+
+def published_edition
+  @published_edition ||= Edition.last.document.latest_published_edition
+end
+
+def draft_edition
+  @draft_edition ||= Edition.last.document.most_recent_edition
 end
