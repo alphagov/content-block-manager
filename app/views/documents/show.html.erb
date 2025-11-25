@@ -10,19 +10,25 @@
   <div class="govuk-grid-column-three-quarters govuk-!-margin-bottom-5">
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-1">
       <span class="govuk-caption-xl"><%= @document.schema.name %></span>
-      <%= @document.most_recent_edition.title %>
+      <%= @edition.title %>
     </h1>
 
     <%= render(
         Shared::DocumentStatusTagComponent.new(
-          document: @document,
+          edition: @edition,
         ),
       ) %>
   </div>
 
   <div class="govuk-grid-column-one-quarter content-block-manager-header--column-right">
+
     <% if pre_release_features? %>
-      <%= render partial: "actions", locals: { document: @document } %>
+      <%= render(
+          Edition::Show::ActionsComponent.new(
+            edition: @edition,
+          ),
+        ) %>
+
     <% else %>
       <%= render "govuk_publishing_components/components/button", {
         text: "Edit #{@document.block_type.humanize.downcase}",
@@ -44,7 +50,7 @@
   <div class="govuk-grid-column-full">
     <%= render(
           Document::Show::SummaryListComponent.new(
-            document: @document,
+            edition: @edition,
           ),
         ) %>
   </div>
@@ -55,7 +61,7 @@
     <div class="govuk-grid-column-full">
       <%= render(
             Document::Show::DefaultBlockComponent.new(
-              document: @document,
+              edition: @edition,
               ),
             ) %>
     </div>
@@ -71,7 +77,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <%= render Document::Show::EmbeddedObjects::TabGroupComponent.new(
-        document: @document,
+        edition: @edition,
         schema: @schema,
         subschemas: subschemas,
         ) %>
@@ -86,7 +92,7 @@
         <h2 class="govuk-heading-l subschema-listing__heading"><%= h subschema.name %></h2>
 
         <%= render Document::Show::EmbeddedObjects::SubschemaItemsComponent.new(
-          edition: @document.most_recent_edition,
+          edition: @edition,
           schema: @schema,
           subschema: subschema,
           ) %>
@@ -103,7 +109,7 @@
         host_content_items: @host_content_items,
         current_page: @page,
         order: @order,
-        edition: @document.most_recent_edition,
+        edition: @edition,
       ),
     ) %>
   </div>

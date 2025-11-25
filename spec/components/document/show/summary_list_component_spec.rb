@@ -31,15 +31,13 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
 
   before do
     allow(document).to receive(:schema).and_return(schema_without_block_display_fields)
-    allow(document).to receive(:latest_published_edition).and_return(edition)
-    allow(document).to receive(:most_recent_edition).and_return(edition)
     allow(Organisation).to receive(:all).and_return([organisation])
   end
 
   it "renders a scheduled content block correctly" do
-    document.latest_published_edition.state = "scheduled"
+    edition.state = "scheduled"
 
-    render_inline(described_class.new(document:))
+    render_inline(described_class.new(edition: edition))
 
     expect(page).to have_css ".govuk-summary-list__row", count: 6
 
@@ -51,9 +49,9 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
 
   describe "when there are instructions to publishers" do
     it "renders them" do
-      document.latest_published_edition.instructions_to_publishers = "instructions"
+      edition.instructions_to_publishers = "instructions"
 
-      render_inline(described_class.new(document:))
+      render_inline(described_class.new(edition: edition))
 
       expect(page).to have_css ".govuk-summary-list__key", text: "Instructions to publishers"
       expect(page).to have_css ".govuk-summary-list__value p", text: "instructions"
@@ -72,7 +70,7 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
         default: "Default Title",
       ).and_return("Custom Title Label")
 
-      render_inline(described_class.new(document:))
+      render_inline(described_class.new(edition: edition))
 
       expect(page).to have_css ".govuk-summary-list__key", text: "Custom Title Label"
       expect(page).to have_css ".govuk-summary-list__value", text: document.title
@@ -84,7 +82,7 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
         default: "Default Title",
       ).and_return("Default Title")
 
-      render_inline(described_class.new(document:))
+      render_inline(described_class.new(edition: edition))
 
       expect(page).to have_css ".govuk-summary-list__key", text: "Default Title"
       expect(page).to have_css ".govuk-summary-list__value", text: document.title
@@ -93,7 +91,7 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
 
   describe "#organisation_item" do
     it "renders the lead organisation name" do
-      render_inline(described_class.new(document:))
+      render_inline(described_class.new(edition: edition))
 
       expect(page).to have_css ".govuk-summary-list__key", text: "Lead organisation"
       expect(page).to have_css ".govuk-summary-list__value", text: "Department for Example"
@@ -102,7 +100,7 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
 
   describe "#details_items" do
     it "renders all fields from the schema" do
-      render_inline(described_class.new(document:))
+      render_inline(described_class.new(edition: edition))
 
       expect(page).to have_css ".govuk-summary-list__key", text: "Foo"
       expect(page).to have_css ".govuk-summary-list__value", text: "bar"
@@ -118,7 +116,7 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
       allow(document).to receive(:schema).and_return(schema)
       edition.details = { "field_with_underscores" => "test value" }
 
-      render_inline(described_class.new(document:))
+      render_inline(described_class.new(edition: edition))
 
       expect(page).to have_css ".govuk-summary-list__key", text: "Field with underscores"
       expect(page).to have_css ".govuk-summary-list__value", text: "test value"
@@ -133,7 +131,7 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
       end
 
       it "displays scheduled status with edit link" do
-        render_inline(described_class.new(document:))
+        render_inline(described_class.new(edition: edition))
 
         expect(page).to have_css ".govuk-summary-list__key", text: "Status"
         expect(page).to have_css ".govuk-summary-list__value", text: /Scheduled for publication at/
@@ -141,7 +139,7 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
       end
 
       it "includes visually hidden text in edit link" do
-        render_inline(described_class.new(document:))
+        render_inline(described_class.new(edition: edition))
 
         expect(page).to have_css ".govuk-summary-list__actions", text: "Edit"
         expect(page).to have_css ".govuk-visually-hidden", text: "schedule"
@@ -155,7 +153,7 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
       end
 
       it "displays published status with date and creator" do
-        render_inline(described_class.new(document:))
+        render_inline(described_class.new(edition: edition))
 
         expect(page).to have_css ".govuk-summary-list__key", text: "Status"
         expect(page).to have_css ".govuk-summary-list__value", text: /Published on/
@@ -163,7 +161,7 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
       end
 
       it "does not display edit link" do
-        render_inline(described_class.new(document:))
+        render_inline(described_class.new(edition: edition))
 
         expect(page).to_not have_css ".govuk-summary-list__actions a[href='#{document_schedule_edit_path(document)}']"
       end
@@ -172,7 +170,7 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
 
   describe "rendering the full component" do
     it "renders all expected summary list rows for published edition" do
-      render_inline(described_class.new(document:))
+      render_inline(described_class.new(edition: edition))
 
       # Title, 2 details fields (foo, something), organisation, instructions, status
       expect(page).to have_css ".govuk-summary-list__row", count: 6
@@ -181,26 +179,15 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
     it "compacts nil items from the list" do
       # This test ensures the .compact call in #items works correctly
       # by verifying all rows render without errors even if some items might be nil
-      render_inline(described_class.new(document:))
+      render_inline(described_class.new(edition: edition))
 
       assert_not page.has_selector?(".govuk-summary-list__row", text: "nil")
     end
   end
 
-  describe "#edition" do
-    it "memoizes the edition" do
-      component = described_class.new(document:)
-
-      # Access edition multiple times
-      expect(document).to receive(:most_recent_edition).once.and_return(edition)
-
-      render_inline(component)
-    end
-  end
-
   describe "#schema" do
     it "memoizes the schema" do
-      component = described_class.new(document:)
+      component = described_class.new(edition: edition)
 
       # Access schema multiple times through details_items
       expect(document).to receive(:schema).once.and_return(schema_without_block_display_fields)

@@ -11,17 +11,11 @@ RSpec.describe Document::Show::EmbeddedObjects::TabGroupComponent, type: :compon
     ]
   end
 
-  let(:document) { build(:document, id: SecureRandom.uuid) }
-  let(:edition) { build(:edition, :pension, document: document) }
-
-  before do
-    allow(document).to receive(:latest_published_edition).and_return(edition)
-    allow(document).to receive(:most_recent_edition).and_return(edition)
-  end
+  let(:edition) { build(:edition, :pension) }
 
   let(:component) do
     described_class.new(
-      document:,
+      edition: edition,
       schema:,
       subschemas:,
     )

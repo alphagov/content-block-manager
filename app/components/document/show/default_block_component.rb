@@ -1,15 +1,12 @@
 class Document::Show::DefaultBlockComponent < ViewComponent::Base
-  def initialize(document:)
-    @document = document
+  def initialize(edition:)
+    @edition = edition
+    @document = edition.document
   end
 
 private
 
-  attr_reader :document
-
-  def edition
-    @edition = document.most_recent_edition
-  end
+  attr_reader :edition, :document
 
   def block_content
     content = content_tag(:div, class: "govspeak") do

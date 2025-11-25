@@ -2,9 +2,9 @@ class Document::Show::SummaryListComponent < ViewComponent::Base
   include EditionHelper
   include EmbedCodeHelper
 
-  def initialize(document:)
-    @document = document
-    @edition ||= document.most_recent_edition
+  def initialize(edition:)
+    @edition = edition
+    @document = edition.document
   end
 
 private
@@ -27,7 +27,7 @@ private
         "activerecord.attributes.edition/document.title.#{document.block_type}",
         default: I18n.t("activerecord.attributes.edition/document.title.default"),
       ),
-      value: document.most_recent_edition.title,
+      value: edition.title,
     }
   end
 
