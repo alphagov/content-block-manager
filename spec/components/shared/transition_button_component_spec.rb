@@ -2,33 +2,83 @@ RSpec.describe Shared::TransitionButtonComponent, type: :component do
   let(:edition) { build_stubbed :edition, id: 123 }
   let(:component) { described_class.new(edition: edition, transition: transition) }
 
+  context "when the edition is performing any valid transition" do
+    Edition.new.available_transitions.each do |available_transition|
+      context "for transition #{available_transition}" do
+        let(:transition) { available_transition }
+        let(:component) { described_class.new(edition: edition, transition: transition) }
+
+        it "generates a form to submit a new 'Status Transition'" do
+          render_inline component
+          expect(page).to have_css(
+            "form[action='/editions/123/edition_status_transitions']",
+          )
+        end
+
+        it "uses '#{available_transition}' as the hidden _transition_ field" do
+          render_inline component
+
+          expect(page).to have_css(
+            "form input[type='hidden'][value='#{transition}'][name='transition']",
+            visible: false,
+          )
+        end
+
+        it "uses '#{available_transition}' as the hidden _transition_ field" do
+          render_inline component
+
+          expect(page).to have_css(
+            "form input[type='hidden'][value='#{transition}'][name='transition']",
+            visible: false,
+          )
+        end
+      end
+    end
+  end
+
   context "when the given transition is 'ready_for_2i'" do
     let(:transition) { "ready_for_2i" }
 
-    it "generates a form to submit a new 'Status Transition'" do
-      render_inline component
-
-      expect(page).to have_css(
-        "form[action='/editions/123/edition_status_transitions']",
-      )
-    end
-
-    it "uses 'ready_for_2i' as the hidden _transition_ field" do
-      render_inline component
-
-      expect(page).to have_css(
-        "form input[type='hidden'][value='ready_for_2i'][name='transition']",
-        visible: false,
-      )
-    end
-
     it "shows the 'Send to 2i' call to action" do
       render_inline component
+      expect(page).to have_css("form button[type='submit']", text: "Send to 2i")
+    end
+  end
 
-      expect(page).to have_css(
-        "form button[type='submit']",
-        text: "Send to 2i",
-      )
+  context "when the given transition is 'schedule'" do
+    let(:transition) { "schedule" }
+
+    it "shows the 'Schedule' call to action" do
+      render_inline component
+      expect(page).to have_css("form button[type='submit']", text: "Schedule")
+    end
+  end
+
+  context "when the given transition is 'publish'" do
+    let(:transition) { "publish" }
+
+    it "shows the 'Publish' call to action" do
+      render_inline component
+      expect(page).to have_css("form button[type='submit']", text: "Publish")
+    end
+  end
+
+  context "when the given transition is 'delete'" do
+    let(:transition) { "delete" }
+
+    it "shows the 'Delete' call to action" do
+      render_inline component
+      expect(page).to have_css("form button[type='submit']", text: "Delete")
+    end
+  end
+
+  context "when the given transition is 'supersede'" do
+    let(:edition) { build_stubbed :edition, :scheduled }
+    let(:transition) { "supersede" }
+
+    it "shows the 'Supersede' call to action" do
+      render_inline component
+      expect(page).to have_css("form button[type='submit']", text: "Supersede")
     end
   end
 

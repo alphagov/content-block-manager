@@ -158,6 +158,12 @@ en:
         published: "Published on %{date} by %{user}"
         superseded: "Superseded on %{date}"
         deleted: "Deleted on %{date} by %{user}"
+    transitions:
+      ready_for_2i: Send to 2i
+      schedule: Schedule
+      publish: Publish
+      delete: Delete
+      supersede: Supersede
   date:
     formats:
       default: "%d %B %Y"

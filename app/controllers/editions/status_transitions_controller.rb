@@ -6,7 +6,7 @@ class Editions::StatusTransitionsController < BaseController
     begin
       attempt_transition!(transition: params.fetch(:transition))
       handle_success
-    rescue Transitions::InvalidTransition => e
+    rescue UnknownTransitionError, Transitions::InvalidTransition => e
       handle_failure(e)
     ensure
       redirect_to document_path(@edition.document)
@@ -16,12 +16,9 @@ class Editions::StatusTransitionsController < BaseController
 private
 
   def attempt_transition!(transition:)
-    case transition.to_sym
-    when :ready_for_2i
-      @edition.ready_for_2i!
-    else
-      raise(UnknownTransitionError, "Transition event '#{transition}' is not recognised'")
-    end
+    @edition.send("#{transition}!")
+  rescue NoMethodError
+    raise(UnknownTransitionError, "Transition event '#{transition}!' is not recognised'")
   end
 
   def handle_success
