@@ -2,17 +2,18 @@ class Document::Show::EmbeddedObjects::BlocksComponent < ViewComponent::Base
   include EmbedCodeHelper
   include SummaryListHelper
 
-  def initialize(items:, schema_name:, object_type:, object_title:, document:)
+  def initialize(items:, schema_name:, object_type:, object_title:, edition:)
     @items = items
     @schema_name = schema_name
     @object_type = object_type
     @object_title = object_title
-    @document = document
+    @edition = edition
+    @document = edition.document
   end
 
 private
 
-  attr_reader :items, :schema_name, :object_type, :object_title, :document
+  attr_reader :items, :schema_name, :object_type, :object_title, :edition, :document
 
   def component_classes
     [
@@ -127,10 +128,6 @@ private
 
   def schema
     @schema ||= document.schema.subschema(object_type)
-  end
-
-  def edition
-    @edition ||= document.most_recent_edition
   end
 
   def embed_code_identifier(*arr)

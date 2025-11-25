@@ -68,7 +68,7 @@ RSpec.describe Document::Show::EmbeddedObjects::SubschemaItemComponent, type: :c
       object_type:,
       schema_name:,
       object_title:,
-      document: edition.document,
+      edition: edition,
     ).and_return(block_response)
 
     render_inline component

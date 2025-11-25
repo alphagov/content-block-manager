@@ -76,12 +76,13 @@ def create_draft_contact_edition
     :contact,
     document: contact_document,
     details: {
-      "description" => "Further edition (Draft)",
-      "contact_links" => {
-        "contact-link-draft" => {
-          "title" => "Contact link (Draft)",
-          "label" => "Draft Link",
-          "url" => "https://draft.example.com",
+      "telephones" => {
+        "telephone 1" => {
+          "title" => "Draft Telephone",
+          "telephone_numbers" => [
+            { "label" => "Draft label", "telephone_number" => "020 7703 4842" },
+            { "label" => "Draft label 2", "telephone_number" => "0800 123 123" },
+          ],
         },
       },
     },
@@ -115,12 +116,12 @@ def create_published_contact_edition
     :contact,
     document: contact_document,
     details: {
-      "description" => "Published edition (Published)",
-      "contact_links" => {
-        "contact-link-published" => {
-          "title" => "Contact link (Published)",
-          "label" => "Published Link",
-          "url" => "https://published.example.com",
+      "telephones" => {
+        "telephone 1" => {
+          "title" => "Published Telephone",
+          "telephone_numbers" => [
+            { "label" => "Published label", "telephone_number" => "07860 837126" },
+          ],
         },
       },
     },

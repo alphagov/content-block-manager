@@ -18,30 +18,38 @@ Feature: View published contact from draft
        "properties":{
           "description": {
             "type": "string"
-          },
-          "order": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "pattern": "^contact_links$"
-            }
           }
        }
     }
     """
-    And the schema has a subschema "contact_links":
+    And the schema has a subschema "telephones":
     """
     {
       "type":"object",
-      "required": ["url"],
+      "required": [
+        "title",
+        "telephone_numbers"
+      ],
       "properties": {
+        "telephone_numbers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "label",
+              "telephone_number"
+            ],
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "telephone_number": {
+                "type": "string"
+              }
+            }
+          }
+        },
         "title": {
-          "type": "string"
-        },
-        "label": {
-          "type": "string"
-        },
-        "url": {
           "type": "string"
         }
       }
@@ -49,7 +57,7 @@ Feature: View published contact from draft
     """
 
     And the schema "contact" has a group "contact_methods" with the following subschemas:
-      | contact_links |
+      | telephones |
 
   Scenario: Editor can follow link to published edition
     Given a published contact edition exists
