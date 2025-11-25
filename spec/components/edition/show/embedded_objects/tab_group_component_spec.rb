@@ -1,4 +1,4 @@
-RSpec.describe Document::Show::EmbeddedObjects::TabGroupComponent, type: :component do
+RSpec.describe Edition::Show::EmbeddedObjects::TabGroupComponent, type: :component do
   let(:schema) { double("schema") }
 
   let(:subschema_1) { double("subschema_1", id: "embedded-type-1", name: "embedded type 1", group_order: 1) }
@@ -25,13 +25,13 @@ RSpec.describe Document::Show::EmbeddedObjects::TabGroupComponent, type: :compon
     tab_component_1_double = double("TabComponent", id: subschema_1.id, label: "Tab 1", content: "<p>content_1</p>")
     tab_component_2_double = double("TabComponent", id: subschema_2.id, label: "Tab 2", content: "<p>content_2</p>")
 
-    expect(Document::Show::EmbeddedObjects::SubschemaItemsComponent).to receive(:new).with(
+    expect(Edition::Show::EmbeddedObjects::SubschemaItemsComponent).to receive(:new).with(
       edition:,
       schema:,
       subschema: subschema_1,
     ).and_return(tab_component_1_double)
 
-    expect(Document::Show::EmbeddedObjects::SubschemaItemsComponent).to receive(:new).with(
+    expect(Edition::Show::EmbeddedObjects::SubschemaItemsComponent).to receive(:new).with(
       edition:,
       schema:,
       subschema: subschema_2,

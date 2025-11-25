@@ -1,5 +1,5 @@
-<%= render Document::Show::EmbeddedObjects::MetadataComponent.new(
+<%= render Edition::Show::EmbeddedObjects::MetadataComponent.new(
   items: metadata_items, object_type:, schema_name:, schema: schema) %>
 
-<%= render Document::Show::EmbeddedObjects::BlocksComponent.new(
+<%= render Edition::Show::EmbeddedObjects::BlocksComponent.new(
   items: block_items, object_type:, schema_name:, object_title:, edition: edition) %>

@@ -1,4 +1,4 @@
-class Document::Show::DefaultBlockComponent < ViewComponent::Base
+class Edition::Show::DefaultBlockComponent < ViewComponent::Base
   def initialize(edition:)
     @edition = edition
     @document = edition.document

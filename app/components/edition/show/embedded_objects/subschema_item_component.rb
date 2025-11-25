@@ -1,4 +1,4 @@
-class Document::Show::EmbeddedObjects::SubschemaItemComponent < ViewComponent::Base
+class Edition::Show::EmbeddedObjects::SubschemaItemComponent < ViewComponent::Base
   def initialize(edition:, schema_name:, object_type:, object_title:)
     @edition = edition
     @schema_name = schema_name

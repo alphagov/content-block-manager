@@ -1,4 +1,4 @@
-RSpec.describe Document::Show::DefaultBlockComponent, type: :component do
+RSpec.describe Edition::Show::DefaultBlockComponent, type: :component do
   let(:document) { build(:document, :pension) }
   let(:edition) { build(:edition, :pension, document: document) }
 
@@ -13,7 +13,7 @@ RSpec.describe Document::Show::DefaultBlockComponent, type: :component do
 
   it "renders the default block" do
     render_inline(
-      Document::Show::DefaultBlockComponent.new(edition: edition),
+      Edition::Show::DefaultBlockComponent.new(edition: edition),
     )
 
     expect(page).to have_css(
@@ -29,7 +29,7 @@ RSpec.describe Document::Show::DefaultBlockComponent, type: :component do
 
   it "includes detail on embed code in a data attr for use in visually hidden link info" do
     render_inline(
-      Document::Show::DefaultBlockComponent.new(edition: edition),
+      Edition::Show::DefaultBlockComponent.new(edition: edition),
     )
 
     expect(page).to have_css(
