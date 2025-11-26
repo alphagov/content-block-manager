@@ -45,13 +45,13 @@ end
 
 def shows_content_in_summary_list_for(state:)
   within ".gem-c-summary-list" do
-    expect(page).to have_content(edition_for(state).title)
+    expect(page.html).to include(edition_for(state).render)
   end
 end
 
 def shows_content_in_embedded_object_for(state:)
   within ".app-c-embedded-objects-blocks-component" do
-    expect(page).to have_content(edition_for(state).title)
+    expect(page.html).to include(edition_for(state).render)
   end
 end
 

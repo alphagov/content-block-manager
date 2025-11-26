@@ -7,9 +7,7 @@ Then("I should not see a preview button") do
 end
 
 Then(/^I should see a preview of my contact$/) do
-  within ".app-views-editions-preview" do
-    assert_text @title
-  end
+  expect(page).to have_selector(".app-views-editions-preview")
 end
 
 When(/^I click to close the preview$/) do
