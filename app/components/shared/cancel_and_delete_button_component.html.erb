@@ -1,8 +1,6 @@
-<%= form_with url: url, method: :patch do %>
+<%= form_with url: url, method: :delete do %>
   <%= render "govuk_publishing_components/components/button", {
     text: "Cancel",
-    name: "_method",
-    value: "delete",
     type: "submit",
     secondary_solid: true,
   } %>
