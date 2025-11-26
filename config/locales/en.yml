@@ -68,6 +68,8 @@ en:
         detail: You can now view the updated content block.
       drafted:
         banner: Block has been saved as draft
+    delete:
+      body: Are you sure you want to delete this draft?
     review_page:
       errors:
         confirm: Tick box to confirm details are correct

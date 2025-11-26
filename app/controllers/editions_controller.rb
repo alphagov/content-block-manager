@@ -36,6 +36,15 @@ class EditionsController < BaseController
     redirect_to params[:redirect_path] || root_path
   end
 
+  def delete
+    @edition = Edition.find(params[:id])
+    @form = EditionForm.for(
+      edition: @edition,
+      schema: @edition.schema,
+    )
+    @body = I18n.t("edition.delete.body")
+  end
+
   def preview
     @edition = Edition.find(params[:id])
   end

@@ -75,6 +75,10 @@ class Edition < ApplicationRecord
     scheduled_publication.present?
   end
 
+  def is_deletable?
+    can_transition?(:delete)
+  end
+
 private
 
   def remove_destroyed(item)

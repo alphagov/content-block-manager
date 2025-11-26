@@ -12,6 +12,10 @@ class Shared::TransitionButtonComponent < ViewComponent::Base
     I18n.t("edition.transitions.#{transition}")
   end
 
+  def destructive?
+    @transition == :delete
+  end
+
 private
 
   def raise_if_transition_unknown(transition)

@@ -1,7 +1,4 @@
 RSpec.describe EditionsController, type: :request do
-  # include IntegrationSpecHelpers
-  # include Rails.application.routes.url_helpers
-
   describe "#create" do
     let(:title) { "Some Title" }
 
@@ -219,6 +216,32 @@ RSpec.describe EditionsController, type: :request do
           end
         end
       end
+    end
+  end
+
+  describe "#delete" do
+    let(:user) { create(:user) }
+    let(:document) { create(:document, :pension) }
+    let(:edition) { create(:edition, id: 123, document: document, title: "Some unique title") }
+
+    before do
+      allow(Edition).to receive(:find).with("123").and_return(edition)
+      login_as(user)
+    end
+
+    it "fetches the correct edition from the url params for use in the template" do
+      get "/editions/123/delete"
+      expect(response.body).to include("Some unique title")
+    end
+
+    it "doesn't render an invalid translation string" do
+      get "/editions/123/delete"
+      expect(response.body).not_to include("edition.delete.body")
+    end
+
+    it "renders the delete template" do
+      get "/editions/123/delete"
+      expect(response).to render_template("editions/delete")
     end
   end
 
