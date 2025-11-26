@@ -34,6 +34,8 @@ Rails.application.routes.draw do
     member do
       get :preview, to: "editions#preview"
 
+      get :delete, to: "editions#delete", as: :delete
+
       # Workflow actions
       resources :workflow, only: %i[show update], controller: "editions/workflow", param: :step do
         collection do

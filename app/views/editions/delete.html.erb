@@ -1,0 +1,15 @@
+<% content_for :context, @edition.title %>
+<% content_for :title, "Delete #{@edition.schema.name}" %>
+
+<% content_for :back_link do %>
+  <%= render "govuk_publishing_components/components/back_link", {
+    href: @form.back_path,
+  } %>
+<% end %>
+
+<p class="govuk-body">Are you sure you want to delete this draft?</p>
+
+<%= render Shared::TransitionButtonComponent.new(
+  edition: @edition,
+  transition: :delete,
+  ) %>

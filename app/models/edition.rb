@@ -79,6 +79,10 @@ class Edition < ApplicationRecord
     scheduled_publication.present?
   end
 
+  def is_deletable?
+    state != "deleted" && state != "superseded" && state != "published"
+  end
+
   def active?
     self.class.active.cover?(self)
   end
