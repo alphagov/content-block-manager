@@ -1,7 +1,4 @@
-require "test_helper"
-
-class Shared::EmbeddedObjects::NestedItemComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
+RSpec.describe Shared::EmbeddedObjects::SummaryCard::NestedItemComponent, type: :component do
   include Rails.application.routes.url_helpers
 
   let(:nested_items) do
@@ -9,7 +6,7 @@ class Shared::EmbeddedObjects::NestedItemComponentTest < ViewComponent::TestCase
   end
 
   let(:schema) do
-    stub(
+    double(
       "sub-schema",
       name: "schema",
       govspeak_enabled?: true,
@@ -43,7 +40,7 @@ class Shared::EmbeddedObjects::NestedItemComponentTest < ViewComponent::TestCase
 
   context "when a field is NOT govspeak enabled" do
     let(:schema) do
-      stub(
+      double(
         "sub-schema",
         govspeak_enabled?: false,
       )
@@ -62,17 +59,17 @@ class Shared::EmbeddedObjects::NestedItemComponentTest < ViewComponent::TestCase
 
   describe "when a field has a translation" do
     before do
-      component.expects(:humanized_label).with(
+      expect(component).to receive(:humanized_label).with(
         schema_name: "schema",
         relative_key: "nested_item_field",
         root_object: "schema.nested_object",
-      ).returns("Translated label")
+      ).and_return("Translated label")
     end
 
     it "renders the translated value" do
       render_inline component
 
-      assert_selector ".govuk-summary-list__key", text: "Translated label"
+      expect(page).to have_css ".govuk-summary-list__key", text: "Translated label"
     end
   end
 end

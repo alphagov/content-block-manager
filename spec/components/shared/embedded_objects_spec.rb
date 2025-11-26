@@ -1,7 +1,4 @@
-require "test_helper"
-
-class Shared::EmbeddedObjectsTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
+RSpec.describe Shared::EmbeddedObjects, type: :component do
   include Rails.application.routes.url_helpers
 
   let(:details) do
@@ -21,14 +18,14 @@ class Shared::EmbeddedObjectsTest < ViewComponent::TestCase
     }
   end
 
-  let(:schema) { stub(:schema) }
+  let(:schema) { double(:schema) }
   let(:fields) do
     [
-      stub(:field, name: "field-1"),
-      stub(:field, name: "field-2"),
+      double(:field, name: "field-1"),
+      double(:field, name: "field-2"),
     ]
   end
-  let(:subschema) { stub(:subschema, block_type: "embedded-objects", name: "Embedded objects", fields:) }
+  let(:subschema) { double(:subschema, block_type: "embedded-objects", name: "Embedded objects", fields:) }
   let(:document) { build(:document, :pension, schema:) }
   let(:edition) { build_stubbed(:edition, :pension, details:, document:) }
   let(:redirect_url) { "https://example.com" }
@@ -42,21 +39,21 @@ class Shared::EmbeddedObjectsTest < ViewComponent::TestCase
   end
 
   before do
-    schema.stubs(:subschema).returns(subschema)
+    allow(schema).to receive(:subschema).and_return(subschema)
   end
 
   it "renders all embedded objects of a particular type" do
-    summary_card_double = stub("summary_card")
+    summary_card_double = double("summary_card")
 
-    Shared::EmbeddedObjects::SummaryCardComponent.expects(:with_collection).with(
+    expect(Shared::EmbeddedObjects::SummaryCardComponent).to receive(:with_collection).with(
       %w[my-embedded-object another-embedded-object],
       edition: edition,
       object_type: subschema.block_type,
       redirect_url:,
       test_id_prefix: "embedded",
-    ).returns(summary_card_double)
+    ).and_return(summary_card_double)
 
-    component.expects(:render).with(summary_card_double)
+    expect(component).to receive(:render).with(summary_card_double)
 
     render_inline(component)
   end
@@ -64,11 +61,11 @@ class Shared::EmbeddedObjectsTest < ViewComponent::TestCase
   it "shows a title" do
     render_inline(component)
 
-    assert_selector "h2.govuk-heading-m", text: "Embedded Objects"
+    expect(page).to have_css "h2.govuk-heading-m", text: "Embedded Objects"
   end
 
   it "renders a button to add an object if the document is a new block" do
-    document.expects(:is_new_block?).at_least_once.returns(true)
+    expect(document).to receive(:is_new_block?).at_least(:once).and_return(true)
 
     render_inline(component)
 
@@ -77,15 +74,15 @@ class Shared::EmbeddedObjectsTest < ViewComponent::TestCase
       object_type: subschema.block_type,
     )
 
-    assert_selector "a.govuk-button[href='#{new_path}']", text: I18n.t("buttons.add_another", item: "embedded object")
+    expect(page).to have_css "a.govuk-button[href='#{new_path}']", text: I18n.t("buttons.add_another", item: "embedded object")
   end
 
   it "does not render a button to add an object if the document is not a new block" do
-    document.expects(:is_new_block?).at_least_once.returns(false)
+    expect(document).to receive(:is_new_block?).at_least(:once).and_return(false)
 
     render_inline(component)
 
-    refute_selector "a.govuk-button", text: /embedded object/
+    expect(page).to_not have_css "a.govuk-button", text: /embedded object/
   end
 
   describe "when no embedded objects are present" do
@@ -95,7 +92,7 @@ class Shared::EmbeddedObjectsTest < ViewComponent::TestCase
 
     describe "when the document is a new block" do
       before do
-        document.expects(:is_new_block?).at_least_once.returns(true)
+        expect(document).to receive(:is_new_block?).at_least(:once).and_return(true)
       end
 
       it "renders the correct button text" do
@@ -106,25 +103,25 @@ class Shared::EmbeddedObjectsTest < ViewComponent::TestCase
           object_type: subschema.block_type,
         )
 
-        assert_selector "a.govuk-button[href='#{new_path}']", text: I18n.t("buttons.add", item: "an embedded object")
+        expect(page).to have_css "a.govuk-button[href='#{new_path}']", text: I18n.t("buttons.add", item: "an embedded object")
       end
 
       it "shows the title" do
         render_inline(component)
 
-        assert_selector "h2.govuk-heading-m", text: "Embedded Objects"
+        expect(page).to have_css "h2.govuk-heading-m", text: "Embedded Objects"
       end
     end
 
     describe "when the document is not a new block" do
       before do
-        document.expects(:is_new_block?).at_least_once.returns(false)
+        expect(document).to receive(:is_new_block?).at_least(:once).and_return(false)
       end
 
       it "does not show the title" do
         render_inline(component)
 
-        refute_selector "h2.govuk-heading-m", text: "Embedded Objects"
+        expect(page).to_not have_css "h2.govuk-heading-m", text: "Embedded Objects"
       end
     end
   end
