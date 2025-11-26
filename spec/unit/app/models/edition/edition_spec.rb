@@ -196,15 +196,6 @@ RSpec.describe Edition, type: :model do
     end
   end
 
-  describe "#update_document_reference_to_latest_published_edition!" do
-    it "updates the document reference to the latest edition" do
-      latest_published_edition = create(:edition, document: edition.document)
-      latest_published_edition.update_document_reference_to_latest_published_edition!
-
-      expect(latest_published_edition.id).to eq(latest_published_edition.document.latest_edition_id)
-    end
-  end
-
   describe ".current_versions" do
     it "returns current published versions" do
       document = create(:document, :pension)

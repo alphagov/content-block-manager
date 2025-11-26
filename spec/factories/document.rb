@@ -4,8 +4,6 @@ FactoryBot.define do
     sluggable_string { "factory-example-title" }
     created_at { Time.zone.now.utc }
     updated_at { Time.zone.now.utc }
-    latest_edition_id { nil }
-    live_edition_id { nil }
     block_type { "pension" }
 
     transient do

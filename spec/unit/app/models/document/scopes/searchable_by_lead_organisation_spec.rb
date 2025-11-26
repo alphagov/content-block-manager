@@ -1,7 +1,6 @@
 RSpec.describe Document::Scopes::SearchableByLeadOrganisation do
   describe ".with_lead_organisation" do
     it "finds documents with lead organisation on latest edition" do
-      # NB "latest edition" requires the trait :latest to set Document#latest_edition_id
       matching_organisation = build(:organisation)
       document_with_org = create(:document, :pension)
       _edition_with_org = create(:edition,
