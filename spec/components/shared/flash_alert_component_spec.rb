@@ -1,0 +1,28 @@
+RSpec.describe Shared::FlashAlertComponent, type: :component do
+  let(:flash) do
+    {
+      message: "This is an alert",
+    }
+  end
+
+  it "renders an error alert with the correct message" do
+    render_inline(described_class.new(message: flash[:message]))
+
+    expect(page).to have_css "div", text: "This is an alert"
+  end
+
+  it "escapes HTML tags in the flash message by default" do
+    flash[:message] = "<b>This is unsafe</b>"
+    render_inline(described_class.new(message: flash[:message]))
+
+    expect(page).to have_css "div", text: "<b>This is unsafe</b>"
+    expect(page).to_not have_css "b"
+  end
+
+  it "allows HTML tags in the flash message when html_safe: true" do
+    flash[:message] = "<b>This is an alert</b>"
+    render_inline(described_class.new(message: flash[:message], html_safe: true))
+
+    expect(page).to have_css "div b", text: "This is an alert"
+  end
+end

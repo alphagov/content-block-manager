@@ -1,7 +1,4 @@
-require "test_helper"
-
-class Shared::SchedulePublishingComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
+RSpec.describe Shared::SchedulePublishingComponent, type: :component do
   include Rails.application.routes.url_helpers
 
   let(:document) { create(:document, :pension) }
@@ -12,7 +9,7 @@ class Shared::SchedulePublishingComponentTest < ViewComponent::TestCase
   let(:form_url) { "/form-url" }
 
   let(:rescheduling_component) do
-    Shared::SchedulePublishingComponent.new(
+    described_class.new(
       edition:,
       params:,
       context:,
@@ -23,7 +20,7 @@ class Shared::SchedulePublishingComponentTest < ViewComponent::TestCase
   end
 
   let(:component) do
-    Shared::SchedulePublishingComponent.new(
+    described_class.new(
       edition:,
       params:,
       context:,
@@ -37,7 +34,7 @@ class Shared::SchedulePublishingComponentTest < ViewComponent::TestCase
     it "renders the cancel button with back link" do
       render_inline(rescheduling_component)
 
-      assert_selector "a[href='#{back_link}']", text: "Cancel"
+      expect(page).to have_css "a[href='#{back_link}']", text: "Cancel"
     end
   end
 
@@ -45,8 +42,8 @@ class Shared::SchedulePublishingComponentTest < ViewComponent::TestCase
     it "renders the cancel button with delete form" do
       render_inline(component)
 
-      assert_selector ".govuk-button", text: "Cancel"
-      assert_selector "form[action='#{edition_path(
+      expect(page).to have_css ".govuk-button", text: "Cancel"
+      expect(page).to have_css "form[action='#{edition_path(
         edition,
         redirect_path: document_path(document),
       )}']"
@@ -69,12 +66,12 @@ class Shared::SchedulePublishingComponentTest < ViewComponent::TestCase
     it "prepopulates the date fields" do
       render_inline(component)
 
-      assert_selector "input[name='scheduled_at[scheduled_publication(1i)]'][value='#{params['scheduled_at']['scheduled_publication(1i)']}']"
-      assert_selector "input[name='scheduled_at[scheduled_publication(2i)]'][value='#{params['scheduled_at']['scheduled_publication(2i)']}']"
-      assert_selector "input[name='scheduled_at[scheduled_publication(3i)]'][value='#{params['scheduled_at']['scheduled_publication(3i)']}']"
+      expect(page).to have_css "input[name='scheduled_at[scheduled_publication(1i)]'][value='#{params['scheduled_at']['scheduled_publication(1i)']}']"
+      expect(page).to have_css "input[name='scheduled_at[scheduled_publication(2i)]'][value='#{params['scheduled_at']['scheduled_publication(2i)']}']"
+      expect(page).to have_css "input[name='scheduled_at[scheduled_publication(3i)]'][value='#{params['scheduled_at']['scheduled_publication(3i)']}']"
 
-      assert_selector "select[name='scheduled_at[scheduled_publication(4i)]'] option[value='0#{params['scheduled_at']['scheduled_publication(4i)']}'][selected='selected']"
-      assert_selector "select[name='scheduled_at[scheduled_publication(5i)]'] option[value='0#{params['scheduled_at']['scheduled_publication(5i)']}'][selected='selected']"
+      expect(page).to have_css "select[name='scheduled_at[scheduled_publication(4i)]'] option[value='0#{params['scheduled_at']['scheduled_publication(4i)']}'][selected='selected']"
+      expect(page).to have_css "select[name='scheduled_at[scheduled_publication(5i)]'] option[value='0#{params['scheduled_at']['scheduled_publication(5i)']}'][selected='selected']"
     end
   end
 
@@ -85,18 +82,18 @@ class Shared::SchedulePublishingComponentTest < ViewComponent::TestCase
     it "prepopulates the date fields" do
       render_inline(component)
 
-      assert_selector "input[name='scheduled_at[scheduled_publication(1i)]'][value='#{scheduled_publication.year}']"
-      assert_selector "input[name='scheduled_at[scheduled_publication(2i)]'][value='#{scheduled_publication.month}']"
-      assert_selector "input[name='scheduled_at[scheduled_publication(3i)]'][value='#{scheduled_publication.day}']"
+      expect(page).to have_css "input[name='scheduled_at[scheduled_publication(1i)]'][value='#{scheduled_publication.year}']"
+      expect(page).to have_css "input[name='scheduled_at[scheduled_publication(2i)]'][value='#{scheduled_publication.month}']"
+      expect(page).to have_css "input[name='scheduled_at[scheduled_publication(3i)]'][value='#{scheduled_publication.day}']"
 
-      assert_selector "select[name='scheduled_at[scheduled_publication(4i)]'] option[value='#{scheduled_publication.hour}'][selected='selected']"
-      assert_selector "select[name='scheduled_at[scheduled_publication(5i)]'] option[value='#{scheduled_publication.min}'][selected='selected']"
+      expect(page).to have_css "select[name='scheduled_at[scheduled_publication(4i)]'] option[value='#{scheduled_publication.hour}'][selected='selected']"
+      expect(page).to have_css "select[name='scheduled_at[scheduled_publication(5i)]'] option[value='#{scheduled_publication.min}'][selected='selected']"
     end
   end
 
   describe "when data attributes are passed" do
     let(:component) do
-      Shared::SchedulePublishingComponent.new(
+      described_class.new(
         edition:,
         params:,
         context:,
@@ -110,7 +107,7 @@ class Shared::SchedulePublishingComponentTest < ViewComponent::TestCase
     it "renders the data attributes" do
       render_inline(component)
 
-      assert_selector "form[data-test='test']"
+      expect(page).to have_css "form[data-test='test']"
     end
   end
 end
