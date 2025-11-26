@@ -11,9 +11,9 @@ And(/^I click to save the order/) do
 end
 
 And(/^the contact methods should be in the new order$/) do
-  items = page.find_all(".content-block__contact-list--nested")
+  items = page.find_all(".content-block dl")
 
-  assert_equal "Email The Team", items[0].find_all(".content-block__contact-key")[0].text
+  assert_equal "Email The Team", items[0].find_all("dt")[0].text
 end
 
 Then(/^I should see the contact methods in the new order$/) do
