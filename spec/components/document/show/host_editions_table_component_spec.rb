@@ -39,9 +39,12 @@ RSpec.describe Document::Show::HostEditionsTableComponent, type: :component do
   end
 
   let(:edition) do
-    build(:edition, :pension, id: SecureRandom.uuid)
+    build(:edition, :pension, state: "published", id: SecureRandom.uuid)
   end
 
+  let(:in_progress_edition) do
+    build(:edition, :pension, state: "draft", id: SecureRandom.uuid)
+  end
   def self.it_returns_unknown_user
     it "returns Unknown user" do
       render_inline(
@@ -76,7 +79,7 @@ RSpec.describe Document::Show::HostEditionsTableComponent, type: :component do
 
       headers = page.find_all(".govuk-table__header")
 
-      expect(headers.count).to eq(7)
+      expect(headers.count).to eq(6)
 
       expect(headers[0]).to have_text "Title"
       expect(headers[1]).to have_text "Type"
@@ -84,7 +87,6 @@ RSpec.describe Document::Show::HostEditionsTableComponent, type: :component do
       expect(headers[3]).to have_text "Views (30 days)"
       expect(headers[4]).to have_text "Lead organisation"
       expect(headers[5]).to have_text "Last updated"
-      expect(headers[6]).to have_text "Preview (opens in new tab)"
 
       rows = page.find_all("tbody .govuk-table__row")
 
@@ -92,7 +94,7 @@ RSpec.describe Document::Show::HostEditionsTableComponent, type: :component do
 
       columns = rows[0].find_all(".govuk-table__cell")
 
-      expect(columns.count).to eq(7)
+      expect(columns.count).to eq(6)
 
       expect(columns[0]).to have_css ".govuk-link" do |link|
         expect(link.text).to eq("#{host_content_item.title} (opens in new tab)")
@@ -185,7 +187,7 @@ RSpec.describe Document::Show::HostEditionsTableComponent, type: :component do
         )
 
         expect(page).to have_css "tbody" do |tbody|
-          tbody.assert_no_selector ".govuk-link", text: "#{host_content_item.title} (opens in new tab)"
+          tbody.assert_no_selector ".govuk-link", text: host_content_item.title.to_s
         end
       end
     end
@@ -323,6 +325,62 @@ RSpec.describe Document::Show::HostEditionsTableComponent, type: :component do
 
           expect(page).to have_css "a.govuk-pagination__link[aria-current='page']", text: "2"
         end
+      end
+    end
+  end
+
+  describe "in progress table component" do
+    it "renders embedded editions" do
+      render_inline(
+        described_class.new(
+          caption:,
+          host_content_items:,
+          edition: in_progress_edition,
+        ),
+      )
+
+      expect(page).to have_css ".govuk-table__caption", text: caption
+
+      headers = page.find_all(".govuk-table__header")
+
+      expect(headers.count).to eq(7)
+
+      expect(headers[0]).to have_text "Title"
+      expect(headers[1]).to have_text "Type"
+      expect(headers[2]).to have_text "Instances"
+      expect(headers[3]).to have_text "Views (30 days)"
+      expect(headers[4]).to have_text "Lead organisation"
+      expect(headers[5]).to have_text "Last updated"
+      expect(headers[6]).to have_text "Preview (opens in new tab)"
+
+      rows = page.find_all("tbody .govuk-table__row")
+
+      expect(rows.count).to eq(1)
+
+      columns = rows[0].find_all(".govuk-table__cell")
+
+      expect(columns.count).to eq(7)
+
+      expect(columns[0]).to have_no_css ".govuk-link" do |link|
+      end
+
+      expect(columns[1]).to have_text host_content_item.document_type.humanize
+      expect(columns[2]).to have_text "1"
+      expect(columns[3]).to have_text "1.2m"
+      expect(columns[4]).to have_text host_content_item.publishing_organisation["title"]
+
+      expect(columns[5]).to have_text "#{time_ago_in_words(host_content_item.last_edited_at)} ago by #{last_edited_by_editor.name}"
+
+      expect(columns[5]).to have_css "a.govuk-link" do |link|
+        expect(link.text).to eq(last_edited_by_editor.name)
+        expect(link[:href]).to eq(user_path(last_edited_by_editor.uid))
+      end
+
+      expect(columns[6]).to have_text "Preview #{host_content_item.title} (opens in new tab)"
+
+      expect(columns[6]).to have_css "a.govuk-link" do |link|
+        expect(link.text).to eq("Preview #{host_content_item.title} (opens in new tab)")
+        expect(link[:href]).to include("/preview")
       end
     end
   end

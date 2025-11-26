@@ -59,9 +59,7 @@ private
         href: sort_link("last_edited_at"),
         sort_direction: sort_direction("last_edited_at"),
       },
-      {
-        text: "Preview (opens in new tab)",
-      },
+      preview_column,
     ].compact
   end
 
@@ -91,9 +89,7 @@ private
       {
         text: updated_field_for(content_item),
       },
-      {
-        text: preview_link(content_item),
-      },
+      preview_value(content_item),
     ].compact
   end
 
@@ -119,6 +115,22 @@ private
     Plek.website_root + content_item.base_path
   end
 
+  def preview_column
+    if edition.state != "published"
+      {
+        text: "Preview (opens in new tab)",
+      }
+    end
+  end
+
+  def preview_value(content_item)
+    if edition.state != "published"
+      {
+        text: preview_link(content_item),
+      }
+    end
+  end
+
   def preview_path(content_item)
     helpers.host_content_preview_edition_path(id: edition.id, host_content_id: content_item.host_content_id, locale: content_item.host_locale)
   end
@@ -136,9 +148,15 @@ private
   end
 
   def title_row(content_item)
-    {
-      text: content_link(content_item),
-    }
+    if edition.state == "published"
+      {
+        text: content_link(content_item),
+      }
+    else
+      {
+        text: content_item.title,
+      }
+    end
   end
 
   def content_link_text(content_item)
