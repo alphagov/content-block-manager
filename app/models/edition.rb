@@ -29,10 +29,6 @@ class Edition < ApplicationRecord
     most_recent_first.first
   end
 
-  def update_document_reference_to_latest_published_edition!
-    document.update!(latest_edition_id: id)
-  end
-
   def render(embed_code = document.embed_code)
     ContentBlockTools::ContentBlock.new(
       document_type: "content_block_#{block_type}",

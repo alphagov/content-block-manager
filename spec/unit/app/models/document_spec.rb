@@ -27,20 +27,6 @@ RSpec.describe Document do
     }.to raise_error(ActiveRecord::ReadonlyAttributeError)
   end
 
-  it "can store the id of the latest edition" do
-    document = create(:document, :pension)
-    document.update!(latest_edition_id: 1)
-
-    expect(document.reload.latest_edition_id).to eq(1)
-  end
-
-  it "can store the id of the live edition" do
-    document = create(:document, :pension)
-    document.update!(live_edition_id: 1)
-
-    expect(document.reload.live_edition_id).to eq(1)
-  end
-
   it "gets its version history from its editions" do
     document = create(:document, :pension)
     edition = create(

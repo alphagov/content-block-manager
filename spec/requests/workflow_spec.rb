@@ -683,9 +683,8 @@ def assert_edition_is_published(&block)
   block.call
 
   document = Document.find_by!(content_id: @content_id)
-  new_edition = Edition.find(document.live_edition_id)
+  new_edition = document.most_recent_edition
 
-  expect(document.live_edition_id).to eq(new_edition.id)
   expect(new_edition.state).to eq("published")
 end
 

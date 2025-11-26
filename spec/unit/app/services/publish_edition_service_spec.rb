@@ -36,7 +36,7 @@ RSpec.describe PublishEditionService do
 
       PublishEditionService.new.call(edition)
       expect(edition.state).to eq("published")
-      expect(document.live_edition_id).to eq(edition.id)
+      expect(document.latest_published_edition).to eq(edition)
     end
 
     it "creates an Edition in the Publishing API" do
@@ -58,7 +58,7 @@ RSpec.describe PublishEditionService do
       PublishEditionService.new.call(edition)
 
       expect(edition.state).to eq("published")
-      expect(document.live_edition_id).to eq(edition.id)
+      expect(document.latest_published_edition).to eq(edition)
     end
 
     it "rolls back the ContentBlockEdition and ContentBlockDocument if the publishing API request fails" do
@@ -74,14 +74,14 @@ RSpec.describe PublishEditionService do
       expect(Services.publishing_api).to receive(:discard_draft).with(content_id)
 
       expect(edition.state).to eq("draft")
-      expect(document.live_edition_id).to be_nil
+      expect(document.latest_published_edition).to be_nil
 
       expect {
         PublishEditionService.new.call(edition)
       }.to raise_error(PublishEditionService::PublishingFailureError)
 
       expect(edition.state).to eq("draft")
-      expect(document.live_edition_id).to be_nil
+      expect(document.latest_published_edition).to be_nil
     end
 
     it "discards the latest draft if the publish request fails" do
@@ -101,7 +101,7 @@ RSpec.describe PublishEditionService do
       )
 
       expect(edition.state).to eq("draft")
-      expect(document.live_edition_id).to be_nil
+      expect(document.latest_published_edition).to be_nil
     end
 
     it "supersedes any previously scheduled editions" do

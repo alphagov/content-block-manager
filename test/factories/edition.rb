@@ -31,12 +31,5 @@ FactoryBot.define do
         end
       end
     end
-
-    after(:create) do |edition, _evaluator|
-      document_update_params = {
-        latest_edition_id: edition.id,
-      }
-      edition.document.update!(document_update_params)
-    end
   end
 end
