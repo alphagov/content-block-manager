@@ -109,8 +109,32 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
         end
 
         context "and the error was something else (e.g. unexpected state)" do
-          it "redirects to the document path"
-          it "includes an error message with the transition error details"
+          let(:error_message) do
+            "Can't fire event `ready_for_factcheck` in current state `draft` " \
+              "for `Edition` with ID 123  (Transitions::InvalidTransition)"
+          end
+
+          before do
+            allow(edition).to receive(:ready_for_factcheck!).and_raise(
+              Transitions::InvalidTransition,
+              error_message,
+            )
+
+            post :create, params: {
+              id: 123,
+              "review_outcome" => { "review_performed" => true },
+            }
+          end
+
+          it "redirects to the document path" do
+            expect(response).to redirect_to("/456")
+          end
+
+          it "includes an error message with the transition error details" do
+            expect(flash.alert).to eq(
+              "Error: we can not change the status of this edition. #{error_message}",
+            )
+          end
         end
       end
     end

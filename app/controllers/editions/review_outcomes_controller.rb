@@ -6,17 +6,19 @@ class Editions::ReviewOutcomesController < BaseController
 
   def create
     @edition = Edition.find(params[:id])
-    if review_outcome_supplied?
-      record_review_outcome
-      begin
-        transition_to_awaiting_factcheck_state
-        redirect_to(document_path(@edition.document))
-      rescue Edition::Workflow::ReviewOutcomeMissingError => e
-        flash.alert = e.message
-        redirect_to new_review_outcome_path(@edition)
-      end
-    else
-      render :new
+    return render :new unless review_outcome_supplied?
+
+    record_review_outcome
+
+    begin
+      transition_to_awaiting_factcheck_state
+      redirect_to(document_path(@edition.document))
+    rescue Edition::Workflow::ReviewOutcomeMissingError => e
+      flash.alert = e.message
+      redirect_to new_review_outcome_path(@edition)
+    rescue Transitions::InvalidTransition => e
+      flash.alert = "Error: we can not change the status of this edition. #{e.message}"
+      redirect_to document_path(@edition.document)
     end
   end
 
