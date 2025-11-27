@@ -40,6 +40,12 @@ RSpec.describe Edition::Workflow, type: :model do
       assert edition.awaiting_2i?
     end
 
+    it "transitions into the deleted state when marking as deleted" do
+      edition = create(:edition, document: create(:document, block_type: "pension"))
+      edition.delete!
+      assert edition.deleted?
+    end
+
     describe "translations for status tag" do
       it "finds a status for each state's tag" do
         aggregate_failures do

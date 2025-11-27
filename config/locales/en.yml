@@ -150,12 +150,14 @@ en:
         scheduled: Scheduled
         published: Published
         superseded: Superseded
+        deleted: Deleted
       label_extended:
         draft: "Drafted on %{date} by %{user}"
         awaiting_2i: "Sent for 2i review on %{date} by %{user}"
         scheduled: "Scheduled for publication at %{date}"
         published: "Published on %{date} by %{user}"
         superseded: "Superseded on %{date}"
+        deleted: "Deleted on %{date} by %{user}"
   date:
     formats:
       default: "%d %B %Y"
