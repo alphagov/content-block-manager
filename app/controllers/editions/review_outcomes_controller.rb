@@ -14,11 +14,9 @@ class Editions::ReviewOutcomesController < BaseController
       transition_to_awaiting_factcheck_state
       redirect_to(document_path(@edition.document))
     rescue Edition::Workflow::ReviewOutcomeMissingError => e
-      flash.alert = e.message
-      redirect_to new_review_outcome_path(@edition)
+      handle_missing_review_outcome(e)
     rescue Transitions::InvalidTransition => e
-      flash.alert = "Error: we can not change the status of this edition. #{e.message}"
-      redirect_to document_path(@edition.document)
+      handle_other_transition_error(e)
     end
   end
 
@@ -57,5 +55,15 @@ private
 
   def outcome_params
     params.require("review_outcome")
+  end
+
+  def handle_missing_review_outcome(error)
+    flash.alert = error.message
+    redirect_to new_review_outcome_path(@edition)
+  end
+
+  def handle_other_transition_error(error)
+    flash.alert = "Error: we can not change the status of this edition. #{error.message}"
+    redirect_to document_path(@edition.document)
   end
 end
