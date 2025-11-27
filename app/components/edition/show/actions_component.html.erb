@@ -8,6 +8,16 @@
     </li>
   <% end %>
 
+  <% if state == "awaiting_review" %>
+    <li class="govuk-!-static-margin-bottom-3">
+      <%= render "govuk_publishing_components/components/button", {
+        text: "Send to factcheck",
+        href: new_review_outcome_path(edition),
+        inline_layout: false,
+      } %>
+    </li>
+  <% end %>
+
   <li>
     <%= render "govuk_publishing_components/components/button", {
       text: "Edit #{document.block_type.humanize.downcase}",

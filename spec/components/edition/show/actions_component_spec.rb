@@ -33,6 +33,37 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
     end
   end
 
+  describe "Button to transition to 'awaiting_factcheck' state" do
+    context "when the edition is in the 'awaiting_review' state" do
+      before do
+        edition.state = :awaiting_review
+        component = described_class.new(edition: edition)
+        render_inline component
+      end
+
+      it "offers a button to record the Review outcome" do
+        expect(page).to have_css(
+          ".actions a[href='/editions/123/review_outcomes/new']",
+          text: "Send to factcheck",
+        )
+      end
+    end
+
+    (Edition.available_states - [:awaiting_review]).each do |state|
+      context "when the edition is in the '#{state}' state" do
+        before do
+          edition.state = state
+          component = described_class.new(edition: edition)
+          render_inline component
+        end
+
+        it "does NOT offer a button to record the Review outcome" do
+          expect(page).to have_no_link("Send to Factcheck")
+        end
+      end
+    end
+  end
+
   describe "link to create new draft edition" do
     Edition.available_states.each do |state|
       context "when the edition is in the '#{state}' state" do
