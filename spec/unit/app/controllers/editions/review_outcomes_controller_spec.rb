@@ -1,6 +1,6 @@
 RSpec.describe Editions::ReviewOutcomesController, type: :controller do
   let(:document) { Document.new(id: 456) }
-  let(:edition) { instance_double(Edition, id: 123, document: document) }
+  let(:edition) { Edition.new(id: 123, document: document) }
 
   before do
     allow(Edition).to receive(:find).and_return(edition)
@@ -87,9 +87,27 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
 
       context "when the transition fails" do
         context "and the Review outcome was missing" do
-          it "redirects to the 'new review_outcome' form"
-          it "includes an error message saying that the Review outcome is required"
+          before do
+            allow(edition).to receive(:ready_for_factcheck!).and_raise(
+              Edition::Workflow::ReviewOutcomeMissingError,
+              "Informative error message",
+            )
+
+            post :create, params: {
+              id: 123,
+              "review_outcome" => { "review_performed" => true },
+            }
+          end
+
+          it "handles the error and redirects to the 'new review_outcome' form" do
+            expect(response).to redirect_to("/editions/123/review_outcomes/new")
+          end
+
+          it "includes an error message saying that the Review outcome is required" do
+            expect(flash.alert).to eq("Informative error message")
+          end
         end
+
         context "and the error was something else (e.g. unexpected state)" do
           it "redirects to the document path"
           it "includes an error message with the transition error details"
