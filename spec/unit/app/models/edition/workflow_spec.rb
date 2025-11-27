@@ -77,8 +77,23 @@ RSpec.describe Edition::Workflow, type: :model do
       context "when in the 'awaiting_review' state" do
         before { edition.state = "awaiting_review" }
 
-        it "allows the #ready_for_factcheck! transition" do
-          expect(edition.ready_for_factcheck!).to be true
+        context "when a Review outcome has been recorded" do
+          before { edition.review_outcome_recorded_at = 1.hour.ago }
+
+          it "allows the #ready_for_factcheck! transition" do
+            expect(edition.ready_for_factcheck!).to be true
+          end
+        end
+
+        context "when a Review outcome has NOT been recorded" do
+          before { edition.review_outcome_recorded_at = nil }
+
+          it "raises a ReviewOutcomeMissingError" do
+            expect { edition.ready_for_factcheck! }.to raise_error(
+              Edition::Workflow::ReviewOutcomeMissingError,
+              /Edition #{edition.id} does not have a 2i Review outcome recorded/,
+            )
+          end
         end
       end
 
