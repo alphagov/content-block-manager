@@ -13,16 +13,20 @@ private
   end
 
   def set_jwt_cookie
-    cookies.signed[:token] = params[:token]
+    cookies.signed[:token] ||= token
   end
 
   def jwt_payload
-    JWT.decode(params[:token], ENV["JWT_AUTH_SECRET"], true, { algorithm: "HS256" }).first
+    JWT.decode(token, ENV["JWT_AUTH_SECRET"], true, { algorithm: "HS256" }).first
   rescue JWT::DecodeError
     {}
   end
 
   def block
     @block ||= ContentBlock.from_content_id_alias(params[:id])
+  end
+
+  def token
+    params[:token] || cookies.signed[:token]
   end
 end

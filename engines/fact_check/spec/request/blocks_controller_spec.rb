@@ -27,6 +27,14 @@ RSpec.describe FactCheck::BlocksController, type: :request do
     end
 
     context "when the user is not authenticated" do
+      let(:valid_token) do
+        JWT.encode(
+          { sub: block.auth_bypass_id },
+          ENV["JWT_AUTH_SECRET"],
+          "HS256",
+        )
+      end
+
       before do
         logout
       end
@@ -39,14 +47,6 @@ RSpec.describe FactCheck::BlocksController, type: :request do
       end
 
       describe "with valid JWT token" do
-        let(:valid_token) do
-          JWT.encode(
-            { sub: block.auth_bypass_id },
-            ENV["JWT_AUTH_SECRET"],
-            "HS256",
-          )
-        end
-
         before do
           get block_path(content_id, token: valid_token)
         end
@@ -58,6 +58,13 @@ RSpec.describe FactCheck::BlocksController, type: :request do
 
         it "sets the jwt token as a cookie" do
           expect(cookie_jar.signed[:token]).to eq(valid_token)
+        end
+
+        it "allows subsequent access without the token param once the cookie is set" do
+          get block_path(content_id)
+
+          expect(response).to have_http_status(:success)
+          expect(response).to render_template(:show)
         end
       end
 
