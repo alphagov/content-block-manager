@@ -140,7 +140,20 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
     end
 
     context "when the form returned is NOT valid" do
-      it "re-renders the 'new' template to allow the errors to be corrected"
+      before do
+        post :create, params: {
+          id: 123,
+          "review_outcome" => {},
+        }
+      end
+
+      it "re-renders the 'new' template to allow the errors to be corrected" do
+        expect(response).to have_rendered(:new)
+      end
+
+      it "sets an error message" do
+        expect(flash.alert).to eq("Indicate whether the 2i Review process has been performed or not")
+      end
     end
   end
 end

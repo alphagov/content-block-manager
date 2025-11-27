@@ -6,7 +6,7 @@ class Editions::ReviewOutcomesController < BaseController
 
   def create
     @edition = Edition.find(params[:id])
-    return render :new unless review_outcome_supplied?
+    return form_validation_error unless review_outcome_supplied?
 
     record_review_outcome
 
@@ -24,6 +24,11 @@ class Editions::ReviewOutcomesController < BaseController
 
 private
 
+  def form_validation_error
+    flash.now.alert = "Indicate whether the 2i Review process has been performed or not"
+    render :new
+  end
+
   def record_review_outcome
     @edition.update(
       "review_skipped" => review_skipped?,
@@ -40,6 +45,8 @@ private
 
   def review_outcome_supplied?
     outcome_params["review_performed"].present?
+  rescue ActionController::ParameterMissing
+    false
   end
 
   def review_skipped?
