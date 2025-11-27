@@ -13,6 +13,8 @@ RSpec.describe ContentBlock do
 
       expect(content_block.title).to eq(edition.title)
       expect(content_block.block_type).to eq(schema.name)
+      expect(content_block.content_id).to eq(edition.content_id)
+      expect(content_block.auth_bypass_id).to eq(edition.auth_bypass_id)
     end
   end
 end
