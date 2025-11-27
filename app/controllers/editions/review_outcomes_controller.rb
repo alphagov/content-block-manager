@@ -1,0 +1,46 @@
+class Editions::ReviewOutcomesController < BaseController
+  def new
+    @edition = Edition.find(params[:id])
+    render :new
+  end
+
+  def create
+    @edition = Edition.find(params[:id])
+    if review_outcome_supplied?
+      record_review_outcome
+      transition_to_awaiting_factcheck_state
+
+      redirect_to(document_path(@edition.document))
+    else
+      render :new
+    end
+  end
+
+private
+
+  def record_review_outcome
+    @edition.update(
+      "review_skipped" => review_skipped?,
+      "review_outcome_recorded_at" => Time.current,
+      "review_outcome_recorded_by" => Current.user.id,
+    )
+  end
+
+  def transition_to_awaiting_factcheck_state
+    @edition.ready_for_factcheck!
+  end
+
+  def review_outcome_supplied?
+    outcome_params["review_performed"].present?
+  end
+
+  def review_skipped?
+    ActiveModel::Type::Boolean.new.cast(
+      outcome_params["review_performed"],
+    ) == false
+  end
+
+  def outcome_params
+    params.require("review_outcome")
+  end
+end
