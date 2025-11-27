@@ -5,6 +5,7 @@ RSpec.describe FactCheck::BlocksController, type: :request do
     let(:block) { build(:content_block) }
     let(:content_id) { "some-content-block" }
     let(:user) { create(:user) }
+    let(:cookie_jar) { ActionDispatch::Cookies::CookieJar.build(request, cookies.to_hash) }
 
     before do
       ENV["JWT_AUTH_SECRET"] = "secret"
@@ -46,20 +47,32 @@ RSpec.describe FactCheck::BlocksController, type: :request do
           )
         end
 
-        it "allows access when token subject matches block auth_bypass_id" do
+        before do
           get block_path(content_id, token: valid_token)
+        end
 
+        it "allows access when token subject matches block auth_bypass_id" do
           expect(response).to have_http_status(:success)
           expect(response).to render_template(:show)
+        end
+
+        it "sets the jwt token as a cookie" do
+          expect(cookie_jar.signed[:token]).to eq(valid_token)
         end
       end
 
       describe "with invalid JWT token" do
-        it "requires GDS SSO authentication" do
+        before do
           get block_path(content_id, token: "invalid.jwt.token")
+        end
 
+        it "requires GDS SSO authentication" do
           expect(response).to_not render_template(:show)
           expect(response).to redirect_to("/auth/gds")
+        end
+
+        it "does not set the jwt token as a cookie" do
+          expect(cookie_jar.signed[:token]).to be_nil
         end
       end
 
@@ -72,11 +85,17 @@ RSpec.describe FactCheck::BlocksController, type: :request do
           )
         end
 
-        it "requires GDS SSO authentication" do
+        before do
           get block_path(content_id, token: mismatched_token)
+        end
 
+        it "requires GDS SSO authentication" do
           expect(response).to_not render_template(:show)
           expect(response).to redirect_to("/auth/gds")
+        end
+
+        it "does not set the jwt token as a cookie" do
+          expect(cookie_jar.signed[:token]).to be_nil
         end
       end
     end

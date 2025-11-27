@@ -1,5 +1,6 @@
 class FactCheck::BlocksController < FactCheck::ApplicationController
   skip_before_action :authenticate_user!, if: :has_valid_jwt?
+  before_action :set_jwt_cookie, if: :has_valid_jwt?
 
   def show
     @block = block
@@ -9,6 +10,10 @@ private
 
   def has_valid_jwt?
     jwt_payload["sub"] == block.auth_bypass_id
+  end
+
+  def set_jwt_cookie
+    cookies.signed[:token] = params[:token]
   end
 
   def jwt_payload
