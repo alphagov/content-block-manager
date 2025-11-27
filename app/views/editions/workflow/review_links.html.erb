@@ -23,7 +23,7 @@
         **form_data_attributes,
         ) do %>
           <%= render(
-                Edition::HostContent::TableComponent.new(
+                Document::Show::HostEditionsTableComponent.new(
                   caption: "List of locations",
                   host_content_items: @host_content_items,
                   current_page: @page,
