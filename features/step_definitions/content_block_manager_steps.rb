@@ -431,3 +431,11 @@ end
 Then("I should see a tag containing {string}") do |string|
   expect(page).to have_selector(".govuk-tag", text: string)
 end
+
+When(/^I click the link to go to the delete page/) do
+  click_on "Delete draft"
+end
+
+When(/^I click the button to delete/) do
+  click_button "Delete"
+end

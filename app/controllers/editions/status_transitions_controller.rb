@@ -16,11 +16,11 @@ class Editions::StatusTransitionsController < BaseController
 private
 
   def attempt_transition!(transition:)
-    case transition.to_sym
-    when :ready_for_2i
-      @edition.ready_for_2i!
+    transition_method = "#{transition}!"
+    if @edition.respond_to?(transition_method)
+      @edition.send(transition_method)
     else
-      raise(UnknownTransitionError, "Transition event '#{transition}' is not recognised'")
+      raise UnknownTransitionError, "Transition event '#{transition}' is not recognised"
     end
   end
 

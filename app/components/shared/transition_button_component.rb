@@ -9,13 +9,17 @@ class Shared::TransitionButtonComponent < ViewComponent::Base
   attr_reader :edition, :transition
 
   def call_to_action
-    "Send to 2i"
+    I18n.t("edition.transitions.#{transition}")
+  end
+
+  def destructive?
+    @transition == :delete
   end
 
 private
 
   def raise_if_transition_unknown(transition)
-    return transition if transition.to_sym == :ready_for_2i
+    return transition if @edition.available_transitions.include?(transition.to_sym)
 
     raise(UnknownTransitionError, "Transition event '#{transition}' is not recognised'")
   end

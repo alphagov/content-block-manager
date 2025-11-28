@@ -562,4 +562,20 @@ RSpec.describe Edition, type: :model do
       expect(edition.is_scheduling?).to be false
     end
   end
+
+  describe "#is_deletable?" do
+    it "should return true if the edition is not published" do
+      %i[draft awaiting_2i scheduled].each do |state|
+        edition.state = state
+        expect(edition.is_deletable?).to be true
+      end
+    end
+
+    it "should return false if the edition is finalised" do
+      %i[deleted superseded published].each do |state|
+        edition.state = state
+        expect(edition.is_deletable?).to be false
+      end
+    end
+  end
 end

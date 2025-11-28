@@ -68,6 +68,8 @@ en:
         detail: You can now view the updated content block.
       drafted:
         banner: Block has been saved as draft
+    delete:
+      body: Are you sure you want to delete this draft?
     review_page:
       errors:
         confirm: Tick box to confirm details are correct
@@ -150,12 +152,20 @@ en:
         scheduled: Scheduled
         published: Published
         superseded: Superseded
+        deleted: Deleted
       label_extended:
         draft: "Drafted on %{date} by %{user}"
         awaiting_2i: "Sent for 2i review on %{date} by %{user}"
         scheduled: "Scheduled for publication at %{date}"
         published: "Published on %{date} by %{user}"
         superseded: "Superseded on %{date}"
+        deleted: "Deleted on %{date} by %{user}"
+    transitions:
+      ready_for_2i: Send to 2i
+      schedule: Schedule
+      publish: Publish
+      delete: Delete
+      supersede: Supersede
   date:
     formats:
       default: "%d %B %Y"

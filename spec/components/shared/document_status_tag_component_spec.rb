@@ -29,6 +29,7 @@ RSpec.describe Shared::DocumentStatusTagComponent, type: :component do
       scheduled: "light-blue",
       published: "green",
       superseded: "orange",
+      deleted: "red",
     }
 
     Edition.new.available_states.each do |state|
@@ -58,6 +59,7 @@ RSpec.describe Shared::DocumentStatusTagComponent, type: :component do
       scheduled: "light-blue",
       published: "green",
       superseded: "orange",
+      deleted: "red",
     }
 
     Edition.new.available_states.each do |state|

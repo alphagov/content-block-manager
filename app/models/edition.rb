@@ -25,6 +25,8 @@ class Edition < ApplicationRecord
     order(updated_at: :desc)
   }
 
+  scope :active, -> { where.not(state: %w[superseded deleted]) }
+
   def self.most_recent
     most_recent_first.first
   end
@@ -71,6 +73,10 @@ class Edition < ApplicationRecord
 
   def is_scheduling?
     scheduled_publication.present?
+  end
+
+  def is_deletable?
+    can_transition?(:delete)
   end
 
 private

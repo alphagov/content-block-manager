@@ -14,16 +14,6 @@ RSpec.describe Document::DocumentFilter do
       allow(Document).to receive(:where)
               .with(block_type: Schema.valid_schemas)
               .and_return(document_scope_spy)
-
-      allow(document_scope_spy).to receive(:live).and_return(document_scope_spy)
-      allow(document_scope_spy).to receive(:where).and_return(document_scope_spy)
-      allow(document_scope_spy).to receive(:with_lead_organisation).and_return(document_scope_spy)
-      allow(document_scope_spy).to receive(:last_updated_after).and_return(document_scope_spy)
-      allow(document_scope_spy).to receive(:last_updated_before).and_return(document_scope_spy)
-      allow(document_scope_spy).to receive(:joins).with(:editions).and_return(document_scope_spy)
-      allow(document_scope_spy).to receive(:page).and_return(document_scope_spy)
-      allow(document_scope_spy).to receive(:order).with("editions.updated_at DESC").and_return(document_scope_spy)
-      allow(document_scope_spy).to receive(:per).with(Document::DocumentFilter::DEFAULT_PAGE_SIZE).and_return([])
     end
 
     describe "when a user is not an e2e user" do
@@ -42,6 +32,12 @@ RSpec.describe Document::DocumentFilter do
           expect(Document).to_not have_received(:with_keyword)
           expect(document_scope_spy).to_not have_received(:where).with(id: anything)
           expect(document_scope_spy).to_not have_received(:with_lead_organisation)
+        end
+
+        it "filters out inactive editions" do
+          Document::DocumentFilter.new({}).paginated_documents
+
+          expect(document_scope_spy).to have_received(:merge).with(Edition.active)
         end
       end
 
