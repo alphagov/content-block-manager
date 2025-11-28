@@ -8,7 +8,7 @@ class DocumentsController < BaseController
         @errors = filter_result.errors
         @error_summary_errors = @errors.map { |error| { text: error.full_message, href: "##{error.attribute}_3i" } }
       end
-      render :index
+      render :diff_test
     else
       redirect_to root_path(default_filters)
     end
