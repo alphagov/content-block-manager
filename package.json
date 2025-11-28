@@ -18,7 +18,7 @@
     "links:check": "yarn run markdown-link-check --config markdown-link-check-config.json **/*.md"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^9.33.0",
     "@playwright/test": "^1.57.0",
     "axe-core": "^4.11.0",
