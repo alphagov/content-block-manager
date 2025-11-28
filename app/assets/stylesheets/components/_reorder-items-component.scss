@@ -1,0 +1,13 @@
+.app-c-reorder-items {
+  position: relative;
+
+  &__wrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  &__button {
+    margin-left: govuk-spacing(2);
+  }
+}

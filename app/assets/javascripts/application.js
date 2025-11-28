@@ -13,6 +13,7 @@
 
 //= require ./modules/copy-embed-code
 //= require ./modules/host-content-iframe
+//= require ./modules/reorder-items
 
 'use strict'
 window.GOVUK.approveAllCookieTypes()

@@ -292,6 +292,28 @@ Feature: Create a contact object
     Then the contact methods should be in the new order
 
   @javascript
+  Scenario: GDS editor can reorder telephone numbers within a telephone object
+    When I click on the "telephones" subschema
+    Then there should be no accessibility errors
+    When I fill in the "telephone" form with the following fields:
+      | title            |
+      | New phone number |
+    And I add the following "telephone_numbers" to the form:
+      | label       | telephone_number |
+      | Telephone 1 | 1                |
+      | Telephone 2 | 2                |
+      | Telephone 3 | 3                |
+      | Telephone 4 | 4                |
+    When I click to move the first telephone number down
+    And I click to move the last telephone number up
+    Then the telephone numbers should show in the following order:
+      | label       | telephone_number |
+      | Telephone 2 | 2                |
+      | Telephone 1 | 1                |
+      | Telephone 4 | 4                |
+      | Telephone 3 | 3                |
+
+  @javascript
   Scenario: GDS editor creates a Contact with an email address and a telephone
     And I click on the "email_addresses" subschema
     Then there should be no accessibility errors
