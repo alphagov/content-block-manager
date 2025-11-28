@@ -1,6 +1,6 @@
 require "sidekiq/api"
 
-# ContentBlockPublishingWorker is a job that is scheduled by the `ScheduleEditionService`.
+# SchedulePublishingWorker is a job that is scheduled by the `ScheduleEditionService`.
 # It is never executed immediately but uses the Sidekiq delay mechanism to
 # execute at the time the edition should be published.
 class SchedulePublishingWorker < WorkerBase

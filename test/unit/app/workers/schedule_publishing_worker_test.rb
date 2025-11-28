@@ -139,7 +139,7 @@ class SchedulePublishingWorkerTest < ActiveSupport::TestCase
   end
 
   describe ".queue_size" do
-    it "returns the number of queued ContentBlockPublishingWorker jobs" do
+    it "returns the number of queued SchedulePublishingWorker jobs" do
       with_real_sidekiq do
         SchedulePublishingWorker.perform_at(1.day.from_now, "null")
         assert_equal 1, SchedulePublishingWorker.queue_size
