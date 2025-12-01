@@ -31,8 +31,6 @@ Feature: Editor sends edition to Review
     Then I see that the edition is in draft state
     And I see a principal call to action of 'Send to 2i'
     And I see a secondary call to action of 'Edit pension'
-    # And I have a link to published edition
-    # And I have a link to delete the edition
 
     When I opt to send the edition to Review
     Then I see a notification that the transition to awaiting_review was successful
