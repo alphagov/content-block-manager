@@ -26,6 +26,26 @@ RSpec.describe Edition::Workflow, type: :model do
           expect(edition).to be_published
         end
       end
+
+      %i[draft awaiting_2i].each do |state|
+        context "when in the in-progress state '#{state}'" do
+          before { edition.state = state }
+
+          it "allows the #publish! transition" do
+            expect(edition.publish!).to be true
+          end
+        end
+      end
+
+      (Edition.available_states - %i[draft scheduled awaiting_2i]).each do |state|
+        context "when in other state '#{state}'" do
+          before { edition.state = state }
+
+          it "does NOT allow the #publish! transition" do
+            expect { edition.publish! }.to raise_error(Transitions::InvalidTransition)
+          end
+        end
+      end
     end
 
     it "transitions into the scheduled state when scheduling" do
