@@ -29,7 +29,6 @@ private
     host_content_items.each do |host_content_item|
       PublishIntentWorker.perform_async(
         host_content_item.base_path,
-        host_content_item.publishing_app,
         edition.scheduled_publication.to_s,
       )
     end

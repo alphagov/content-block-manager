@@ -110,7 +110,6 @@ RSpec.describe ScheduleEditionService do
 
       expect(PublishIntentWorker).to receive(:perform_async).with(
         "/host-document",
-        "example-app",
         Time.zone.local(2034, 9, 2, 10, 5, 0).to_s,
       ).once
 

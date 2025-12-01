@@ -1,11 +1,8 @@
-require "test_helper"
-
-class SchedulePublishingWorkerTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
+RSpec.describe SchedulePublishingWorker do
   include SidekiqTestHelpers
 
   # Suppress noisy Sidekiq logging in the test output
-  setup do
+  before do
     Sidekiq.configure_client do |cfg|
       cfg.logger.level = ::Logger::WARN
     end
@@ -14,14 +11,15 @@ class SchedulePublishingWorkerTest < ActiveSupport::TestCase
   describe "#perform" do
     it "publishes a scheduled edition" do
       document = create(:document, :pension)
-      edition = create(:edition, document:, state: "scheduled", scheduled_publication: Time.zone.now)
+      edition = create(:edition, document:, state: "scheduled", scheduled_publication: Time.zone.now + 1.day)
 
-      publish_service_mock = Minitest::Mock.new
-      PublishEditionService.expects(:new).returns(publish_service_mock)
-      publish_service_mock.expect :call, nil, [edition]
+      publish_service_mock = double
+      allow(publish_service_mock).to receive(:verify)
+      allow(publish_service_mock).to receive(:call).with(edition).and_return(nil)
+
+      expect(PublishEditionService).to receive(:new).and_return(publish_service_mock)
 
       SchedulePublishingWorker.new.perform(edition.id)
-
       publish_service_mock.verify
     end
 
@@ -29,17 +27,18 @@ class SchedulePublishingWorkerTest < ActiveSupport::TestCase
       document = create(:document, :pension)
       edition = create(:edition, document:, state: "scheduled", scheduled_publication: 7.days.since(Time.zone.now).to_date)
 
-      publish_service_mock = Minitest::Mock.new
-
+      publish_service_mock = double
       exception = PublishEditionService::PublishingFailureError.new(
         "Could not publish #{document.content_id} because: Some backend error",
       )
 
-      PublishEditionService.any_instance.stubs(:call).raises(exception)
+      allow_any_instance_of(PublishEditionService).to receive(:call).and_raise(exception)
+      allow(publish_service_mock).to receive(:verify)
 
-      assert_raises(SchedulePublishingWorker::SchedulingFailure, "Could not publish #{document.content_id} because: Some backend error") do
-        SchedulePublishingWorker.new.perform(edition.id)
-      end
+      expect { SchedulePublishingWorker.new.perform(edition.id) }.to raise_error(
+        SchedulePublishingWorker::SchedulingFailure,
+        "Could not publish #{document.content_id} because: Some backend error",
+      )
       publish_service_mock.verify
     end
 
@@ -47,8 +46,8 @@ class SchedulePublishingWorkerTest < ActiveSupport::TestCase
       document = create(:document, :pension)
       edition = create(:edition, document:, state: "published")
 
-      PublishEditionService.expects(:new).never
-      PublishEditionService.any_instance.expects(:call).never
+      expect(PublishEditionService).to receive(:new).never
+      allow_any_instance_of(PublishEditionService).to receive(:call).never
 
       SchedulePublishingWorker.new.perform(edition.id)
     end
@@ -65,9 +64,9 @@ class SchedulePublishingWorkerTest < ActiveSupport::TestCase
 
       SchedulePublishingWorker.queue(edition)
 
-      assert job = SchedulePublishingWorker.jobs.last
-      assert_equal edition.id, job["args"].first
-      assert_equal edition.scheduled_publication.to_i, job["at"].to_i
+      expect(job = SchedulePublishingWorker.jobs.last).to be
+      expect(job["args"].first).to eq(edition.id)
+      expect(job["at"].to_i).to eq(edition.scheduled_publication.to_i)
     end
   end
 
@@ -93,16 +92,16 @@ class SchedulePublishingWorkerTest < ActiveSupport::TestCase
         SchedulePublishingWorker.queue(edition)
         SchedulePublishingWorker.queue(control_edition)
 
-        assert_equal 2, Sidekiq::ScheduledSet.new.size
+        expect(Sidekiq::ScheduledSet.new.size).to eq(2)
 
         SchedulePublishingWorker.dequeue(edition)
 
-        assert_equal 1, Sidekiq::ScheduledSet.new.size
+        expect(Sidekiq::ScheduledSet.new.size).to eq(1)
 
         control_job = Sidekiq::ScheduledSet.new.first
 
-        assert_equal control_job["args"].first, control_edition.id
-        assert_equal control_job.at.to_i, control_edition.scheduled_publication.to_i
+        expect(control_edition.id).to eq(control_job.[]("args").first)
+        expect(control_edition.scheduled_publication.to_i).to eq(control_job.at.to_i)
       end
     end
   end
@@ -129,11 +128,11 @@ class SchedulePublishingWorkerTest < ActiveSupport::TestCase
         SchedulePublishingWorker.queue(edition_1)
         SchedulePublishingWorker.queue(edition_2)
 
-        assert_equal 2, Sidekiq::ScheduledSet.new.size
+        expect(Sidekiq::ScheduledSet.new.size).to eq(2)
 
         SchedulePublishingWorker.dequeue_all
 
-        assert_equal 0, Sidekiq::ScheduledSet.new.size
+        expect(Sidekiq::ScheduledSet.new.size).to eq(0)
       end
     end
   end
@@ -142,10 +141,10 @@ class SchedulePublishingWorkerTest < ActiveSupport::TestCase
     it "returns the number of queued SchedulePublishingWorker jobs" do
       with_real_sidekiq do
         SchedulePublishingWorker.perform_at(1.day.from_now, "null")
-        assert_equal 1, SchedulePublishingWorker.queue_size
+        expect(SchedulePublishingWorker.queue_size).to eq(1)
 
         SchedulePublishingWorker.perform_at(2.days.from_now, "null")
-        assert_equal 2, SchedulePublishingWorker.queue_size
+        expect(SchedulePublishingWorker.queue_size).to eq(2)
       end
     end
   end
@@ -156,7 +155,7 @@ class SchedulePublishingWorkerTest < ActiveSupport::TestCase
         SchedulePublishingWorker.perform_at(1.day.from_now, "3")
         SchedulePublishingWorker.perform_at(2.days.from_now, "6")
 
-        assert_same_elements %w[3 6], SchedulePublishingWorker.queued_edition_ids
+        expect(SchedulePublishingWorker.queued_edition_ids).to contain_exactly(*%w[3 6])
       end
     end
   end
