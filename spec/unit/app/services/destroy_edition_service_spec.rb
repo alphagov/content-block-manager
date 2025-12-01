@@ -1,4 +1,4 @@
-RSpec.describe DeleteEditionService do
+RSpec.describe DestroyEditionService do
   describe "#call" do
     let(:document) { create(:document, :pension) }
     let!(:draft_edition) { create(:edition, :pension, document:, state: :draft) }
@@ -6,7 +6,7 @@ RSpec.describe DeleteEditionService do
     describe "when there is only one draft edition on a document" do
       it "deletes the draft edition and its document" do
         expect {
-          DeleteEditionService.new.call(draft_edition)
+          DestroyEditionService.new.call(draft_edition)
         }.to change { Document.count }.by(-1)
          .and change { Edition.count }.by(-1)
       end
@@ -17,13 +17,13 @@ RSpec.describe DeleteEditionService do
 
       it "does not delete the document" do
         expect {
-          expect { DeleteEditionService.new.call(scheduled_edition) }.to raise_error(ArgumentError)
+          expect { DestroyEditionService.new.call(scheduled_edition) }.to raise_error(ArgumentError)
         }.not_to(change { Document.count })
       end
 
       it "does not delete the edition" do
         expect {
-          expect { DeleteEditionService.new.call(scheduled_edition) }.to raise_error(ArgumentError)
+          expect { DestroyEditionService.new.call(scheduled_edition) }.to raise_error(ArgumentError)
         }.not_to(change { Edition.count })
       end
     end
@@ -33,19 +33,19 @@ RSpec.describe DeleteEditionService do
 
       it "does not delete the document" do
         expect {
-          DeleteEditionService.new.call(draft_edition)
+          DestroyEditionService.new.call(draft_edition)
         }.not_to(change { Document.count })
       end
 
       it "does not delete the other draft edition" do
         expect {
-          DeleteEditionService.new.call(draft_edition)
+          DestroyEditionService.new.call(draft_edition)
         }.not_to(change { Edition.exists?(other_edition.id) })
       end
 
       it "deletes the given edition" do
         expect {
-          DeleteEditionService.new.call(draft_edition)
+          DestroyEditionService.new.call(draft_edition)
         }.to(change { Edition.exists?(draft_edition.id) })
       end
     end

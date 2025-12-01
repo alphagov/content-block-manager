@@ -1,4 +1,4 @@
-class DeleteEditionService
+class DestroyEditionService
   def call(edition)
     if edition.draft?
       document = edition.document
