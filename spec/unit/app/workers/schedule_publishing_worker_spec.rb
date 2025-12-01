@@ -51,6 +51,20 @@ RSpec.describe SchedulePublishingWorker do
 
       SchedulePublishingWorker.new.perform(edition.id)
     end
+
+    it "returns without consequence if the edition is deleted" do
+      document = create(:document, :pension)
+      edition = create(:edition, document:, state: :deleted, scheduled_publication: 1.day.from_now)
+      publish_edition_service_mock = spy
+      allow(PublishEditionService).to receive(:new).and_return(publish_edition_service_mock)
+
+      SchedulePublishingWorker.new.perform(edition.id)
+
+      aggregate_failures do
+        expect(PublishEditionService).not_to have_received(:new)
+        expect(publish_edition_service_mock).not_to have_received(:call)
+      end
+    end
   end
 
   describe ".queue" do
