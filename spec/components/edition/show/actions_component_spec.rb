@@ -108,7 +108,8 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
         component = described_class.new(edition: edition)
         render_inline component
 
-        expect(page).to have_link("Delete", href: "/editions/123/delete")
+        expect(page).to have_link("Delete", href: "/editions/123/delete"),
+                        "Expected to see 'Delete' link when in '#{state}' state"
       end
     end
 
@@ -118,7 +119,8 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
         component = described_class.new(edition: edition)
         render_inline component
 
-        expect(page).not_to have_link("Delete")
+        expect(page).not_to have_link("Delete"),
+                            "Expected NOT to see 'Delete' link when in '#{state}' state"
       end
     end
   end
