@@ -28,22 +28,36 @@ Then(/I see a notification that the transition to ([^"]*) was successful/) do |s
 end
 
 Then(/I see an alert that the transition failed to transition to ([^"]*)/) do |state|
-  raise "Only the 'awaiting_review' state is supported currently" unless state == "awaiting_review"
+  general_message = "Error: we can not change the status of this edition."
 
-  message = "Error: we can not change the status of this edition."
-  error_details = "Can't fire event `ready_for_review` in current state `awaiting_review`"
+  case state.to_sym
+  when :awaiting_review
+    error_details = "Can't fire event `ready_for_review` in current state `awaiting_review`"
+  when :awaiting_factcheck
+    error_details = "Can't fire event `ready_for_factcheck` in current state `awaiting_factcheck`"
+  else
+    raise "Only the 'awaiting_review' and 'awaiting_factcheck' states are supported currently"
+  end
 
   within(".gem-c-error-alert__message") do
-    expect(page).to have_content(message)
+    expect(page).to have_content(general_message)
     expect(page).to have_content(error_details)
   end
 end
 
 Then(/the calls to action are suited to the ([^"]*) state/) do |state|
-  raise "Only the 'awaiting_review' state is supported currently" unless state == "awaiting_review"
-
-  within ".actions" do
-    expect(page).to have_link("Edit pension")
-    expect(page).to have_no_button("Send to 2i")
+  case state.to_sym
+  when :awaiting_review
+    within ".actions" do
+      expect(page).to have_link("Edit pension")
+      expect(page).to have_no_button("Send to 2i")
+    end
+  when :awaiting_factcheck
+    within ".actions" do
+      expect(page).to have_link("Edit pension")
+      expect(page).to have_link("Delete draft")
+    end
+  else
+    raise "Only the 'awaiting_review' and 'awaiting_factcheck' states are supported currently"
   end
 end

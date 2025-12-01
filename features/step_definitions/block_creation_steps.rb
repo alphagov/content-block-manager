@@ -1,5 +1,9 @@
 Given("a pension content block has been drafted") do
-  create_draft_pension_edition
+  create_pension_edition(state: :draft)
+end
+
+Given("a pension content block in the awaiting_review state exists") do
+  create_pension_edition(state: :awaiting_review)
 end
 
 Given("a pension content block has been created") do
@@ -58,10 +62,11 @@ Given(/^([^"]*) content blocks of type ([^"]*) have been created with the fields
   end
 end
 
-def create_draft_pension_edition
+def create_pension_edition(state:)
   @content_block = create(
     :edition,
     :pension,
+    state: state,
     document: pension_document,
     details: { description: "Some text" },
     creator: @user,

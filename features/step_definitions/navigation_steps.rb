@@ -16,3 +16,8 @@ Given("I am viewing the draft edition") do
   edition = Document.last.editions.draft.most_recent
   visit document_path(edition.document)
 end
+
+Given("I am viewing the edition awaiting review") do
+  edition = Document.last.editions.where(state: :awaiting_review).most_recent
+  visit document_path(edition.document)
+end
