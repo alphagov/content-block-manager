@@ -27,7 +27,7 @@ RSpec.describe Edition::Workflow, type: :model do
         end
       end
 
-      %i[draft awaiting_review].each do |state|
+      %i[draft awaiting_review awaiting_factcheck].each do |state|
         context "when in the in-progress state '#{state}'" do
           before { edition.state = state }
 
@@ -37,7 +37,7 @@ RSpec.describe Edition::Workflow, type: :model do
         end
       end
 
-      (Edition.available_states - %i[draft scheduled awaiting_review]).each do |state|
+      (Edition.available_states - %i[draft scheduled awaiting_review awaiting_factcheck]).each do |state|
         context "when in other state '#{state}'" do
           before { edition.state = state }
 
@@ -69,6 +69,28 @@ RSpec.describe Edition::Workflow, type: :model do
       edition = create(:edition, document: create(:document, block_type: "pension"))
       edition.ready_for_review!
       assert edition.awaiting_review?
+    end
+
+    describe "transition to 'awaiting_factcheck' state" do
+      let(:edition) { create(:edition, :pension, :draft) }
+
+      context "when in the 'awaiting_review' state" do
+        before { edition.state = "awaiting_review" }
+
+        it "allows the #ready_for_factcheck! transition" do
+          expect(edition.ready_for_factcheck!).to be true
+        end
+      end
+
+      (Edition.available_states - [:awaiting_review]).each do |state|
+        context "when in the '#{state}' state" do
+          before { edition.state = state }
+
+          it "does NOT allow the 'ready_for_factcheck! transition" do
+            expect { edition.ready_for_factcheck! }.to raise_error(Transitions::InvalidTransition)
+          end
+        end
+      end
     end
 
     it "transitions into the deleted state when marking as deleted" do

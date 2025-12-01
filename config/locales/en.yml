@@ -149,6 +149,7 @@ en:
       label:
         draft: Draft
         awaiting_review: Awaiting 2i
+        awaiting_factcheck: Awaiting factcheck
         scheduled: Scheduled
         published: Published
         superseded: Superseded
@@ -156,6 +157,7 @@ en:
       label_extended:
         draft: "Drafted on %{date} by %{user}"
         awaiting_review: "Sent for 2i review on %{date} by %{user}"
+        awaiting_factcheck: "Sent for factcheck review on %{date} by %{user}"
         scheduled: "Scheduled for publication at %{date}"
         published: "Published on %{date} by %{user}"
         superseded: "Superseded on %{date}"

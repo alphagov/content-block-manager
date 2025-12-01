@@ -4,6 +4,7 @@ class Shared::DocumentStatusTagComponent < ViewComponent::Base
   COLOURS = {
     draft: "yellow",
     awaiting_review: "turquoise",
+    awaiting_factcheck: "pink",
     scheduled: "light-blue",
     published: "green",
     superseded: "orange",
