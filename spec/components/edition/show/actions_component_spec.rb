@@ -134,7 +134,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
 
   describe "link to delete the edition" do
     (Edition.new.available_states - %i[published superseded deleted]).each do |state|
-      it "should appear for draft editions" do
+      it "should appear for 'in-progress' editions" do
         edition.state = state
         component = described_class.new(edition: edition)
         render_inline component
