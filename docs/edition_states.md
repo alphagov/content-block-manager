@@ -13,6 +13,9 @@ stateDiagram-v2
 
     draft --> awaiting_review: ready_for_review
     awaiting_review --> awaiting_factcheck: ready_for_factcheck
+    note left of awaiting_factcheck
+        Requires outcome<br>of the Review process
+    end note
     awaiting_factcheck --> scheduled: schedule
 
     scheduled --> superseded: supersede
