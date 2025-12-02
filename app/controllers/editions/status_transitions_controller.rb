@@ -9,7 +9,7 @@ class Editions::StatusTransitionsController < BaseController
     rescue Transitions::InvalidTransition => e
       handle_failure(e)
     ensure
-      redirect_to document_path(@edition.document)
+      redirect_to redirect_path
     end
   end
 
@@ -30,5 +30,9 @@ private
 
   def handle_failure(error)
     flash.alert = "Error: we can not change the status of this edition. #{error.message}"
+  end
+
+  def redirect_path
+    @edition.document.most_recent_edition ? document_path(@edition.document) : root_path
   end
 end

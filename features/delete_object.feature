@@ -51,4 +51,4 @@ Feature: Delete a content object
     When I am viewing the draft edition
     And I click the link to go to the delete page
     And I click the button to delete
-    Then I should see a tag containing "Deleted"
+    Then I see a notification that the transition to deleted was successful
