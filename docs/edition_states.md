@@ -1,6 +1,6 @@
 # Edition States
 
-## Proposed State Diagram
+## State Diagram
 
 ```mermaid
 stateDiagram-v2
@@ -11,12 +11,15 @@ stateDiagram-v2
     awaiting_factcheck --> deleted: delete
     scheduled --> deleted: delete
 
-    draft --> awaiting_review: ready_for_review
-    awaiting_review --> awaiting_factcheck: ready_for_factcheck
-    note left of awaiting_factcheck
-        Requires outcome<br>of the Review process
-    end note
-    awaiting_factcheck --> scheduled: schedule
+    InProgress:In Progress
+    state InProgress {
+        draft --> awaiting_review: ready_for_review
+        awaiting_review --> awaiting_factcheck: ready_for_factcheck
+        note left of awaiting_factcheck
+            Requires outcome<br>of the Review process
+        end note
+        awaiting_factcheck --> scheduled: schedule
+    }
 
     scheduled --> superseded: supersede
     published --> superseded: supersede
@@ -90,3 +93,20 @@ Publish an Edition to the Publishing API.
 ### delete
 
 Delete an Edition.
+
+## In Progress
+
+Several places in our application, we found ourselves needing to refer to the set of states that represent an Edition
+which isn't yet published and also hasn't been discarded in some way. To make this easier, we have defined a composite
+state `In Progress` which includes the states:
+
+- draft
+- awaiting_2i
+- awaiting_factcheck
+- scheduled
+
+This allows us to refer to `In Progress` in our state machine transitions and guards, improving readability and intent.
+
+For example, when deciding whether or not an Edition is eligible for deletion we simply check if the Edition is `In
+Progress`. It would be harmful to allow a user to delete an Edition which is published and would be redundant to allow
+them to delete something which has already been deleted or superseded.
