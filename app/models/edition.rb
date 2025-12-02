@@ -18,7 +18,7 @@ class Edition < ApplicationRecord
   scope :published, -> { where(state: "published") }
 
   scope :most_recent_for_document, lambda {
-    where(updated_at: Edition.select("MAX(updated_at)").group(:document_id))
+    where(updated_at: Edition.active.select("MAX(updated_at)").group(:document_id))
   }
 
   scope :most_recent_first, lambda {
