@@ -166,6 +166,20 @@ Then("I should see the content block with title {string} returned") do |title|
   expect(page).to have_selector(".govuk-summary-card__title", text: title)
 end
 
+Then("I should see the content block listed") do
+  expect(page).to have_selector(".govuk-summary-card__title", text: @pension_document.title)
+end
+
+Then("I should not see the content block listed") do
+  expect(page).to_not have_selector(".govuk-summary-card__title", text: @pension_document.title)
+end
+
+Then("the content block should have the tag {string}") do |tag_text|
+  within(".govuk-summary-card", text: /#{@pension_document.title}/) do
+    expect(page).to have_selector(".govuk-tag", text: tag_text)
+  end
+end
+
 Then("I should not see the content block with title {string} returned") do |title|
   expect(page).to_not have_selector(".govuk-summary-card__title", text: title)
 end
