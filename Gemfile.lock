@@ -123,7 +123,7 @@ GEM
     concurrent-ruby (1.3.5)
     connection_pool (2.5.5)
     constant_resolver (0.3.0)
-    content_block_tools (1.7.0)
+    content_block_tools (1.7.1)
       actionview (>= 6, < 8.1.2)
       gds-api-adapters (~> 101.0.0)
       govspeak (>= 10.6.3)
@@ -708,7 +708,7 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.3.1)
-    rdoc (6.16.0)
+    rdoc (6.16.1)
       erb
       psych (>= 4.0.0)
       tsort
@@ -1016,7 +1016,7 @@ CHECKSUMS
   concurrent-ruby (1.3.5) sha256=813b3e37aca6df2a21a3b9f1d497f8cbab24a2b94cab325bffe65ee0f6cbebc6
   connection_pool (2.5.5) sha256=e54ff92855753df1fd7c59fa04a398833355f27dd14c074f8c83a05f72a716ad
   constant_resolver (0.3.0) sha256=b94886294298fb8d5db3715bac65e65493fae7b12b8a6f867cbf898944e64e83
-  content_block_tools (1.7.0) sha256=d2197810c73ac8603d9ddcb896352c3ca6828dd5d61461bdc79a14107071fc02
+  content_block_tools (1.7.1) sha256=5b9df0904f8486486cf010b6c0125a31cdb964ffbe11e11d910d5cf34f5af40f
   crack (1.0.1) sha256=ff4a10390cd31d66440b7524eb1841874db86201d5b70032028553130b6d4c7e
   crass (1.0.6) sha256=dc516022a56e7b3b156099abc81b6d2b08ea1ed12676ac7a5657617f012bd45d
   cucumber (10.1.1) sha256=293be9e52e526824dc6157e1afe8ee3716fd2902f88a0f4ae0ae37a46e452271
@@ -1232,7 +1232,7 @@ CHECKSUMS
   railties (8.0.3) sha256=ace31dcad7134299a64d6d96310d76d32868756e58e2983e25b121acd457f1d2
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
   rake (13.3.1) sha256=8c9e89d09f66a26a01264e7e3480ec0607f0c497a861ef16063604b1b08eb19c
-  rdoc (6.16.0) sha256=d0ce6f787027a24e480c1acb9f3110125213cb5df6806fd7832d5a1b8f26a205
+  rdoc (6.16.1) sha256=71357cc208e6da77ba0c4494e01ae870dd18b437c7c7d801dd73ee2f340b9f5c
   record_tag_helper (1.0.1) sha256=28b073f6c0e529d0f96969ba8ce5c2a9c1b5472d603a67b60bf64798b15c3dcf
   redis-client (0.26.1) sha256=1e39d2862c4516a75ff777ee6ed08827af39336bfece4a48e944244891d9a073
   regexp_parser (2.11.2) sha256=5e5e9c1485ffd8de53ab1d2807affd81f617f72967dfc64fc75a69e2cbf0ff98
