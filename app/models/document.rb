@@ -24,7 +24,7 @@ class Document < ApplicationRecord
           -> { published.most_recent_first }, class_name: "Edition"
 
   has_one :most_recent_edition,
-          -> { most_recent_first }, class_name: "Edition"
+          -> { active.most_recent_first }, class_name: "Edition"
 
   scope :live, -> { joins(:editions).merge(Edition.published.most_recent_first) }
 
