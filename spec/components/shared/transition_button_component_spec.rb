@@ -36,8 +36,8 @@ RSpec.describe Shared::TransitionButtonComponent, type: :component do
     end
   end
 
-  context "when the given transition is 'ready_for_2i'" do
-    let(:transition) { "ready_for_2i" }
+  context "when the given transition is 'ready_for_review'" do
+    let(:transition) { "ready_for_review" }
 
     it "shows the 'Send to 2i' call to action" do
       render_inline component

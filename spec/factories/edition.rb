@@ -53,8 +53,12 @@ FactoryBot.define do
       state { :deleted }
     end
 
-    trait :awaiting_2i do
-      state { :awaiting_2i }
+    trait :awaiting_review do
+      state { :awaiting_review }
+    end
+
+    trait :awaiting_factcheck do
+      state { :awaiting_factcheck }
     end
   end
 end

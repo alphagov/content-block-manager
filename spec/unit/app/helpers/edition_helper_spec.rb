@@ -55,7 +55,7 @@ RSpec.describe EditionHelper, type: :helper do
 
   describe "#current_state_label" do
     Edition.new.available_states.each do |state|
-      context "when the Edition has a known state" do
+      context "when the Edition has a the '#{state}' state" do
         let(:edition) { build(:edition, state: state, scheduled_publication: Time.zone.now) }
 
         it "should return a string label" do

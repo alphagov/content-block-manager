@@ -1,0 +1,41 @@
+<% content_for :back_link do %>
+  <%= render "govuk_publishing_components/components/back_link", {
+    href: document_path(@edition.document),
+  } %>
+<% end %>
+
+<%= form_tag(review_outcomes_path(@edition)) do %>
+
+  <%= render "govuk_publishing_components/components/radio", {
+    name: "review_outcome[review_performed]",
+    heading: "Ready for factcheck",
+    heading_caption: @edition.title,
+    heading_level: 1,
+    error_message: flash.alert.present? ? "Describe the outcome of the 2i process" : nil,
+    items: [
+      {
+        value: "true",
+        text: "Completed 2i review",
+      },
+      {
+        value: "false",
+        text: "Skip 2i review",
+      },
+    ],
+  } %>
+
+  <div class="govuk-button-group govuk-!-margin-bottom-6">
+    <%= render "govuk_publishing_components/components/button", {
+      text: "Continue",
+      name: "continue",
+      value: "Continue",
+      type: "submit",
+    } %>
+    <%= render "govuk_publishing_components/components/button", {
+      text: "Cancel",
+      href: document_path(@edition.document),
+      secondary_solid: true,
+    } %>
+  </div>
+
+<% end %>

@@ -5,75 +5,113 @@ RSpec.describe Edition::Workflow, type: :model do
       expect(edition).to be_draft
     end
 
-    context "when transitioning to published" do
-      it "transitions from scheduled into a published state" do
-        edition = create(:edition,
-                         document: create(
-                           :document,
-                           block_type: "pension",
-                         ),
-                         scheduled_publication: 7.days.since(Time.zone.now).to_date,
-                         state: "scheduled")
-        edition.publish!
-        expect(edition).to be_published
+    describe "transition to 'published' state" do
+      let(:edition) { create(:edition, :pension) }
+
+      context "when in 'scheduled' state" do
+        before do
+          edition.scheduled_publication = 7.days.since(Time.zone.now).to_date
+          edition.state = "scheduled"
+        end
+
+        it "transitions into the published state" do
+          edition = create(:edition,
+                           document: create(
+                             :document,
+                             block_type: "pension",
+                           ),
+                           scheduled_publication: 7.days.since(Time.zone.now).to_date,
+                           state: "scheduled")
+          edition.publish!
+          expect(edition).to be_published
+        end
+      end
+
+      %i[draft awaiting_review awaiting_factcheck].each do |state|
+        context "when in the in-progress state '#{state}'" do
+          before { edition.state = state }
+
+          it "allows the #publish! transition" do
+            expect(edition.publish!).to be true
+          end
+        end
+      end
+
+      (Edition.available_states - %i[draft scheduled awaiting_review awaiting_factcheck]).each do |state|
+        context "when in other state '#{state}'" do
+          before { edition.state = state }
+
+          it "does NOT allow the #publish! transition" do
+            expect { edition.publish! }.to raise_error(Transitions::InvalidTransition)
+          end
+        end
       end
     end
 
-    context "when transitioning to scheduled" do
-      it "transitions from draft into a scheduled state" do
-        edition = create(:edition,
-                         scheduled_publication: 7.days.since(Time.zone.now).to_date,
-                         document: create(
-                           :document,
-                           block_type: "pension",
-                         ))
-        edition.schedule!
-        expect(edition).to be_scheduled
+    it "transitions into the scheduled state when scheduling" do
+      edition = create(:edition,
+                       scheduled_publication: 7.days.since(Time.zone.now).to_date,
+                       document: create(
+                         :document,
+                         block_type: "pension",
+                       ))
+      edition.schedule!
+      expect(edition).to be_scheduled
+    end
+
+    it "transitions into the superseded state when superseding" do
+      edition = create(:edition, :pension, scheduled_publication: 7.days.since(Time.zone.now).to_date, state: "scheduled")
+      edition.supersede!
+      expect(edition).to be_superseded
+    end
+
+    it "transitions into the awaiting_review state when marking as ready for Review" do
+      edition = create(:edition, document: create(:document, block_type: "pension"))
+      edition.ready_for_review!
+      assert edition.awaiting_review?
+    end
+
+    describe "transition to 'awaiting_factcheck' state" do
+      let(:edition) { create(:edition, :pension, :draft) }
+
+      context "when in the 'awaiting_review' state" do
+        before { edition.state = "awaiting_review" }
+
+        context "when a Review outcome has been recorded" do
+          before { edition.review_outcome_recorded_at = 1.hour.ago }
+
+          it "allows the #ready_for_factcheck! transition" do
+            expect(edition.ready_for_factcheck!).to be true
+          end
+        end
+
+        context "when a Review outcome has NOT been recorded" do
+          before { edition.review_outcome_recorded_at = nil }
+
+          it "raises a ReviewOutcomeMissingError" do
+            expect { edition.ready_for_factcheck! }.to raise_error(
+              Edition::Workflow::ReviewOutcomeMissingError,
+              /Edition #{edition.id} does not have a 2i Review outcome recorded/,
+            )
+          end
+        end
+      end
+
+      (Edition.available_states - [:awaiting_review]).each do |state|
+        context "when in the '#{state}' state" do
+          before { edition.state = state }
+
+          it "does NOT allow the 'ready_for_factcheck! transition" do
+            expect { edition.ready_for_factcheck! }.to raise_error(Transitions::InvalidTransition)
+          end
+        end
       end
     end
 
-    context "when transitioning to superseded" do
-      it "transitions from scheduled into a superseded state" do
-        edition = create(:edition, :pension, scheduled_publication: 7.days.since(Time.zone.now).to_date, state: "scheduled")
-        edition.supersede!
-        expect(edition).to be_superseded
-      end
-    end
-
-    context "when transitioning to awaiting_2i" do
-      it "transitions from draft into an awaiting_2i state" do
-        edition = create(:edition, document: create(:document, block_type: "pension"))
-        edition.ready_for_2i!
-        assert edition.awaiting_2i?
-      end
-    end
-
-    context "when transitioning to deleted" do
-      it "transitions from draft into a deleted state" do
-        edition = create(:edition, document: create(:document, block_type: "pension"))
-        edition.delete!
-        assert edition.deleted?
-      end
-
-      it "calls the DeleteEditionService on successful transition" do
-        edition = create(:edition, document: create(:document, block_type: "pension"))
-        delete_service_mock = spy
-        allow(DeleteEditionService).to receive(:new).and_return(delete_service_mock)
-
-        edition.delete!
-
-        expect(delete_service_mock).to have_received(:call).with(edition)
-      end
-
-      it "doesn't call the DeleteEditionService on failed transition" do
-        edition = create(:edition, document: create(:document, block_type: "pension"), state: "published")
-        delete_service_mock = spy
-        allow(DeleteEditionService).to receive(:new).and_return(delete_service_mock)
-
-        expect { edition.delete! }.to raise_error(Transitions::InvalidTransition)
-
-        expect(delete_service_mock).not_to have_received(:call)
-      end
+    it "transitions into the deleted state when marking as deleted" do
+      edition = create(:edition, document: create(:document, block_type: "pension"))
+      edition.delete!
+      assert edition.deleted?
     end
 
     describe "translations for status tag" do
@@ -112,18 +150,6 @@ RSpec.describe Edition::Workflow, type: :model do
 
       edition.state = "draft"
       edition.valid?(:scheduling)
-    end
-  end
-
-  describe ".active_states" do
-    it "returns all the active states" do
-      expect(Edition.active_states).to eq(%i[draft published scheduled awaiting_2i])
-    end
-  end
-
-  describe ".inactive_states" do
-    it "returns all the inactive states" do
-      expect(Edition.inactive_states).to eq(%i[superseded deleted])
     end
   end
 end

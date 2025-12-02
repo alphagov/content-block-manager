@@ -48,6 +48,9 @@ Rails.application.routes.draw do
         end
       end
 
+      # record 2i Review outcomes
+      resources :review_outcomes, only: %i[new create], controller: "editions/review_outcomes", path_names: { new: "/new" }
+
       # State transitions
       resources :edition_status_transitions, only: [:create], controller: "editions/status_transitions"
 

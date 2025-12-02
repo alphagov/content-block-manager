@@ -2,6 +2,8 @@ module Edition::Workflow
   extend ActiveSupport::Concern
   include DateValidation
 
+  class ReviewOutcomeMissingError < RuntimeError; end
+
   class_methods do
     def valid_state?(state)
       edition.available_states.include?(state)
@@ -30,11 +32,12 @@ module Edition::Workflow
       state :published
       state :scheduled
       state :superseded
-      state :awaiting_2i
+      state :awaiting_review
+      state :awaiting_factcheck
       state :deleted
 
       event :publish do
-        transitions from: %i[draft awaiting_2i scheduled], to: :published
+        transitions from: %i[draft awaiting_review awaiting_factcheck scheduled], to: :published
       end
       event :schedule do
         transitions from: %i[draft], to: :scheduled
@@ -42,14 +45,25 @@ module Edition::Workflow
       event :supersede do
         transitions from: %i[scheduled], to: :superseded
       end
-      event :ready_for_2i do
-        transitions from: %i[draft], to: :awaiting_2i
+      event :ready_for_review do
+        transitions from: %i[draft], to: :awaiting_review
+      end
+      event :ready_for_factcheck do
+        transitions from: %i[awaiting_review], to: :awaiting_factcheck, guard: [:has_review_outcome_recorded?]
       end
       event :delete, success: lambda { |edition|
         DeleteEditionService.new.call(edition)
       } do
-        transitions from: %i[draft awaiting_2i scheduled], to: :deleted
+        transitions from: %i[draft awaiting_review awaiting_factcheck scheduled], to: :deleted
       end
+    end
+
+    def has_review_outcome_recorded?
+      return true if review_outcome_recorded_at
+
+      error_message = "Edition #{id} does not have a 2i Review outcome recorded and so " \
+        "can't transition into the 'awaiting_factcheck' state"
+      raise ReviewOutcomeMissingError, error_message
     end
   end
 end

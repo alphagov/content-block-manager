@@ -23,7 +23,7 @@ Then("I should see the scheduled event on the timeline") do
 end
 
 Then(/I see the transition to the ([^"]*) state in the timeline/) do |state|
-  within ".timeline__item" do
+  within ".timeline__item:first" do
     expect(page).to have_selector(".timeline__title", text: "Pension #{state}")
     expect(page).to have_selector(".timeline__byline", text: "by #{@user.name}")
   end

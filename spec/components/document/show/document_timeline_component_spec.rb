@@ -115,7 +115,7 @@ RSpec.describe Document::Show::DocumentTimelineComponent, type: :component do
           :content_block_version,
           event: "updated",
           whodunnit: 34,
-          state: "awaiting_2i",
+          state: "awaiting_review",
           created_at: 3.days.ago,
           item:,
         ),

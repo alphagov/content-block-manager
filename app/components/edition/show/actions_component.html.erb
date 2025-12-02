@@ -3,8 +3,18 @@
     <li>
       <%= render Shared::TransitionButtonComponent.new(
         edition: edition,
-        transition: :ready_for_2i,
+        transition: :ready_for_review,
       ) %>
+    </li>
+  <% end %>
+
+  <% if state == "awaiting_review" %>
+    <li class="govuk-!-static-margin-bottom-3">
+      <%= render "govuk_publishing_components/components/button", {
+        text: "Send to factcheck",
+        href: new_review_outcome_path(edition),
+        inline_layout: false,
+      } %>
     </li>
   <% end %>
 

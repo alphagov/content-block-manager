@@ -148,20 +148,22 @@ en:
     states:
       label:
         draft: Draft
-        awaiting_2i: Awaiting 2i
+        awaiting_review: Awaiting 2i
+        awaiting_factcheck: Awaiting factcheck
         scheduled: Scheduled
         published: Published
         superseded: Superseded
         deleted: Deleted
       label_extended:
         draft: "Drafted on %{date} by %{user}"
-        awaiting_2i: "Sent for 2i review on %{date} by %{user}"
+        awaiting_review: "Sent for 2i review on %{date} by %{user}"
+        awaiting_factcheck: "Sent for factcheck review on %{date} by %{user}"
         scheduled: "Scheduled for publication at %{date}"
         published: "Published on %{date} by %{user}"
         superseded: "Superseded on %{date}"
         deleted: "Deleted on %{date} by %{user}"
     transitions:
-      ready_for_2i: Send to 2i
+      ready_for_review: Send to 2i
       schedule: Schedule
       publish: Publish
       delete: Delete

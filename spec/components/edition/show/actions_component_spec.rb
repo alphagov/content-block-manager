@@ -2,7 +2,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
   let(:document) { FactoryBot.build(:document, :pension, id: 456) }
   let(:edition) { FactoryBot.build(:edition, :pension, document: document, id: 123) }
 
-  describe "Button to transition to 'awaiting_2i' state" do
+  describe "Button to transition to 'awaiting_review' state" do
     context "when the edition is in the 'draft' state" do
       before do
         edition.state = :draft
@@ -28,6 +28,37 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
 
         it "does NOT offer a button for the status transition" do
           expect(page).to have_no_button("Send to 2i")
+        end
+      end
+    end
+  end
+
+  describe "Button to transition to 'awaiting_factcheck' state" do
+    context "when the edition is in the 'awaiting_review' state" do
+      before do
+        edition.state = :awaiting_review
+        component = described_class.new(edition: edition)
+        render_inline component
+      end
+
+      it "offers a button to record the Review outcome" do
+        expect(page).to have_css(
+          ".actions a[href='/editions/123/review_outcomes/new']",
+          text: "Send to factcheck",
+        )
+      end
+    end
+
+    (Edition.available_states - [:awaiting_review]).each do |state|
+      context "when the edition is in the '#{state}' state" do
+        before do
+          edition.state = state
+          component = described_class.new(edition: edition)
+          render_inline component
+        end
+
+        it "does NOT offer a button to record the Review outcome" do
+          expect(page).to have_no_link("Send to Factcheck")
         end
       end
     end
@@ -103,12 +134,13 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
 
   describe "link to delete the edition" do
     (Edition.new.available_states - %i[published superseded deleted]).each do |state|
-      it "should appear for draft editions" do
+      it "should appear for 'in-progress' editions" do
         edition.state = state
         component = described_class.new(edition: edition)
         render_inline component
 
-        expect(page).to have_link("Delete", href: "/editions/123/delete")
+        expect(page).to have_link("Delete", href: "/editions/123/delete"),
+                        "Expected to see 'Delete' link when in '#{state}' state"
       end
     end
 
@@ -118,7 +150,8 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
         component = described_class.new(edition: edition)
         render_inline component
 
-        expect(page).not_to have_link("Delete")
+        expect(page).not_to have_link("Delete"),
+                            "Expected NOT to see 'Delete' link when in '#{state}' state"
       end
     end
   end
