@@ -32,7 +32,7 @@ class EditionsController < BaseController
 
   def destroy
     edition_to_delete = Edition.find(params[:id])
-    DeleteEditionService.new.call(edition_to_delete)
+    DestroyEditionService.new.call(edition_to_delete)
     redirect_to params[:redirect_path] || root_path
   end
 

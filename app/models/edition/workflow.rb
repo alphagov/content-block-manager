@@ -35,7 +35,9 @@ module Edition::Workflow
       event :ready_for_2i do
         transitions from: %i[draft], to: :awaiting_2i
       end
-      event :delete do
+      event :delete, success: lambda { |edition|
+        DeleteEditionService.new.call(edition)
+      } do
         transitions from: %i[draft awaiting_2i scheduled], to: :deleted
       end
     end
