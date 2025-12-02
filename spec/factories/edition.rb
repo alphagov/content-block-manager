@@ -32,10 +32,29 @@ FactoryBot.define do
       end
     end
 
-    Edition.available_states.each do |state|
-      trait state.to_sym do
-        state { state }
-      end
+    trait :draft do
+      state { :draft }
+    end
+
+    trait :published do
+      state { :published }
+    end
+
+    trait :scheduled do
+      state { :scheduled }
+      scheduled_publication { Time.zone.now.utc }
+    end
+
+    trait :superseded do
+      state { :superseded }
+    end
+
+    trait :deleted do
+      state { :deleted }
+    end
+
+    trait :awaiting_2i do
+      state { :awaiting_2i }
     end
   end
 end

@@ -18,14 +18,14 @@ class Edition < ApplicationRecord
   scope :published, -> { where(state: "published") }
 
   scope :most_recent_for_document, lambda {
-    where(updated_at: Edition.select("MAX(updated_at)").group(:document_id))
+    where(updated_at: Edition.active.select("MAX(updated_at)").group(:document_id))
   }
 
   scope :most_recent_first, lambda {
     order(updated_at: :desc)
   }
 
-  scope :active, -> { where.not(state: %w[superseded deleted]) }
+  scope :active, -> { where.not(state: Edition.inactive_states) }
 
   def self.most_recent
     most_recent_first.first

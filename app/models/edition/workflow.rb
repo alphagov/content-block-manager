@@ -11,6 +11,16 @@ module Edition::Workflow
   included do
     include ActiveRecord::Transitions
 
+    class << self
+      def active_states
+        Edition.available_states - inactive_states
+      end
+
+      def inactive_states
+        %i[superseded deleted]
+      end
+    end
+
     date_attributes :scheduled_publication
 
     validates_with ScheduledPublicationValidator, if: -> { validation_context == :scheduling || state == "scheduled" }

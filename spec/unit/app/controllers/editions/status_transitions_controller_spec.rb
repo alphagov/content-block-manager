@@ -37,10 +37,14 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
       end
 
       context "when the transition succeeds" do
-        it "redirects to the show page" do
+        it "redirects to the correct page" do
           post :create, params: { id: 123, transition: transition }
 
-          expect(response).to redirect_to(document_path(edition.document))
+          if transition == :delete
+            expect(response).to redirect_to(root_path)
+          else
+            expect(response).to redirect_to(document_path(edition.document))
+          end
         end
 
         it "shows a success message" do

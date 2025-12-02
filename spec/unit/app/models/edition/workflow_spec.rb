@@ -114,4 +114,16 @@ RSpec.describe Edition::Workflow, type: :model do
       edition.valid?(:scheduling)
     end
   end
+
+  describe ".active_states" do
+    it "returns all the active states" do
+      expect(Edition.active_states).to eq(%i[draft published scheduled awaiting_2i])
+    end
+  end
+
+  describe ".inactive_states" do
+    it "returns all the inactive states" do
+      expect(Edition.inactive_states).to eq(%i[superseded deleted])
+    end
+  end
 end
