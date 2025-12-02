@@ -25,7 +25,7 @@ class Edition < ApplicationRecord
     order(updated_at: :desc)
   }
 
-  scope :active, -> { where.not(state: %w[superseded deleted]) }
+  scope :active, -> { where.not(state: Edition.inactive_states) }
 
   def self.most_recent
     most_recent_first.first
