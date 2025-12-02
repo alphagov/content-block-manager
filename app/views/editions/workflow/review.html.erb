@@ -88,7 +88,7 @@
       <div class="govuk-button-group govuk-!-margin-bottom-6">
         <div>
           <% if pre_release_features? %>
-            <%= render Shared::TransitionButtonComponent.new(edition: @edition, transition: :ready_for_2i) %>
+            <%= render Shared::TransitionButtonComponent.new(edition: @edition, transition: :ready_for_review) %>
           <% else %>
             <%= render "govuk_publishing_components/components/button", {
               text: button_text_submit_for(@edition),

@@ -67,7 +67,7 @@ RSpec.describe Edition::Workflow, type: :model do
 
     it "transitions into the awaiting_review state when marking as ready for 2i" do
       edition = create(:edition, document: create(:document, block_type: "pension"))
-      edition.ready_for_2i!
+      edition.ready_for_review!
       assert edition.awaiting_review?
     end
 

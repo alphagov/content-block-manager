@@ -40,7 +40,7 @@ Feature: Editor sends edition to 2i
     And I see the transition to the awaiting_review state in the timeline
     And the calls to action are suited to the awaiting_review state
 
-  Scenario: Attempt to make an invalid transition to 'ready_for_2i'
+  Scenario: Attempt to make an invalid transition to 'ready_for_review'
     When I visit the Content Block Manager home page
     And I click to view the document
     Then I see that the edition is in draft state

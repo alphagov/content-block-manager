@@ -31,7 +31,7 @@ Then(/I see an alert that the transition failed to transition to ([^"]*)/) do |s
   raise "Only the 'awaiting_review' state is supported currently" unless state == "awaiting_review"
 
   message = "Error: we can not change the status of this edition."
-  error_details = "Can't fire event `ready_for_2i` in current state `awaiting_review`"
+  error_details = "Can't fire event `ready_for_review` in current state `awaiting_review`"
 
   within(".gem-c-error-alert__message") do
     expect(page).to have_content(message)

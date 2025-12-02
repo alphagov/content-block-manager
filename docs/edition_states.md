@@ -11,7 +11,7 @@ stateDiagram-v2
     awaiting_factcheck --> deleted: delete
     scheduled --> deleted: delete
 
-    draft --> awaiting_review: ready_for_2i
+    draft --> awaiting_review: ready_for_review
     awaiting_review --> awaiting_factcheck: ready_for_factcheck
     awaiting_factcheck --> scheduled: schedule
 
@@ -68,7 +68,7 @@ Document should become the most recent non-deleted Edition in the document, if o
 
 ## Transitions
 
-### ready_for_2i
+### ready_for_review
 
 Mark an Edition as ready for 2i Review.
 

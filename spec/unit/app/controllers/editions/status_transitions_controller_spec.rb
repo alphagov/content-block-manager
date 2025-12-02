@@ -5,7 +5,7 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
   let(:edition) { build(:edition, document: create(:document)) }
   let(:transition_state_outcome) do
     {
-      ready_for_2i: "awaiting_review",
+      ready_for_review: "awaiting_review",
       publish: "published",
       schedule: "scheduled",
       delete: "deleted",
@@ -68,16 +68,16 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
       end
 
       it "redirects to the show page" do
-        post :create, params: { id: 123, transition: :ready_for_2i }
+        post :create, params: { id: 123, transition: :ready_for_review }
 
         expect(response).to redirect_to(document_path(456))
       end
 
       it "shows a failure message with the transition error" do
         expected_failure_message = "Error: we can not change the status of this edition. " \
-          "Can't fire event `ready_for_2i` in current state `awaiting_review` for `Edition` with ID 123 "
+          "Can't fire event `ready_for_review` in current state `awaiting_review` for `Edition` with ID 123 "
 
-        post :create, params: { id: 123, transition: :ready_for_2i }
+        post :create, params: { id: 123, transition: :ready_for_review }
 
         expect(flash.alert).to eq(expected_failure_message)
       end

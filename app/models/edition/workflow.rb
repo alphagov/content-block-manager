@@ -42,7 +42,7 @@ module Edition::Workflow
       event :supersede do
         transitions from: %i[scheduled], to: :superseded
       end
-      event :ready_for_2i do
+      event :ready_for_review do
         transitions from: %i[draft], to: :awaiting_review
       end
       event :delete, success: lambda { |edition|
