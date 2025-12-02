@@ -28,10 +28,10 @@ Then(/I see a notification that the transition to ([^"]*) was successful/) do |s
 end
 
 Then(/I see an alert that the transition failed to transition to ([^"]*)/) do |state|
-  raise "Only the 'awaiting_2i' state is supported currently" unless state == "awaiting_2i"
+  raise "Only the 'awaiting_review' state is supported currently" unless state == "awaiting_review"
 
   message = "Error: we can not change the status of this edition."
-  error_details = "Can't fire event `ready_for_2i` in current state `awaiting_2i`"
+  error_details = "Can't fire event `ready_for_2i` in current state `awaiting_review`"
 
   within(".gem-c-error-alert__message") do
     expect(page).to have_content(message)
@@ -40,7 +40,7 @@ Then(/I see an alert that the transition failed to transition to ([^"]*)/) do |s
 end
 
 Then(/the calls to action are suited to the ([^"]*) state/) do |state|
-  raise "Only the 'awaiting_2i' state is supported currently" unless state == "awaiting_2i"
+  raise "Only the 'awaiting_review' state is supported currently" unless state == "awaiting_review"
 
   within ".actions" do
     expect(page).to have_link("Edit pension")

@@ -25,7 +25,7 @@ RSpec.describe Shared::DocumentStatusTagComponent, type: :component do
   describe "#colour" do
     expected_colours = {
       draft: "yellow",
-      awaiting_2i: "turquoise",
+      awaiting_review: "turquoise",
       scheduled: "light-blue",
       published: "green",
       superseded: "orange",
@@ -55,7 +55,7 @@ RSpec.describe Shared::DocumentStatusTagComponent, type: :component do
   describe "applies Design System colour styling successfully to govuk-tag" do
     expected_colours = {
       draft: "yellow",
-      awaiting_2i: "turquoise",
+      awaiting_review: "turquoise",
       scheduled: "light-blue",
       published: "green",
       superseded: "orange",

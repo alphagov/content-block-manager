@@ -5,7 +5,7 @@ RSpec.describe Shared::DocumentFullStatusComponent, type: :component do
 
   before do
     allow(edition).to receive(:updated_at).and_return(Time.zone.at(0))
-    allow(edition).to receive(:state).and_return("awaiting_2i")
+    allow(edition).to receive(:state).and_return("awaiting_review")
     allow(edition).to receive(:creator).and_return(dave)
     render_inline(component)
   end

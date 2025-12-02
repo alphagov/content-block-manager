@@ -565,7 +565,7 @@ RSpec.describe Edition, type: :model do
 
   describe "#is_deletable?" do
     it "should return true if the edition is not published" do
-      %i[draft awaiting_2i scheduled].each do |state|
+      %i[draft awaiting_review scheduled].each do |state|
         edition.state = state
         expect(edition.is_deletable?).to be true
       end

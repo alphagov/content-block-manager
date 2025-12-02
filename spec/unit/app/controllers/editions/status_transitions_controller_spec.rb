@@ -5,7 +5,7 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
   let(:edition) { build(:edition, document: create(:document)) }
   let(:transition_state_outcome) do
     {
-      ready_for_2i: "awaiting_2i",
+      ready_for_2i: "awaiting_review",
       publish: "published",
       schedule: "scheduled",
       delete: "deleted",
@@ -60,7 +60,7 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
     context "when the transition is invalid" do
       let(:edition_invalid_for_transition) do
         document = create(:document, id: 456)
-        create(:edition, state: "awaiting_2i", id: 123, document: document)
+        create(:edition, state: "awaiting_review", id: 123, document: document)
       end
 
       before do
@@ -75,7 +75,7 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
 
       it "shows a failure message with the transition error" do
         expected_failure_message = "Error: we can not change the status of this edition. " \
-          "Can't fire event `ready_for_2i` in current state `awaiting_2i` for `Edition` with ID 123 "
+          "Can't fire event `ready_for_2i` in current state `awaiting_review` for `Edition` with ID 123 "
 
         post :create, params: { id: 123, transition: :ready_for_2i }
 

@@ -148,14 +148,14 @@ en:
     states:
       label:
         draft: Draft
-        awaiting_2i: Awaiting 2i
+        awaiting_review: Awaiting 2i
         scheduled: Scheduled
         published: Published
         superseded: Superseded
         deleted: Deleted
       label_extended:
         draft: "Drafted on %{date} by %{user}"
-        awaiting_2i: "Sent for 2i review on %{date} by %{user}"
+        awaiting_review: "Sent for 2i review on %{date} by %{user}"
         scheduled: "Scheduled for publication at %{date}"
         published: "Published on %{date} by %{user}"
         superseded: "Superseded on %{date}"

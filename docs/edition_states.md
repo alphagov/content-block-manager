@@ -7,12 +7,12 @@ stateDiagram-v2
     [*] --> draft
 
     draft --> deleted: delete
-    awaiting_2i --> deleted: delete
+    awaiting_review --> deleted: delete
     awaiting_factcheck --> deleted: delete
     scheduled --> deleted: delete
 
-    draft --> awaiting_2i: ready_for_2i
-    awaiting_2i --> awaiting_factcheck: ready_for_factcheck
+    draft --> awaiting_review: ready_for_2i
+    awaiting_review --> awaiting_factcheck: ready_for_factcheck
     awaiting_factcheck --> scheduled: schedule
 
     scheduled --> superseded: supersede
@@ -37,7 +37,7 @@ a schedule for an Edition in the `draft` state but the state itself does not cha
 
 The default state for a new edition when created.
 
-### awaiting_2i
+### awaiting_review
 
 Once the author has completed their work, they can request that a 2i Review (second pair of eyes) be performed.
 

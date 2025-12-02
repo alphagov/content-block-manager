@@ -1,7 +1,7 @@
 Feature: Editor sends edition to 2i
   - So that I can get feedback from a 2nd pair of eyes before publishing
   - As an editor who has prepared a new (or first) edition of a block
-  - I want my edition to go into an `awaiting_2i` state after `draft` and en route
+  - I want my edition to go into an `awaiting_review` state after `draft` and en route
     to becoming ultimately `published`
 
   Background:
@@ -35,10 +35,10 @@ Feature: Editor sends edition to 2i
     # And I have a link to delete the edition
 
     When I opt to send the edition to 2i
-    Then I see a notification that the transition to awaiting_2i was successful
-    And I see that the edition is in awaiting_2i state
-    And I see the transition to the awaiting_2i state in the timeline
-    And the calls to action are suited to the awaiting_2i state
+    Then I see a notification that the transition to awaiting_review was successful
+    And I see that the edition is in awaiting_review state
+    And I see the transition to the awaiting_review state in the timeline
+    And the calls to action are suited to the awaiting_review state
 
   Scenario: Attempt to make an invalid transition to 'ready_for_2i'
     When I visit the Content Block Manager home page
@@ -46,9 +46,9 @@ Feature: Editor sends edition to 2i
     Then I see that the edition is in draft state
     And I see a principal call to action of 'Send to 2i'
 
-    Given the document has been put into the awaiting_2i state by another process
+    Given the document has been put into the awaiting_review state by another process
     And I opt to send the edition to 2i
-    Then I see an alert that the transition failed to transition to awaiting_2i
+    Then I see an alert that the transition failed to transition to awaiting_review
 
   Scenario: Send to 2i from review step in workflow
     When I visit the Content Block Manager home page
@@ -59,6 +59,6 @@ Feature: Editor sends edition to 2i
     Then I see a principal call to action of 'Send to 2i'
 
     When I opt to send the edition to 2i
-    Then I see a notification that the transition to awaiting_2i was successful
-    And I see that the edition is in awaiting_2i state
-    And the calls to action are suited to the awaiting_2i state
+    Then I see a notification that the transition to awaiting_review was successful
+    And I see that the edition is in awaiting_review state
+    And the calls to action are suited to the awaiting_review state

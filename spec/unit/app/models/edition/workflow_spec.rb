@@ -27,7 +27,7 @@ RSpec.describe Edition::Workflow, type: :model do
         end
       end
 
-      %i[draft awaiting_2i].each do |state|
+      %i[draft awaiting_review].each do |state|
         context "when in the in-progress state '#{state}'" do
           before { edition.state = state }
 
@@ -37,7 +37,7 @@ RSpec.describe Edition::Workflow, type: :model do
         end
       end
 
-      (Edition.available_states - %i[draft scheduled awaiting_2i]).each do |state|
+      (Edition.available_states - %i[draft scheduled awaiting_review]).each do |state|
         context "when in other state '#{state}'" do
           before { edition.state = state }
 
@@ -65,10 +65,10 @@ RSpec.describe Edition::Workflow, type: :model do
       expect(edition).to be_superseded
     end
 
-    it "transitions into the awaiting_2i state when marking as ready for 2i" do
+    it "transitions into the awaiting_review state when marking as ready for 2i" do
       edition = create(:edition, document: create(:document, block_type: "pension"))
       edition.ready_for_2i!
-      assert edition.awaiting_2i?
+      assert edition.awaiting_review?
     end
 
     it "transitions into the deleted state when marking as deleted" do

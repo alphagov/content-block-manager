@@ -78,7 +78,7 @@ RSpec.describe Document::Index::SummaryCardComponent, type: :component do
 
   describe "when the edition is awaiting 2i" do
     it "renders a summary block as awaiting 2i" do
-      edition.state = "awaiting_2i"
+      edition.state = "awaiting_review"
 
       render_inline(described_class.new(document:))
 

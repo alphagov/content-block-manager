@@ -30,11 +30,11 @@ module Edition::Workflow
       state :published
       state :scheduled
       state :superseded
-      state :awaiting_2i
+      state :awaiting_review
       state :deleted
 
       event :publish do
-        transitions from: %i[draft awaiting_2i scheduled], to: :published
+        transitions from: %i[draft awaiting_review scheduled], to: :published
       end
       event :schedule do
         transitions from: %i[draft], to: :scheduled
@@ -43,12 +43,12 @@ module Edition::Workflow
         transitions from: %i[scheduled], to: :superseded
       end
       event :ready_for_2i do
-        transitions from: %i[draft], to: :awaiting_2i
+        transitions from: %i[draft], to: :awaiting_review
       end
       event :delete, success: lambda { |edition|
         DeleteEditionService.new.call(edition)
       } do
-        transitions from: %i[draft awaiting_2i scheduled], to: :deleted
+        transitions from: %i[draft awaiting_review scheduled], to: :deleted
       end
     end
   end

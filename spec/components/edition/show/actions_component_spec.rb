@@ -2,7 +2,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
   let(:document) { FactoryBot.build(:document, :pension, id: 456) }
   let(:edition) { FactoryBot.build(:edition, :pension, document: document, id: 123) }
 
-  describe "Button to transition to 'awaiting_2i' state" do
+  describe "Button to transition to 'awaiting_review' state" do
     context "when the edition is in the 'draft' state" do
       before do
         edition.state = :draft
