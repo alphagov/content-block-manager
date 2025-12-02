@@ -21,7 +21,7 @@ Given("the document has been put into the awaiting_review state by another proce
   edition.update_column(:state, :awaiting_review)
 end
 
-When("I opt to send the edition to 2i") do
+When("I opt to send the edition to Review") do
   click_button "Send to 2i"
 end
 

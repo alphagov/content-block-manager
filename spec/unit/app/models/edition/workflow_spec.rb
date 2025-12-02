@@ -65,7 +65,7 @@ RSpec.describe Edition::Workflow, type: :model do
       expect(edition).to be_superseded
     end
 
-    it "transitions into the awaiting_review state when marking as ready for 2i" do
+    it "transitions into the awaiting_review state when marking as ready for Review" do
       edition = create(:edition, document: create(:document, block_type: "pension"))
       edition.ready_for_review!
       assert edition.awaiting_review?

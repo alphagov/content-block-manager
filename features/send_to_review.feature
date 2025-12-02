@@ -1,4 +1,4 @@
-Feature: Editor sends edition to 2i
+Feature: Editor sends edition to Review
   - So that I can get feedback from a 2nd pair of eyes before publishing
   - As an editor who has prepared a new (or first) edition of a block
   - I want my edition to go into an `awaiting_review` state after `draft` and en route
@@ -25,7 +25,7 @@ Feature: Editor sends edition to 2i
     """
     And a pension content block has been drafted
 
-  Scenario: Send to 2i from block show page
+  Scenario: Send to '2i' Review from block show page
     When I visit the Content Block Manager home page
     And I click to view the document
     Then I see that the edition is in draft state
@@ -34,7 +34,7 @@ Feature: Editor sends edition to 2i
     # And I have a link to published edition
     # And I have a link to delete the edition
 
-    When I opt to send the edition to 2i
+    When I opt to send the edition to Review
     Then I see a notification that the transition to awaiting_review was successful
     And I see that the edition is in awaiting_review state
     And I see the transition to the awaiting_review state in the timeline
@@ -47,10 +47,10 @@ Feature: Editor sends edition to 2i
     And I see a principal call to action of 'Send to 2i'
 
     Given the document has been put into the awaiting_review state by another process
-    And I opt to send the edition to 2i
+    And I opt to send the edition to Review
     Then I see an alert that the transition failed to transition to awaiting_review
 
-  Scenario: Send to 2i from review step in workflow
+  Scenario: Send to 2i Review from review step in workflow
     When I visit the Content Block Manager home page
     And I click to view the document
     Then I see that the edition is in draft state
@@ -58,7 +58,7 @@ Feature: Editor sends edition to 2i
     When I follow the workflow steps through to the final review step
     Then I see a principal call to action of 'Send to 2i'
 
-    When I opt to send the edition to 2i
+    When I opt to send the edition to Review
     Then I see a notification that the transition to awaiting_review was successful
     And I see that the edition is in awaiting_review state
     And the calls to action are suited to the awaiting_review state
