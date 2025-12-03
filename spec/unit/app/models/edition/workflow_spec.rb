@@ -152,4 +152,26 @@ RSpec.describe Edition::Workflow, type: :model do
       edition.valid?(:scheduling)
     end
   end
+
+  # Using Edition.available_states here to ensure that any new states added in the future are included automatically
+  # and these tests will fail, forcing the user to decide whether the new state is in-progress or not.
+  describe "#in_progress" do
+    (Edition.available_states - %i[superseded published deleted]).each do |state|
+      context "when the edition is in an in-progress state (#{state})" do
+        it "returns true" do
+          edition = build(:edition, state: state)
+          expect(edition.in_progress?).to be(true)
+        end
+      end
+    end
+
+    (Edition.available_states - %i[draft awaiting_review awaiting_factcheck scheduled]).each do |state|
+      context "when the edition is NOT in an in-progress state (#{state})" do
+        it "returns true" do
+          edition = build(:edition, state: state)
+          expect(edition.in_progress?).to be(false)
+        end
+      end
+    end
+  end
 end
