@@ -50,6 +50,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_02_172626) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "lead_organisation_id"
+    t.string "auth_bypass_id"
     t.boolean "review_skipped"
     t.integer "review_outcome_recorded_by"
     t.datetime "review_outcome_recorded_at"
