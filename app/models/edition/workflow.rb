@@ -4,12 +4,6 @@ module Edition::Workflow
 
   class ReviewOutcomeMissingError < RuntimeError; end
 
-  class_methods do
-    def valid_state?(state)
-      edition.available_states.include?(state)
-    end
-  end
-
   included do
     include ActiveRecord::Transitions
 
