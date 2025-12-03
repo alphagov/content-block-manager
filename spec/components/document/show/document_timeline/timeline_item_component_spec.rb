@@ -342,9 +342,9 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
       render_inline component
     end
 
-    it "sets the #title to be 'Pension awaiting_review" do
+    it "sets the #title to be 'Sent to review" do
       expect(page).to have_css(".timeline__title") do
-        expect(page).to have_content("Pension awaiting_review")
+        expect(page).to have_content("Sent to review")
       end
     end
   end

@@ -24,6 +24,8 @@ end
 
 Then(/I see the transition to the ([^"]*) state in the timeline/) do |state|
   timeline_title = case state
+                   when "awaiting_review"
+                     "Sent to review"
                    when "awaiting_factcheck"
                      "Sent to factcheck"
                    else
