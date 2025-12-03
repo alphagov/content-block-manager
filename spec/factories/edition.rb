@@ -22,6 +22,8 @@ FactoryBot.define do
 
     major_change { true }
 
+    auth_bypass_id { SecureRandom.uuid }
+
     Schema.valid_schemas.each do |type|
       trait type.to_sym do
         after(:build) do |edition, _evaluator|

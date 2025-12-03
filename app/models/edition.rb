@@ -6,6 +6,7 @@ class Edition < ApplicationRecord
   include Cloneable
   include Documentable
   include HasAuditTrail
+  include HasAuthBypassToken
   include HasAuthors
   include ValidatesDetails
   include HasLeadOrganisation
