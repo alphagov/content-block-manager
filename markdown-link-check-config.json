@@ -2,6 +2,9 @@
   "ignorePatterns": [
     {
       "pattern": "^https?://content-block-manager.dev.gov.uk"
+    },
+    {
+      "pattern": "^https?://localhost"
     }
   ]
 }
