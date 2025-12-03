@@ -37,6 +37,7 @@ Feature: Editor sends edition to factcheck, recording Review outcome
 
     And I see that the edition is in awaiting_factcheck state
     And I see the transition to the awaiting_factcheck state in the timeline
+    And I see the details of the review outcome in the timeline
     And the calls to action are suited to the awaiting_factcheck state
 
   Scenario: Attempt to send to factcheck without supplying review outcome

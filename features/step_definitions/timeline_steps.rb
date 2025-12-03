@@ -37,6 +37,13 @@ Then(/I see the transition to the ([^"]*) state in the timeline/) do |state|
   end
 end
 
+Then("I see the details of the review outcome in the timeline") do
+  skipped_or_performed = edition.reload.review_skipped ? "skipped" : "performed"
+  within ".timeline__item:first" do
+    expect(page).to have_content("2i review #{skipped_or_performed}")
+  end
+end
+
 And("I should see the edition diff in a table") do
   expect(page).to have_selector(".govuk-table__cell", text: "Changed title")
   expect(page).to have_selector(".govuk-table__cell", text: @content_block.document.title)

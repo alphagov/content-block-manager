@@ -21,6 +21,14 @@
       <%= date %>
   </p>
 
+  <% if version.state == "awaiting_factcheck" %>
+    <div class="timeline__review-outcome">
+      <p class="govuk-body">
+        <%= review_outcome %>
+      </p>
+    </div>
+  <% end %>
+
   <% if show_details_of_changes? %>
     <div class="timeline__diff-table">
       <% details = details_of_changes %>

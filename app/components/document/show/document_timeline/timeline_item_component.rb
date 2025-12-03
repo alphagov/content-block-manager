@@ -30,6 +30,13 @@ private
     end
   end
 
+  def review_outcome
+    return unless version.state == "awaiting_factcheck"
+
+    skipped_or_performed = version.item.review_skipped ? "skipped" : "performed"
+    "2i review #{skipped_or_performed}"
+  end
+
   def updated_subschema_id
     version.updated_embedded_object_type
   end
