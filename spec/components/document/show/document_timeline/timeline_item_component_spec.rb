@@ -335,4 +335,17 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
       expect(page).to have_css "summary", text: "Details of changes"
     end
   end
+
+  context "when version has the 'awaiting_factcheck' state" do
+    before do
+      version.state = "awaiting_factcheck"
+      render_inline component
+    end
+
+    it "sets the #title to be 'Pension awaiting_factcheck'" do
+      expect(page).to have_css(".timeline__title") do
+        expect(page).to have_content("Pension awaiting_factcheck")
+      end
+    end
+  end
 end
