@@ -133,7 +133,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
   end
 
   describe "link to delete the edition" do
-    (Edition.new.available_states - %i[published superseded deleted]).each do |state|
+    Edition.in_progress_states.each do |state|
       it "should appear for 'in-progress' editions" do
         edition.state = state
         component = described_class.new(edition: edition)
@@ -144,7 +144,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
       end
     end
 
-    %i[published superseded deleted].each do |state|
+    Edition.finalised_states.each do |state|
       it "should NOT appear for editions which can't be deleted" do
         edition.state = state
         component = described_class.new(edition: edition)

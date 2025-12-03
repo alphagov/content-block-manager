@@ -27,7 +27,7 @@ RSpec.describe Edition::Workflow, type: :model do
         end
       end
 
-      %i[draft awaiting_review awaiting_factcheck].each do |state|
+      Edition.in_progress_states.each do |state|
         context "when in the in-progress state '#{state}'" do
           before { edition.state = state }
 
@@ -37,8 +37,8 @@ RSpec.describe Edition::Workflow, type: :model do
         end
       end
 
-      (Edition.available_states - %i[draft scheduled awaiting_review awaiting_factcheck]).each do |state|
-        context "when in other state '#{state}'" do
+      Edition.finalised_states.each do |state|
+        context "when in finalised state '#{state}'" do
           before { edition.state = state }
 
           it "does NOT allow the #publish! transition" do
