@@ -16,6 +16,8 @@ class Edition::WorkflowCompletion
       schedule
     when "save_as_draft"
       save_as_draft
+    when "send_to_review"
+      send_to_review
     else
       raise UnhandledSaveActionError, "Unknown save action: '#{@save_action}'"
     end
@@ -41,5 +43,16 @@ private
     # No action needed here as we don't publish drafts to the Publishing API. Just redirect.
     { path: document_path(@edition.document),
       flash: { notice: I18n.t("edition.confirmation_page.drafted.banner") } }
+  end
+
+  def send_to_review
+    @edition.ready_for_review!
+
+    state_label = I18n.t("edition.states.label.awaiting_review")
+    { path: document_path(@edition.document),
+      flash: { notice: "Edition has been moved into state '#{state_label}'" } }
+  rescue Transitions::InvalidTransition => e
+    { path: document_path(@edition.document),
+      flash: { error: e.message } }
   end
 end

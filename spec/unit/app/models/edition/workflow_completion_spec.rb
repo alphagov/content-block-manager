@@ -98,4 +98,64 @@ RSpec.describe Edition::WorkflowCompletion do
       end
     end
   end
+
+  describe "when the save_action is 'send_to_review'" do
+    it "attempts to transition the edition with Edition#ready_for_review!" do
+      allow(edition).to receive(:ready_for_review!).and_return(true)
+
+      described_class.new(edition, "send_to_review").call
+
+      expect(edition).to have_received(:ready_for_review!)
+    end
+
+    context "when the transition Edition#ready_for_review! is valid" do
+      before { allow(edition).to receive(:ready_for_review!).and_return(true) }
+
+      it "returns :path -> document" do
+        return_value = described_class.new(edition, "send_to_review").call
+
+        expect(return_value.fetch(:path)).to eq("/567")
+      end
+
+      it "returns :flash -> notice of success" do
+        return_value = described_class.new(edition, "send_to_review").call
+
+        expect(return_value.fetch(:flash)).to eq(
+          {
+            notice: "Edition has been moved into state 'Awaiting 2i'",
+          },
+        )
+      end
+    end
+
+    context "when the transition Edition#ready_for_review! is NOT valid" do
+      let(:error_message) do
+        "Can't fire event `ready_for_review` in current state `published` " \
+          "for `Edition` with ID 123  (Transitions::InvalidTransition)"
+      end
+
+      before do
+        allow(edition).to receive(:ready_for_review!).and_raise(
+          Transitions::InvalidTransition,
+          error_message,
+        )
+      end
+
+      it "returns :path -> document" do
+        return_value = described_class.new(edition, "send_to_review").call
+
+        expect(return_value.fetch(:path)).to eq("/567")
+      end
+
+      it "returns :flash -> error message" do
+        return_value = described_class.new(edition, "send_to_review").call
+
+        expect(return_value.fetch(:flash)).to eq(
+          {
+            error: error_message,
+          },
+        )
+      end
+    end
+  end
 end
