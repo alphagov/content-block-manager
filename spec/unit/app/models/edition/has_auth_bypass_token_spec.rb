@@ -25,13 +25,20 @@ RSpec.describe Edition::HasAuthBypassToken do
           "sub" => edition.auth_bypass_id,
           "content_id" => edition.content_id,
           "iat" => Time.zone.now.to_i,
-          "exp" => 1.month.from_now.to_i,
+          "exp" => edition.bypass_token_expiry_date.to_i,
         },
         secret,
         "HS256",
       ).and_return("token")
 
       expect(edition.auth_bypass_token).to eq("token")
+    end
+  end
+
+  describe "#bypass_token_expiry_date" do
+    it "returns the expiry date of the token" do
+      edition = build(:edition)
+      expect(edition.bypass_token_expiry_date).to eq(1.month.from_now)
     end
   end
 end
