@@ -21,9 +21,20 @@ private
       is_first_published_version ? "#{version.item.block_type.humanize} created" : version.state.capitalize
     elsif version.state == "scheduled"
       "Scheduled for publishing on #{version.item.scheduled_publication.to_fs(:long_ordinal_with_at)}"
+    elsif version.state == "awaiting_review"
+      "Sent to review"
+    elsif version.state == "awaiting_factcheck"
+      "Sent to factcheck"
     else
       "#{version.item.block_type.humanize} #{version.state}"
     end
+  end
+
+  def review_outcome
+    return unless version.state == "awaiting_factcheck"
+
+    skipped_or_performed = version.item.review_skipped ? "skipped" : "performed"
+    "2i review #{skipped_or_performed}"
   end
 
   def updated_subschema_id

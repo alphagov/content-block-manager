@@ -335,4 +335,59 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
       expect(page).to have_css "summary", text: "Details of changes"
     end
   end
+
+  context "when version has the 'awaiting_review' state" do
+    before do
+      version.state = "awaiting_review"
+      render_inline component
+    end
+
+    it "sets the #title to be 'Sent to review" do
+      expect(page).to have_css(".timeline__title") do
+        expect(page).to have_content("Sent to review")
+      end
+    end
+  end
+
+  context "when version has the 'awaiting_factcheck' state" do
+    before do
+      version.state = "awaiting_factcheck"
+    end
+
+    it "sets the #title to be 'Sent to factcheck'" do
+      render_inline component
+
+      expect(page).to have_css(".timeline__title") do
+        expect(page).to have_content("Sent to factcheck")
+      end
+    end
+
+    context "and its edition indicates that the review was performed" do
+      before do
+        edition.review_skipped = false
+      end
+
+      it "shows the review outcome" do
+        render_inline component
+
+        expect(page).to have_css(".timeline__review-outcome") do
+          expect(page).to have_content("2i review performed")
+        end
+      end
+    end
+
+    context "and its edition indicates that the review was skipped" do
+      before do
+        edition.review_skipped = true
+      end
+
+      it "shows the review outcome" do
+        render_inline component
+
+        expect(page).to have_css(".timeline__review-outcome") do
+          expect(page).to have_content("2i review skipped")
+        end
+      end
+    end
+  end
 end
