@@ -563,6 +563,24 @@ RSpec.describe Edition, type: :model do
     end
   end
 
+  describe "#completed?" do
+    context "when #workflow_completed_at is nil" do
+      before { edition.workflow_completed_at = nil }
+
+      it "returns false" do
+        expect(edition.completed?).to be false
+      end
+    end
+
+    context "when #workflow_completed_at is set" do
+      before { edition.workflow_completed_at = 1.hour.ago }
+
+      it "returns false" do
+        expect(edition.completed?).to be true
+      end
+    end
+  end
+
   describe "#is_deletable?" do
     it "should return true if the edition is not published" do
       Edition.in_progress_states.each do |state|

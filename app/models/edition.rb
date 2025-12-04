@@ -32,6 +32,10 @@ class Edition < ApplicationRecord
     most_recent_first.first
   end
 
+  def completed?
+    workflow_completed_at.present?
+  end
+
   def render(embed_code = document.embed_code)
     ContentBlockTools::ContentBlock.new(
       document_type: "content_block_#{block_type}",
