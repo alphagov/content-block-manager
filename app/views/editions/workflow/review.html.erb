@@ -66,12 +66,12 @@
             **form_data_attributes,
             ) do %>
         <%= render "govuk_publishing_components/components/checkboxes", {
-          name: "is_confirmed",
-          id: "is_confirmed",
+          name: "has_checked_content",
+          id: "has_checked_content",
           heading: "Confirm",
           visually_hide_heading: true,
           no_hint_text: true,
-          error: @confirm_error_copy,
+          error: @check_content_error_copy,
           items: [
             {
               label: "I confirm that the details I’ve put into the content block have been checked and are factually correct.",

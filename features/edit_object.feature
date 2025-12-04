@@ -50,7 +50,7 @@ Feature: Edit a content object
     And there should be no accessibility errors
     Then I should see a button labelled "Publish"
     And I should not see a preview button
-    When I review and confirm my answers are correct
+    When I review and confirm I have checked the content
     Then I should be taken to the confirmation page for a published block
     And there should be no accessibility errors
     When I click to view the content block
@@ -114,7 +114,7 @@ Feature: Edit a content object
     And I add an internal note
     And I add a change note
     And I choose to publish the change now
-    When I review and confirm my answers are correct
+    When I review and confirm I have checked the content
     Then I should be taken to the confirmation page for a published block
     When I click to view the content block
     Then the edition should have been updated successfully

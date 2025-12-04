@@ -25,7 +25,7 @@ Feature: Schedule a content object
     When I click to view the content block
     And I click to edit the schedule
     And I choose to publish the change now
-    When I review and confirm my answers are correct
+    When I review and confirm I have checked the content
     When I click to view the content block
     Then the published state of the object should be shown
     And there should be no jobs scheduled
@@ -36,7 +36,7 @@ Feature: Schedule a content object
     When I click to view the content block
     And I click to edit the schedule
     And I schedule the change for 5 days in the future
-    When I review and confirm my answers are correct
+    When I review and confirm I have checked the content
     When I click to view the content block
     Then I should see the scheduled date in the object's change history
     And there should only be one job scheduled

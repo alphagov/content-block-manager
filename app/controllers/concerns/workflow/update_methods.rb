@@ -48,9 +48,9 @@ module Workflow::UpdateMethods
   end
 
   def complete_workflow
-    if params[:is_confirmed].blank?
-      @confirm_error_copy = I18n.t("edition.review_page.errors.confirm")
-      @error_summary_errors = [{ text: @confirm_error_copy, href: "#is_confirmed-0" }]
+    if params[:has_checked_content].blank?
+      @check_content_error_copy = I18n.t("edition.review_page.errors.confirm")
+      @error_summary_errors = [{ text: @check_content_error_copy, href: "#has_checked_content-0" }]
       render :review, status: :unprocessable_content
     else
       action = Edition::WorkflowCompletion.new(@edition, params[:save_action]).call

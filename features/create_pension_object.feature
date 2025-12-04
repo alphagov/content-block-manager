@@ -59,7 +59,7 @@ Feature: Create a content object
     Then I am asked to review my answers for a "pension"
     And I should see a button labelled "Create"
     And I should not see a preview button
-    And I review and confirm my answers are correct
+    And I review and confirm I have checked the content
     Then the edition should have been created successfully
     And I should be taken to the confirmation page for a new "pension"
 
@@ -85,7 +85,7 @@ Feature: Create a content object
     Then I should be on the "add_embedded_rates" step
     When I save and continue
     Then there should be no accessibility errors
-    And I review and confirm my answers are correct
+    And I review and confirm I have checked the content
     Then I should be taken to the confirmation page for a new "pension"
     And analytics messages should have been sent for each step in the workflow
     And analytics messages should have been sent for each embedded object

@@ -38,7 +38,7 @@ Feature: Drafting a content block
     Then I should see the draft document
 
   Scenario: GDS editor saves their edition as a draft
-    When I confirm my answers are correct
+    When I confirm I have checked the content
     And I save a draft
     Then I should be taken back to the document page
     And the draft state of the object should be shown

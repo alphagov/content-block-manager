@@ -79,13 +79,13 @@ RSpec.describe "Workflow", type: :request do
       describe "#update" do
         it "posts the new edition to the Publishing API and marks edition as published" do
           assert_edition_is_published do
-            put workflow_path(id: edition.id, step:, is_confirmed: true, save_action: "publish")
+            put workflow_path(id: edition.id, step:, has_checked_content: true, save_action: "publish")
           end
         end
       end
     end
 
-    describe "when the edition details have not been confirmed" do
+    describe "when the edition details have not been checked" do
       let(:step) { :review }
 
       describe "#update" do

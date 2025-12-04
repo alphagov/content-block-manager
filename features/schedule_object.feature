@@ -23,7 +23,7 @@ Feature: Schedule a content object
   Scenario: GDS Editor schedules a content object
     When I am updating a content block
     And I schedule the change for 7 days in the future
-    When I review and confirm my answers are correct
+    When I review and confirm I have checked the content
     And I should be taken to the scheduled confirmation page
     When I click to view the content block
     And I should see the scheduled date on the object
@@ -37,14 +37,14 @@ Feature: Schedule a content object
     Given I have scheduled a change for 7 days in the future
     When I am updating a content block
     And I choose to publish the change now
-    When I review and confirm my answers are correct
+    When I review and confirm I have checked the content
     Then there should be no jobs scheduled
 
   Scenario: A scheduled content object is published
     When I am updating a content block
     When I choose to schedule the change
     And the block is scheduled and published
-    When I review and confirm my answers are correct
+    When I review and confirm I have checked the content
     Then the published state of the object should be shown
     And I should see the publish event on the timeline
 
