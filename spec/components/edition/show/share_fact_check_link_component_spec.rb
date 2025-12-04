@@ -14,6 +14,20 @@ RSpec.describe Edition::Show::ShareFactCheckLinkComponent, type: :component do
         text.within("div[data-module='copy-to-clipboard']") do |copy_module|
           expect(copy_module).to have_css("input[value='#{fact_check_url_with_token(edition)}']")
         end
+
+        text.within("form[action=#{update_fact_check_preview_link_edition_path(edition)}]") do
+          expect(page).to have_css("button[type='submit']", text: "Reset preview link")
+        end
+      end
+    end
+  end
+
+  it "renders a form to update the preview link" do
+    render_inline(described_class.new(edition: edition))
+
+    within(".govuk-details__text") do |text|
+      text.within("form[action=#{update_fact_check_preview_link_edition_path(edition)}]") do
+        expect(page).to have_css("button[type='submit']", text: "Reset preview link")
       end
     end
   end

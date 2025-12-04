@@ -29,3 +29,11 @@ Feature: Editor can use a fact check link to allow non-signon users to access a 
     When I click to copy the link
     Then the link should be copied to my clipboard
 
+  @javascript
+  Scenario: Editor can regenerate a fact check link
+    When I visit the Content Block Manager home page
+    And I click to view the document
+    And I click to share the fact check link
+    Then I should see a link to share the block for factcheck
+    When I click to reset the preview link
+    Then a new preview link should be generated
