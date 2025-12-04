@@ -40,12 +40,14 @@
 
 <% if @edition.awaiting_factcheck? %>
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-      <%= render(
-        Edition::Show::ShareFactCheckLinkComponent.new(
-          edition: @edition,
-        ),
-      ) %>
+    <div class="govuk-grid-column-full" data-turbo="true">
+      <%= turbo_frame_tag "share_fact_check_link_#{@edition.id}" do %>
+        <%= render(
+              Edition::Show::ShareFactCheckLinkComponent.new(
+                edition: @edition,
+                ),
+              ) %>
+      <% end %>
     </div>
   </div>
 <% end %>
