@@ -38,6 +38,18 @@
   </div>
 </div>
 
+<% if @edition.awaiting_factcheck? %>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <%= render(
+        Edition::Show::ShareFactCheckLinkComponent.new(
+          edition: @edition,
+        ),
+      ) %>
+    </div>
+  </div>
+<% end %>
+
 <%=
   render(
     Document::Show::HostEditionsRollupComponent.new(
