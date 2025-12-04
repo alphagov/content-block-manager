@@ -1,0 +1,8 @@
+<%= turbo_stream.update "share_fact_check_link_#{@edition.id}" do %>
+  <%= render(
+    Edition::Show::ShareFactCheckLinkComponent.new(
+      edition: @edition,
+      open: true,
+      ),
+    ) %>
+<% end %>
