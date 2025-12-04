@@ -31,4 +31,22 @@ RSpec.describe Edition::Show::ShareFactCheckLinkComponent, type: :component do
       end
     end
   end
+
+  it "does not render the details component as open by default" do
+    render_inline(described_class.new(edition: edition))
+
+    expect(page).not_to have_css(".govuk-details[open]")
+  end
+
+  context "when open is set to true" do
+    before do
+      render_inline(described_class.new(edition: edition, open: true))
+    end
+
+    it "renders the details component as open" do
+      render_inline(described_class.new(edition: edition))
+
+      expect(page).not_to have_css(".govuk-details[open]")
+    end
+  end
 end
