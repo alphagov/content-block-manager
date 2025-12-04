@@ -27,7 +27,7 @@ RSpec.describe Edition::Workflow, type: :model do
         end
       end
 
-      %i[draft awaiting_review awaiting_factcheck].each do |state|
+      Edition.in_progress_states.each do |state|
         context "when in the in-progress state '#{state}'" do
           before { edition.state = state }
 
@@ -37,8 +37,8 @@ RSpec.describe Edition::Workflow, type: :model do
         end
       end
 
-      (Edition.available_states - %i[draft scheduled awaiting_review awaiting_factcheck]).each do |state|
-        context "when in other state '#{state}'" do
+      Edition.finalised_states.each do |state|
+        context "when in finalised state '#{state}'" do
           before { edition.state = state }
 
           it "does NOT allow the #publish! transition" do
@@ -150,6 +150,28 @@ RSpec.describe Edition::Workflow, type: :model do
 
       edition.state = "draft"
       edition.valid?(:scheduling)
+    end
+  end
+
+  # Using Edition.available_states here to ensure that any new states added in the future are included automatically
+  # and these tests will fail, forcing the user to decide whether the new state is in-progress or not.
+  describe "#in_progress" do
+    (Edition.available_states - %i[superseded published deleted]).each do |state|
+      context "when the edition is in an in-progress state (#{state})" do
+        it "returns true" do
+          edition = build(:edition, state: state)
+          expect(edition.in_progress?).to be(true)
+        end
+      end
+    end
+
+    (Edition.available_states - %i[draft awaiting_review awaiting_factcheck scheduled]).each do |state|
+      context "when the edition is NOT in an in-progress state (#{state})" do
+        it "returns true" do
+          edition = build(:edition, state: state)
+          expect(edition.in_progress?).to be(false)
+        end
+      end
     end
   end
 end

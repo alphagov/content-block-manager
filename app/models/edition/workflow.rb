@@ -4,22 +4,24 @@ module Edition::Workflow
 
   class ReviewOutcomeMissingError < RuntimeError; end
 
-  class_methods do
-    def valid_state?(state)
-      edition.available_states.include?(state)
-    end
-  end
-
   included do
     include ActiveRecord::Transitions
 
     class << self
       def active_states
-        Edition.available_states - inactive_states
+        available_states - inactive_states
       end
 
       def inactive_states
         %i[superseded deleted]
+      end
+
+      def in_progress_states
+        available_states - finalised_states
+      end
+
+      def finalised_states
+        %i[published superseded deleted]
       end
     end
 
@@ -64,6 +66,10 @@ module Edition::Workflow
       error_message = "Edition #{id} does not have a 2i Review outcome recorded and so " \
         "can't transition into the 'awaiting_factcheck' state"
       raise ReviewOutcomeMissingError, error_message
+    end
+
+    def in_progress?
+      state.to_sym.in?(self.class.in_progress_states)
     end
   end
 end
