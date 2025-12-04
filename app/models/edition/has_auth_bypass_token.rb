@@ -15,10 +15,14 @@ module Edition::HasAuthBypassToken
         "sub" => auth_bypass_id,
         "content_id" => content_id,
         "iat" => Time.zone.now.to_i,
-        "exp" => 1.month.from_now.to_i,
+        "exp" => bypass_token_expiry_date.to_i,
       },
       ENV["JWT_AUTH_SECRET"],
       "HS256",
     )
+  end
+
+  def bypass_token_expiry_date
+    1.month.from_now
   end
 end
