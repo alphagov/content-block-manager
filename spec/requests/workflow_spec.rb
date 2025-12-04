@@ -82,10 +82,25 @@ RSpec.describe "Workflow", type: :request do
             put workflow_path(id: edition.id, step:, has_checked_content: true, save_action: "publish")
           end
         end
+
+        it "sets the #workflow_completed_at timestamp" do
+          completion_return_action = {
+            path: document_path(edition),
+            flash: { notice: "Success" },
+          }
+
+          allow(Edition::WorkflowCompletion).to receive(:new).and_return(
+            double(call: completion_return_action),
+          )
+
+          put workflow_path(id: edition.id, step:, has_checked_content: true, save_action: "publish")
+
+          expect(edition.reload.workflow_completed_at).not_to be_nil
+        end
       end
     end
 
-    describe "when the edition details have not been checked" do
+    describe "when the edition details have not been checked and the workflow can't complete" do
       let(:step) { :review }
 
       describe "#update" do
@@ -93,6 +108,12 @@ RSpec.describe "Workflow", type: :request do
           put workflow_path(id: edition.id, step:)
 
           expect(response).to render_template("editions/workflow/review")
+        end
+
+        it "does NOT set the #workflow_completed_at timestamp" do
+          put workflow_path(id: edition.id, step:)
+
+          expect(edition.reload.workflow_completed_at).to be_nil
         end
       end
     end
