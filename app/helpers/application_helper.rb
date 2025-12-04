@@ -38,6 +38,10 @@ module ApplicationHelper
     "aeiou".include?(word_or_phrase.downcase[0])
   end
 
+  def diff_html(version1, version2)
+    Diffy::Diff.new(version1, version2).to_s(:html).html_safe
+  end
+
   def taggable_organisations_container(selected_ids)
     Organisation.all.map do |o|
       {

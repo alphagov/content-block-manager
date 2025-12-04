@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   resources :users, only: %i[show]
 
   get "content-id/:content_id", to: "documents#content_id", as: :content_id
+
   resources :documents, only: %i[index show new], path_names: { new: "(:block_type)/new" }, path: "" do
     collection do
       post :new_document_options_redirect
@@ -28,6 +29,7 @@ Rails.application.routes.draw do
 
     member do
       get "published_edition", to: "published_edition#show"
+      get :diff
     end
 
     resources :editions, only: %i[new create]
