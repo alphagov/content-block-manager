@@ -42,7 +42,7 @@ class DocumentsController < BaseController
       @document,
       order: @order,
       page: @page,
-      )
+    )
   end
 
   def content_id

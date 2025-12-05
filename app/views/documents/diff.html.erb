@@ -27,7 +27,7 @@
     <p class="govuk-body">
       <%= link_to("Back to History and notes", "/#{ @document.id }", class: "govuk-link") %>
     </p>
-    <div class="govspeak">
+    <div class="govspeak compare-editions">
     <%= differ.generate_diff.html_safe %>
     </div>
   </div>
