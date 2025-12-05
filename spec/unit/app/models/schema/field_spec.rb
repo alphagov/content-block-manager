@@ -1,8 +1,4 @@
-require "test_helper"
-
-class Schema::FieldTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe Schema::Field do
   let(:schema) { build(:schema) }
   let(:field) { Schema::Field.new("something", schema) }
 
@@ -10,12 +6,12 @@ class Schema::FieldTest < ActiveSupport::TestCase
   let(:body) { {} }
 
   before do
-    schema.stubs(:config).returns(config)
-    schema.stubs(:body).returns(body)
+    allow(schema).to receive(:config).and_return(config)
+    allow(schema).to receive(:body).and_return(body)
   end
 
   it "returns the name when cast as a string" do
-    assert_equal "something", field.to_s
+    expect(field.to_s).to eq("something")
   end
 
   describe "#component_name" do
@@ -26,7 +22,7 @@ class Schema::FieldTest < ActiveSupport::TestCase
         end
 
         it "returns string" do
-          assert_equal "string", field.component_name
+          expect(field.component_name).to eq("string")
         end
       end
 
@@ -36,7 +32,7 @@ class Schema::FieldTest < ActiveSupport::TestCase
         end
 
         it "returns enum" do
-          assert_equal "enum", field.component_name
+          expect(field.component_name).to eq("enum")
         end
       end
     end
@@ -47,7 +43,7 @@ class Schema::FieldTest < ActiveSupport::TestCase
       end
 
       it "returns the custom component name" do
-        assert_equal "custom", field.component_name
+        expect(field.component_name).to eq("custom")
       end
     end
 
@@ -57,7 +53,7 @@ class Schema::FieldTest < ActiveSupport::TestCase
       end
 
       it "returns object" do
-        assert_equal "object", field.component_name
+        expect(field.component_name).to eq("object")
       end
     end
   end
@@ -69,7 +65,7 @@ class Schema::FieldTest < ActiveSupport::TestCase
       end
 
       it "returns enum" do
-        assert_equal %w[foo bar], field.enum_values
+        expect(field.enum_values).to eq(%w[foo bar])
       end
     end
 
@@ -79,7 +75,7 @@ class Schema::FieldTest < ActiveSupport::TestCase
       end
 
       it "returns enum" do
-        assert_nil field.enum_values
+        expect(field.enum_values).to be_nil
       end
     end
   end
@@ -91,7 +87,7 @@ class Schema::FieldTest < ActiveSupport::TestCase
       end
 
       it "returns enum" do
-        assert_equal "bar", field.default_value
+        expect(field.default_value).to eq("bar")
       end
     end
 
@@ -101,7 +97,7 @@ class Schema::FieldTest < ActiveSupport::TestCase
       end
 
       it "returns enum" do
-        assert_nil field.default_value
+        expect(field.default_value).to be_nil
       end
     end
   end
@@ -109,7 +105,7 @@ class Schema::FieldTest < ActiveSupport::TestCase
   describe "#nested fields" do
     describe "when there are no nested fields present" do
       it "returns nil" do
-        assert_nil field.nested_fields
+        expect(field.nested_fields).to be_nil
       end
     end
 
@@ -131,16 +127,16 @@ class Schema::FieldTest < ActiveSupport::TestCase
       it "returns nested fields" do
         nested_fields = field.nested_fields
 
-        assert_equal nested_fields.count, 2
+        expect(2).to eq(nested_fields.count)
 
-        assert_equal nested_fields[0].name, "foo"
-        assert_equal nested_fields[1].name, "bar"
+        expect("foo").to eq(nested_fields[0].name)
+        expect("bar").to eq(nested_fields[1].name)
 
-        assert_equal nested_fields[0].format, "string"
-        assert_equal nested_fields[1].format, "string"
+        expect("string").to eq(nested_fields[0].format)
+        expect("string").to eq(nested_fields[1].format)
 
-        assert_nil nested_fields[0].enum_values
-        assert_equal nested_fields[1].enum_values, %w[foo bar]
+        expect(nested_fields[0].enum_values).to be_nil
+        expect(%w[foo bar]).to eq(nested_fields[1].enum_values)
       end
     end
   end
@@ -165,7 +161,7 @@ class Schema::FieldTest < ActiveSupport::TestCase
         error = assert_raises(ArgumentError) do
           field.nested_field(nil)
         end
-        assert_equal("Provide the name of a nested field", error.message)
+        expect(error.message).to eq("Provide the name of a nested field")
       end
     end
 
@@ -197,7 +193,7 @@ class Schema::FieldTest < ActiveSupport::TestCase
   describe "#array_items" do
     describe "when there are no properties present" do
       it "returns nil" do
-        assert_nil field.array_items
+        expect(field.array_items).to be_nil
       end
     end
 
@@ -259,7 +255,7 @@ class Schema::FieldTest < ActiveSupport::TestCase
         end
 
         it "returns successfully" do
-          assert_equal field.array_items, { "type" => "string" }
+          expect({ "type" => "string" }).to eq(field.array_items)
         end
       end
     end
@@ -267,15 +263,15 @@ class Schema::FieldTest < ActiveSupport::TestCase
 
   describe "#is_required?" do
     it "returns true when in the schema's required fields" do
-      schema.stubs(:required_fields).returns(%w[something])
+      allow(schema).to receive(:required_fields).and_return(%w[something])
 
-      assert_equal true, field.is_required?
+      expect(field.is_required?).to eq(true)
     end
 
     it "returns false when note in the schema's required fields" do
-      schema.stubs(:required_fields).returns(%w[else])
+      allow(schema).to receive(:required_fields).and_return(%w[else])
 
-      assert_equal false, field.is_required?
+      expect(field.is_required?).to eq(false)
     end
   end
 
@@ -286,13 +282,13 @@ class Schema::FieldTest < ActiveSupport::TestCase
       end
 
       it "returns the data attributes" do
-        assert_equal field.data_attributes, { "foo" => "bar" }
+        expect({ "foo" => "bar" }).to eq(field.data_attributes)
       end
     end
 
     describe "when a `data_attributes` config var is not set" do
       it "returns an empty hash" do
-        assert_equal field.data_attributes, {}
+        expect({}).to eq(field.data_attributes)
       end
     end
   end
