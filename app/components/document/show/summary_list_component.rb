@@ -18,6 +18,7 @@ private
       organisation_item,
       instructions_item,
       status_item,
+      scheduled_date_label,
     ].compact
   end
 
@@ -81,5 +82,18 @@ private
         value: value,
       }
     end
+  end
+
+  def scheduled_date_label
+    return unless edition.scheduled_publication && !edition.published?
+
+    {
+      field: "Scheduled publication date",
+      value: scheduled_date(edition),
+      edit: {
+        href: helpers.document_schedule_edit_path(document),
+        link_text: sanitize("Edit <span class='govuk-visually-hidden'>schedule</span>"),
+      },
+    }
   end
 end
