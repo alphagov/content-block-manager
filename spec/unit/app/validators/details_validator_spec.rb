@@ -1,8 +1,4 @@
-require "test_helper"
-
-class DetailsValidatorTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe DetailsValidator do
   let(:body) do
     {
       "type" => "object",
@@ -52,11 +48,11 @@ class DetailsValidatorTest < ActiveSupport::TestCase
       schema:,
     )
 
-    assert_equal edition.valid?, false
+    expect(edition).to be_invalid
     errors = edition.errors
 
-    assert_error errors:, key: :details_foo, type: "blank", attribute: "Foo"
-    assert_error errors:, key: :details_bar, type: "blank", attribute: "Bar"
+    expect_error errors:, key: :details_foo, type: "blank", attribute: "Foo"
+    expect_error errors:, key: :details_bar, type: "blank", attribute: "Bar"
   end
 
   it "validates the format of fields" do
@@ -70,12 +66,12 @@ class DetailsValidatorTest < ActiveSupport::TestCase
       schema:,
     )
 
-    assert_equal edition.valid?, false
+    expect(edition).to be_invalid
     errors = edition.errors
 
-    assert_equal errors.count, 2
-    assert_error errors:, key: :details_foo, type: "invalid", attribute: "Foo"
-    assert_error errors:, key: :details_bar, type: "invalid", attribute: "Bar"
+    expect(2).to eq(errors.count)
+    expect_error errors:, key: :details_foo, type: "invalid", attribute: "Foo"
+    expect_error errors:, key: :details_bar, type: "invalid", attribute: "Bar"
   end
 
   it "validates the presence of nested fields in nested objects" do
@@ -95,12 +91,12 @@ class DetailsValidatorTest < ActiveSupport::TestCase
       schema:,
     )
 
-    assert_equal edition.valid?, false
+    expect(edition).to be_invalid
 
     errors = edition.errors
 
-    assert_equal errors.count, 1
-    assert_error errors:, key: :details_things_my_string, type: "blank", attribute: "My string"
+    expect(1).to eq(errors.count)
+    expect_error errors:, key: :details_things_my_string, type: "blank", attribute: "My string"
   end
 
   it "validates the format of nested fields in nested objects" do
@@ -120,11 +116,11 @@ class DetailsValidatorTest < ActiveSupport::TestCase
       schema:,
     )
 
-    assert_equal edition.valid?, false
+    expect(edition).to be_invalid
 
     errors = edition.errors
 
-    assert_error errors:, key: :details_things_something_else, type: "invalid", attribute: "Something else"
+    expect_error errors:, key: :details_things_something_else, type: "invalid", attribute: "Something else"
   end
 
   describe "validating against a regular expression" do
@@ -152,9 +148,9 @@ class DetailsValidatorTest < ActiveSupport::TestCase
         schema:,
       )
 
-      assert_equal edition.valid?, false
+      expect(edition).to be_invalid
       errors = edition.errors
-      assert_error errors:, key: :details_foo, type: "invalid", attribute: "Foo"
+      expect_error errors:, key: :details_foo, type: "invalid", attribute: "Foo"
     end
   end
 
@@ -220,9 +216,9 @@ class DetailsValidatorTest < ActiveSupport::TestCase
         schema:,
       )
 
-      assert_equal edition.valid?, false
+      expect(edition).to be_invalid
       errors = edition.errors
-      assert_error errors:, key: :details_things_array_of_objects_1_foo, type: "blank", attribute: "Foo"
+      expect_error errors:, key: :details_things_array_of_objects_1_foo, type: "blank", attribute: "Foo"
     end
 
     it "returns an error if an item is invalid in an array of objects" do
@@ -250,9 +246,9 @@ class DetailsValidatorTest < ActiveSupport::TestCase
         schema:,
       )
 
-      assert_equal edition.valid?, false
+      expect(edition).to be_invalid
       errors = edition.errors
-      assert_error errors:, key: :details_things_array_of_objects_0_foo, type: "invalid", attribute: "Foo"
+      expect_error errors:, key: :details_things_array_of_objects_0_foo, type: "invalid", attribute: "Foo"
     end
   end
 
@@ -263,13 +259,13 @@ class DetailsValidatorTest < ActiveSupport::TestCase
       attribute = "foo"
       type = "bar"
 
-      I18n.expects(:t).with(
+      expect(I18n).to receive(:t).with(
         "activerecord.errors.models.edition.attributes.#{attribute}.#{type}",
         attribute: attribute.humanize,
         default: ["activerecord.errors.models.edition.#{type}".to_sym],
-      ).returns("translated")
+      ).and_return("translated")
 
-      assert_equal validator.translate_error(type, attribute), "translated"
+      expect(validator.translate_error(type, attribute)).to eq("translated")
     end
   end
 
@@ -277,21 +273,21 @@ class DetailsValidatorTest < ActiveSupport::TestCase
     let(:validator) { DetailsValidator.new }
 
     it "returns the key when an error does not have a data_pointer" do
-      assert_equal validator.key_with_optional_prefix({}, "my_key"), "my_key"
+      expect("my_key").to eq(validator.key_with_optional_prefix({}, "my_key"))
     end
 
     it "returns the key without a reference to the embedded object when a data_pointer is present" do
       error = { "data_pointer" => "/foo/something" }
-      assert_equal validator.key_with_optional_prefix(error, "my_key"), "foo_my_key"
+      expect("foo_my_key").to eq(validator.key_with_optional_prefix(error, "my_key"))
     end
 
     it "returns the key without a reference to the embedded object when a data_pointer is present and nested" do
       error = { "data_pointer" => "/foo/something/field" }
-      assert_equal validator.key_with_optional_prefix(error, "my_key"), "foo_field_my_key"
+      expect("foo_field_my_key").to eq(validator.key_with_optional_prefix(error, "my_key"))
     end
   end
 
-  def assert_error(errors:, key:, type:, attribute:)
-    assert_equal errors[key], [I18n.t("activerecord.errors.models.edition.#{type}", attribute:)]
+  def expect_error(errors:, key:, type:, attribute:)
+    expect(errors[key]).to eq([I18n.t("activerecord.errors.models.edition.#{type}", attribute:)])
   end
 end
