@@ -1,8 +1,4 @@
-require "test_helper"
-
-class Schema::NestedFieldTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe Schema::Field::NestedField do
   describe "NestedField" do
     it "can be created without passing a 'default_value' argument" do
       nested_field = Schema::Field::NestedField.new(
@@ -11,9 +7,9 @@ class Schema::NestedFieldTest < ActiveSupport::TestCase
         enum_values: [],
       )
 
-      assert_equal("address_line_1", nested_field.name)
-      assert_equal("string", nested_field.format)
-      assert_equal([], nested_field.enum_values)
+      expect(nested_field.name).to eq("address_line_1")
+      expect(nested_field.format).to eq("string")
+      expect(nested_field.enum_values).to eq([])
       assert_nil(nested_field.default_value)
     end
   end
