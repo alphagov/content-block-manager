@@ -10,26 +10,15 @@ class Document::Diff::DiffBlockComponent < ViewComponent::Base
   attr_reader :current_edition, :published_edition, :document
 
   def block_content
-    current_content = content_tag(:div, class: "govspeak compare-editions") do
-      current_edition.render
+    current_content = content_tag(:div, class: "govspeak") do
+      current_edition.render.html_safe
     end
-    current_content
 
-    published_content = content_tag(:div, class: "govspeak compare-editions") do
-      published_edition.render
+    published_content = content_tag(:div, class: "govspeak") do
+      published_edition.render.html_safe
     end
-    published_content
 
-    content
-    helpers.diff_html(current_content, published_content)
-  end
-
-
-  def data_attributes
-    {
-      module: "copy-embed-code",
-      "embed-code-details": "default block",
-      "testid": "default_block",
-    }
+    CGI.unescapeHTML(helpers.diff_html(current_content.html_safe, published_content.html_safe).html_safe)
   end
 end
+

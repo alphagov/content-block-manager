@@ -42,8 +42,9 @@ class DocumentsController < BaseController
       @document,
       order: @order,
       page: @page,
-      )
+    )
   end
+
   def content_id
     document = Document.where(content_id: params[:content_id]).first
 

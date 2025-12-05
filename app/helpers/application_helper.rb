@@ -39,7 +39,9 @@ module ApplicationHelper
   end
 
   def diff_html(version1, version2)
-    Diffy::Diff.new(version1, version2).to_s(:html).html_safe
+    diff = Diffy::Diff.new(version1, version2).to_s(:html).html_safe
+    puts (diff)
+    diff
   end
 
   def taggable_organisations_container(selected_ids)

@@ -8,10 +8,12 @@ $removed-color: #fadede;
 $strong-removed-color: #f3aeac;
 
 .compare-editions {
+  border: 1px solid govuk-colour("light-grey");
+  border-left: 40px solid govuk-colour("light-grey");
+  padding: 15px;
+
   .diff {
-    border: 1px solid govuk-colour("light-grey");
-    border-left: 40px solid govuk-colour("light-grey");
-    padding: 15px;
+
 
     ul {
       padding-left: 0;
