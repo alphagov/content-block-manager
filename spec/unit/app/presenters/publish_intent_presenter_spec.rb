@@ -1,9 +1,5 @@
-require "test_helper"
-
 module PublishingApi
-  class PublishIntentPresenterTest < ActiveSupport::TestCase
-    extend Minitest::Spec::DSL
-
+  RSpec.describe PublishIntentPresenter do
     it "it returns the publish intent" do
       base_path = "/example-path"
       publish_timestamp = Time.zone.now.to_s
@@ -15,7 +11,7 @@ module PublishingApi
         routes: [{ path: base_path, type: "exact" }],
       }
 
-      assert_equal presenter.as_json, expected_hash
+      expect(expected_hash).to eq(presenter.as_json)
     end
   end
 end
