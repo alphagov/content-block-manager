@@ -1,0 +1,28 @@
+<% link_content = capture do %>
+  <p class="govuk-body">Send this link to someone so they can see the block.</p>
+  <p class="govuk-body">No password is needed, and anyone with the link can view it. You're responsible for who you share draft documents with.</p>
+  <p class="govuk-body">The link will expire on <%= edition.bypass_token_expiry_date.to_fs(:long_ordinal_with_at) %> or when the document is published.</p>
+
+  <%= render "govuk_publishing_components/components/copy_to_clipboard", {
+    label: "Copy and send this link to someone, and they’ll be able to view your draft.",
+    copyable_content: helpers.fact_check_url_with_token(edition),
+    button_text: "Copy link",
+  } %>
+
+  <p class="govuk-body govuk-!-margin-top-7">Reset and generate a new preview link if you've shared the preview with the wrong person or if the link has expired. This will disable the previous preview link.</p>
+
+  <%= form_for edition, url: update_fact_check_preview_link_edition_path(edition), method: :put do %>
+    <%= render "govuk_publishing_components/components/button", {
+      text: "Reset preview link",
+      secondary_quiet: true,
+      type: "submit",
+    } %>
+  <% end %>
+<% end %>
+
+<%= render "govuk_publishing_components/components/details", {
+  title: "Share factcheck link",
+  open:,
+} do %>
+  <%= link_content %>
+<% end %>

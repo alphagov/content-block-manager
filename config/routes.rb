@@ -68,6 +68,9 @@ Rails.application.routes.draw do
       # Reorder actions
       get :order, to: "editions/order#edit", as: :order_edit
       put :order, to: "editions/order#update", as: :order_update
+
+      # Regenerate fact check preview link
+      put :fact_check_preview_link, to: "editions/fact_check_preview_link#update", as: :update_fact_check_preview_link
     end
   end
 end
