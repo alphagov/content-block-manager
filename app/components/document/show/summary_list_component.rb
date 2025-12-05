@@ -66,22 +66,10 @@ private
   end
 
   def status_item
-    value = current_state_label(edition)
-    if edition.state == "scheduled"
-      {
-        field: "Status",
-        value: value,
-        edit: {
-          href: helpers.document_schedule_edit_path(document),
-          link_text: sanitize("Edit <span class='govuk-visually-hidden'>schedule</span>"),
-        },
-      }
-    else
-      {
-        field: "Status",
-        value: value,
-      }
-    end
+    {
+      field: "Status",
+      value: current_state_label(edition),
+    }
   end
 
   def scheduled_date_label
