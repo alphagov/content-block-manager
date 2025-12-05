@@ -1,8 +1,4 @@
-require "test_helper"
-
-class HostContentItem::ItemsTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe HostContentItem::Items do
   let(:items) { build_list(:host_content_item, 5) }
   let(:total) { 12 }
   let(:total_pages) { 2 }
@@ -11,16 +7,16 @@ class HostContentItem::ItemsTest < ActiveSupport::TestCase
 
   it "delegates array methods to items" do
     ([].methods - Object.methods).each do |method|
-      assert host_content_items.respond_to?(method)
+      expect(host_content_items.respond_to?(method)).to be(true)
     end
 
     host_content_items.each_with_index do |item, i|
-      assert_equal item, items[i]
+      expect(items[i]).to eq(item)
     end
   end
 
   it "returns page count values" do
-    assert_equal host_content_items.total, total
-    assert_equal host_content_items.total_pages, total_pages
+    expect(total).to eq(host_content_items.total)
+    expect(total_pages).to eq(host_content_items.total_pages)
   end
 end
