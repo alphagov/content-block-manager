@@ -43,7 +43,7 @@ class SchedulePublishingWorker < WorkerBase
   def perform(edition_id)
     logger.info("performing content block publishing job for Edition #{edition_id}")
     edition = Edition.find(edition_id)
-    return if edition.published? || !edition.scheduled?
+    return unless edition.scheduled?
 
     Edition::HasAuditTrail.acting_as(publishing_robot) do
       PublishEditionService.new.call(edition)

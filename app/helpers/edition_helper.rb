@@ -41,7 +41,7 @@ private
   def label_for_state(edition)
     I18n.t("edition.states.label_extended.#{edition.state}",
            user: edition.creator.name,
-           date: edition.state == "scheduled" ? scheduled_date(edition) : updated_date(edition),
+           date: updated_date(edition),
            default: nil)
   end
 end

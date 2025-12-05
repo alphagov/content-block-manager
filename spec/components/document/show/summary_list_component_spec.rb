@@ -39,10 +39,10 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
 
     render_inline(described_class.new(edition: edition))
 
-    expect(page).to have_css ".govuk-summary-list__row", count: 6
+    expect(page).to have_css ".govuk-summary-list__row", count: 7
 
     expect(page).to have_css ".govuk-summary-list__key", text: "Status"
-    expect(page).to have_css ".govuk-summary-list__value", text: "Scheduled for publication at #{strip_tags scheduled_date(edition)}"
+    expect(page).to have_css ".govuk-summary-list__value", text: "Scheduled for publication by #{edition.creator.name}"
     expect(page).to have_css ".govuk-summary-list__actions", text: "Edit schedule"
     expect(page).to have_css ".govuk-summary-list__actions a[href='#{document_schedule_edit_path(document)}']"
   end
@@ -127,14 +127,14 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
     describe "when edition is scheduled" do
       before do
         edition.state = "scheduled"
-        edition.scheduled_publication = Time.zone.now + 2.days
+        edition.scheduled_publication = Time.zone.parse("3000-01-01 14:00")
       end
 
       it "displays scheduled status with edit link" do
         render_inline(described_class.new(edition: edition))
 
         expect(page).to have_css ".govuk-summary-list__key", text: "Status"
-        expect(page).to have_css ".govuk-summary-list__value", text: /Scheduled for publication at/
+        expect(page).to have_css ".govuk-summary-list__value", text: /Scheduled for publication/
         expect(page).to have_css ".govuk-summary-list__actions a[href='#{document_schedule_edit_path(document)}']"
       end
 
@@ -143,6 +143,13 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
 
         expect(page).to have_css ".govuk-summary-list__actions", text: "Edit"
         expect(page).to have_css ".govuk-visually-hidden", text: "schedule"
+      end
+
+      it "shows the scheduled publication date row" do
+        render_inline(described_class.new(edition: edition))
+
+        expect(page).to have_css ".govuk-summary-list__key", text: "Scheduled publication date"
+        expect(page).to have_css ".govuk-summary-list__value", text: /1 January 3000/
       end
     end
 
@@ -164,6 +171,13 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
         render_inline(described_class.new(edition: edition))
 
         expect(page).to_not have_css ".govuk-summary-list__actions a[href='#{document_schedule_edit_path(document)}']"
+      end
+
+      it "does not show the scheduled publication date row" do
+        render_inline(described_class.new(edition: edition))
+
+        expect(page).not_to have_css ".govuk-summary-list__key", text: "Scheduled publication date"
+        expect(page).not_to have_css ".govuk-summary-list__value", text: /1 January 3000/
       end
     end
   end
