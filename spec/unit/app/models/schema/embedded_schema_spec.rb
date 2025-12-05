@@ -1,8 +1,4 @@
-require "test_helper"
-
-class Schema::EmbeddedSchemaTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe Schema::EmbeddedSchema do
   let(:body) do
     {
       "type" => "object",
@@ -35,46 +31,46 @@ class Schema::EmbeddedSchemaTest < ActiveSupport::TestCase
   let(:schema) { Schema::EmbeddedSchema.new(schema_id, body, parent_schema_id) }
 
   it "returns the subschema id" do
-    assert_equal schema.id, schema_id
+    expect(schema_id).to eq(schema.id)
   end
 
   it "returns the fields" do
-    assert_equal schema.fields.map(&:name), %w[title amount description frequency]
+    expect(%w[title amount description frequency]).to eq(schema.fields.map(&:name))
   end
 
   describe "#group" do
     describe "when a group is given in config" do
-      it "returns the subschemas default name" do
-        Schema::EmbeddedSchema
-          .stubs(:schema_settings)
-          .returns({
-            "schemas" => {
-              parent_schema_id => {
-                "subschemas" => {
-                  "bar" => {
-                    "group" => "a_group",
-                  },
+      before do
+        allow(Schema::EmbeddedSchema)
+          .to receive(:schema_settings)
+          .and_return({ "schemas" => {
+            parent_schema_id => {
+              "subschemas" => {
+                "bar" => {
+                  "group" => "a_group",
                 },
               },
             },
-          })
+          } })
+      end
 
-        assert_equal "a_group", schema.group
+      it "returns the subschemas default name" do
+        expect(schema.group).to eq("a_group")
       end
     end
 
     describe "when a group is not given in config" do
       it "returns nil" do
-        assert_nil schema.group
+        expect(schema.group).to be_nil
       end
     end
   end
 
   describe "when an order is given in the config" do
     before do
-      Schema::EmbeddedSchema
-        .stubs(:schema_settings)
-        .returns({
+      allow(Schema::EmbeddedSchema)
+        .to receive(:schema_settings)
+        .and_return({
           "schemas" => {
             parent_schema_id => {
               "subschemas" => {
@@ -88,19 +84,19 @@ class Schema::EmbeddedSchemaTest < ActiveSupport::TestCase
     end
 
     it "orders fields" do
-      assert_equal schema.fields.map(&:name), %w[frequency amount description title]
+      expect(%w[frequency amount description title]).to eq(schema.fields.map(&:name))
     end
   end
 
   describe "when no order is given" do
     before do
-      Schema
-        .stubs(:schema_settings)
-        .returns({})
+      allow(Schema)
+        .to receive(:schema_settings)
+        .and_return({})
     end
 
     it "prioritises the title" do
-      assert_equal schema.fields.map(&:name), %w[title amount description frequency]
+      expect(%w[title amount description frequency]).to eq(schema.fields.map(&:name))
     end
   end
 
@@ -136,9 +132,9 @@ class Schema::EmbeddedSchemaTest < ActiveSupport::TestCase
   describe "#embeddable_as_block?" do
     describe "when set in the config" do
       before do
-        Schema::EmbeddedSchema
-          .stubs(:schema_settings)
-          .returns({
+        allow(Schema::EmbeddedSchema)
+          .to receive(:schema_settings)
+          .and_return({
             "schemas" => {
               parent_schema_id => {
                 "subschemas" => {
@@ -152,15 +148,15 @@ class Schema::EmbeddedSchemaTest < ActiveSupport::TestCase
       end
 
       it "returns true" do
-        assert schema.embeddable_as_block?
+        expect(schema).to be_embeddable_as_block
       end
     end
 
     describe "when not set in the config" do
       before do
-        Schema::EmbeddedSchema
-          .stubs(:schema_settings)
-          .returns({
+        allow(Schema::EmbeddedSchema)
+          .to receive(:schema_settings)
+          .and_return({
             "schemas" => {
               parent_schema_id => {
                 "subschemas" => {
@@ -180,9 +176,9 @@ class Schema::EmbeddedSchemaTest < ActiveSupport::TestCase
   describe "#group_order" do
     describe "when set in the config" do
       before do
-        Schema::EmbeddedSchema
-          .stubs(:schema_settings)
-          .returns({
+        allow(Schema::EmbeddedSchema)
+          .to receive(:schema_settings)
+          .and_return({
             "schemas" => {
               parent_schema_id => {
                 "subschemas" => {
@@ -196,15 +192,15 @@ class Schema::EmbeddedSchemaTest < ActiveSupport::TestCase
       end
 
       it "returns the group order as an integer" do
-        assert_equal schema.group_order, 12
+        expect(12).to eq(schema.group_order)
       end
     end
 
     describe "when not set in the config" do
       before do
-        Schema::EmbeddedSchema
-          .stubs(:schema_settings)
-          .returns({
+        allow(Schema::EmbeddedSchema)
+          .to receive(:schema_settings)
+          .and_return({
             "schemas" => {
               parent_schema_id => {
                 "subschemas" => {
@@ -216,14 +212,14 @@ class Schema::EmbeddedSchemaTest < ActiveSupport::TestCase
       end
 
       it "returns infinity to put the item at the end of the group" do
-        assert_equal schema.group_order, Float::INFINITY
+        expect(Float::INFINITY).to eq(schema.group_order)
       end
     end
   end
 
   describe "#permitted_params" do
     it "returns permitted params" do
-      assert_equal schema.permitted_params, %w[title amount description frequency]
+      expect(%w[title amount description frequency]).to eq(schema.permitted_params)
     end
 
     describe "when some fields have nested fields" do
@@ -245,7 +241,7 @@ class Schema::EmbeddedSchemaTest < ActiveSupport::TestCase
       end
 
       it "returns permitted params" do
-        assert_equal schema.permitted_params, ["title", { "foo" => %w[my_string] }, "bar"]
+        expect(["title", { "foo" => %w[my_string] }, "bar"]).to eq(schema.permitted_params)
       end
     end
 
@@ -274,7 +270,7 @@ class Schema::EmbeddedSchemaTest < ActiveSupport::TestCase
       end
 
       it "returns permitted params" do
-        assert_equal schema.permitted_params, ["title", { "foo" => %w[_destroy] }, { "bar" => %w[my_string _destroy] }]
+        expect(["title", { "foo" => %w[_destroy] }, { "bar" => %w[my_string _destroy] }]).to eq(schema.permitted_params)
       end
     end
   end
@@ -326,9 +322,9 @@ class Schema::EmbeddedSchemaTest < ActiveSupport::TestCase
     end
 
     before do
-      Schema::EmbeddedSchema
-        .stubs(:schema_settings)
-        .returns(config)
+      allow(Schema::EmbeddedSchema)
+        .to receive(:schema_settings)
+        .and_return(config)
     end
 
     context "when a nested_object_key is given" do
@@ -399,9 +395,9 @@ class Schema::EmbeddedSchemaTest < ActiveSupport::TestCase
     end
 
     before do
-      Schema::EmbeddedSchema
-        .stubs(:schema_settings)
-        .returns(config)
+      allow(Schema::EmbeddedSchema)
+        .to receive(:schema_settings)
+        .and_return(config)
     end
 
     context "when a nested_object_key is given" do
