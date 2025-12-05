@@ -28,6 +28,7 @@ Rails.application.routes.draw do
 
     member do
       get "published_edition", to: "published_edition#show"
+      get :diff
     end
 
     resources :editions, only: %i[new create]
