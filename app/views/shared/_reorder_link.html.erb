@@ -1,0 +1,8 @@
+<% if @edition.has_entries_for_multiple_subschemas? %>
+  <%= render("govuk_publishing_components/components/button", {
+    text: "Reorder",
+    secondary_quiet: true,
+    href: order_edit_edition_path(@edition),
+    margin_bottom: false,
+  }) %>
+<% end %>
