@@ -33,6 +33,13 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
         it "does NOT offer a button for the status transition" do
           expect(page).to have_no_button("Send to 2i")
         end
+
+        it "offers a link to 'Complete draft' via workflow review step" do
+          expect(page).to have_css(
+            ".actions a[href='/editions/123/workflow/review']",
+            text: "Complete draft",
+          )
+        end
       end
     end
 

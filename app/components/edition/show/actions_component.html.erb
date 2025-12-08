@@ -8,6 +8,16 @@
     </li>
   <% end %>
 
+  <% if state == "draft" && !completed? %>
+    <li class="govuk-!-static-margin-bottom-3">
+      <%= render "govuk_publishing_components/components/button", {
+        text: "Complete draft",
+        href: workflow_path(edition, step: :review),
+        inline_layout: false,
+      } %>
+    </li>
+  <% end %>
+
   <% if state == "awaiting_review" %>
     <li class="govuk-!-static-margin-bottom-3">
       <%= render "govuk_publishing_components/components/button", {
