@@ -17,6 +17,11 @@ Given("I am viewing the draft edition") do
   visit document_path(edition.document)
 end
 
+Given("I am on the draft's workflow review step") do
+  edition = Document.last.editions.draft.most_recent
+  visit workflow_path(edition, step: "review")
+end
+
 Given("I am viewing the edition awaiting review") do
   edition = Document.last.editions.where(state: :awaiting_review).most_recent
   visit document_path(edition.document)

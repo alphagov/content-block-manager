@@ -45,3 +45,9 @@ Feature: Drafting a content block
     When I return to the homepage
     Then I should see the content block with title "my basic pension" returned
     And I should see a tag containing "Draft"
+
+  Scenario: Editor can not send an incomplete draft to review
+    Given I am viewing the draft edition
+    And the draft workflow has not been completed
+    Then I do not see a call to action of 'Send to 2i'
+    And I see a principal call to action of 'Edit pension'

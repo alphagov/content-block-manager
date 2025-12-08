@@ -9,6 +9,10 @@ Then("I see a principal call to action of 'Send to 2i'") do
   end
 end
 
+Then("I do not see a call to action of 'Send to 2i'") do
+  expect(page).to have_no_button("Send to 2i")
+end
+
 Then("I see a secondary call to action of 'Edit pension'") do
   expect(page).to have_css(
     "a.govuk-button--secondary[href='#{new_document_edition_path(edition.document)}']",

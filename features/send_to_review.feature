@@ -26,20 +26,22 @@ Feature: Editor sends edition to Review
     And a pension content block has been drafted
 
   Scenario: Send to '2i' Review from block show page
+    Given the draft workflow has been completed
     When I visit the Content Block Manager home page
     And I click to view the document
     Then I see that the edition is in draft state
     And I see a principal call to action of 'Send to 2i'
     And I see a secondary call to action of 'Edit pension'
 
-    When I opt to send the edition to Review
+    And I opt to send the edition to Review
     Then I see a notification that the transition to awaiting_review was successful
     And I see that the edition is in awaiting_review state
     And I see the transition to the awaiting_review state in the timeline
     And the calls to action are suited to the awaiting_review state
 
   Scenario: Attempt to make an invalid transition to 'ready_for_review'
-    When I visit the Content Block Manager home page
+    Given the draft workflow has been completed
+    And I visit the Content Block Manager home page
     And I click to view the document
     Then I see that the edition is in draft state
     And I see a principal call to action of 'Send to 2i'
@@ -48,16 +50,23 @@ Feature: Editor sends edition to Review
     And I opt to send the edition to Review
     Then I see an alert that the transition failed to transition to awaiting_review
 
+  Scenario: No option to 'Send to review' when draft is unchecked
+    Given the draft workflow has not been completed
+    And I am viewing the draft edition
+    Then I do not see a call to action of 'Send to 2i'
+    And I see a principal call to action of 'Edit pension'
+
   Scenario: Send to 2i Review from review step in workflow
     When I visit the Content Block Manager home page
     And I click to view the document
     Then I see that the edition is in draft state
 
     When I follow the workflow steps through to the final review step
-    Then I see a principal call to action of 'Send to 2i'
+    Then I see that I can complete the workflow with 'Send to 2i'
 
-    When I opt to send the edition to Review
-    Then I see a notification that the transition to awaiting_review was successful
+    When I confirm I have checked the content
+    And I opt to send the edition to Review
+    Then I see a notification that the transition to Awaiting 2i was successful
     And I see that the edition is in awaiting_review state
     And the calls to action are suited to the awaiting_review state
 

@@ -14,6 +14,13 @@ Given("I should see the content for the published contact edition") do
   should_see_the_published_edition_in_full
 end
 
+Then("I see a principal call to action of 'Edit pension'") do
+  expect(page).to have_css(
+    "a.govuk-button",
+    text: "Edit pension",
+  )
+end
+
 def should_see_the_draft_edition_in_full
   should_see_status_for(state: :draft)
   shows_list_of_locations
