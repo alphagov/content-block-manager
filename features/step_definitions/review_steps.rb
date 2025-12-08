@@ -25,6 +25,11 @@ When("I opt to send the edition to Review") do
   click_button "Send to 2i"
 end
 
+Given("I try to send the draft to review without confirming that I have checked the contents") do
+  uncheck "has_checked_content"
+  click_button "Send to 2i"
+end
+
 def create_new_edition
   click_link("Edit pension")
   # creating a new edition when editing a draft is perhaps wrong
