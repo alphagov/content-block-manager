@@ -1,9 +1,9 @@
-When(/^I click on Preview$/) do
+When(/^I click on Preview and reorder$/) do
   preview_block_button.click
 end
 
 Then("I should not see a preview button") do
-  expect(page).to_not have_selector("a[title='Preview block']", text: "Preview")
+  expect(page).to_not have_selector("a[title='Preview block']", text: "Preview and reorder")
 end
 
 Then(/^I should see a preview of my contact$/) do
@@ -21,7 +21,7 @@ Then(/^I should see the add contact methods screen$/) do
 end
 
 def preview_block_button
-  find("a[title='Preview block']", text: "Preview")
+  find("a[title='Preview block']", text: "Preview and reorder")
 end
 
 Then(/^I should see the review contact screen$/) do
