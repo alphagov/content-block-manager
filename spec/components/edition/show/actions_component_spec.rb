@@ -6,15 +6,33 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
     context "when the edition is in the 'draft' state" do
       before do
         edition.state = :draft
-        component = described_class.new(edition: edition)
-        render_inline component
       end
 
-      it "offers a button for the status transition" do
-        expect(page).to have_css(
-          ".actions form[action='/editions/123/edition_status_transitions'] button",
-          text: "Send to 2i",
-        )
+      context "and the draft workflow has been completed" do
+        before do
+          edition.workflow_completed_at = 1.minute.ago
+          component = described_class.new(edition: edition)
+          render_inline component
+        end
+
+        it "offers a button for the status transition" do
+          expect(page).to have_css(
+            ".actions form[action='/editions/123/edition_status_transitions'] button",
+            text: "Send to 2i",
+          )
+        end
+      end
+
+      context "and the draft workflow has NOT been completed" do
+        before do
+          edition.workflow_completed_at = nil
+          component = described_class.new(edition: edition)
+          render_inline component
+        end
+
+        it "does NOT offer a button for the status transition" do
+          expect(page).to have_no_button("Send to 2i")
+        end
       end
     end
 
