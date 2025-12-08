@@ -1,8 +1,4 @@
-require "test_helper"
-
-class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe ParamsPreprocessors::TelephonePreprocessor do
   let(:opening_hours) do
     {
       "show_opening_hours" => show_opening_hours,
@@ -66,11 +62,11 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
       it "formats the opening hours correctly" do
         result = ParamsPreprocessors::TelephonePreprocessor.new(params).processed_params
 
-        assert_equal result["show_opening_hours"], "1"
-        assert_equal result["edition"]["details"]["telephones"]["opening_hours"], {
+        expect(result["show_opening_hours"]).to eq("1")
+        expect(result["edition"]["details"]["telephones"]["opening_hours"]).to eq({
           "show_opening_hours" => true,
           "opening_hours" => "Some text",
-        }
+        })
       end
     end
 
@@ -80,8 +76,8 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
       it "clears the opening_hours object" do
         result = ParamsPreprocessors::TelephonePreprocessor.new(params).processed_params
 
-        assert_nil result["hours_available"]
-        assert_equal result["edition"]["details"]["telephones"]["opening_hours"], {}
+        expect(result["hours_available"]).to be_nil
+        expect(result["edition"]["details"]["telephones"]["opening_hours"]).to eq({})
       end
     end
   end
@@ -93,11 +89,11 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
       it "converts the string to a boolean" do
         result = ParamsPreprocessors::TelephonePreprocessor.new(params).processed_params
 
-        assert_equal result["edition"]["details"]["telephones"]["call_charges"], {
+        expect(result["edition"]["details"]["telephones"]["call_charges"]).to eq({
           "show_call_charges_info_url" => true,
           "label" => "Label",
           "call_charges_info_url" => "https://example.com",
-        }
+        })
       end
     end
 
@@ -107,7 +103,7 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
       it "empties the call charges object" do
         result = ParamsPreprocessors::TelephonePreprocessor.new(params).processed_params
 
-        assert_equal result["edition"]["details"]["telephones"]["call_charges"], {}
+        expect(result["edition"]["details"]["telephones"]["call_charges"]).to eq({})
       end
     end
   end
@@ -119,10 +115,10 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
       it "converts the string to a boolean" do
         result = ParamsPreprocessors::TelephonePreprocessor.new(params).processed_params
 
-        assert_equal result["edition"]["details"]["telephones"]["bsl_guidance"], {
+        expect(result["edition"]["details"]["telephones"]["bsl_guidance"]).to eq({
           "show" => true,
           "value" => "Some value",
-        }
+        })
       end
     end
 
@@ -132,7 +128,7 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
       it "empties the BSL Guidance object" do
         result = ParamsPreprocessors::TelephonePreprocessor.new(params).processed_params
 
-        assert_equal result["edition"]["details"]["telephones"]["bsl_guidance"], {}
+        expect(result["edition"]["details"]["telephones"]["bsl_guidance"]).to eq({})
       end
     end
   end
@@ -144,14 +140,13 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
       it "converts the string to a boolean" do
         result = ParamsPreprocessors::TelephonePreprocessor.new(params).processed_params
 
-        assert_equal(
-          {
-            "show" => true,
-            "telephone_number_prefix" => "**Custom** prefix 121212 then",
-            "telephone_number" => "1234 123 1234",
-          },
+        expect(
           result["edition"]["details"]["telephones"]["video_relay_service"],
-        )
+        ).to eq({
+          "show" => true,
+          "telephone_number_prefix" => "**Custom** prefix 121212 then",
+          "telephone_number" => "1234 123 1234",
+        })
       end
     end
 
@@ -161,10 +156,7 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
       it "empties the video relay service object" do
         result = ParamsPreprocessors::TelephonePreprocessor.new(params).processed_params
 
-        assert_equal(
-          {},
-          result["edition"]["details"]["telephones"]["video_relay_service"],
-        )
+        expect(result["edition"]["details"]["telephones"]["video_relay_service"]).to eq({})
       end
     end
 
@@ -174,10 +166,7 @@ class ParamsPreprocessors::TelephonePreprocessorTest < ActiveSupport::TestCase
       it "empties the video relay service object" do
         result = ParamsPreprocessors::TelephonePreprocessor.new(params).processed_params
 
-        assert_equal(
-          {},
-          result["edition"]["details"]["telephones"]["video_relay_service"],
-        )
+        expect(result["edition"]["details"]["telephones"]["video_relay_service"]).to eq({})
       end
     end
   end
