@@ -65,10 +65,40 @@ RSpec.describe Edition::Workflow, type: :model do
       expect(edition).to be_superseded
     end
 
-    it "transitions into the awaiting_review state when marking as ready for Review" do
-      edition = create(:edition, document: create(:document, block_type: "pension"))
-      edition.ready_for_review!
-      assert edition.awaiting_review?
+    describe "transitions into the awaiting_review state with #ready_for_review!" do
+      context "when in the 'draft' state" do
+        let(:edition) { create(:edition, :pension, state: :draft) }
+
+        it "is permitted" do
+          edition.ready_for_review!
+
+          expect(edition.awaiting_review?).to be true
+        end
+      end
+
+      context "when in the 'scheduled' state" do
+        let(:edition) do
+          create(:edition, :pension, state: :scheduled, scheduled_publication: 1.week.from_now)
+        end
+
+        it "is NOT permitted" do
+          expect { edition.ready_for_review }.to raise_error(
+            Transitions::InvalidTransition,
+          )
+        end
+      end
+
+      (Edition.available_states - %i[draft scheduled]).each do |state|
+        context "when in the '#{state}' state" do
+          let(:edition) { create(:edition, :pension, state: state) }
+
+          it "is NOT permitted" do
+            expect { edition.ready_for_review }.to raise_error(
+              Transitions::InvalidTransition,
+            )
+          end
+        end
+      end
     end
 
     describe "transition to 'awaiting_factcheck' state" do
