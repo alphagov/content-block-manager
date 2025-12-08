@@ -1,0 +1,43 @@
+<% content_for :page_title, @title %>
+
+<% content_for :back_link do %>
+  <%= render "govuk_publishing_components/components/back_link", {
+    href: document_path(@edition.document),
+  } %>
+<% end %>
+
+<%= form_tag("") do %>
+
+  <%= render "govuk_publishing_components/components/radio", {
+    name: "factcheck_outcome[factcheck_performed]",
+    heading: @title,
+    heading_caption: @edition.title,
+    heading_level: 1,
+    error_message: flash.alert.present? ? "Describe the outcome of the Factcheck process" : nil,
+    items: [
+      {
+        value: "true",
+        text: "Completed factcheck",
+      },
+      {
+        value: "false",
+        text: "Skip factcheck",
+      },
+    ],
+  } %>
+
+  <div class="govuk-button-group govuk-!-margin-bottom-6">
+    <%= render "govuk_publishing_components/components/button", {
+      text: "Continue",
+      name: "continue",
+      value: "Continue",
+      type: "submit",
+    } %>
+    <%= render "govuk_publishing_components/components/button", {
+      text: "Cancel",
+      href: document_path(@edition.document),
+      secondary_solid: true,
+    } %>
+  </div>
+
+<% end %>
