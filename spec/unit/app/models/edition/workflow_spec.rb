@@ -68,11 +68,25 @@ RSpec.describe Edition::Workflow, type: :model do
     describe "transitions into the awaiting_review state with #ready_for_review!" do
       context "when in the 'draft' state" do
         let(:edition) { create(:edition, :pension, state: :draft) }
+        context "and the workflow has been completed" do
+          before { edition.workflow_completed_at = 1.minute.ago }
 
-        it "is permitted" do
-          edition.ready_for_review!
+          it "is permitted" do
+            edition.ready_for_review!
 
-          expect(edition.awaiting_review?).to be true
+            expect(edition.awaiting_review?).to be true
+          end
+        end
+
+        context "and the workflow NOT been completed" do
+          before { edition.workflow_completed_at = nil }
+
+          it "is NOT permitted" do
+            expect { edition.ready_for_review }.to raise_error(
+              Edition::Workflow::WorkflowCompletionError,
+              "Edition #{edition.id}'s workflow has not been completed",
+            )
+          end
         end
       end
 

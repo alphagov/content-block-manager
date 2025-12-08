@@ -6,7 +6,7 @@ class Editions::StatusTransitionsController < BaseController
     begin
       attempt_transition!(transition: params.fetch(:transition))
       handle_success
-    rescue Transitions::InvalidTransition => e
+    rescue Transitions::InvalidTransition, Edition::Workflow::WorkflowCompletionError => e
       handle_failure(e)
     ensure
       redirect_to redirect_path

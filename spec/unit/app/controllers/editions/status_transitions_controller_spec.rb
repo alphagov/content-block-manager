@@ -20,7 +20,9 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
 
   describe "#create" do
     # TODO: :schedule requires validation and we should handle it here if we want to use this controller for scheduling
-    Edition.new.available_transitions.reject { |tr| tr == :schedule }.each do |transition|
+    #   :ready_for_review has a guard to ensure the draft workflow has been completed
+    #   so we'll describe that in a separate context
+    Edition.new.available_transitions.reject { |tr| tr.in?(%i[schedule ready_for_review]) }.each do |transition|
       context "when the valid transition is '#{transition}'" do
         transition_method = "#{transition}!"
 
@@ -55,6 +57,48 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
 
             expect(flash.notice).to eq(expected_success_message)
           end
+        end
+      end
+    end
+
+    context "when the transition is #ready_for_review!" do
+      context "and the draft workflow has been completed" do
+        before { allow(edition).to receive(:completed?).and_return(true) }
+
+        it "sets a success message" do
+          post :create, params: { id: 123, transition: :ready_for_review }
+
+          expect(flash.notice).to eq("Edition has been moved into state 'awaiting_review'")
+        end
+
+        it "redirects to the document page" do
+          post :create, params: { id: 123, transition: :ready_for_review }
+
+          expect(response).to redirect_to(document_path(edition.document))
+        end
+      end
+
+      context "and the workflow has NOT been completed (should be impossible via the UI)" do
+        before do
+          allow(edition).to receive(:completed?).and_return(false)
+          allow(edition).to receive(:id).and_return(123)
+          allow(edition).to receive(:document).and_return(document)
+          allow(document).to receive(:most_recent_edition).and_return(true)
+        end
+
+        it "sets a failure message" do
+          error_message = "Error: we can not change the status of this edition. " \
+            "Edition 123's workflow has not been completed"
+
+          post :create, params: { id: 123, transition: :ready_for_review }
+
+          expect(flash.alert).to eq(error_message)
+        end
+
+        it "redirects to the document page (provided a most_recent_edition exists)" do
+          post :create, params: { id: 123, transition: :ready_for_review }
+
+          expect(response).to redirect_to(document_path(edition.document))
         end
       end
     end
