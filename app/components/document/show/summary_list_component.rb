@@ -18,6 +18,7 @@ private
       organisation_item,
       instructions_item,
       status_item,
+      scheduled_date_label,
     ].compact
   end
 
@@ -65,21 +66,22 @@ private
   end
 
   def status_item
-    value = current_state_label(edition)
-    if edition.state == "scheduled"
-      {
-        field: "Status",
-        value: value,
-        edit: {
-          href: helpers.document_schedule_edit_path(document),
-          link_text: sanitize("Edit <span class='govuk-visually-hidden'>schedule</span>"),
-        },
-      }
-    else
-      {
-        field: "Status",
-        value: value,
-      }
-    end
+    {
+      field: "Status",
+      value: current_state_label(edition),
+    }
+  end
+
+  def scheduled_date_label
+    return unless edition.scheduled_publication && !edition.published?
+
+    {
+      field: "Scheduled publication date",
+      value: scheduled_date(edition),
+      edit: {
+        href: helpers.document_schedule_edit_path(document),
+        link_text: sanitize("Edit <span class='govuk-visually-hidden'>schedule</span>"),
+      },
+    }
   end
 end

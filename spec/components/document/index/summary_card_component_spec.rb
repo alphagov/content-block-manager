@@ -72,7 +72,7 @@ RSpec.describe Document::Index::SummaryCardComponent, type: :component do
       expect(page).to have_css ".govuk-summary-list__row", count: 5
 
       expect(page).to have_css ".govuk-summary-list__key", text: "Status"
-      expect(page).to have_css ".govuk-summary-list__value", text: "Scheduled for publication at #{strip_tags scheduled_date(edition)}"
+      expect(page).to have_css ".govuk-summary-list__value", text: "Scheduled for publication by #{edition.creator.name}"
     end
   end
 
