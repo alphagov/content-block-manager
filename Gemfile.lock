@@ -229,25 +229,25 @@ GEM
       warden-oauth2 (~> 0.0.1)
     globalid (1.3.0)
       activesupport (>= 6.1)
-    google-protobuf (4.33.1)
+    google-protobuf (4.33.2)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.33.1-aarch64-linux-gnu)
+    google-protobuf (4.33.2-aarch64-linux-gnu)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.33.1-aarch64-linux-musl)
+    google-protobuf (4.33.2-aarch64-linux-musl)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.33.1-arm64-darwin)
+    google-protobuf (4.33.2-arm64-darwin)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.33.1-x86_64-darwin)
+    google-protobuf (4.33.2-x86_64-darwin)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.33.1-x86_64-linux-gnu)
+    google-protobuf (4.33.2-x86_64-linux-gnu)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.33.1-x86_64-linux-musl)
+    google-protobuf (4.33.2-x86_64-linux-musl)
       bigdecimal
       rake (>= 13)
     googleapis-common-protos-types (1.22.0)
@@ -262,16 +262,16 @@ GEM
       nokogiri (~> 1.12)
       rinku (~> 2.0)
       sanitize (>= 6, < 8)
-    govuk_app_config (9.22.1)
+    govuk_app_config (9.22.2)
       logstasher (~> 2.1)
       opentelemetry-exporter-otlp (>= 0.25, < 0.32)
-      opentelemetry-instrumentation-all (>= 0.39.1, < 0.88.0)
+      opentelemetry-instrumentation-all (>= 0.39.1, < 0.89.0)
       opentelemetry-sdk (~> 1.2)
       plek (>= 4, < 6)
       prometheus_exporter (~> 2.3)
       puma (>= 5.6, < 8.0)
       rack-proxy (~> 0.7)
-      sentry-rails (~> 5.3)
+      sentry-rails (>= 5.3, < 7.0)
       sentry-ruby (~> 5.3)
       statsd-ruby (~> 1.5)
     govuk_frontend_toolkit (9.0.1)
@@ -463,7 +463,7 @@ GEM
       opentelemetry-instrumentation-active_support (~> 0.10)
     opentelemetry-instrumentation-active_support (0.10.1)
       opentelemetry-instrumentation-base (~> 0.25)
-    opentelemetry-instrumentation-all (0.87.0)
+    opentelemetry-instrumentation-all (0.88.0)
       opentelemetry-instrumentation-active_model_serializers (~> 0.24.0)
       opentelemetry-instrumentation-anthropic (~> 0.3.0)
       opentelemetry-instrumentation-aws_lambda (~> 0.6.0)
@@ -472,7 +472,7 @@ GEM
       opentelemetry-instrumentation-concurrent_ruby (~> 0.24.0)
       opentelemetry-instrumentation-dalli (~> 0.29.0)
       opentelemetry-instrumentation-delayed_job (~> 0.25.1)
-      opentelemetry-instrumentation-ethon (~> 0.25.0)
+      opentelemetry-instrumentation-ethon (~> 0.26.0)
       opentelemetry-instrumentation-excon (~> 0.26.0)
       opentelemetry-instrumentation-faraday (~> 0.30.0)
       opentelemetry-instrumentation-grape (~> 0.5.0)
@@ -519,7 +519,7 @@ GEM
       opentelemetry-instrumentation-base (~> 0.25)
     opentelemetry-instrumentation-delayed_job (0.25.1)
       opentelemetry-instrumentation-base (~> 0.25)
-    opentelemetry-instrumentation-ethon (0.25.1)
+    opentelemetry-instrumentation-ethon (0.26.0)
       opentelemetry-instrumentation-base (~> 0.25)
     opentelemetry-instrumentation-excon (0.26.1)
       opentelemetry-instrumentation-base (~> 0.25)
@@ -708,7 +708,7 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.3.1)
-    rdoc (6.16.1)
+    rdoc (6.17.0)
       erb
       psych (>= 4.0.0)
       tsort
@@ -1060,16 +1060,16 @@ CHECKSUMS
   gds-api-adapters (101.0.0) sha256=3f08b0ad72b45cc138ee7f1ffb736c342e81150093f298b406e72f0d7833ddd8
   gds-sso (22.1.1) sha256=87da38284fe2eb98cca4f02d5f23bc01bbad7eeabe10a3c60d915628968d9122
   globalid (1.3.0) sha256=05c639ad6eb4594522a0b07983022f04aa7254626ab69445a0e493aa3786ff11
-  google-protobuf (4.33.1) sha256=81d9bcab7a00b30a3fd042e78fcb113a0a0f564b474c64eddc378bf0558c44ec
-  google-protobuf (4.33.1-aarch64-linux-gnu) sha256=b06101ce690ac0072b424d014f708f86c6dc0b55046b4a9462be56738476bff2
-  google-protobuf (4.33.1-aarch64-linux-musl) sha256=e3997ef84030af7d24e9f6015fc38bccc0bebe137cbf705b74b0ccd3e2e59e4a
-  google-protobuf (4.33.1-arm64-darwin) sha256=1d86489ed6b21d51b9eb66ca41ab26c243e01193d44bba2be4963e2ad0992103
-  google-protobuf (4.33.1-x86_64-darwin) sha256=7df6d94315bbf5fdd60d8c3122308e42f4d5c9736417bdc31f3e62f29042f102
-  google-protobuf (4.33.1-x86_64-linux-gnu) sha256=8205efe9313f19b5106a912b3c2146d6da5681a2a3427d361613a8f20f3e3750
-  google-protobuf (4.33.1-x86_64-linux-musl) sha256=6c6d6dc2cc560f00d912176db2788bf945f83dff5f5751d3245a97f55ddf0b1d
+  google-protobuf (4.33.2) sha256=748150d6c642fd655ef39efa23ecf2abe6d616020039a6d1c1764be1da530315
+  google-protobuf (4.33.2-aarch64-linux-gnu) sha256=822b2dcb707e94e652cd994642c31035935fca021adfac6164772c511eb7acd4
+  google-protobuf (4.33.2-aarch64-linux-musl) sha256=c4b64428183cfd1953ec8c37beec1036668c8ec0865cfb0b18df21181ca397ee
+  google-protobuf (4.33.2-arm64-darwin) sha256=6d0ac185fed18768e5f16338455b1e4b7c38a97fc46f352e709f7a3007b64e1d
+  google-protobuf (4.33.2-x86_64-darwin) sha256=87cde586234674562cf099e2b708a65e376e2d39b0f0f48281f4b4ea182b47f8
+  google-protobuf (4.33.2-x86_64-linux-gnu) sha256=73cba041477afcac92ff383fcbdec195ea28d96b994876d1deaa944d18f91786
+  google-protobuf (4.33.2-x86_64-linux-musl) sha256=97cdf4f772c5540f9274603b00f1474ed5e6e2238b1d8b1585e77f941a36bd2c
   googleapis-common-protos-types (1.22.0) sha256=f97492b77bd6da0018c860d5004f512fe7cd165554d7019a8f4df6a56fbfc4c7
   govspeak (10.8.2) sha256=1e5cfd5b8be10e6946848fbee0a065e1c97eb6008b93b7605cfeb410caa108c0
-  govuk_app_config (9.22.1) sha256=52daf5e13803f970732847e4e707975f3e69d451069c527a901ede2015b145ab
+  govuk_app_config (9.22.2) sha256=6c7aad74dcbd13907d2c3387909ab751f4e6cd0a641e7f95507528a5d3fcb961
   govuk_frontend_toolkit (9.0.1) sha256=18fdae529c9003e023c3461d89a45ddaf5ac0df311705351743c9f1b7b48a2de
   govuk_personalisation (1.1.0) sha256=6e7a0dcfaec11570d95490160a95aff85150df5b667a586ecd7d5de04feac5dd
   govuk_publishing_components (62.2.1) sha256=00bd79a72b73a0dd8e3c719981ccc24fdccb3195e9fb51d1e4458b99b8ed8f7b
@@ -1152,7 +1152,7 @@ CHECKSUMS
   opentelemetry-instrumentation-active_record (0.11.1) sha256=1b083f34eea0449f8d6f4370b3fb4b935757fac6e4e538e67bb98211809e7c92
   opentelemetry-instrumentation-active_storage (0.3.1) sha256=f89b0fef54921f17c0c4c38a6e0926d29afabd0ac98436fcdbb8bde85dfde89e
   opentelemetry-instrumentation-active_support (0.10.1) sha256=82ea98367158797e33c6de96581f10aa4fe8adf0ebec832dcff5fd04c59bc57d
-  opentelemetry-instrumentation-all (0.87.0) sha256=63a9661a3552d20f19ec7fba69e9fdda632fb5f331fe4a72c275cdaeb721de2a
+  opentelemetry-instrumentation-all (0.88.0) sha256=79a66aae58e7ae8327c7718b56cd7ab1f01932f121351ed8f2920b5aa527022c
   opentelemetry-instrumentation-anthropic (0.3.0) sha256=09bd9b4ba6189389a6c0f7ba49f1d11f387d93b411ab585137a48b59925a48de
   opentelemetry-instrumentation-aws_lambda (0.6.0) sha256=1a3161393cfe9bc9eddd81a0668d076c38a0a2c3d5df40e95d02f5a8fcd3334c
   opentelemetry-instrumentation-aws_sdk (0.11.0) sha256=67a21e754ddf51e2bb8c3e46e116aa9158d8db800f34c2a9b1e0da5a6ca911e3
@@ -1161,7 +1161,7 @@ CHECKSUMS
   opentelemetry-instrumentation-concurrent_ruby (0.24.0) sha256=229bd8b72000c59de693609bb637b8a9114992f5e0ab03730d7fd7ef91f7d1d2
   opentelemetry-instrumentation-dalli (0.29.0) sha256=a2686650545609e8d7e281c9fd1aef529ab578ef2dcf9a6258737e4ba214bc2f
   opentelemetry-instrumentation-delayed_job (0.25.1) sha256=47f35b10d2bfd9ac7c2bbbe10dea095a2e25db2a84f5351860ead969d180c3ec
-  opentelemetry-instrumentation-ethon (0.25.1) sha256=0d3b233a37b7b234e97d6853d67abd5f4ce1e13717dfa432473e6f6d7c5f574d
+  opentelemetry-instrumentation-ethon (0.26.0) sha256=d4461082c84e8912ab1204340f31cae4aba58b4ae2a854d517b27116750e3752
   opentelemetry-instrumentation-excon (0.26.1) sha256=a856816c98d45ff4cd3ec3b0d7fc1e5e340390f47478f882eb4a688cfc678fef
   opentelemetry-instrumentation-faraday (0.30.1) sha256=526822c0575aba333e53bfdb26a4a7b6a30c9cb1b1d400d514d891f4507732f9
   opentelemetry-instrumentation-grape (0.5.0) sha256=b9fcbe13b015b663577b8bde5b419c297da2588d0a022f4ce40f9ffc49df7624
@@ -1232,7 +1232,7 @@ CHECKSUMS
   railties (8.0.3) sha256=ace31dcad7134299a64d6d96310d76d32868756e58e2983e25b121acd457f1d2
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
   rake (13.3.1) sha256=8c9e89d09f66a26a01264e7e3480ec0607f0c497a861ef16063604b1b08eb19c
-  rdoc (6.16.1) sha256=71357cc208e6da77ba0c4494e01ae870dd18b437c7c7d801dd73ee2f340b9f5c
+  rdoc (6.17.0) sha256=0f50d4e568fc98195f9bb155a9e8dff6c7feabfb515fb22ef6df1d12ad5a02b7
   record_tag_helper (1.0.1) sha256=28b073f6c0e529d0f96969ba8ce5c2a9c1b5472d603a67b60bf64798b15c3dcf
   redis-client (0.26.1) sha256=1e39d2862c4516a75ff777ee6ed08827af39336bfece4a48e944244891d9a073
   regexp_parser (2.11.2) sha256=5e5e9c1485ffd8de53ab1d2807affd81f617f72967dfc64fc75a69e2cbf0ff98
