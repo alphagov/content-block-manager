@@ -6,6 +6,12 @@
   } %>
 <% end %>
 
+<% if @edition.has_entries_for_multiple_subschemas? %>
+  <% content_for :title_side do %>
+    <%= render "shared/reorder_link", edition: @edition %>
+  <% end %>
+<% end %>
+
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
     <%= render "preview", edition: @edition %>

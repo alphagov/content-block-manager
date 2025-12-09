@@ -233,7 +233,7 @@ Feature: Create a contact object
 
   @javascript
   Scenario: GDS editor can preview a Contact
-    When I click on Preview
+    When I click on Preview and reorder
     Then I should see a preview of my contact
     And there should be no accessibility errors
     When I click to close the preview
@@ -241,12 +241,12 @@ Feature: Create a contact object
     And I complete the "email_address" form with the following fields:
       | title     | label         | email_address    | subject  | body             |
       | Email us  | Send an email | foo@example.com  | Your ref | Name and address |
-    When I click on Preview
+    When I click on Preview and reorder
     Then I should see a preview of my contact
     When I click to close the preview
     Then I should see the add contact methods screen
     When I save and continue
-    And I click on Preview
+    When I click on Preview and reorder
     When I click to close the preview
     Then I should see the review contact screen
 
@@ -266,7 +266,7 @@ Feature: Create a contact object
     And I complete the "addresses" form with the following fields:
       | recipient  | street_address  | town_or_city | postal_code |
       | Recipient  | 123 Fake Street | Springfield  | ABC 123     |
-    And I click on Preview
+    And I click on Preview and reorder
     And I click on reorder
     Then there should be no accessibility errors
     When I change the order of the contact methods
@@ -280,7 +280,7 @@ Feature: Create a contact object
     And I complete the "contact_link" form with the following fields:
       | title              | label      | url                | description |
       | Other Contact Form | Contact Us | http://example.com | Description |
-    And I click on Preview
+    And I click on Preview and reorder
     When I click on reorder
     Then I should see "Other Contact Form" in the ordered items
     When I click the cancel link

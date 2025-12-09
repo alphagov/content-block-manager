@@ -3,6 +3,10 @@
 <% end %>
 
 <%= turbo_stream.replace "preview_link_#{@edition.id}" do %>
+  <% if @edition.has_entries_for_multiple_subschemas? %>
+    <%= render "shared/reorder_link", edition: @edition %>
+  <% end %>
+
   <%= render("govuk_publishing_components/components/button", {
     text: "Close preview",
     secondary_quiet: true,

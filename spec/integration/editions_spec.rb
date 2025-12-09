@@ -78,14 +78,14 @@ RSpec.describe Editions, type: :feature do
       allow(edition).to receive(:has_entries_for_multiple_subschemas?).and_return(true)
       visit preview_edition_path(edition)
 
-      expect(page).to have_css "a.govuk-link", text: "Reorder"
+      expect(page).to have_css "a.govuk-button", text: "Reorder"
     end
 
     scenario "shows a link to reorder if has_entries_for_multiple_subschemas? is false" do
       allow(edition).to receive(:has_entries_for_multiple_subschemas?).and_return(false)
       visit preview_edition_path(edition)
 
-      assert_no_selector "a.govuk-link", text: "Reorder"
+      assert_no_selector "a.govuk-button", text: "Reorder"
     end
   end
 end
