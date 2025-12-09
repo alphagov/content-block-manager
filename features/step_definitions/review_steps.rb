@@ -1,6 +1,5 @@
-When("I follow the workflow steps through to the final review step") do
-  create_new_edition
-  expect(page).to have_content("Review pension")
+When("I follow the link to complete the draft") do
+  click_link("Complete draft")
 end
 
 Then("I see a principal call to action of 'Send to 2i'") do
@@ -13,10 +12,10 @@ Then("I do not see a call to action of 'Send to 2i'") do
   expect(page).to have_no_button("Send to 2i")
 end
 
-Then("I see a secondary call to action of 'Edit pension'") do
+Then("I see a secondary call to action edit the existing draft") do
   expect(page).to have_css(
-    "a.govuk-button--secondary[href='#{new_document_edition_path(edition.document)}']",
-    text: "Edit pension",
+    "a.govuk-button--secondary[href='#{workflow_path(edition, step: :review)}']",
+    text: "Edit draft",
   )
 end
 
@@ -32,14 +31,6 @@ end
 Given("I try to send the draft to review without confirming that I have checked the contents") do
   uncheck "has_checked_content"
   click_button "Send to 2i"
-end
-
-def create_new_edition
-  click_link("Edit pension")
-  # creating a new edition when editing a draft is perhaps wrong
-  # but we'll tackle this in a future piece of work
-  expect(current_path).to eq(new_document_edition_path(edition.document))
-  click_button("Save and continue")
 end
 
 def complete_note_step

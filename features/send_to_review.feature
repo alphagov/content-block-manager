@@ -31,7 +31,7 @@ Feature: Editor sends edition to Review
     And I click to view the document
     Then I see that the edition is in draft state
     And I see a principal call to action of 'Send to 2i'
-    And I see a secondary call to action of 'Edit pension'
+    And I see a secondary call to action edit the existing draft
 
     And I opt to send the edition to Review
     Then I see a notification that the transition to awaiting_review was successful
@@ -54,14 +54,14 @@ Feature: Editor sends edition to Review
     Given the draft workflow has not been completed
     And I am viewing the draft edition
     Then I do not see a call to action of 'Send to 2i'
-    And I see a principal call to action of 'Edit pension'
+    And I see a principal call to action to complete the draft
 
   Scenario: Send to 2i Review from review step in workflow
     When I visit the Content Block Manager home page
     And I click to view the document
     Then I see that the edition is in draft state
 
-    When I follow the workflow steps through to the final review step
+    When I follow the link to complete the draft
     Then I see that I can complete the workflow with 'Send to 2i'
 
     When I confirm I have checked the content
