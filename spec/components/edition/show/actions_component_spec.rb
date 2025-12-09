@@ -90,19 +90,40 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
   end
 
   describe "link to create new draft edition" do
-    Edition.available_states.each do |state|
-      context "when the edition is in the '#{state}' state" do
-        before do
-          edition.state = state
-          component = described_class.new(edition: edition)
-          render_inline component
-        end
+    context "for 'in-progress' states" do
+      Edition.in_progress_states.each do |state|
+        context "when the edition is in the '#{state}' state" do
+          before do
+            edition.state = state
+            component = described_class.new(edition: edition)
+            render_inline component
+          end
 
-        it "offers an 'Edit' link to create a new draft edition" do
-          expect(page).to have_css(
-            ".actions a.govuk-button--secondary[href='/456/editions/new']",
-            text: "Edit pension",
-          )
+          it "does NOT offer an 'Edit' link to create a new draft edition" do
+            expect(page).to have_no_css(
+              ".actions a.govuk-button--secondary[href='/456/editions/new']",
+              text: "Edit pension",
+            )
+          end
+        end
+      end
+    end
+
+    context "for 'finalised' states" do
+      Edition.finalised_states.each do |state|
+        context "when the edition is in the '#{state}' state" do
+          before do
+            edition.state = state
+            component = described_class.new(edition: edition)
+            render_inline component
+          end
+
+          it "does offer an 'Edit' link to create a new draft edition" do
+            expect(page).to have_css(
+              ".actions a.govuk-button--secondary[href='/456/editions/new']",
+              text: "Edit pension",
+            )
+          end
         end
       end
     end

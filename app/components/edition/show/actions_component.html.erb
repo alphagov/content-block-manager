@@ -28,14 +28,16 @@
     </li>
   <% end %>
 
-  <li>
-    <%= render "govuk_publishing_components/components/button", {
-      text: "Edit #{document.block_type.humanize.downcase}",
-      href: new_document_edition_path(document),
-      secondary_solid: true,
-      inline_layout: false,
-    } %>
-  </li>
+  <% if finalised_state? %>
+    <li>
+      <%= render "govuk_publishing_components/components/button", {
+        text: "Edit #{document.block_type.humanize.downcase}",
+        href: new_document_edition_path(document),
+        secondary_solid: true,
+        inline_layout: false,
+      } %>
+    </li>
+  <% end %>
 
   <% if state != "published" && document.has_published_edition? %>
     <li class="govuk-!-static-margin-top-3">
