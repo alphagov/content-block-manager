@@ -131,6 +131,6 @@ def add_change_note
 end
 
 def review_and_confirm
-  check "is_confirmed"
+  check "has_checked_content"
   submit
 end

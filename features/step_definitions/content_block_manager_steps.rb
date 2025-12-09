@@ -253,11 +253,11 @@ Then("I am asked to review my answers for a {string}") do |block_type|
   assert_text "Review #{block_type}"
 end
 
-Then("I confirm my answers are correct") do
-  check "is_confirmed"
+Then("I confirm I have checked the content") do
+  check "has_checked_content"
 end
 
-When("I review and confirm my answers are correct") do
+When("I review and confirm I have checked the content") do
   review_and_confirm
 end
 

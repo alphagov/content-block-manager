@@ -1,10 +1,20 @@
 <ul class="actions govuk-list govuk-!-text-align-centre">
-  <% if state == "draft" %>
+  <% if state == "draft" && completed? %>
     <li>
       <%= render Shared::TransitionButtonComponent.new(
         edition: edition,
         transition: :ready_for_review,
       ) %>
+    </li>
+  <% end %>
+
+  <% if state == "draft" && !completed? %>
+    <li class="govuk-!-static-margin-bottom-3">
+      <%= render "govuk_publishing_components/components/button", {
+        text: "Complete draft",
+        href: workflow_path(edition, step: :review),
+        inline_layout: false,
+      } %>
     </li>
   <% end %>
 

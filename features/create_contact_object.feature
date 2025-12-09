@@ -286,7 +286,7 @@ Feature: Create a contact object
     When I click the cancel link
     And I click to close the preview
     And I save and continue
-    And I review and confirm my answers are correct
+    And I review and confirm I have checked the content
     Then I should be taken to the confirmation page for a new "contact"
     When I click to view the content block
     Then the contact methods should be in the new order
@@ -328,7 +328,7 @@ Feature: Create a contact object
     And there should be no accessibility errors
     When I save and continue
     Then there should be no accessibility errors
-    When I review and confirm my answers are correct
+    When I review and confirm I have checked the content
     Then I should be taken to the confirmation page for a new "contact"
     When I click to view the content block
     Then there should be no accessibility errors
@@ -368,8 +368,8 @@ Feature: Create a contact object
       | New email 2 |
     And I save and continue
     Then I am asked to review my answers
-    And I confirm my answers are correct
-    And I review and confirm my answers are correct
+    And I confirm I have checked the content
+    And I review and confirm I have checked the content
     And I should be taken to the confirmation page for a new "contact"
 
   Scenario: Fields with default values are not repopulated when editing

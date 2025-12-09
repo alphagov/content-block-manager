@@ -38,10 +38,16 @@ Feature: Drafting a content block
     Then I should see the draft document
 
   Scenario: GDS editor saves their edition as a draft
-    When I confirm my answers are correct
+    When I confirm I have checked the content
     And I save a draft
     Then I should be taken back to the document page
     And the draft state of the object should be shown
     When I return to the homepage
     Then I should see the content block with title "my basic pension" returned
     And I should see a tag containing "Draft"
+
+  Scenario: Editor can not send an incomplete draft to review
+    Given I am viewing the draft edition
+    And the draft workflow has not been completed
+    Then I do not see a call to action of 'Send to 2i'
+    And I see a principal call to action of 'Edit pension'

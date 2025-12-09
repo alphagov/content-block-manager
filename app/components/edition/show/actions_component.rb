@@ -6,4 +6,6 @@ class Edition::Show::ActionsComponent < ViewComponent::Base
   end
 
   attr_reader :edition, :state, :document
+
+  delegate :completed?, to: :edition
 end

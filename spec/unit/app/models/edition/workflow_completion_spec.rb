@@ -3,17 +3,17 @@ RSpec.describe Edition::WorkflowCompletion do
   let(:schema) { build(:schema, block_type: "content_block_type", body: { "properties" => { "foo" => "", "bar" => "" } }) }
   let(:document) { create(:document, :pension, id: 567) }
   let(:edition) do
-    build(:edition,
-          id: 123,
-          document: document,
-          lead_organisation_id: organisation.id)
+    create(:edition,
+           id: 123,
+           document: document,
+           lead_organisation_id: organisation.id)
   end
   let(:published_edition) do
-    build(:edition,
-          id: 123,
-          document: document,
-          state: "published",
-          lead_organisation_id: organisation.id)
+    create(:edition,
+           id: 456,
+           document: document,
+           state: "published",
+           lead_organisation_id: organisation.id)
   end
 
   before do
@@ -21,6 +21,8 @@ RSpec.describe Edition::WorkflowCompletion do
     allow(Organisation).to receive(:all).and_return([organisation])
     allow(Services.publishing_api).to receive(:put_content)
     allow(Services.publishing_api).to receive(:publish)
+    allow(edition).to receive(:update_column)
+    allow(published_edition).to receive(:update_column)
   end
 
   describe "#call" do
@@ -30,6 +32,12 @@ RSpec.describe Edition::WorkflowCompletion do
           expect { described_class.new(edition, "foobar").call }.to raise_error(described_class::UnhandledSaveActionError)
           expect { described_class.new(edition, "").call }.to raise_error(described_class::UnhandledSaveActionError)
         end
+      end
+
+      it "should NOT mark the edition as 'completed'" do
+        described_class.new(edition, "foobar").call
+      rescue Edition::WorkflowCompletion::UnhandledSaveActionError
+        expect(edition).not_to have_received(:update_column)
       end
     end
 
@@ -50,6 +58,15 @@ RSpec.describe Edition::WorkflowCompletion do
           described_class.new(edition, "publish").call => { path: }
           expect(path).to eq("/editions/123/workflow/confirmation")
         end
+
+        it "should mark the edition as 'completed'" do
+          described_class.new(edition, "publish").call
+
+          expect(edition).to have_received(:update_column).with(
+            :workflow_completed_at,
+            Time.current,
+          )
+        end
       end
     end
 
@@ -68,7 +85,15 @@ RSpec.describe Edition::WorkflowCompletion do
 
         it "should return the edition's confirmation page path to redirect to" do
           described_class.new(published_edition, "publish").call => { path: }
-          expect(path).to eq("/editions/123/workflow/confirmation")
+          expect(path).to eq("/editions/456/workflow/confirmation")
+        end
+
+        it "should NOT mark the edition as 'completed' for a second time" do
+          allow(published_edition).to receive(:completed?).and_return(true)
+
+          described_class.new(published_edition, "publish").call
+
+          expect(published_edition).not_to have_received(:update_column)
         end
       end
     end
@@ -89,12 +114,108 @@ RSpec.describe Edition::WorkflowCompletion do
         described_class.new(edition, "publish").call => { path: }
         expect(path).to eq("/editions/123/workflow/confirmation")
       end
+
+      it "should mark the edition as 'completed'" do
+        described_class.new(edition, "publish").call
+
+        expect(edition).to have_received(:update_column).with(
+          :workflow_completed_at,
+          Time.current,
+        )
+      end
     end
 
     describe "when the save_action is 'save_as_draft'" do
       it "should return the document's view page path to redirect to" do
         described_class.new(edition, "save_as_draft").call => { path: }
         expect(path).to eq("/567")
+      end
+
+      it "should mark the edition as 'completed'" do
+        described_class.new(edition, "publish").call
+
+        expect(edition).to have_received(:update_column).with(
+          :workflow_completed_at,
+          Time.current,
+        )
+      end
+    end
+  end
+
+  describe "when the save_action is 'send_to_review'" do
+    it "attempts to transition the edition with Edition#ready_for_review!" do
+      allow(edition).to receive(:ready_for_review!).and_return(true)
+
+      described_class.new(edition, "send_to_review").call
+
+      expect(edition).to have_received(:ready_for_review!)
+    end
+
+    it "should mark the edition as 'completed'" do
+      described_class.new(edition, "publish").call
+
+      expect(edition).to have_received(:update_column).with(
+        :workflow_completed_at,
+        Time.current,
+      )
+    end
+
+    context "when the transition Edition#ready_for_review! is valid" do
+      before { allow(edition).to receive(:ready_for_review!).and_return(true) }
+
+      it "returns :path -> document" do
+        return_value = described_class.new(edition, "send_to_review").call
+
+        expect(return_value.fetch(:path)).to eq("/567")
+      end
+
+      it "returns :flash -> notice of success" do
+        return_value = described_class.new(edition, "send_to_review").call
+
+        expect(return_value.fetch(:flash)).to eq(
+          {
+            notice: "Edition has been moved into state 'Awaiting 2i'",
+          },
+        )
+      end
+    end
+
+    context "when the transition Edition#ready_for_review! is NOT valid" do
+      let(:error_message) do
+        "Can't fire event `ready_for_review` in current state `published` " \
+          "for `Edition` with ID 123  (Transitions::InvalidTransition)"
+      end
+
+      before do
+        allow(edition).to receive(:ready_for_review!).and_raise(
+          Transitions::InvalidTransition,
+          error_message,
+        )
+      end
+
+      it "should mark the edition as 'completed'" do
+        described_class.new(edition, "publish").call
+
+        expect(edition).to have_received(:update_column).with(
+          :workflow_completed_at,
+          Time.current,
+        )
+      end
+
+      it "returns :path -> document" do
+        return_value = described_class.new(edition, "send_to_review").call
+
+        expect(return_value.fetch(:path)).to eq("/567")
+      end
+
+      it "returns :flash -> error message" do
+        return_value = described_class.new(edition, "send_to_review").call
+
+        expect(return_value.fetch(:flash)).to eq(
+          {
+            error: error_message,
+          },
+        )
       end
     end
   end

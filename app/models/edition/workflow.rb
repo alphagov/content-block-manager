@@ -3,6 +3,7 @@ module Edition::Workflow
   include DateValidation
 
   class ReviewOutcomeMissingError < RuntimeError; end
+  class WorkflowCompletionError < RuntimeError; end
 
   included do
     include ActiveRecord::Transitions
@@ -48,7 +49,7 @@ module Edition::Workflow
         transitions from: %i[scheduled], to: :superseded
       end
       event :ready_for_review do
-        transitions from: %i[draft], to: :awaiting_review
+        transitions from: %i[draft], to: :awaiting_review, guard: [:workflow_completed?]
       end
       event :ready_for_factcheck do
         transitions from: %i[awaiting_review], to: :awaiting_factcheck, guard: [:has_review_outcome_recorded?]
@@ -66,6 +67,13 @@ module Edition::Workflow
       error_message = "Edition #{id} does not have a 2i Review outcome recorded and so " \
         "can't transition into the 'awaiting_factcheck' state"
       raise ReviewOutcomeMissingError, error_message
+    end
+
+    def workflow_completed?
+      return true if completed?
+
+      error_message = "Edition #{id}'s workflow has not been completed"
+      raise WorkflowCompletionError, error_message
     end
 
     def in_progress?
