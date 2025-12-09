@@ -1,6 +1,13 @@
 class Edition::WorkflowCompletion
   include Rails.application.routes.url_helpers
 
+  VALID_SAVE_ACTIONS = {
+    "publish" => :publish,
+    "schedule" => :schedule,
+    "save_as_draft" => :save_as_draft,
+    "send_to_review" => :send_to_review,
+  }.freeze
+
   class UnhandledSaveActionError < StandardError; end
 
   def initialize(edition, save_action)
@@ -9,21 +16,27 @@ class Edition::WorkflowCompletion
   end
 
   def call
-    case @save_action
-    when "publish"
-      publish
-    when "schedule"
-      schedule
-    when "save_as_draft"
-      save_as_draft
-    when "send_to_review"
-      send_to_review
-    else
-      raise UnhandledSaveActionError, "Unknown save action: '#{@save_action}'"
-    end
+    validate_action
+    record_workflow_completion unless @edition.completed?
+
+    send(sanitised_save_action)
   end
 
 private
+
+  def validate_action
+    return true if @save_action.in?(VALID_SAVE_ACTIONS.keys)
+
+    raise UnhandledSaveActionError, "Unknown save action: '#{@save_action}'"
+  end
+
+  def sanitised_save_action
+    VALID_SAVE_ACTIONS.fetch(@save_action)
+  end
+
+  def record_workflow_completion
+    @edition.update_column(:workflow_completed_at, Time.current)
+  end
 
   def publish
     new_edition = if @edition.state != "published"

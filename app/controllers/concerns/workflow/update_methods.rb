@@ -53,17 +53,12 @@ module Workflow::UpdateMethods
       @error_summary_errors = [{ text: @check_content_error_copy, href: "#has_checked_content-0" }]
       render :review, status: :unprocessable_content
     else
-      record_workflow_completed
       action = Edition::WorkflowCompletion.new(@edition, params[:save_action]).call
       redirect_to action[:path], flash: action[:flash]
     end
   end
 
 private
-
-  def record_workflow_completed
-    @edition.update_column(:workflow_completed_at, Time.current)
-  end
 
   def redirect_to_next_step
     redirect_to workflow_path(
