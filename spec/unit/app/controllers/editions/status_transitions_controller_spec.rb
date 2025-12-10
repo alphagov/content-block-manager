@@ -68,7 +68,7 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
         it "sets a success message" do
           post :create, params: { id: 123, transition: :ready_for_review }
 
-          expect(flash.notice).to eq("Edition has been moved into state 'awaiting_review'")
+          expect(flash.notice).to eq(I18n.t("edition.states.transition_message.awaiting_review"))
         end
 
         it "redirects to the document page" do

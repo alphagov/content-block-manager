@@ -174,7 +174,7 @@ RSpec.describe Edition::WorkflowCompletion do
 
         expect(return_value.fetch(:flash)).to eq(
           {
-            notice: "Edition has been moved into state 'Awaiting 2i'",
+            notice: I18n.t("edition.states.transition_message.awaiting_review"),
           },
         )
       end

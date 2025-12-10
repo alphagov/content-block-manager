@@ -61,9 +61,8 @@ private
   def send_to_review
     @edition.ready_for_review!
 
-    state_label = I18n.t("edition.states.label.awaiting_review")
     { path: document_path(@edition.document),
-      flash: { notice: "Edition has been moved into state '#{state_label}'" } }
+      flash: { notice: I18n.t("edition.states.transition_message.awaiting_review") } }
   rescue Transitions::InvalidTransition => e
     { path: document_path(@edition.document),
       flash: { error: e.message } }

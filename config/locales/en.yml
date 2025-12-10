@@ -154,6 +154,8 @@ en:
         published: Published
         superseded: Superseded
         deleted: Deleted
+      transition_message:
+        awaiting_review: "This edition is now ready to be reviewed by a second pair of eyes"
       label_extended:
         draft: "Drafted on %{date} by %{user}"
         awaiting_review: "Sent for 2i review on %{date} by %{user}"
