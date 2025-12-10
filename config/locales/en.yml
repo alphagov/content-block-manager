@@ -157,6 +157,8 @@ en:
       transition_message:
         awaiting_review: "This edition is now ready to be reviewed by a second pair of eyes"
         awaiting_factcheck: "This edition is now ready to be fact-checked by a subject-matter export"
+        published: "This edition has now been published"
+        deleted: "The edition has been deleted"
       label_extended:
         draft: "Drafted on %{date} by %{user}"
         awaiting_review: "Sent for 2i review on %{date} by %{user}"

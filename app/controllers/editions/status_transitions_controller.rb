@@ -25,7 +25,7 @@ private
   end
 
   def handle_success
-    flash.notice = "Edition has been moved into state '#{@edition.state}'"
+    flash.notice = I18n.t("edition.states.transition_message.#{@edition.state}")
   end
 
   def handle_failure(error)

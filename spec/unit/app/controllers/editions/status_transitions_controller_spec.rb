@@ -2,7 +2,7 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
   include LoginHelpers
   let(:user) { create :user }
   let(:document) { instance_double(Document, id: 456) }
-  let(:edition) { build(:edition, document: create(:document)) }
+  let(:edition) { create(:edition, document: create(:document)) }
   let(:transition_state_outcome) do
     {
       ready_for_review: "awaiting_review",
@@ -51,10 +51,9 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
           end
 
           it "shows a success message" do
-            expected_success_message = "Edition has been moved into state '#{transition_state_outcome[transition]}'"
-
             post :create, params: { id: 123, transition: transition }
 
+            expected_success_message = I18n.t("edition.states.transition_message.#{edition.reload.state}")
             expect(flash.notice).to eq(expected_success_message)
           end
         end
