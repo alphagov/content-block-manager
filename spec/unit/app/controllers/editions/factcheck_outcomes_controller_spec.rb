@@ -16,8 +16,20 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       expect(assigns(:edition)).to eq(edition)
     end
 
-    it "sets the page title" do
-      expect(assigns(:title)).to eq("Publish block")
+    context "when the edition is going to be scheduled" do
+      let(:edition) { Edition.new(id: 123, document: document, scheduled_publication: Time.zone.now) }
+
+      it "sets the page title to a 'schedule' call-to-action" do
+        expect(assigns(:title)).to eq("Schedule block")
+      end
+    end
+
+    context "when the edition is going to be published" do
+      let(:edition) { Edition.new(id: 123, document: document, scheduled_publication: nil) }
+
+      it "sets the page title to a 'publish' call-to-action" do
+        expect(assigns(:title)).to eq("Publish block")
+      end
     end
 
     it "renders the editions/factcheck_outcomes/new template" do
