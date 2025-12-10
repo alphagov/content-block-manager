@@ -47,6 +47,7 @@ RSpec.describe Shared::TransitionButtonComponent, type: :component do
 
   context "when the given transition is 'schedule'" do
     let(:transition) { "schedule" }
+    let(:edition) { build_stubbed :edition, :awaiting_factcheck }
 
     it "shows the 'Schedule' call to action" do
       render_inline component
