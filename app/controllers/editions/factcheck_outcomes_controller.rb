@@ -1,7 +1,7 @@
 class Editions::FactcheckOutcomesController < BaseController
   def new
     @edition = Edition.find(params[:id])
-    @title = "Publish block"
+    @title = block_will_be_scheduled? ? "Schedule block" : "Publish block"
     render :new
   end
 
@@ -41,5 +41,9 @@ private
 
   def outcome_params
     params.require("factcheck_outcome")
+  end
+
+  def block_will_be_scheduled?
+    @edition.is_scheduling?
   end
 end
