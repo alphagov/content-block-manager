@@ -21,6 +21,13 @@ Then("I see a principal call to action of 'Edit pension'") do
   )
 end
 
+Then("I see a principal call to action to complete the draft") do
+  expect(page).to have_css(
+    "a.govuk-button",
+    text: "Complete draft",
+  )
+end
+
 def should_see_the_draft_edition_in_full
   should_see_status_for(state: :draft)
   shows_list_of_locations

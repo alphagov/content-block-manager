@@ -49,12 +49,12 @@ Then(/the calls to action are suited to the ([^"]*) state/) do |state|
   case state.to_sym
   when :awaiting_review
     within ".actions" do
-      expect(page).to have_link("Edit pension")
+      expect(page).to have_link("Edit draft")
       expect(page).to have_no_button("Send to 2i")
     end
   when :awaiting_factcheck
     within ".actions" do
-      expect(page).to have_link("Edit pension")
+      expect(page).to have_link("Complete draft")
       expect(page).to have_link("Delete draft")
     end
   else

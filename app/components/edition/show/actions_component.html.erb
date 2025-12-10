@@ -8,11 +8,12 @@
     </li>
   <% end %>
 
-  <% if state == "draft" && !completed? %>
+  <% if !finalised_state? %>
     <li class="govuk-!-static-margin-bottom-3">
       <%= render "govuk_publishing_components/components/button", {
-        text: "Complete draft",
+        text: completed? ? "Edit draft" : "Complete draft",
         href: workflow_path(edition, step: :review),
+        secondary_solid: completed? ? true : false,
         inline_layout: false,
       } %>
     </li>
@@ -28,14 +29,16 @@
     </li>
   <% end %>
 
-  <li>
-    <%= render "govuk_publishing_components/components/button", {
-      text: "Edit #{document.block_type.humanize.downcase}",
-      href: new_document_edition_path(document),
-      secondary_solid: true,
-      inline_layout: false,
-    } %>
-  </li>
+  <% if finalised_state? %>
+    <li>
+      <%= render "govuk_publishing_components/components/button", {
+        text: "Edit #{document.block_type.humanize.downcase}",
+        href: new_document_edition_path(document),
+        secondary_solid: true,
+        inline_layout: false,
+      } %>
+    </li>
+  <% end %>
 
   <% if state != "published" && document.has_published_edition? %>
     <li class="govuk-!-static-margin-top-3">
