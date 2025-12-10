@@ -37,8 +37,7 @@ private
 
   def transition_to_awaiting_factcheck_state
     @edition.ready_for_factcheck!
-    state_label = I18n.t("edition.states.label.awaiting_factcheck")
-    flash.notice = "Edition has been moved into state '#{state_label}'"
+    flash.notice = I18n.t("edition.states.transition_message.awaiting_factcheck")
   end
 
   def review_outcome_supplied?

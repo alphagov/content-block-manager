@@ -23,6 +23,8 @@ Then(/I see a notification that the transition to ([^"]*) was successful/) do |s
   message = case state
             when "Awaiting review"
               I18n.t("edition.states.transition_message.awaiting_review")
+            when "Awaiting factcheck"
+              I18n.t("edition.states.transition_message.awaiting_factcheck")
             else
               "Edition has been moved into state '#{state}'"
             end
