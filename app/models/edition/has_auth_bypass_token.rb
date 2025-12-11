@@ -23,6 +23,6 @@ module Edition::HasAuthBypassToken
   end
 
   def bypass_token_expiry_date
-    1.month.from_now
+    7.days.from_now
   end
 end
