@@ -20,7 +20,16 @@ def should_see_status_for(state:)
 end
 
 Then(/I see a notification that the transition to ([^"]*) was successful/) do |state|
-  message = "Edition has been moved into state '#{state}'"
+  message = case state
+            when "Awaiting review"
+              I18n.t("edition.states.transition_message.awaiting_review")
+            when "Awaiting factcheck"
+              I18n.t("edition.states.transition_message.awaiting_factcheck")
+            when "deleted"
+              I18n.t("edition.states.transition_message.deleted")
+            else
+              "Edition has been moved into state '#{state}'"
+            end
 
   within(".govuk-notification-banner--success") do
     expect(page).to have_content(message)

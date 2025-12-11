@@ -34,7 +34,7 @@ Feature: Editor sends edition to Review
     And I see a secondary call to action edit the existing draft
 
     And I opt to send the edition to Review
-    Then I see a notification that the transition to awaiting_review was successful
+    Then I see a notification that the transition to Awaiting review was successful
     And I see that the edition is in awaiting_review state
     And I see the transition to the awaiting_review state in the timeline
     And the calls to action are suited to the awaiting_review state
@@ -66,7 +66,7 @@ Feature: Editor sends edition to Review
 
     When I confirm I have checked the content
     And I opt to send the edition to Review
-    Then I see a notification that the transition to Awaiting 2i was successful
+    Then I see a notification that the transition to Awaiting review was successful
     And I see that the edition is in awaiting_review state
     And the calls to action are suited to the awaiting_review state
 

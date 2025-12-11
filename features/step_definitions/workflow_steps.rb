@@ -12,6 +12,12 @@ Then("I see that I can complete the workflow with 'Send to 2i'") do
   )
 end
 
+Then("I should see a notice that the completed drafted has been saved") do
+  within(".govuk-notification-banner--success") do
+    expect(page).to have_content(I18n.t("edition.confirmation_page.drafted.banner"))
+  end
+end
+
 def draft
   Edition.draft.last
 end

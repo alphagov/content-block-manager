@@ -131,6 +131,16 @@ RSpec.describe Edition::WorkflowCompletion do
         expect(path).to eq("/567")
       end
 
+      it "should set a success message to the 'flash'" do
+        return_value = described_class.new(edition, "save_as_draft").call
+
+        expect(return_value.fetch(:flash)).to eq(
+          {
+            notice: I18n.t("edition.confirmation_page.drafted.banner"),
+          },
+        )
+      end
+
       it "should mark the edition as 'completed'" do
         described_class.new(edition, "publish").call
 
@@ -174,7 +184,7 @@ RSpec.describe Edition::WorkflowCompletion do
 
         expect(return_value.fetch(:flash)).to eq(
           {
-            notice: "Edition has been moved into state 'Awaiting 2i'",
+            notice: I18n.t("edition.states.transition_message.awaiting_review"),
           },
         )
       end

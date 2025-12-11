@@ -67,7 +67,7 @@ en:
         banner: "%{block_type} published"
         detail: You can now view the updated content block.
       drafted:
-        banner: Block has been saved as draft
+        banner: This edition has been saved as a finished draft
     delete:
       body: Are you sure you want to delete this draft?
     review_page:
@@ -154,6 +154,11 @@ en:
         published: Published
         superseded: Superseded
         deleted: Deleted
+      transition_message:
+        awaiting_review: "This edition is now ready to be reviewed by a second pair of eyes"
+        awaiting_factcheck: "This edition is now ready to be fact-checked by a subject-matter export"
+        published: "This edition has now been published"
+        deleted: "The edition has been deleted"
       label_extended:
         draft: "Drafted on %{date} by %{user}"
         awaiting_review: "Sent for 2i review on %{date} by %{user}"

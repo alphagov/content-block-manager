@@ -41,6 +41,7 @@ Feature: Drafting a content block
     When I confirm I have checked the content
     And I save a draft
     Then I should be taken back to the document page
+    And I should see a notice that the completed drafted has been saved
     And the draft state of the object should be shown
     When I return to the homepage
     Then I should see the content block with title "my basic pension" returned
