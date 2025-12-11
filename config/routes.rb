@@ -52,7 +52,7 @@ Rails.application.routes.draw do
       resources :review_outcomes, only: %i[new create], controller: "editions/review_outcomes", path_names: { new: "/new" }
 
       # record Factcheck outcomes
-      resources :factcheck_outcomes, only: %i[new], controller: "editions/factcheck_outcomes", path_names: { new: "/new" }
+      resources :factcheck_outcomes, only: %i[new create], controller: "editions/factcheck_outcomes", path_names: { new: "/new" }
 
       # State transitions
       resources :edition_status_transitions, only: [:create], controller: "editions/status_transitions"
