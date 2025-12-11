@@ -2,6 +2,10 @@ Given("a pension content block has been drafted") do
   create_pension_edition(state: :draft)
 end
 
+Given("a new pension content block has been drafted with the title {string}") do |title|
+  create_pension_edition(state: :draft, document: create(:document, :pension), title:)
+end
+
 Given("a pension content block is awaiting fact check") do
   create_pension_edition(state: :awaiting_factcheck)
 end
@@ -66,16 +70,16 @@ Given(/^([^"]*) content blocks of type ([^"]*) have been created with the fields
   end
 end
 
-def create_pension_edition(state:)
+def create_pension_edition(state:, document: nil, title: "My pension")
   @content_block = create(
     :edition,
     :pension,
     state: state,
-    document: pension_document,
+    document: document || pension_document,
     details: { description: "Some text" },
     creator: @user,
     lead_organisation_id: organisation_id,
-    title: "My pension",
+    title:,
   )
 end
 

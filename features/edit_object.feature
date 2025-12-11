@@ -124,6 +124,14 @@ Feature: Edit a content object
     And I visit the Content Block Manager home page
     Then I should still see the draft edition on the homepage
 
+  Scenario: Editing a draft edition should not create a new document
+    Given a new pension content block has been drafted with the title "New Pension"
+    And I visit the Content Block Manager home page
+    And I click to view the document
+    When I click to edit the "pension"
+    And I save and continue
+    Then only one document with the title "New Pension" should exist
+
   @javascript
   Scenario: GDS editor can preview a host document
     Given there is a host document with a link
