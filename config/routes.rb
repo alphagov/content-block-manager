@@ -55,6 +55,7 @@ Rails.application.routes.draw do
       get "factcheck_outcomes/new", to: "editions/factcheck_outcomes#new", as: :new_factcheck_outcome
       post "factcheck_outcomes", to: "editions/factcheck_outcomes#create", as: :create_factcheck_outcome
       get "factcheck_outcomes/review", to: "editions/factcheck_outcomes#review", as: :review_factcheck_outcome
+      put "factcheck_outcomes", to: "editions/factcheck_outcomes#update", as: :update_factcheck_outcome
 
       # State transitions
       resources :edition_status_transitions, only: [:create], controller: "editions/status_transitions"
