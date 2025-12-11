@@ -1,0 +1,42 @@
+<div class="govuk-button-group govuk-!-margin-bottom-6">
+  <div>
+    <% if pre_release_features? %>
+      <%= render "govuk_publishing_components/components/button", {
+        text: "Send to 2i",
+        name: "save_action",
+        value: "send_to_review",
+        type: "submit",
+        form: "review",
+        data_attributes: {
+          "testid": "submit-button",
+        },
+      } %>
+    <% else %>
+      <%= render "govuk_publishing_components/components/button", {
+        text: helpers.button_text_submit_for(@edition),
+        name: "save_action",
+        value: helpers.save_action_value_for(@edition),
+        type: "submit",
+        form: "review",
+        data_attributes: {
+          "testid": "submit-button",
+        },
+      } %>
+    <% end %>
+  </div>
+  <% if pre_release_features? %>
+    <div>
+      <%= render "govuk_publishing_components/components/button", {
+        text: "Save as draft",
+        name: "save_action",
+        value: "save_as_draft",
+        type: "submit",
+        form: "review",
+        secondary_solid: true,
+      } %>
+    </div>
+  <% end %>
+  <div>
+    <%= render Shared::CancelButtonComponent.new(@edition) %>
+  </div>
+</div>
