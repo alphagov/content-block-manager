@@ -29,6 +29,22 @@ class DocumentsController < BaseController
     )
   end
 
+  def diff
+    @document = Document.find(params[:id])
+    @current_edition = @document.most_recent_edition
+    @published_edition = @document.latest_published_edition
+    @schema = Schema.find_by_block_type(@document.block_type)
+    @content_block_versions = @document.versions
+    @order = params[:order]
+    @page = params[:page]
+
+    @host_content_items = HostContentItem.for_document(
+      @document,
+      order: @order,
+      page: @page,
+    )
+  end
+
   def content_id
     document = Document.where(content_id: params[:content_id]).first
 
