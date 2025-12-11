@@ -932,6 +932,7 @@ DEPENDENCIES
   dartsass-rails
   database_cleaner-active_record
   debug
+  diff-lcs
   equivalent-xml
   erb_lint
   fact_check!
