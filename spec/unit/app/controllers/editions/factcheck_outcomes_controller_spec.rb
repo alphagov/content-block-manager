@@ -137,4 +137,125 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       expect(response).to have_rendered("editions/factcheck_outcomes/identify_reviewer")
     end
   end
+
+  describe "PUT to :update" do
+    let(:time_now) { Time.current }
+    let(:current_user) { instance_double(User, id: 987) }
+
+    before do
+      allow(Time).to receive(:current).and_return(time_now)
+      allow(Current).to receive(:user).and_return(current_user)
+      allow(edition).to receive(:update)
+      allow(edition).to receive(:schedule!)
+      allow(edition).to receive(:publish!)
+    end
+
+    context "when the request is valid" do
+      before do
+        put :update, params: {
+          id: 123,
+          "factcheck_outcome" => { "factcheck_reviewer" => "Alice" },
+        }
+      end
+
+      it "should update the edition with the Subject Matter Expert" do
+        expect(edition).to have_received(:update).with({ "factcheck_outcome_reviewer" => "Alice" })
+      end
+    end
+
+    context "when the request is missing a parameter" do
+      before do
+        put :update, params: {
+          id: 123,
+          "factcheck_outcome" => {},
+        }
+      end
+
+      it "redirects to the documents_path to display the most recent edition" do
+        expect(response).to redirect_to("/editions/123/factcheck_outcomes/identify_reviewer")
+      end
+
+      it "shows an error message" do
+        expected_message = "param is missing or the value is empty or invalid: factcheck_outcome"
+        expect(flash.alert).to eq(expected_message)
+      end
+    end
+
+    context "when the edition is due to be scheduled" do
+      let(:edition) { Edition.new(id: 123, document: document, scheduled_publication: Time.zone.now) }
+      before do
+        put :update, params: {
+          id: 123,
+          "factcheck_outcome" => { "factcheck_reviewer" => "Alice" },
+        }
+      end
+      it "transitions the edition using the 'schedule!' transition" do
+        expect(edition).to have_received(:schedule!)
+      end
+
+      it "redirects to the documents_path to display the most recent edition" do
+        expect(response).to redirect_to("/456")
+      end
+
+      it "shows a success message" do
+        expected_success_message = "This edition has now been scheduled for publishing"
+        expect(flash.notice).to eq(expected_success_message)
+      end
+    end
+
+    context "when the edition is NOT due to be scheduled" do
+      let(:edition) { Edition.new(id: 123, document: document) }
+
+      before do
+        put :update, params: {
+          id: 123,
+          "factcheck_outcome" => { "factcheck_reviewer" => "Alice" },
+        }
+      end
+
+      it "transitions the edition using the 'publish!' transition" do
+        expect(edition).to have_received(:publish!)
+      end
+
+      it "redirects to the documents_path to display the most recent edition" do
+        expect(response).to redirect_to("/456")
+      end
+
+      it "shows a success message" do
+        expected_success_message = "This edition has now been published"
+        expect(flash.notice).to eq(expected_success_message)
+      end
+    end
+
+    describe "when the transition fails" do
+      context "and the error was something else (e.g. unexpected state)" do
+        let(:error_message) do
+          "Can't fire event `publish!` in current state `draft` " \
+          "for `Edition` with ID 123  (Transitions::InvalidTransition)"
+        end
+
+        before do
+          allow(edition).to receive(:publish!).and_raise(
+            Transitions::InvalidTransition,
+            error_message,
+          )
+
+          put :update, params: {
+            id: 123,
+            "factcheck_outcome" => { "factcheck_reviewer" => "Alice" },
+          }
+        end
+
+        it "redirects to the document path" do
+          expect(response).to redirect_to("/456")
+        end
+
+        it "includes an error message with the transition error details" do
+          expect(flash.alert).to eq(
+            "Error: we can not change the status of this edition. #{error_message}",
+          )
+        end
+      end
+    end
+  end
 end

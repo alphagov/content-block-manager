@@ -8,7 +8,7 @@
   } %>
   <% end %>
 
-<%= form_tag("") do %>
+<%= form_tag(update_factcheck_outcome_edition_path(@edition), method: :put) do %>
 
   <%= render "govuk_publishing_components/components/input", {
       name: "factcheck_outcome[factcheck_reviewer]",

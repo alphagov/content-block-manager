@@ -158,6 +158,7 @@ en:
         awaiting_review: "This edition is now ready to be reviewed by a second pair of eyes"
         awaiting_factcheck: "This edition is now ready to be fact-checked by a subject-matter expert"
         published: "This edition has now been published"
+        scheduled: "This edition has now been scheduled for publishing"
         deleted: "The edition has been deleted"
       label_extended:
         draft: "Drafted on %{date} by %{user}"
