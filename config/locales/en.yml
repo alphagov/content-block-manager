@@ -156,7 +156,7 @@ en:
         deleted: Deleted
       transition_message:
         awaiting_review: "This edition is now ready to be reviewed by a second pair of eyes"
-        awaiting_factcheck: "This edition is now ready to be fact-checked by a subject-matter export"
+        awaiting_factcheck: "This edition is now ready to be fact-checked by a subject-matter expert"
         published: "This edition has now been published"
         deleted: "The edition has been deleted"
       label_extended:
