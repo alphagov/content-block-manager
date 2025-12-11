@@ -10,26 +10,26 @@ class HtmlDiffer
     compare_blocks.map do |diff|
       case diff[:status]
       when :unchanged
-        diff[:a].to_html
+        diff[:a]
       when :changed
         %Q{
         <div class="diff">
-           <del>#{char_diff_html(diff[:a].to_html, diff[:b].to_html).first}</del>
+           <del>#{char_diff_html(diff[:a], diff[:b]).first}</del>
         </div>
         <div class="diff">
-            <ins>#{char_diff_html(diff[:a].to_html, diff[:b].to_html).last}</ins>
+            <ins>#{char_diff_html(diff[:a], diff[:b]).last}</ins>
         </div>
         }
       when :deleted
         %Q{
         <div class="diff">
-          <del>#{diff[:a].to_html}</del>
+          <del>#{diff[:a]}</del>
         </div>
         }
       when :added
         %Q{
         <div class="diff">
-          <ins>#{diff[:b].to_html}</ins>
+          <ins>#{diff[:b]}</ins>
         </div>
         }
       end
@@ -63,48 +63,72 @@ class HtmlDiffer
   end
 
   def char_diff_html(old_html, new_html)
-    old_text = strip_tags(old_html)
-    new_text = strip_tags(new_html)
+    old_fragment = old_html.dup
+    new_fragment = new_html.dup
 
-    old_set = old_text.chars
-    new_set = new_text.chars
+    diff_text_nodes(old_fragment, new_fragment)
 
-    diff = Diff::LCS.sdiff(old_set, new_set)
+    [old_fragment.to_html, new_fragment.to_html]
+  end
 
-    old_out = ""
-    new_out = ""
+  def diff_text_nodes(old_node, new_node)
+    if old_node.text? && new_node.text?
+      diff_text_node_content(old_node, new_node)
+    elsif old_node.element? && new_node.element?
+      old_children = old_node.children.to_a
+      new_children = new_node.children.to_a
+      max = [old_children.length, new_children.length].max
+
+      (0..max).each do |i|
+        o = old_children[i]
+        n = new_children[i]
+
+        next unless o && n
+        diff_text_nodes(o, n)
+      end
+    end
+  end
+
+  def diff_text_node_content(old_text_node, new_text_node)
+    old_chars = old_text_node.text.chars
+    new_chars = new_text_node.text.chars
+
+    diff = Diff::LCS.sdiff(old_chars, new_chars)
+
+    old_fragment = Nokogiri::HTML::DocumentFragment.parse("")
+    new_fragment = Nokogiri::HTML::DocumentFragment.parse("")
+
+    buffer_old = ""
+    buffer_new = ""
 
     diff.each do |change|
       case change.action
       when "="
-        old_out << change.old_element
-        new_out << change.new_element
+        buffer_old << change.old_element
+        buffer_new << change.new_element
       when "!"
-        old_out << "<strong>#{change.old_element}</strong>"
-        new_out << "<strong>#{change.new_element}</strong>"
+        old_fragment.add_child(Nokogiri::XML::Text.new(buffer_old, old_fragment)) unless buffer_old.empty?
+        new_fragment.add_child(Nokogiri::XML::Text.new(buffer_new, new_fragment)) unless buffer_new.empty?
+        buffer_old = ""
+        buffer_new = ""
+
+        old_fragment.add_child(Nokogiri::XML::Node.new("strong", old_fragment.document).tap { |n| n.content = change.old_element })
+        new_fragment.add_child(Nokogiri::XML::Node.new("strong", new_fragment.document).tap { |n| n.content = change.new_element })
       when "-"
-        old_out << "<strong>#{change.old_element}</strong>"
+        old_fragment.add_child(Nokogiri::XML::Text.new(buffer_old, old_fragment)) unless buffer_old.empty?
+        buffer_old = ""
+        old_fragment.add_child(Nokogiri::XML::Node.new("strong", old_fragment.document).tap { |n| n.content = change.old_element })
       when "+"
-        new_out << "<strong>#{change.new_element}</strong>"
+        new_fragment.add_child(Nokogiri::XML::Text.new(buffer_new, new_fragment)) unless buffer_new.empty?
+        buffer_new = ""
+        new_fragment.add_child(Nokogiri::XML::Node.new("strong", new_fragment.document).tap { |n| n.content = change.new_element })
       end
     end
 
-    [wrap_text_with_tags(old_html, old_out), wrap_text_with_tags(new_html, new_out)]
-  end
+    old_fragment.add_child(Nokogiri::XML::Text.new(buffer_old, old_fragment)) unless buffer_old.empty?
+    new_fragment.add_child(Nokogiri::XML::Text.new(buffer_new, new_fragment)) unless buffer_new.empty?
 
-  def strip_tags(html)
-    Nokogiri::HTML.fragment(html).text
-  end
-
-  def wrap_text_with_tags(original_html, new_text)
-    frag = Nokogiri::HTML.fragment(original_html)
-    new_frag = Nokogiri::HTML.fragment(new_text)
-
-    frag.children.remove
-    new_frag.children.each do |child|
-      frag.add_child(child)
-    end
-
-    frag.to_html
+    old_text_node.replace(old_fragment)
+    new_text_node.replace(new_fragment)
   end
 end
