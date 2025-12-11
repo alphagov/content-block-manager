@@ -453,3 +453,8 @@ end
 When(/^I click the button to delete/) do
   click_button "Delete"
 end
+
+Then("only one document with the title {string} should exist") do |title|
+  documents_with_title = Document.all.select { |document| document.title == title }
+  expect(documents_with_title.count).to eq(1)
+end

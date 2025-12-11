@@ -32,7 +32,7 @@
     <% else %>
       <%= render "govuk_publishing_components/components/button", {
         text: "Edit #{@document.block_type.humanize.downcase}",
-        href: new_document_edition_path(@document),
+        href: @edition.draft? ? workflow_path(id: @edition.id, step: :edit_draft) : new_document_edition_path(@document),
       } %>
     <% end %>
   </div>
