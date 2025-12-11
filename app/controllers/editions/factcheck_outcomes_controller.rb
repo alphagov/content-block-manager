@@ -10,6 +10,8 @@ class Editions::FactcheckOutcomesController < BaseController
     return form_validation_error unless factcheck_outcome_supplied?
 
     record_factcheck_outcome
+
+    redirect_to review_factcheck_outcome_edition_path(@edition)
   end
 
   def identify_reviewer
