@@ -87,6 +87,19 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
           end
         end
       end
+
+      describe "redirecting to the appropriate next step" do
+        before do
+          post :create, params: {
+            id: 123,
+            "factcheck_outcome" => { "factcheck_performed" => true },
+          }
+        end
+
+        it "should redirect the user to the review step of the factcheck process" do
+          expect(response).to redirect_to("/editions/123/factcheck_outcomes/review")
+        end
+      end
     end
 
     context "when the form returned is NOT valid" do
