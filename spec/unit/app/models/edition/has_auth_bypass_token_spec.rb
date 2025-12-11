@@ -38,7 +38,7 @@ RSpec.describe Edition::HasAuthBypassToken do
   describe "#bypass_token_expiry_date" do
     it "returns the expiry date of the token" do
       edition = build(:edition)
-      expect(edition.bypass_token_expiry_date).to eq(1.month.from_now)
+      expect(edition.bypass_token_expiry_date).to eq(7.days.from_now)
     end
   end
 end
