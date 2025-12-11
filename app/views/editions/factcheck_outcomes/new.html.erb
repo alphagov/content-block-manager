@@ -6,7 +6,7 @@
   } %>
 <% end %>
 
-<%= form_tag("") do %>
+<%= form_tag(factcheck_outcomes_path(@edition)) do %>
 
   <%= render "govuk_publishing_components/components/radio", {
     name: "factcheck_outcome[factcheck_performed]",
