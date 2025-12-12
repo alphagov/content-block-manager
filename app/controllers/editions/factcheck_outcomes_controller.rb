@@ -1,7 +1,7 @@
 class Editions::FactcheckOutcomesController < BaseController
+  before_action :set_edition_and_title, only: %i[new identify_reviewer]
+
   def new
-    @edition = Edition.find(params[:id])
-    @title = block_will_be_scheduled? ? "Schedule block" : "Publish block"
     render :new
   end
 
@@ -15,8 +15,6 @@ class Editions::FactcheckOutcomesController < BaseController
   end
 
   def identify_reviewer
-    @edition = Edition.find(params[:id])
-    @title = block_will_be_scheduled? ? "Schedule block" : "Publish block"
     render :identify_reviewer
   end
 
@@ -38,6 +36,11 @@ class Editions::FactcheckOutcomesController < BaseController
   end
 
 private
+
+  def set_edition_and_title
+    @edition = Edition.find(params[:id])
+    @title = block_will_be_scheduled? ? "Schedule block" : "Publish block"
+  end
 
   def update_factcheck_reviewer
     @edition.update(
