@@ -1,5 +1,5 @@
 @freeze_time
-Feature: Editor can use a fact check link to allow non-signon users to access a block's preview
+Feature: Editor can use a factcheck link to allow non-signon users to access a block's preview
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
@@ -18,22 +18,22 @@ Feature: Editor can use a fact check link to allow non-signon users to access a 
        }
     }
     """
-    And a pension content block is awaiting fact check
+    And a pension content block is awaiting factcheck
 
   @javascript
-  Scenario: Editor can see and copy a fact check link
+  Scenario: Editor can see and copy a factcheck link
     When I visit the Content Block Manager home page
     And I click to view the document
-    And I click to share the fact check link
+    And I click to share the factcheck link
     Then I should see a link to share the block for factcheck
     When I click to copy the link
     Then the link should be copied to my clipboard
 
   @javascript
-  Scenario: Editor can regenerate a fact check link
+  Scenario: Editor can regenerate a factcheck link
     When I visit the Content Block Manager home page
     And I click to view the document
-    And I click to share the fact check link
+    And I click to share the factcheck link
     Then I should see a link to share the block for factcheck
     When I click to reset the preview link
     Then a new preview link should be generated

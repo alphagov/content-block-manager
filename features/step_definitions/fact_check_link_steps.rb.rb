@@ -1,4 +1,4 @@
-And(/^I click to share the fact check link$/) do
+And(/^I click to share the factcheck link$/) do
   find("span", text: "Share factcheck link").click
 end
 
