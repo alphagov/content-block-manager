@@ -43,7 +43,7 @@ module Edition::Workflow
         transitions from: %i[draft awaiting_review awaiting_factcheck scheduled], to: :published
       end
       event :schedule do
-        transitions from: %i[draft], to: :scheduled
+        transitions from: %i[draft awaiting_factcheck], to: :scheduled
       end
       event :supersede do
         transitions from: %i[scheduled], to: :superseded

@@ -3,6 +3,11 @@ Then("I should see the contact created event on the timeline") do
   expect(page).to have_selector(".timeline__byline", text: "by #{@user.name}")
 end
 
+Then("I should see the pension created event on the timeline") do
+  expect(page).to have_selector(".timeline__title", text: "Pension created")
+  expect(page).to have_selector(".timeline__byline", text: "by #{@user.name}")
+end
+
 Then(/^I should see ([^"]*) publish events on the timeline$/) do |count|
   expect(page).to have_selector(".timeline__title", text: "Published", count:)
 end

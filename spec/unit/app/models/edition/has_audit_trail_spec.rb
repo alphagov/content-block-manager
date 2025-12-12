@@ -27,6 +27,7 @@ RSpec.describe Edition::HasAuditTrail do
         :edition,
         creator: user,
         document: create(:document, :pension),
+        state: :awaiting_factcheck,
       )
       edition.scheduled_publication = Time.zone.now + 1.day
       expect(edition).to receive(:generate_diff).and_return({})
@@ -46,6 +47,7 @@ RSpec.describe Edition::HasAuditTrail do
         :edition,
         creator: user,
         document: create(:document, :pension),
+        state: :awaiting_factcheck,
       )
       expect(edition).to receive(:generate_diff).and_return({})
       edition.updated_embedded_object_type = "something"
@@ -75,6 +77,7 @@ RSpec.describe Edition::HasAuditTrail do
         :edition,
         creator: user,
         document: create(:document, :pension),
+        state: :awaiting_factcheck,
       )
       edition.scheduled_publication = Time.zone.now + 1.day
 

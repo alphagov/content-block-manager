@@ -29,6 +29,16 @@
     </li>
   <% end %>
 
+  <% if state == "awaiting_factcheck" %>
+    <li class="govuk-!-static-margin-bottom-3">
+      <%= render "govuk_publishing_components/components/button", {
+        text: edition.is_scheduling? ? "Schedule block" : "Publish block",
+        href: new_factcheck_outcome_edition_path(edition),
+        inline_layout: false,
+      } %>
+    </li>
+  <% end %>
+
   <% if finalised_state? %>
     <li>
       <%= render "govuk_publishing_components/components/button", {

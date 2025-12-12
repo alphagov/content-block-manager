@@ -5,6 +5,7 @@ RSpec.describe ScheduleEditionService do
 
   let(:edition) do
     create(:edition,
+           state: :awaiting_factcheck,
            document: create(:document, :pension, content_id:),
            details: { "foo" => "Foo text", "bar" => "Bar text" },
            scheduled_publication: Time.zone.parse("2034-09-02T10:05:00"),
