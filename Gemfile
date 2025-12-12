@@ -5,6 +5,7 @@ gem "bootsnap", require: false
 gem "connection_pool", "< 3" # Pin ConnectionPool to 2.x until we upgrade Sidekiq to 8.x
 gem "content_block_tools"
 gem "dartsass-rails"
+gem "diff-lcs"
 gem "fact_check", path: "engines/fact_check"
 gem "faraday"
 gem "flipflop"
