@@ -69,6 +69,9 @@ private
 
     diff_text_nodes(old_fragment, new_fragment)
 
+    merge_adjacent_strong_tags(old_fragment)
+    merge_adjacent_strong_tags(new_fragment)
+
     [old_fragment.to_html, new_fragment.to_html]
   end
 
@@ -139,5 +142,23 @@ private
 
   def wrap_in_strong(char, fragment)
     Nokogiri::XML::Node.new("strong", fragment.document).tap { |n| n.content = char }
+  end
+
+  def merge_adjacent_strong_tags(node)
+    return unless node.element?
+
+    node.children.each do |child|
+      merge_adjacent_strong_tags(child) if child.element?
+    end
+
+    node.children.each_cons(2) do |left, right|
+      next unless left.name == "strong" && right.name == "strong"
+
+      left.content = left.content + right.content
+      right.remove
+
+      merge_adjacent_strong_tags(node)
+      break
+    end
   end
 end
