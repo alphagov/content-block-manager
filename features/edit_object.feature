@@ -132,6 +132,12 @@ Feature: Edit a content object
     And I save and continue
     Then only one document with the title "New Pension" should exist
 
+  Scenario: Creating a draft edition still allows the published edition to be seen
+    When I am updating a content block
+    And I visit the Content Block Manager home page
+    And I click to view the document
+    Then I should be able to view the published contact edition
+
   @javascript
   Scenario: GDS editor can preview a host document
     Given there is a host document with a link

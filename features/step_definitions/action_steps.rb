@@ -1,4 +1,4 @@
-Then("I should be able to view the published contact edition") do
+Then(/I should be able to view the published .+ edition/) do
   within ".actions" do
     expect(page).to have_link("Go to published edition")
   end

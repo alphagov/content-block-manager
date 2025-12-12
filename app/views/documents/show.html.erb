@@ -28,12 +28,20 @@
             edition: @edition,
           ),
         ) %>
-
     <% else %>
-      <%= render "govuk_publishing_components/components/button", {
-        text: "Edit #{@document.block_type.humanize.downcase}",
-        href: @edition.draft? ? workflow_path(id: @edition.id, step: :edit_draft) : new_document_edition_path(@document),
-      } %>
+      <ul class="actions govuk-list govuk-!-text-align-centre">
+        <li>
+          <%= render "govuk_publishing_components/components/button", {
+            text: "Edit #{@document.block_type.humanize.downcase}",
+            href: @edition.draft? ? workflow_path(id: @edition.id, step: :edit_draft) : new_document_edition_path(@document),
+          } %>
+        </li>
+        <% if @edition.state != "published" && @document.has_published_edition? %>
+          <li class="govuk-!-static-margin-top-3">
+            <%= link_to("Go to published edition", published_edition_document_path(@document), class: "govuk-link") %>
+          </li>
+        <% end %>
+      </ul>
     <% end %>
   </div>
 </div>
