@@ -68,6 +68,14 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
               "factcheck_outcome_recorded_by" => 987,
             )
           end
+
+          it "publishes the edition" do
+            expect(edition).to have_received(:publish!)
+          end
+
+          it "redirects to the document path" do
+            expect(response).to redirect_to("/456")
+          end
         end
 
         context "when the editor has indicated that the Factcheck was performed" do

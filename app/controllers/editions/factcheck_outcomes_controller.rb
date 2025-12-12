@@ -11,6 +11,11 @@ class Editions::FactcheckOutcomesController < BaseController
 
     record_factcheck_outcome
 
+    if factcheck_skipped?
+      finalise_edition
+      return
+    end
+
     redirect_to review_factcheck_outcome_edition_path(@edition)
   end
 
@@ -27,12 +32,7 @@ class Editions::FactcheckOutcomesController < BaseController
       return handle_missing_factcheck_reviewer(e)
     end
 
-    begin
-      transition_to_next_state
-      redirect_to(document_path(@edition.document))
-    rescue Transitions::InvalidTransition => e
-      handle_other_transition_error(e)
-    end
+    finalise_edition
   end
 
 private
@@ -40,6 +40,13 @@ private
   def set_instance_vars
     @edition = Edition.find(params[:id])
     @title = block_will_be_scheduled? ? "Schedule block" : "Publish block"
+  end
+
+  def finalise_edition
+    transition_to_next_state
+    redirect_to(document_path(@edition.document))
+  rescue Transitions::InvalidTransition => e
+    handle_other_transition_error(e)
   end
 
   def update_factcheck_reviewer
