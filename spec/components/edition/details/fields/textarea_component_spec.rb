@@ -1,11 +1,16 @@
-require "test_helper"
+COMPONENT_CLASS = ".app-c-content-block-manager-textarea-component".freeze
 
-class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
-  COMPONENT_CLASS = ".app-c-content-block-manager-textarea-component".freeze
-
+RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
   let(:described_class) { Edition::Details::Fields::TextareaComponent }
+  let(:helper_stub) { double(:helpers) }
 
   let(:edition) { build(:edition, :contact) }
+
+  before do
+    allow_any_instance_of(described_class).to receive(:helpers).and_return(helper_stub)
+    allow(helper_stub).to receive(:humanized_label).and_return("Translated label")
+    allow(helper_stub).to receive(:hint_text).and_return(nil)
+  end
 
   context "when textarea is built for a schema" do
     let(:properties) do
@@ -70,18 +75,16 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
     end
 
     before do
-      Schema
-        .stubs(:schema_settings)
-        .returns(config)
+      allow(Schema).to receive(:schema_settings).and_return(config)
     end
 
     it "gives the textarea an ID describing path to field" do
       render_inline component
 
-      assert_selector(COMPONENT_CLASS) do |component|
+      expect(page).to have_css(COMPONENT_CLASS) do |component|
         expected_id = "edition_details_rich_field"
 
-        component.assert_selector(
+        expect(component).to have_css(
           "textarea[id='#{expected_id}']",
         )
       end
@@ -90,7 +93,7 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
     it "includes a translated _label_" do
       render_inline component
 
-      assert_selector(COMPONENT_CLASS) do |component|
+      expect(page).to have_css(COMPONENT_CLASS) do |component|
         displays_label_using_translation_system(component)
       end
     end
@@ -98,11 +101,11 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
     it "includes a _name_ attribute representing nested field location" do
       render_inline component
 
-      assert_selector(COMPONENT_CLASS) do |component|
+      expect(page).to have_css(COMPONENT_CLASS) do |component|
         expected_name_attribute =
           "edition[details][rich_field]"
 
-        component.assert_selector(
+        expect(component).to have_css(
           "textarea[name='#{expected_name_attribute}']",
         )
       end
@@ -116,26 +119,26 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
             "blank",
           )
 
-          I18n.expects(:t).with(
+          expect(I18n).to receive(:t).with(
             "activerecord.errors.models.edition" \
               ".attributes.details_rich_field.format".to_sym,
-            has_entry(message: "blank"),
-          ).returns("Rich field must be present")
+            hash_including(message: "blank"),
+          ).and_return("Rich field must be present")
         end
 
         it "adds an error class to the form group to highlight the area needing attention" do
           render_inline component
 
-          assert_selector(COMPONENT_CLASS) do |component|
-            component.assert_selector(".govuk-form-group.govuk-form-group--error")
+          expect(page).to have_css(COMPONENT_CLASS) do |component|
+            expect(component).to have_css(".govuk-form-group.govuk-form-group--error")
           end
         end
 
         it "adds an error message to clarify the error and remedial action required" do
           render_inline component
 
-          assert_selector(COMPONENT_CLASS) do |component|
-            component.assert_selector(
+          expect(page).to have_css(COMPONENT_CLASS) do |component|
+            expect(component).to have_css(
               ".govuk-error-message",
               text: "Rich field must be present",
             )
@@ -158,7 +161,7 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
         it "displays guidance to indicate 'Govspeak supported'" do
           render_inline component
 
-          assert_selector(COMPONENT_CLASS) do |component|
+          expect(page).to have_css(COMPONENT_CLASS) do |component|
             displays_indication_that_govspeak_is_supported(component)
           end
         end
@@ -171,8 +174,8 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
           it "includes an 'aria-describedby' attribute on the textarea, to match the label hint's ID" do
             render_inline component
 
-            assert_selector(COMPONENT_CLASS) do |component|
-              component.assert_selector(
+            expect(page).to have_css(COMPONENT_CLASS) do |component|
+              expect(component).to have_css(
                 "textarea[aria-describedby='#{expected_hint_id_to_aria_mapping}']",
               )
             end
@@ -181,8 +184,8 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
           it "includes a 'Preview' button" do
             render_inline component
 
-            assert_selector(COMPONENT_CLASS) do |component|
-              component.assert_selector(
+            expect(page).to have_css(COMPONENT_CLASS) do |component|
+              expect(component).to have_css(
                 "button.js-app-c-govspeak-editor__preview-button",
                 text: "Preview",
               )
@@ -192,8 +195,8 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
           it "includes a 'Back to edit' button" do
             render_inline component
 
-            assert_selector(COMPONENT_CLASS) do |component|
-              component.assert_selector(
+            expect(page).to have_css(COMPONENT_CLASS) do |component|
+              expect(component).to have_css(
                 "button.js-app-c-govspeak-editor__back-button",
                 text: "Back to edit",
               )
@@ -203,8 +206,8 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
           it "includes a preview element to be replaced by the Govspeak which JS will render into HTML" do
             render_inline component
 
-            assert_selector(COMPONENT_CLASS) do |component|
-              component.assert_selector(
+            expect(page).to have_css(COMPONENT_CLASS) do |component|
+              expect(component).to have_css(
                 ".app-c-govspeak-editor__preview.js-locale-switcher-custom p",
                 text: "Generating preview, please wait.",
               )
@@ -226,7 +229,7 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
         it "does NOT display the 'Govspeak supported' hint" do
           render_inline component
 
-          assert_selector(COMPONENT_CLASS) do |component|
+          expect(page).to have_css(COMPONENT_CLASS) do |component|
             displays_no_indication_that_govspeak_is_supported(component)
           end
         end
@@ -234,7 +237,7 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
         it "does NOT  include a 'Preview' button" do
           render_inline component
 
-          assert_selector(COMPONENT_CLASS) do |component|
+          expect(page).to have_css(COMPONENT_CLASS) do |component|
             component.assert_no_selector(
               "button.js-app-c-govspeak-editor__preview-button",
               text: "Preview",
@@ -245,7 +248,7 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
         it "does NOT include 'Back to edit' button" do
           render_inline component
 
-          assert_selector(COMPONENT_CLASS) do |component|
+          expect(page).to have_css(COMPONENT_CLASS) do |component|
             component.assert_no_selector(
               "button.js-app-c-govspeak-editor__back-button",
               text: "Back to edit",
@@ -256,7 +259,7 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
         it "does NOT include a preview element to be replaced by the rendered Govspeak" do
           render_inline component
 
-          assert_selector(COMPONENT_CLASS) do |component|
+          expect(page).to have_css(COMPONENT_CLASS) do |component|
             component.assert_no_selector(
               ".app-c-govspeak-editor__preview.js-locale-switcher-custom p",
               text: "Generating preview, please wait.",
@@ -307,7 +310,7 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
       }
     end
 
-    let(:schema) { stub(:schema, block_type: "schema") }
+    let(:schema) { double(:schema, block_type: "schema") }
 
     let(:field) do
       Schema::Field::NestedField.new(
@@ -332,21 +335,19 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
     end
 
     before do
-      helper_stub = stub(:helpers)
-      Edition::Details::Fields::TextareaComponent.any_instance.stubs(:helpers).returns(helper_stub)
-      helper_stub.stubs(:hint_text).returns(nil)
-      helper_stub.stubs(:humanized_label).returns("Translated label")
+      helper_stub = double(:helpers)
+      allow_any_instance_of(Edition::Details::Fields::TextareaComponent).to receive(:helpers).and_return(helper_stub)
+      allow(helper_stub).to receive(:hint_text).and_return(nil)
+      allow(helper_stub).to receive(:humanized_label).and_return("Translated label")
 
-      Schema::EmbeddedSchema
-        .stubs(:schema_settings)
-        .returns(config)
+      allow(Schema::EmbeddedSchema).to receive(:schema_settings).and_return(config)
     end
 
     describe "GovspeakEnabledTextareaComponent" do
       it "gives the textarea an ID describing path to field" do
         render_inline component
 
-        assert_selector(COMPONENT_CLASS) do |component|
+        expect(page).to have_css(COMPONENT_CLASS) do |component|
           gives_textarea_id_describing_path_to_field(component)
         end
       end
@@ -354,7 +355,7 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
       it "includes a translated _label_" do
         render_inline component
 
-        assert_selector(COMPONENT_CLASS) do |component|
+        expect(page).to have_css(COMPONENT_CLASS) do |component|
           displays_label_using_translation_system(component)
         end
       end
@@ -362,7 +363,7 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
       it "includes a _name_ attribute representing nested field location" do
         render_inline component
 
-        assert_selector(COMPONENT_CLASS) do |component|
+        expect(page).to have_css(COMPONENT_CLASS) do |component|
           sets_name_attribute_on_textarea_describing_nested_path_to_field(component)
         end
       end
@@ -374,26 +375,26 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
             "blank",
           )
 
-          I18n.expects(:t).with(
+          expect(I18n).to receive(:t).with(
             "activerecord.errors.models.edition" \
               ".attributes.details_telephones_video_relay_service_prefix.format".to_sym,
-            has_entry(message: "blank"),
-          ).returns("Prefix must be present")
+            hash_including(message: "blank"),
+          ).and_return("Prefix must be present")
         end
 
         it "adds an error class to the form group to highlight the area needing attention" do
           render_inline component
 
-          assert_selector(COMPONENT_CLASS) do |component|
-            component.assert_selector(".govuk-form-group.govuk-form-group--error")
+          expect(page).to have_css(COMPONENT_CLASS) do |component|
+            expect(component).to have_css(".govuk-form-group.govuk-form-group--error")
           end
         end
 
         it "adds an error message to clarify the error and remedial action required" do
           render_inline component
 
-          assert_selector(COMPONENT_CLASS) do |component|
-            component.assert_selector(
+          expect(page).to have_css(COMPONENT_CLASS) do |component|
+            expect(component).to have_css(
               ".govuk-error-message",
               text: "Prefix must be present",
             )
@@ -425,7 +426,7 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
           it "displays guidance to indicate 'Govspeak supported'" do
             render_inline component
 
-            assert_selector(COMPONENT_CLASS) do |component|
+            expect(page).to have_css(COMPONENT_CLASS) do |component|
               displays_indication_that_govspeak_is_supported(component)
             end
           end
@@ -440,8 +441,8 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
             it "includes an 'aria-describedby' attribute on the textarea, to match the label hint's ID" do
               render_inline component
 
-              assert_selector(COMPONENT_CLASS) do |component|
-                component.assert_selector(
+              expect(page).to have_css(COMPONENT_CLASS) do |component|
+                expect(component).to have_css(
                   "textarea[aria-describedby='#{expected_hint_id_to_aria_mapping}']",
                 )
               end
@@ -450,8 +451,8 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
             it "includes a 'Preview' button" do
               render_inline component
 
-              assert_selector(COMPONENT_CLASS) do |component|
-                component.assert_selector(
+              expect(page).to have_css(COMPONENT_CLASS) do |component|
+                expect(component).to have_css(
                   "button.js-app-c-govspeak-editor__preview-button",
                   text: "Preview",
                 )
@@ -461,8 +462,8 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
             it "includes a 'Back to edit' button" do
               render_inline component
 
-              assert_selector(COMPONENT_CLASS) do |component|
-                component.assert_selector(
+              expect(page).to have_css(COMPONENT_CLASS) do |component|
+                expect(component).to have_css(
                   "button.js-app-c-govspeak-editor__back-button",
                   text: "Back to edit",
                 )
@@ -472,8 +473,8 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
             it "includes a preview element to be replaced by the Govspeak which JS will render into HTML" do
               render_inline component
 
-              assert_selector(COMPONENT_CLASS) do |component|
-                component.assert_selector(
+              expect(page).to have_css(COMPONENT_CLASS) do |component|
+                expect(component).to have_css(
                   ".app-c-govspeak-editor__preview.js-locale-switcher-custom p",
                   text: "Generating preview, please wait.",
                 )
@@ -506,7 +507,7 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
           it "does NOT display the 'Govspeak supported' hint" do
             render_inline component
 
-            assert_selector(COMPONENT_CLASS) do |component|
+            expect(page).to have_css(COMPONENT_CLASS) do |component|
               displays_no_indication_that_govspeak_is_supported(component)
             end
           end
@@ -514,7 +515,7 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
           it "does NOT  include a 'Preview' button" do
             render_inline component
 
-            assert_selector(COMPONENT_CLASS) do |component|
+            expect(page).to have_css(COMPONENT_CLASS) do |component|
               component.assert_no_selector(
                 "button.js-app-c-govspeak-editor__preview-button",
                 text: "Preview",
@@ -525,7 +526,7 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
           it "does NOT include 'Back to edit' button" do
             render_inline component
 
-            assert_selector(COMPONENT_CLASS) do |component|
+            expect(page).to have_css(COMPONENT_CLASS) do |component|
               component.assert_no_selector(
                 "button.js-app-c-govspeak-editor__back-button",
                 text: "Back to edit",
@@ -536,7 +537,7 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
           it "does NOT include a preview element to be replaced by the rendered Govspeak" do
             render_inline component
 
-            assert_selector(COMPONENT_CLASS) do |component|
+            expect(page).to have_css(COMPONENT_CLASS) do |component|
               component.assert_no_selector(
                 ".app-c-govspeak-editor__preview.js-locale-switcher-custom p",
                 text: "Generating preview, please wait.",
@@ -552,13 +553,13 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
     expected_id =
       "edition_details_telephones_video_relay_service_prefix"
 
-    component.assert_selector(
+    expect(component).to have_css(
       "textarea[id='#{expected_id}']",
     )
   end
 
   def displays_label_using_translation_system(component)
-    component.assert_selector(
+    expect(component).to have_css(
       "label",
       text: "Translated label",
     )
@@ -568,27 +569,27 @@ class Edition::Details::Fields::TextareaComponentTest < BaseComponentTestClass
     expected_name_attribute =
       "edition[details][telephones][video_relay_service][prefix]"
 
-    component.assert_selector(
+    expect(component).to have_css(
       "textarea[name='#{expected_name_attribute}']",
     )
   end
 
   def shows_default_value_in_textarea(component)
-    component.assert_selector(
+    expect(component).to have_css(
       "textarea",
       text: "**Default** prefix: 18000 then",
     )
   end
 
   def shows_set_value_in_textarea(component, value)
-    component.assert_selector(
+    expect(component).to have_css(
       "textarea",
       text: value,
     )
   end
 
   def displays_indication_that_govspeak_is_supported(component)
-    component.assert_selector(
+    expect(component).to have_css(
       ".guidance.govspeak-supported",
       text: "Govspeak supported",
     )

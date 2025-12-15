@@ -1,9 +1,8 @@
-require "test_helper"
-
-class Edition::Details::Fields::CallChargesComponentTest < BaseComponentTestClass
+RSpec.describe Edition::Details::Fields::CallChargesComponent, type: :component do
   let(:described_class) { Edition::Details::Fields::CallChargesComponent }
 
   let(:edition) { build(:edition, :contact) }
+  let(:helper_stub) { double(:helpers) }
 
   let(:body) do
     {
@@ -18,7 +17,7 @@ class Edition::Details::Fields::CallChargesComponentTest < BaseComponentTestClas
     }
   end
 
-  let(:schema) { stub(:schema, block_type: "schema", body:) }
+  let(:schema) { double(:schema, block_type: "schema", body:) }
 
   let(:field) do
     Schema::Field.new(
@@ -42,20 +41,22 @@ class Edition::Details::Fields::CallChargesComponentTest < BaseComponentTestClas
   end
 
   before do
-    helper_stub.stubs(:hint_text).returns({ show_call_charges_info_url: "Hint text" })
+    allow(component).to receive(:helpers).and_return(helper_stub)
+    allow(helper_stub).to receive(:hint_text).and_return({ show_call_charges_info_url: "Hint text" })
+    allow(helper_stub).to receive(:humanized_label).and_return("Translated label")
   end
 
   describe "Call Charges component" do
     describe "'show_call_charges_info_url' nested field" do
       it "shows a checkbox to toggle 'Show hyperlink' option" do
-        helper_stub.stubs(:humanized_label).returns("Show hyperlink to 'Find out about call charges'")
+        allow(helper_stub).to receive(:humanized_label).and_return("Show hyperlink to 'Find out about call charges'")
 
         render_inline(component)
 
-        assert_selector(".app-c-content-block-manager-call-charges-component") do |component|
-          component.assert_selector("label", text: "Show hyperlink to 'Find out about call charges'")
-          component.assert_selector("input[type='checkbox']", count: 1)
-          component.assert_selector(".govuk-hint", text: "Hint text")
+        expect(page).to have_css(".app-c-content-block-manager-call-charges-component") do |component|
+          expect(component).to have_css("label", text: "Show hyperlink to 'Find out about call charges'")
+          expect(component).to have_css("input[type='checkbox']", count: 1)
+          expect(component).to have_css(".govuk-hint", text: "Hint text")
         end
       end
 
@@ -68,8 +69,8 @@ class Edition::Details::Fields::CallChargesComponentTest < BaseComponentTestClas
         it "sets the checkbox to _checked_" do
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-call-charges-component") do |component|
-            component.assert_selector("input[checked='checked']")
+          expect(page).to have_css(".app-c-content-block-manager-call-charges-component") do |component|
+            expect(component).to have_css("input[checked='checked']")
           end
         end
       end
@@ -83,7 +84,7 @@ class Edition::Details::Fields::CallChargesComponentTest < BaseComponentTestClas
         it "sets the checkbox to _unchecked_" do
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-call-charges-component") do |component|
+          expect(page).to have_css(".app-c-content-block-manager-call-charges-component") do |component|
             component.assert_no_selector("input[checked='checked']")
           end
         end
@@ -100,8 +101,8 @@ class Edition::Details::Fields::CallChargesComponentTest < BaseComponentTestClas
         it "displays that value in the input field" do
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-call-charges-component") do |component|
-            component.assert_selector(
+          expect(page).to have_css(".app-c-content-block-manager-call-charges-component") do |component|
+            expect(component).to have_css(
               "input" \
               "[name='edition[details][call_charges][call_charges_info_url]']" \
               "[value='https://custom.gov.uk/call-charges/more']",
@@ -119,8 +120,8 @@ class Edition::Details::Fields::CallChargesComponentTest < BaseComponentTestClas
         it "displays the default value in the input field" do
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-call-charges-component") do |component|
-            component.assert_selector(
+          expect(page).to have_css(".app-c-content-block-manager-call-charges-component") do |component|
+            expect(component).to have_css(
               "input" \
               "[name='edition[details][call_charges][call_charges_info_url]']" \
               "[value='https://default.example.com']",
@@ -137,11 +138,11 @@ class Edition::Details::Fields::CallChargesComponentTest < BaseComponentTestClas
 
         render_inline(component)
 
-        assert_selector ".govuk-form-group--error", count: 2
-        assert_selector "input.govuk-input--error", count: 2
+        expect(page).to have_css ".govuk-form-group--error", count: 2
+        expect(page).to have_css "input.govuk-input--error", count: 2
 
-        assert_selector ".govuk-error-message", text: "Some label is required"
-        assert_selector ".govuk-error-message", text: "Some URL is required"
+        expect(page).to have_css ".govuk-error-message", text: "Some label is required"
+        expect(page).to have_css ".govuk-error-message", text: "Some URL is required"
       end
     end
   end

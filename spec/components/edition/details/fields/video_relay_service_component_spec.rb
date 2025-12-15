@@ -1,7 +1,6 @@
-require "test_helper"
-
-class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTestClass
+RSpec.describe Edition::Details::Fields::VideoRelayServiceComponent, type: :component do
   let(:described_class) { Edition::Details::Fields::VideoRelayServiceComponent }
+  let(:helper_stub) { double(:helpers) }
 
   let(:edition) { build(:edition, :contact) }
 
@@ -63,7 +62,7 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
     }
   end
 
-  let(:schema) { stub(:schema, block_type: "schema") }
+  let(:schema) { double(:schema, block_type: "schema") }
 
   let(:component) do
     described_class.new(
@@ -76,18 +75,20 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
   end
 
   before do
-    Edition::Details::Fields::TextareaComponent.any_instance.stubs(:helpers).returns(helper_stub)
+    allow(component).to receive(:helpers).and_return(helper_stub)
+    allow(helper_stub).to receive(:humanized_label).and_return("Translated label")
+    allow(helper_stub).to receive(:hint_text).and_return(nil)
   end
 
   describe "VideoRelayService component" do
     describe "'show' nested field" do
       it "shows a checkbox to toggle 'show' option" do
-        helper_stub.stubs(:humanized_label).returns("Add text relay")
+        allow(helper_stub).to receive(:humanized_label).and_return("Add text relay")
 
         render_inline(component)
 
-        assert_selector(".app-c-content-block-manager-video-relay-service-component") do |component|
-          component.assert_selector("label", text: "Add text relay")
+        expect(page).to have_css(".app-c-content-block-manager-video-relay-service-component") do |component|
+          expect(component).to have_css("label", text: "Add text relay")
         end
       end
 
@@ -104,8 +105,8 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
         it "sets the checkbox to _checked_" do
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-video-relay-service-component") do |component|
-            component.assert_selector("input[checked='checked']")
+          expect(page).to have_css(".app-c-content-block-manager-video-relay-service-component") do |component|
+            expect(component).to have_css("input[checked='checked']")
           end
         end
       end
@@ -123,7 +124,7 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
         it "sets the checkbox to _unchecked_" do
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-video-relay-service-component") do |component|
+          expect(page).to have_css(".app-c-content-block-manager-video-relay-service-component") do |component|
             component.assert_no_selector("input[checked='checked']")
           end
         end
@@ -131,23 +132,23 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
 
       context "when the 'show' field has related hint text" do
         it "shows the hint text" do
-          component.stubs(:hint_text).returns({ show: "Some hint text" })
+          allow(component).to receive(:hint_text).and_return({ show: "Some hint text" })
 
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-video-relay-service-component") do |component|
-            component.assert_selector(".govuk-checkboxes__item .govuk-hint", text: "Some hint text")
+          expect(page).to have_css(".app-c-content-block-manager-video-relay-service-component") do |component|
+            expect(component).to have_css(".govuk-checkboxes__item .govuk-hint", text: "Some hint text")
           end
         end
       end
 
       context "when the 'show' does not have related hint text" do
         it "shows the hint text" do
-          component.stubs(:hint_text).returns(nil)
+          allow(component).to receive(:hint_text).and_return(nil)
 
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-video-relay-service-component") do |component|
+          expect(page).to have_css(".app-c-content-block-manager-video-relay-service-component") do |component|
             component.assert_no_selector(".govuk-checkboxes__item .govuk-hint")
           end
         end
@@ -168,8 +169,8 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
         it "displays that value in the input field" do
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-video-relay-service-component") do |component|
-            component.assert_selector(
+          expect(page).to have_css(".app-c-content-block-manager-video-relay-service-component") do |component|
+            expect(component).to have_css(
               "input" \
               "[name='edition[details][telephones][video_relay_service][label]']" \
               "[value='Custom label: 19222 then']",
@@ -191,8 +192,8 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
         it "displays the default value in the input field" do
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-video-relay-service-component") do |component|
-            component.assert_selector(
+          expect(page).to have_css(".app-c-content-block-manager-video-relay-service-component") do |component|
+            expect(component).to have_css(
               "input" \
               "[name='edition[details][telephones][video_relay_service][label]']" \
               "[value='Text relay: dial 18001 then:']",
@@ -216,8 +217,8 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
         it "displays that value in the input field" do
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-video-relay-service-component") do |component|
-            component.assert_selector(
+          expect(page).to have_css(".app-c-content-block-manager-video-relay-service-component") do |component|
+            expect(component).to have_css(
               "input" \
               "[name='edition[details][telephones][video_relay_service][telephone_number]']" \
               "[value='1234 987 6543']",
@@ -239,8 +240,8 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
         it "displays the default value in the input field" do
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-video-relay-service-component") do |component|
-            component.assert_selector(
+          expect(page).to have_css(".app-c-content-block-manager-video-relay-service-component") do |component|
+            expect(component).to have_css(
               "input" \
               "[name='edition[details][telephones][video_relay_service][telephone_number]']" \
               "[value='0800 123 4567']",
@@ -259,25 +260,25 @@ class Edition::Details::Fields::VideoRelayServiceComponentTest < BaseComponentTe
     end
 
     it "should show errors" do
-      helper_stub.stubs(:humanized_label).with(schema_name: "schema", relative_key: "label", root_object: "telephones.video_relay_service").returns("Label")
-      helper_stub.stubs(:humanized_label).with(schema_name: "schema", relative_key: "telephone_number", root_object: "telephones.video_relay_service").returns("Telephone number")
-      helper_stub.stubs(:humanized_label).with(schema_name: "schema", relative_key: "source", root_object: "telephones.video_relay_service").returns("Source")
+      allow(helper_stub).to receive(:humanized_label).with(schema_name: "schema", relative_key: "label", root_object: "telephones.video_relay_service").and_return("Label")
+      allow(helper_stub).to receive(:humanized_label).with(schema_name: "schema", relative_key: "telephone_number", root_object: "telephones.video_relay_service").and_return("Telephone number")
+      allow(helper_stub).to receive(:humanized_label).with(schema_name: "schema", relative_key: "source", root_object: "telephones.video_relay_service").and_return("Source")
 
       render_inline(component)
 
-      assert_selector ".govuk-form-group.govuk-form-group--error", text: /Label/ do |form_group|
-        form_group.assert_selector ".govuk-error-message", text: "Label error"
-        form_group.assert_selector "input.govuk-input--error"
+      expect(page).to have_css ".govuk-form-group.govuk-form-group--error", text: /Label/ do |_form_group|
+        expect(page).to have_css ".govuk-error-message", text: "Label error"
+        expect(page).to have_css "input.govuk-input--error"
       end
 
-      assert_selector ".govuk-form-group.govuk-form-group--error", text: /Telephone number/ do |form_group|
-        form_group.assert_selector ".govuk-error-message", text: "Telephone error"
-        form_group.assert_selector "input.govuk-input--error"
+      expect(page).to have_css ".govuk-form-group.govuk-form-group--error", text: /Telephone number/ do |_form_group|
+        expect(page).to have_css ".govuk-error-message", text: "Telephone error"
+        expect(page).to have_css "input.govuk-input--error"
       end
 
-      assert_selector ".govuk-form-group.govuk-form-group--error", text: /Source/ do |form_group|
-        form_group.assert_selector ".govuk-error-message", text: "Source error"
-        form_group.assert_selector "textarea.govuk-textarea--error"
+      expect(page).to have_css ".govuk-form-group.govuk-form-group--error", text: /Source/ do |_form_group|
+        expect(page).to have_css ".govuk-error-message", text: "Source error"
+        expect(page).to have_css "textarea.govuk-textarea--error"
       end
     end
   end

@@ -1,9 +1,8 @@
-require "test_helper"
-
-class Edition::Details::Fields::BSLGuidanceComponentTest < BaseComponentTestClass
+RSpec.describe Edition::Details::Fields::BSLGuidanceComponent, type: :component do
   let(:described_class) { Edition::Details::Fields::BSLGuidanceComponent }
 
   let(:edition) { build(:edition, :contact) }
+  let(:helper_stub) { double(:helpers) }
 
   let(:properties) do
     {
@@ -49,7 +48,7 @@ class Edition::Details::Fields::BSLGuidanceComponentTest < BaseComponentTestClas
       "value" => nil }
   end
 
-  let(:schema) { stub(:schema, block_type: "schema") }
+  let(:schema) { double(:schema, block_type: "schema") }
 
   let(:component) do
     described_class.new(
@@ -62,18 +61,20 @@ class Edition::Details::Fields::BSLGuidanceComponentTest < BaseComponentTestClas
   end
 
   before do
-    Edition::Details::Fields::TextareaComponent.any_instance.stubs(:helpers).returns(helper_stub)
+    allow(component).to receive(:helpers).and_return(helper_stub)
+    allow(helper_stub).to receive(:hint_text).and_return(nil)
+    allow(helper_stub).to receive(:humanized_label).and_return("Translated label")
   end
 
   describe "BSL Guidance component" do
     describe "'show' nested field" do
       it "shows a checkbox to toggle 'Show BSL Guidance' option" do
-        helper_stub.stubs(:humanized_label).returns("Show BSL Guidance?")
+        allow(helper_stub).to receive(:humanized_label).and_return("Show BSL Guidance?")
 
         render_inline(component)
 
-        assert_selector(".app-c-content-block-manager-bsl-guidance-component") do |component|
-          component.assert_selector("label", text: "Show BSL Guidance?")
+        expect(page).to have_css(".app-c-content-block-manager-bsl-guidance-component") do |component|
+          expect(component).to have_css("label", text: "Show BSL Guidance?")
         end
       end
 
@@ -86,8 +87,8 @@ class Edition::Details::Fields::BSLGuidanceComponentTest < BaseComponentTestClas
         it "sets the checkbox to _checked_" do
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-bsl-guidance-component") do |component|
-            component.assert_selector("input[checked='checked']")
+          expect(page).to have_css(".app-c-content-block-manager-bsl-guidance-component") do |component|
+            expect(component).to have_css("input[checked='checked']")
           end
         end
       end
@@ -101,8 +102,8 @@ class Edition::Details::Fields::BSLGuidanceComponentTest < BaseComponentTestClas
         it "sets the checkbox to _unchecked_" do
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-bsl-guidance-component") do |component|
-            component.assert_no_selector("input[checked='checked']")
+          expect(page).to have_css(".app-c-content-block-manager-bsl-guidance-component") do |component|
+            expect(component).to_not have_css("input[checked='checked']")
           end
         end
       end
@@ -116,32 +117,32 @@ class Edition::Details::Fields::BSLGuidanceComponentTest < BaseComponentTestClas
         it "sets the checkbox to _unchecked_" do
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-bsl-guidance-component") do |component|
-            component.assert_no_selector("input[checked='checked']")
+          expect(page).to have_css(".app-c-content-block-manager-bsl-guidance-component") do |component|
+            expect(component).to_not have_css("input[checked='checked']")
           end
         end
       end
 
       context "when the 'show' field has related hint text" do
         it "shows the hint text" do
-          component.stubs(:hint_text).returns({ show: "Some hint text" })
+          allow(component).to receive(:hint_text).and_return({ show: "Some hint text" })
 
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-bsl-guidance-component") do |component|
-            component.assert_selector(".govuk-checkboxes__item .govuk-hint", text: "Some hint text")
+          expect(page).to have_css(".app-c-content-block-manager-bsl-guidance-component") do |component|
+            expect(component).to have_css(".govuk-checkboxes__item .govuk-hint", text: "Some hint text")
           end
         end
       end
 
       context "when the 'show' does not have related hint text" do
         it "shows the hint text" do
-          component.stubs(:hint_text).returns(nil)
+          allow(component).to receive(:hint_text).and_return(nil)
 
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-bsl-guidance-component") do |component|
-            component.assert_no_selector(".govuk-checkboxes__item .govuk-hint")
+          expect(page).to have_css(".app-c-content-block-manager-bsl-guidance-component") do |component|
+            expect(component).to_not have_css(".govuk-checkboxes__item .govuk-hint")
           end
         end
       end
@@ -157,8 +158,8 @@ class Edition::Details::Fields::BSLGuidanceComponentTest < BaseComponentTestClas
         it "displays that value in the input field" do
           render_inline(component)
 
-          assert_selector(".app-c-content-block-manager-bsl-guidance-component") do |component|
-            component.assert_selector(
+          expect(page).to have_css(".app-c-content-block-manager-bsl-guidance-component") do |component|
+            expect(component).to have_css(
               "textarea" \
               "[name='edition[details][telephones][bsl_guidance][value]']",
               text: "CUSTOM VALUE",
