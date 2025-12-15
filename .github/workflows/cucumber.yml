@@ -64,14 +64,14 @@ jobs:
         run: bundle exec ./bin/cucumber-ci
 
       - name: Upload screenshots
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: capybara-screenshots
           path: tmp/capybara/capybara-*.png
 
       - name: Upload coverage
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cucumber-coverage-${{ matrix.ci_node_index }}
           path: coverage/
