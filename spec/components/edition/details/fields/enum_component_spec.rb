@@ -1,14 +1,15 @@
-require "test_helper"
-
-class Edition::Details::Fields::EnumComponentTest < BaseComponentTestClass
+RSpec.describe Edition::Details::Fields::EnumComponent, type: :component do
   let(:described_class) { Edition::Details::Fields::EnumComponent }
+  let(:helper_stub) { double(:helpers) }
 
   let(:edition) { build(:edition, :pension) }
-  let(:field) { stub("field", name: "something", is_required?: true, default_value: nil) }
-  let(:schema) { stub(:schema, block_type: "schema") }
+  let(:field) { double("field", name: "something", is_required?: true, default_value: nil) }
+  let(:schema) { double(:schema, block_type: "schema") }
 
   before do
-    helper_stub.stubs(:humanized_label).returns("Something")
+    allow_any_instance_of(described_class).to receive(:helpers).and_return(helper_stub)
+    allow(helper_stub).to receive(:humanized_label).and_return("Something")
+    allow(helper_stub).to receive(:hint_text).and_return(nil)
   end
 
   describe "when there is no default value" do
@@ -25,11 +26,11 @@ class Edition::Details::Fields::EnumComponentTest < BaseComponentTestClass
       expected_name = "edition[details][something]"
       expected_id = "#{Edition::Details::Fields::BaseComponent::PARENT_CLASS}_details_something"
 
-      assert_selector "label", text: "Something"
-      assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"]"
-      assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"\"]"
-      assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"a week\"]", text: "a week"
-      assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"a month\"]", text: "a month"
+      expect(page).to have_css "label", text: "Something"
+      expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"]"
+      expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"\"]"
+      expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"a week\"]", text: "a week"
+      expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"a month\"]", text: "a month"
     end
 
     it "should show an option as selected when value is given" do
@@ -46,11 +47,11 @@ class Edition::Details::Fields::EnumComponentTest < BaseComponentTestClass
       expected_name = "edition[details][something]"
       expected_id = "#{Edition::Details::Fields::BaseComponent::PARENT_CLASS}_details_something"
 
-      assert_selector "label", text: "Something"
-      assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"]"
-      assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"\"]"
-      assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"a week\"][selected]", text: "a week"
-      assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"a month\"]", text: "a month"
+      expect(page).to have_css "label", text: "Something"
+      expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"]"
+      expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"\"]"
+      expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"a week\"][selected]", text: "a week"
+      expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"a month\"]", text: "a month"
     end
   end
 
@@ -69,10 +70,10 @@ class Edition::Details::Fields::EnumComponentTest < BaseComponentTestClass
       expected_name = "edition[details][something]"
       expected_id = "#{Edition::Details::Fields::BaseComponent::PARENT_CLASS}_details_something"
 
-      assert_selector "label", text: "Something"
-      assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"]"
-      assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"a week\"]", text: "a week"
-      assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"a month\"][selected]", text: "a month"
+      expect(page).to have_css "label", text: "Something"
+      expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"]"
+      expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"a week\"]", text: "a week"
+      expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"a month\"][selected]", text: "a month"
     end
 
     it "should show an option as selected when value is given" do
@@ -90,10 +91,10 @@ class Edition::Details::Fields::EnumComponentTest < BaseComponentTestClass
       expected_name = "edition[details][something]"
       expected_id = "#{Edition::Details::Fields::BaseComponent::PARENT_CLASS}_details_something"
 
-      assert_selector "label", text: "Something"
-      assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"]"
-      assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"a week\"][selected]", text: "a week"
-      assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"a month\"]", text: "a month"
+      expect(page).to have_css "label", text: "Something"
+      expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"]"
+      expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"a week\"][selected]", text: "a week"
+      expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"a month\"]", text: "a month"
     end
   end
 
@@ -109,9 +110,9 @@ class Edition::Details::Fields::EnumComponentTest < BaseComponentTestClass
       ),
     )
 
-    assert_selector ".govuk-form-group--error"
-    assert_selector ".govuk-error-message", text: "Some error goes here"
-    assert_selector "select.govuk-select--error"
+    expect(page).to have_css ".govuk-form-group--error"
+    expect(page).to have_css ".govuk-error-message", text: "Some error goes here"
+    expect(page).to have_css "select.govuk-select--error"
   end
 
   describe "#options" do

@@ -1,25 +1,21 @@
-require "test_helper"
-
-class Edition::Details::Fields::CountryComponentTest < BaseComponentTestClass
+RSpec.describe Edition::Details::Fields::CountryComponent, type: :component do
   let(:described_class) { Edition::Details::Fields::CountryComponent }
 
   let(:edition) { build(:edition, :pension) }
-  let(:field) { stub("field", name: "country", is_required?: true, default_value: nil) }
+  let(:field) { double("field", name: "country", is_required?: true, default_value: nil) }
 
   let(:world_locations) { 5.times.map { |i| build(:world_location, name: "World location #{i}") } }
   let(:uk) { build(:world_location, name: "United Kingdom") }
 
   let(:all_locations) { [world_locations, uk].flatten }
 
-  let(:schema) { stub(:schema, block_type: "schema") }
+  let(:schema) { double(:schema, block_type: "schema") }
 
   before do
-    WorldLocation.stubs(:countries).returns(all_locations)
+    allow(WorldLocation).to receive(:countries).and_return(all_locations)
   end
 
   it "should render an select field populated with WorldLocations with the UK as the blank option" do
-    helper_stub.stubs(:humanized_label).returns("Country")
-
     render_inline(
       described_class.new(
         edition:,
@@ -31,15 +27,15 @@ class Edition::Details::Fields::CountryComponentTest < BaseComponentTestClass
     expected_name = "edition[details][country]"
     expected_id = "#{Edition::Details::Fields::BaseComponent::PARENT_CLASS}_details_country"
 
-    assert_selector "label", text: "Country"
-    assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"]"
+    expect(page).to have_css "label", text: "Country"
+    expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"]"
 
-    assert_selector "select option", count: all_locations.count
+    expect(page).to have_css "select option", count: all_locations.count
 
-    assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"\"]", text: uk.name
+    expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"\"]", text: uk.name
 
     world_locations.each do |location|
-      assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"#{location.name}\"]", text: location.name
+      expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"#{location.name}\"]", text: location.name
     end
   end
 
@@ -56,14 +52,14 @@ class Edition::Details::Fields::CountryComponentTest < BaseComponentTestClass
     expected_name = "edition[details][country]"
     expected_id = "#{Edition::Details::Fields::BaseComponent::PARENT_CLASS}_details_country"
 
-    assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"]"
-    assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"\"]", text: uk.name
+    expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"]"
+    expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"\"]", text: uk.name
 
     world_locations.each do |location|
-      assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"#{location.name}\"]", text: location.name
+      expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"#{location.name}\"]", text: location.name
     end
 
-    assert_selector "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"#{world_locations.first.name}\"][selected]", text: world_locations.first.name
+    expect(page).to have_css "select[name=\"#{expected_name}\"][id=\"#{expected_id}\"] option[value=\"#{world_locations.first.name}\"][selected]", text: world_locations.first.name
   end
 
   it "should show errors when present" do
@@ -78,9 +74,9 @@ class Edition::Details::Fields::CountryComponentTest < BaseComponentTestClass
       ),
     )
 
-    assert_selector ".govuk-form-group--error"
-    assert_selector ".govuk-error-message", text: "Some error goes here"
-    assert_selector "select.govuk-select--error"
+    expect(page).to have_css ".govuk-form-group--error"
+    expect(page).to have_css ".govuk-error-message", text: "Some error goes here"
+    expect(page).to have_css "select.govuk-select--error"
   end
 
   describe "#options" do
@@ -100,7 +96,7 @@ class Edition::Details::Fields::CountryComponentTest < BaseComponentTestClass
         { text: world_locations[4].name, value: world_locations[4].name, selected: false },
       ]
 
-      assert_equal component.options, expected
+      expect(component.options).to eq(expected)
     end
 
     it "sets an option as selected when value is provided" do
@@ -120,7 +116,7 @@ class Edition::Details::Fields::CountryComponentTest < BaseComponentTestClass
         { text: world_locations[4].name, value: world_locations[4].name, selected: false },
       ]
 
-      assert_equal component.options, expected
+      expect(component.options).to eq(expected)
     end
   end
 end

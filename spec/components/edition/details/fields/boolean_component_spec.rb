@@ -1,11 +1,9 @@
-require "test_helper"
-
-class Edition::Details::Fields::BooleanComponentTest < BaseComponentTestClass
+RSpec.describe Edition::Details::Fields::BooleanComponent, type: :component do
   let(:described_class) { Edition::Details::Fields::BooleanComponent }
 
   let(:edition) { build(:edition, :pension) }
-  let(:field) { stub("field", name: "email_address", is_required?: true) }
-  let(:schema) { stub(:schema, block_type: "schema") }
+  let(:field) { double("field", name: "email_address", is_required?: true) }
+  let(:schema) { double(:schema, block_type: "schema") }
 
   before do
     render_inline(
@@ -22,8 +20,8 @@ class Edition::Details::Fields::BooleanComponentTest < BaseComponentTestClass
     let(:field_value) { nil }
 
     it "should not check the checkbox" do
-      assert_selector "input[type=\"checkbox\"][value=\"true\"]"
-      assert_no_selector "input[type=\"checkbox\"][value=\"true\"][checked=\"checked\"]"
+      expect(page).to have_css "input[type=\"checkbox\"][value=\"true\"]"
+      expect(page).to_not have_css "input[type=\"checkbox\"][value=\"true\"][checked=\"checked\"]"
     end
   end
 
@@ -31,7 +29,7 @@ class Edition::Details::Fields::BooleanComponentTest < BaseComponentTestClass
     let(:field_value) { "true" }
 
     it "should check the checkbox" do
-      assert_selector "input[type=\"checkbox\"][value=\"true\"][checked=\"checked\"]"
+      expect(page).to have_css "input[type=\"checkbox\"][value=\"true\"][checked=\"checked\"]"
     end
   end
 
@@ -39,7 +37,7 @@ class Edition::Details::Fields::BooleanComponentTest < BaseComponentTestClass
     let(:field_value) { "false" }
 
     it "should check the checkbox" do
-      assert_no_selector "input[type=\"checkbox\"][value=\"true\"][checked=\"checked\"]"
+      expect(page).to_not have_css "input[type=\"checkbox\"][value=\"true\"][checked=\"checked\"]"
     end
   end
 end
