@@ -59,7 +59,7 @@ class Schema
   end
 
   def subschemas
-    @subschemas ||= embedded_objects.map { |object| EmbeddedSchema.new(*object, @id) }
+    @subschemas ||= embedded_objects.map { |object| EmbeddedSchema.new(*object, self) }
   end
 
   def subschemas_for_group(group)

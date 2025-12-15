@@ -32,11 +32,12 @@ RSpec.describe Edition::Details::Fields::OpeningHoursComponent, type: :component
     }
   end
 
+  let(:parent_schema) { double(:schema, id: "parent_schema_id") }
   let(:subschema) do
     Schema::EmbeddedSchema.new(
       "telephones",
       body,
-      "parent_schema_id",
+      parent_schema,
     )
   end
 

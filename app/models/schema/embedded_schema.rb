@@ -1,7 +1,7 @@
 class Schema
   class EmbeddedSchema < Schema
-    def initialize(id, body, parent_schema_id)
-      @parent_schema_id = parent_schema_id
+    def initialize(id, body, parent_schema)
+      @parent_schema = parent_schema
       body = body["patternProperties"]&.values&.first || raise(ArgumentError, "Subschema `#{id}` is invalid")
       super(id, body)
     end
@@ -15,7 +15,7 @@ class Schema
     end
 
     def config
-      @config ||= self.class.schema_settings.dig("schemas", @parent_schema_id, "subschemas", @id) || {}
+      @config ||= self.class.schema_settings.dig("schemas", parent_schema.id, "subschemas", @id) || {}
     end
 
     def group

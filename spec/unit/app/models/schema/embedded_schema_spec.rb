@@ -27,8 +27,8 @@ RSpec.describe Schema::EmbeddedSchema do
     }
   end
   let(:schema_id) { "bar" }
-  let(:parent_schema_id) { "parent_schema_id" }
-  let(:schema) { Schema::EmbeddedSchema.new(schema_id, body, parent_schema_id) }
+  let(:parent_schema) { double(:schema, id: "parent_schema_id") }
+  let(:schema) { Schema::EmbeddedSchema.new(schema_id, body, parent_schema) }
 
   it "returns the subschema id" do
     expect(schema_id).to eq(schema.id)
@@ -44,7 +44,7 @@ RSpec.describe Schema::EmbeddedSchema do
         allow(Schema::EmbeddedSchema)
           .to receive(:schema_settings)
           .and_return({ "schemas" => {
-            parent_schema_id => {
+            parent_schema.id => {
               "subschemas" => {
                 "bar" => {
                   "group" => "a_group",
@@ -72,7 +72,7 @@ RSpec.describe Schema::EmbeddedSchema do
         .to receive(:schema_settings)
         .and_return({
           "schemas" => {
-            parent_schema_id => {
+            parent_schema.id => {
               "subschemas" => {
                 schema_id => {
                   "field_order" => %w[frequency amount description title],
@@ -136,7 +136,7 @@ RSpec.describe Schema::EmbeddedSchema do
           .to receive(:schema_settings)
           .and_return({
             "schemas" => {
-              parent_schema_id => {
+              parent_schema.id => {
                 "subschemas" => {
                   schema_id => {
                     "embeddable_as_block" => true,
@@ -158,7 +158,7 @@ RSpec.describe Schema::EmbeddedSchema do
           .to receive(:schema_settings)
           .and_return({
             "schemas" => {
-              parent_schema_id => {
+              parent_schema.id => {
                 "subschemas" => {
                   schema_id => {},
                 },
@@ -180,7 +180,7 @@ RSpec.describe Schema::EmbeddedSchema do
           .to receive(:schema_settings)
           .and_return({
             "schemas" => {
-              parent_schema_id => {
+              parent_schema.id => {
                 "subschemas" => {
                   schema_id => {
                     "group_order" => "12",
@@ -202,7 +202,7 @@ RSpec.describe Schema::EmbeddedSchema do
           .to receive(:schema_settings)
           .and_return({
             "schemas" => {
-              parent_schema_id => {
+              parent_schema.id => {
                 "subschemas" => {
                   schema_id => {},
                 },
@@ -289,13 +289,12 @@ RSpec.describe Schema::EmbeddedSchema do
     end
 
     let(:subschema_id) { "subschema_id" }
-    let(:parent_schema_id) { "parent_schema_id" }
-    let(:schema) { Schema::EmbeddedSchema.new(subschema_id, body, parent_schema_id) }
+    let(:schema) { Schema::EmbeddedSchema.new(subschema_id, body, parent_schema) }
 
     let(:config) do
       {
         "schemas" => {
-          parent_schema_id => {
+          parent_schema.id => {
             "subschemas" => {
               subschema_id => {
                 "fields" => {
@@ -363,12 +362,12 @@ RSpec.describe Schema::EmbeddedSchema do
 
     let(:subschema_id) { "subschema_id" }
     let(:parent_schema_id) { "parent_schema_id" }
-    let(:schema) { Schema::EmbeddedSchema.new(subschema_id, body, parent_schema_id) }
+    let(:schema) { Schema::EmbeddedSchema.new(subschema_id, body, parent_schema) }
 
     let(:config) do
       {
         "schemas" => {
-          parent_schema_id => {
+          parent_schema.id => {
             "subschemas" => {
               subschema_id => {
                 "fields" => {
