@@ -76,6 +76,22 @@ class Schema
       @data_attributes ||= config["data_attributes"] || {}
     end
 
+    def html_name
+      output = "edition[details]"
+      parent_schemas.each { |parent_schema| output += "[#{parent_schema.block_type}]" }
+      output + "[#{name}]"
+    end
+
+    def id_attribute
+      output = "edition_details"
+      parent_schemas.each { |parent_schema| output += "_#{parent_schema.block_type}" }
+      output + "_#{name}"
+    end
+
+    def error_key
+      id_attribute.delete_prefix("edition_")
+    end
+
   private
 
     def custom_component
@@ -92,6 +108,17 @@ class Schema
 
     def field_ordering_rule
       @field_ordering_rule ||= config["field_order"] || []
+    end
+
+    def parent_schemas
+      @parent_schemas ||= [].tap { |parents|
+        current = schema
+
+        while current.respond_to?(:parent_schema)
+          parents << current
+          current = current.parent_schema
+        end
+      }.reverse
     end
   end
 end

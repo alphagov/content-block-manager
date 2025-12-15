@@ -292,4 +292,70 @@ RSpec.describe Schema::Field do
       end
     end
   end
+
+  context "when the schema does not have a parent" do
+    describe "#name_attribute" do
+      it "returns the field name" do
+        expect(field.name_attribute).to eq("edition[details][something]")
+      end
+    end
+
+    describe "#id_attribute" do
+      it "returns the field id" do
+        expect(field.id_attribute).to eq("edition_details_something")
+      end
+    end
+
+    describe "#error_key" do
+      it "returns the field id without the leading `edition`" do
+        expect(field.error_key).to eq("details_something")
+      end
+    end
+  end
+
+  context "when the schema is an embedded schema" do
+    let(:schema) { double(:embedded_schema, parent_schema: build(:schema), block_type: "embedded") }
+
+    describe "#name_attribute" do
+      it "returns the field name" do
+        expect(field.name_attribute).to eq("edition[details][embedded][something]")
+      end
+    end
+
+    describe "#id_attribute" do
+      it "returns the field id" do
+        expect(field.id_attribute).to eq("edition_details_embedded_something")
+      end
+    end
+
+    describe "#error_key" do
+      it "returns the field id without the leading `edition`" do
+        expect(field.error_key).to eq("details_embedded_something")
+      end
+    end
+  end
+
+  context "when the schema is deeply nested" do
+    let(:root_schema) { build(:schema) }
+    let(:parent_schema) { double(:embedded_schema, block_type: "level_1", parent_schema: root_schema) }
+    let(:schema) { double(:embedded_schema, parent_schema: parent_schema, block_type: "level_2") }
+
+    describe "#name_attribute" do
+      it "returns the field name" do
+        expect(field.name_attribute).to eq("edition[details][level_1][level_2][something]")
+      end
+    end
+
+    describe "#id_attribute" do
+      it "returns the field id" do
+        expect(field.id_attribute).to eq("edition_details_level_1_level_2_something")
+      end
+    end
+
+    describe "#error_key" do
+      it "returns the field id without the leading `edition`" do
+        expect(field.error_key).to eq("details_level_1_level_2_something")
+      end
+    end
+  end
 end
