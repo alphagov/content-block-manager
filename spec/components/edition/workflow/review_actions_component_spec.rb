@@ -38,13 +38,37 @@ RSpec.describe Edition::Workflow::ReviewActionsComponent, type: :component do
         end
       end
 
-      it "offers a 'Save as draft' workflow completion action" do
-        render_inline(component)
+      describe "Save (as) draft button" do
+        context "when the edition is in the 'draft' state" do
+          it "offers a 'Save as draft' workflow completion secondary action" do
+            render_inline(component)
 
-        expect(page).to have_css(
-          "button.govuk-button[name='save_action'][value='save_as_draft']",
-          text: "Save as draft",
-        )
+            expect(page).to have_css(
+              "button.govuk-button--secondary[name='save_action'][value='save_as_draft']",
+              text: "Save as draft",
+            )
+          end
+        end
+
+        %i[awaiting_review awaiting_factcheck scheduled].each do |state|
+          context "when the edition is in the '#{state}' state" do
+            before { edition.state = state }
+
+            it "offers a 'Save draft' workflow completion primary action" do
+              render_inline(component)
+
+              aggregate_failures do
+                expect(page).to have_css(
+                  "button.govuk-button[name='save_action'][value='save_as_draft']",
+                  text: "Save draft",
+                )
+                expect(page).to have_no_css(
+                  "button.govuk-button--secondary[name='save_action'][value='save_as_draft']",
+                )
+              end
+            end
+          end
+        end
       end
     end
 

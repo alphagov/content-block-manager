@@ -32,12 +32,12 @@
   <% if pre_release_features? %>
     <div>
       <%= render "govuk_publishing_components/components/button", {
-        text: "Save as draft",
+        text: state == "draft" ? "Save as draft" : "Save draft",
         name: "save_action",
         value: "save_as_draft",
         type: "submit",
         form: "review",
-        secondary_solid: true,
+        secondary_solid: state == "draft",
       } %>
     </div>
   <% end %>
