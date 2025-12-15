@@ -1,11 +1,4 @@
-require "test_helper"
-require "capybara/rails"
-
-class Editions::OrderTest < ActionDispatch::IntegrationTest
-  extend Minitest::Spec::DSL
-  include Rails.application.routes.url_helpers
-  include IntegrationTestHelpers
-
+RSpec.describe Editions::OrderController, type: :request do
   let(:user) { create(:user) }
   let(:details) do
     {
@@ -39,25 +32,25 @@ class Editions::OrderTest < ActionDispatch::IntegrationTest
   let(:edition) { create(:edition, document:, details:) }
   let(:subschemas) do
     [
-      stub(:subschema, id: "email_addresses", block_type: "email_addresses", group_order: 1),
-      stub(:subschema, id: "telephones", block_type: "telephones", group_order: 2),
-      stub(:subschema, id: "addresses", block_type: "addresses", group_order: 3),
-      stub(:subschema, id: "contact_links", block_type: "contact_links", group_order: 4),
+      double(:subschema, id: "email_addresses", block_type: "email_addresses", group_order: 1),
+      double(:subschema, id: "telephones", block_type: "telephones", group_order: 2),
+      double(:subschema, id: "addresses", block_type: "addresses", group_order: 3),
+      double(:subschema, id: "contact_links", block_type: "contact_links", group_order: 4),
     ]
   end
-  let(:schema) { stub(:schema, subschemas: subschemas, body: {}) }
+  let(:schema) { double(:schema, subschemas: subschemas, body: {}) }
 
   before do
     login_as(user)
-    document.stubs(:schema).returns(schema)
-    Schema.stubs(:find_by_block_type).returns(schema)
+    allow(document).to receive(:schema).and_return(schema)
+    allow(Schema).to receive(:find_by_block_type).and_return(schema)
   end
 
   describe "#edit" do
     it "returns the default order if the edition does not have a custom order set" do
       get order_edit_edition_path(edition)
 
-      assert_equal assigns(:order), edition.default_order
+      expect(assigns(:order)).to eq(edition.default_order)
     end
 
     it "returns an order if the edition has a custom order set" do
@@ -72,7 +65,7 @@ class Editions::OrderTest < ActionDispatch::IntegrationTest
 
       get order_edit_edition_path(edition)
 
-      assert_equal assigns(:order), edition.details["order"]
+      expect(assigns(:order)).to eq(edition.details["order"])
     end
 
     it "returns an order if a custom order is set in the params" do
@@ -85,21 +78,21 @@ class Editions::OrderTest < ActionDispatch::IntegrationTest
       ]
 
       get order_edit_edition_path(edition, order:)
-      assert_equal assigns(:order), order
+      expect(assigns(:order)).to eq(order)
     end
 
     it "sets the redirect_path from the referrer" do
       referrer = "http://example.com/referrers/here"
 
       get order_edit_edition_path(edition), headers: { "HTTP_REFERER" => referrer }
-      assert_equal assigns(:redirect_path), referrer
+      expect(assigns(:redirect_path)).to eq(referrer)
     end
 
     it "sets the redirect_path from the params if present" do
       referrer = "http://example.com/referrers/here"
 
       get order_edit_edition_path(edition, redirect_path: referrer), headers: { "HTTP_REFERER" => "http://example.com/referrers/something/else" }
-      assert_equal assigns(:redirect_path), referrer
+      expect(assigns(:redirect_path)).to eq(referrer)
     end
   end
 
@@ -117,9 +110,9 @@ class Editions::OrderTest < ActionDispatch::IntegrationTest
 
       edition.reload
 
-      assert_equal order, edition.details["order"]
+      expect(order).to eq(edition.details["order"])
 
-      assert_redirected_to "#{root_path}?preview=true"
+      expect(response).to redirect_to("#{root_path}?preview=true")
     end
   end
 end
