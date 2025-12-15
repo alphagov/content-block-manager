@@ -13,9 +13,9 @@
       } %>
     <% else %>
       <%= render "govuk_publishing_components/components/button", {
-        text: helpers.button_text_submit_for(@edition),
+        text: button_text,
         name: "save_action",
-        value: helpers.save_action_value_for(@edition),
+        value: save_action,
         type: "submit",
         form: "review",
         data_attributes: {
