@@ -4,6 +4,7 @@ class Edition::Workflow::ReviewActionsComponent < ViewComponent::Base
   end
 
   delegate :pre_release_features?, to: :helpers
+  delegate :state, to: :@edition
 
   def button_text
     return "Schedule" if @edition.is_scheduling?

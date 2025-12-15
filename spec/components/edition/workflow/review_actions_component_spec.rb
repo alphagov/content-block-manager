@@ -9,13 +9,33 @@ RSpec.describe Edition::Workflow::ReviewActionsComponent, type: :component do
     end
 
     describe "workflow completion submit button" do
-      it "offers a 'Send to 2i' workflow completion action" do
-        render_inline(component)
+      describe "'Send to review' action" do
+        context "when the edition is in the 'draft' state" do
+          before { edition.state = :draft }
 
-        expect(page).to have_css(
-          "button.govuk-button[name='save_action'][value='send_to_review']",
-          text: "Send to 2i",
-        )
+          it "offers a 'Send to review' workflow completion action" do
+            render_inline(component)
+
+            expect(page).to have_css(
+              "button.govuk-button[name='save_action'][value='send_to_review']",
+              text: "Send to 2i",
+            )
+          end
+        end
+
+        (Edition.available_states - [:draft]).each do |state|
+          context "when the edition is in the '#{state} state" do
+            before { edition.state = state }
+
+            it "does not offer the 'Send to review' option" do
+              render_inline(component)
+
+              expect(page).to have_no_css(
+                "button[name='save_action'][value='send_to_review']",
+              )
+            end
+          end
+        end
       end
 
       it "offers a 'Save as draft' workflow completion action" do
