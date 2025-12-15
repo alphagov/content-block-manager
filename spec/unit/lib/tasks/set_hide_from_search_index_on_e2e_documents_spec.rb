@@ -1,11 +1,4 @@
-require "test_helper"
-require "rake"
-
-class SetHideFromSearchIndexOnE2EDocumentsTest < ActiveSupport::TestCase
-  extend Minitest::Spec::DSL
-
-  let(:task) { Rake::Task["set_testing_artefact_on_e2e_documents"] }
-
+RSpec.describe Rake::Task["set_testing_artefact_on_e2e_documents"] do
   let(:e2e_user_emails) { %w[e2euser1@example.com e2euser2@example.com] }
   let(:e2e_users) do
     e2e_user_emails.map do |email|
@@ -15,7 +8,7 @@ class SetHideFromSearchIndexOnE2EDocumentsTest < ActiveSupport::TestCase
   let(:user) { create(:user) }
 
   teardown do
-    Rake::Task["set_testing_artefact_on_e2e_documents"].reenable
+    described_class.reenable
   end
 
   it "sets the testing_artefact flag on all documents created or updated by e2e users" do
@@ -23,15 +16,15 @@ class SetHideFromSearchIndexOnE2EDocumentsTest < ActiveSupport::TestCase
     non_e2e_documents = Array.new(3) { create_document(whodunnit: user.id) }
 
     ClimateControl.modify E2E_USER_EMAILS: e2e_user_emails.join(",") do
-      task.invoke
+      described_class.invoke
     end
 
     e2e_documents.each do |document|
-      assert document.reload.testing_artefact
+      expect(document.reload.testing_artefact).to be(true)
     end
 
     non_e2e_documents.each do |document|
-      assert_not document.reload.testing_artefact
+      expect(document.reload.testing_artefact).to be(false)
     end
   end
 
