@@ -11,6 +11,8 @@ require "webmock/rspec"
 require "gds_api/test_helpers/publishing_api"
 require "factories"
 
+load Rails.root.join("Rakefile")
+
 Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
 
 GovukTest.configure
