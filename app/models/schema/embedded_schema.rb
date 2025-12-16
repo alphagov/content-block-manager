@@ -1,8 +1,10 @@
 class Schema
   class EmbeddedSchema < Schema
+    attr_reader :parent_schema
+
     def initialize(id, body, parent_schema)
       @parent_schema = parent_schema
-      body = body["patternProperties"]&.values&.first || raise(ArgumentError, "Subschema `#{id}` is invalid")
+      body = body["patternProperties"].present? ? body["patternProperties"].values.first : body
       super(id, body)
     end
 

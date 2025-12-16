@@ -100,7 +100,7 @@ RSpec.describe Schema::EmbeddedSchema do
     end
   end
 
-  describe "when an invalid subschema is given" do
+  describe "when an subschema that is not used for a first-class embedded object is used" do
     let(:body) do
       {
         "properties" => {
@@ -122,10 +122,12 @@ RSpec.describe Schema::EmbeddedSchema do
       }
     end
 
-    it "raises an error" do
-      assert_raises ArgumentError, "Subschema `bar` is invalid" do
-        schema
-      end
+    it "returns the subschema id" do
+      expect(schema.id).to eq(schema_id)
+    end
+
+    it "returns the fields" do
+      expect(schema.fields.map(&:name)).to eq(%w[foo bar])
     end
   end
 
