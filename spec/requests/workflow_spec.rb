@@ -263,6 +263,21 @@ RSpec.describe "Workflow", type: :request do
       end
     end
 
+    describe "when cancelling the current draft" do
+      it "offers a 'Delete draft' button using the DELETE method" do
+        get workflow_path(id: edition.id, step: :cancel)
+
+        expect(response).to render_template("editions/workflow/cancel")
+
+        form_submission_path = "/editions/#{edition.id}?redirect_path=%2F#{edition.document.id}"
+
+        expect(page).to have_css("form[action='#{form_submission_path}']") do |form|
+          expect(form).to have_css("input[name='_method'][value='delete']", visible: false)
+          expect(form).to have_button("Delete draft")
+        end
+      end
+    end
+
     describe "when reviewing the links" do
       let(:step) { :review_links }
 
