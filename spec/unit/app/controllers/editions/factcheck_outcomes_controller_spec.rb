@@ -106,4 +106,35 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
     end
   end
+
+  describe "GET to :identify_reviewer" do
+    before do
+      get :identify_reviewer, params: { id: 123 }
+    end
+
+    it "sets the @edition variable to the given edition" do
+      expect(Edition).to have_received(:find).with("123")
+      expect(assigns(:edition)).to eq(edition)
+    end
+
+    context "when the edition is going to be scheduled" do
+      let(:edition) { Edition.new(id: 123, document: document, scheduled_publication: Time.zone.now) }
+
+      it "sets the page title to a 'schedule' call-to-action" do
+        expect(assigns(:title)).to eq("Schedule block")
+      end
+    end
+
+    context "when the edition is going to be published" do
+      let(:edition) { Edition.new(id: 123, document: document, scheduled_publication: nil) }
+
+      it "sets the page title to a 'publish' call-to-action" do
+        expect(assigns(:title)).to eq("Publish block")
+      end
+    end
+
+    it "renders the editions/factcheck_outcomes/identify_reviewer template" do
+      expect(response).to have_rendered("editions/factcheck_outcomes/identify_reviewer")
+    end
+  end
 end

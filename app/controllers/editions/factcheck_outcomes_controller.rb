@@ -12,11 +12,17 @@ class Editions::FactcheckOutcomesController < BaseController
     record_factcheck_outcome
   end
 
+  def identify_reviewer
+    @edition = Edition.find(params[:id])
+    @title = block_will_be_scheduled? ? "Schedule block" : "Publish block"
+    render :identify_reviewer
+  end
+
 private
 
   def form_validation_error
     alert = "Indicate whether the Factcheck process has been performed or not"
-    redirect_to new_factcheck_outcome_path(@edition), alert:
+    redirect_to new_factcheck_outcome_edition_path(@edition), alert:
   end
 
   def record_factcheck_outcome
