@@ -3,18 +3,16 @@ module SummaryListHelper
   def first_class_items(input)
     result = {}
 
-    input.each do |key, value|
+    input.each do |field, value|
       case value
       when String
-        result[key] = value
+        result[field] = value
       when Array
-        value.each_with_index do |item, index|
-          result["#{key}/#{index}"] = item if item.is_a?(String)
-        end
+        result[field] = value.select { |item| item.is_a?(String) }.presence
       end
     end
 
-    result
+    result.compact
   end
 
   def nested_items(input)

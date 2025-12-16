@@ -26,11 +26,13 @@ RSpec.describe SummaryListHelper do
     it "returns any string items and flattens out non-nested arrays" do
       expected = {
         "string_item" => "Item",
-        "array_items/0" => "Item 1",
-        "array_items/1" => "Item 2",
+        "array_items" => [
+          "Item 1",
+          "Item 2",
+        ],
       }
 
-      expect(expected).to eq(first_class_items(input))
+      expect(first_class_items(input)).to eq(expected)
     end
   end
 
