@@ -14,12 +14,10 @@
             @edition,
             redirect_path: document_path(@edition.document),
           ),
-          method: :patch,
+          method: :delete,
         ) do %>
       <%= render "govuk_publishing_components/components/button", {
         text: "Delete draft",
-        name: "_method",
-        value: "delete",
         type: "submit",
         destructive: true,
       } %>
