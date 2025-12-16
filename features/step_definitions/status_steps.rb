@@ -27,6 +27,10 @@ Then(/I see a notification that the transition to ([^"]*) was successful/) do |s
               I18n.t("edition.states.transition_message.awaiting_factcheck")
             when "deleted"
               I18n.t("edition.states.transition_message.deleted")
+            when "Published"
+              I18n.t("edition.states.transition_message.published")
+            when "Scheduled"
+              I18n.t("edition.states.transition_message.scheduled")
             else
               "Edition has been moved into state '#{state}'"
             end
