@@ -54,6 +54,10 @@ class Schema
     field_names.map { |field_name| Field.new(field_name, self) }
   end
 
+  def field(name)
+    fields.find { |f| f.name == name }
+  end
+
   def subschema(name)
     subschemas.find { |s| s.id == name }
   end

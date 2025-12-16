@@ -503,4 +503,16 @@ RSpec.describe Schema do
       end
     end
   end
+
+  describe "#field" do
+    it "returns the field with the given name" do
+      field = schema.field("foo")
+      expect(field.name).to eq("foo")
+    end
+
+    it "returns nil if the field does not exist" do
+      field = schema.field("invalid_field")
+      expect(field).to be_nil
+    end
+  end
 end
