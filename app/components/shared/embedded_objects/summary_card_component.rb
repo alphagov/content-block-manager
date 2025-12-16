@@ -26,25 +26,41 @@ private
   end
 
   def items
-    schema.fields.map { |field|
-      [field.name, object[field.name]]
-    }.to_h
+    schema.fields.index_with do |field|
+      object[field.name]
+    end
   end
 
   def rows
-    first_class_items(items).map do |key, value|
+    first_class_items(items).flat_map do |field, value|
+      build_rows_for_field(field, value)
+    end
+  end
+
+  def build_rows_for_field(field, value)
+    is_list = value.is_a?(Array)
+
+    Array(value).each_with_index.map do |item, index|
+      suffix = is_list ? "#{field.name}/#{index}" : field.name
+
       {
-        field: key_to_label(key, edition.schema.block_type, object_type),
-        value: translated_value(key, value),
-        data: {
-          testid: [object_title.parameterize, key].compact.join("_").underscore,
-        },
+        field: label_for(suffix),
+        value: translated_value(field.name, item),
+        data: { testid: testid_for(suffix) },
       }
     end
   end
 
+  def label_for(key)
+    key_to_label(key, edition.schema.block_type, object_type)
+  end
+
+  def testid_for(key)
+    [object_title.parameterize, key].compact.join("_").underscore
+  end
+
   def block_display_fields
-    @block_display_fields = schema.block_display_fields
+    @block_display_fields ||= schema.block_display_fields
   end
 
   def object

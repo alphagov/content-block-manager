@@ -122,12 +122,14 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         }
       end
 
+      let(:field) { double(:field, hidden?: false) }
       let(:title_field) { double(:field, hidden?: false) }
       let(:value_field) { double(:field, hidden?: false) }
 
       before do
-        allow(subschema).to receive(:field).with("title").and_return(title_field)
-        allow(subschema).to receive(:field).with("value").and_return(value_field)
+        allow(subschema).to receive(:field).with("things").and_return(field)
+        allow(field).to receive(:nested_field).with("title").and_return(title_field)
+        allow(field).to receive(:nested_field).with("value").and_return(value_field)
       end
 
       it "renders a summary card" do
@@ -316,12 +318,14 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         }
       end
 
+      let(:field) { double(:field, hidden?: false) }
       let(:title_field) { double(:field, hidden?: false) }
       let(:value_field) { double(:field, hidden?: false) }
 
       before do
-        allow(subschema).to receive(:field).with("title").and_return(title_field)
-        allow(subschema).to receive(:field).with("value").and_return(value_field)
+        allow(subschema).to receive(:field).with("things").and_return(field)
+        allow(field).to receive(:nested_field).with("title").and_return(title_field)
+        allow(field).to receive(:nested_field).with("value").and_return(value_field)
       end
 
       it "renders a summary card" do

@@ -1,14 +1,14 @@
 class Shared::EmbeddedObjects::SummaryCard::NestedItemComponent < ViewComponent::Base
-  include GovspeakHelper
+  include ContentBlockTools::Govspeak
 
   delegate :humanized_label, to: :helpers
   delegate :translated_value, to: :helpers
 
   with_collection_parameter :nested_items
 
-  def initialize(nested_items:, object_key:, object_type:, title:, subschema:, root_schema_name:, nested_items_counter: nil)
+  def initialize(nested_items:, field:, object_type:, title:, subschema:, root_schema_name:, nested_items_counter: nil)
     @nested_items = nested_items
-    @object_key = object_key
+    @field = field
     @object_type = object_type
     @title = title
     @subschema = subschema
@@ -18,7 +18,7 @@ class Shared::EmbeddedObjects::SummaryCard::NestedItemComponent < ViewComponent:
 
 private
 
-  attr_reader :nested_items, :object_key, :object_type, :subschema, :nested_items_counter, :root_schema_name
+  attr_reader :nested_items, :field, :object_type, :subschema, :nested_items_counter, :root_schema_name
 
   def title
     if @nested_items_counter
@@ -31,12 +31,18 @@ private
   def rows
     nested_items.map do |field_name, value|
       {
-        key: humanized_label(schema_name: root_schema_name, relative_key: field_name, root_object: "#{object_type}.#{object_key}"),
+        key: humanized_label(schema_name: root_schema_name, relative_key: field_name, root_object: "#{object_type}.#{field.name}"),
         value: render_govspeak_if_enabled_for_field(
-          field_name: field_name,
+          field: field.nested_field(field_name),
           value: translated_value(field_name, value),
         ),
       }
     end
+  end
+
+  def render_govspeak_if_enabled_for_field(field:, value:)
+    return value unless field.govspeak_enabled?
+
+    render_govspeak(value)
   end
 end
