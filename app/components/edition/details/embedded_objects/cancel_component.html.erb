@@ -1,0 +1,5 @@
+<%= render "govuk_publishing_components/components/button", {
+  text: "Cancel",
+  href: redirect_url.presence || workflow_path(id: edition.id, step: "embedded_#{subschema.block_type}"),
+  secondary_solid: true,
+} %>
