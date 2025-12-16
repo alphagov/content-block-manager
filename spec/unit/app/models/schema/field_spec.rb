@@ -127,16 +127,19 @@ RSpec.describe Schema::Field do
       it "returns nested fields" do
         nested_fields = field.nested_fields
 
-        expect(2).to eq(nested_fields.count)
+        expect(nested_fields.count).to eq(2)
 
-        expect("foo").to eq(nested_fields[0].name)
-        expect("bar").to eq(nested_fields[1].name)
-
-        expect("string").to eq(nested_fields[0].format)
-        expect("string").to eq(nested_fields[1].format)
-
+        expect(nested_fields[0].name).to eq("foo")
+        expect(nested_fields[0].format).to eq("string")
         expect(nested_fields[0].enum_values).to be_nil
-        expect(%w[foo bar]).to eq(nested_fields[1].enum_values)
+        expect(nested_fields[0].name_attribute).to eq("edition[details][something][foo]")
+        expect(nested_fields[0].id_attribute).to eq("edition_details_something_foo")
+
+        expect(nested_fields[1].name).to eq("bar")
+        expect(nested_fields[1].format).to eq("string")
+        expect(nested_fields[1].enum_values).to eq(%w[foo bar])
+        expect(nested_fields[1].name_attribute).to eq("edition[details][something][bar]")
+        expect(nested_fields[1].id_attribute).to eq("edition_details_something_bar")
       end
     end
   end
@@ -166,20 +169,13 @@ RSpec.describe Schema::Field do
     end
 
     context "when a valid name is given" do
-      let(:expected_match) do
-        Schema::Field::NestedField.new(
-          name: "bar",
-          format: "string",
-          enum_values: %w[bat cat],
-          default_value: "cat",
-        )
-      end
-
       it "returns the nested field with the matching name" do
-        assert_equal(
-          expected_match,
-          field.nested_field("bar"),
-        )
+        nested_field = field.nested_field("bar")
+
+        expect(nested_field.name).to eq("bar")
+        expect(nested_field.format).to eq("string")
+        expect(nested_field.enum_values).to eq(%w[bat cat])
+        expect(nested_field.default_value).to eq("cat")
       end
     end
 

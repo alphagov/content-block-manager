@@ -2,12 +2,6 @@ class Schema
   class Field
     attr_reader :name, :schema
 
-    NestedField = Data.define(:name, :format, :enum_values, :default_value) do
-      def initialize(name:, format:, enum_values:, default_value: nil)
-        super(name:, format:, enum_values:, default_value:)
-      end
-    end
-
     def initialize(name, schema)
       @name = name
       @schema = schema
@@ -41,14 +35,8 @@ class Schema
 
     def nested_fields
       if format == "object"
-        properties.fetch("properties", {}).map do |key, value|
-          NestedField.new(
-            name: key,
-            format: value["type"],
-            enum_values: value["enum"],
-            default_value: value["default"],
-          )
-        end
+        embedded_schema = Schema::EmbeddedSchema.new(name, properties, schema)
+        embedded_schema.fields
       end
     end
 
