@@ -160,6 +160,7 @@ schemas:
           description:
             component:
               textarea
+            govspeak_enabled: true
         block_display_fields:
           - url
           - label

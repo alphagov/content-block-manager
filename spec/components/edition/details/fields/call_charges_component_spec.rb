@@ -17,7 +17,7 @@ RSpec.describe Edition::Details::Fields::CallChargesComponent, type: :component 
     }
   end
 
-  let(:schema) { double(:schema, block_type: "schema", body:, id: "schema_id") }
+  let(:schema) { double(:schema, block_type: "schema", body:, id: "schema_id", config: {}) }
 
   let(:field) do
     Schema::Field.new(

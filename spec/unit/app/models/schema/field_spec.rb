@@ -141,6 +141,34 @@ RSpec.describe Schema::Field do
         expect(nested_fields[1].name_attribute).to eq("edition[details][something][bar]")
         expect(nested_fields[1].id_attribute).to eq("edition_details_something_bar")
       end
+
+      describe "when config is set for the nested fields" do
+        let(:config) do
+          {
+            "fields" => {
+              "something" => {
+                "fields" => {
+                  "foo" => {
+                    "component" => "custom",
+                  },
+                  "bar" => {
+                    "component" => "textarea",
+                  },
+                },
+              },
+            },
+          }
+        end
+
+        it "returns config for each field" do
+          nested_fields = field.nested_fields
+
+          expect(nested_fields.count).to eq(2)
+
+          expect(nested_fields[0].config).to eq({ "component" => "custom" })
+          expect(nested_fields[1].config).to eq({ "component" => "textarea" })
+        end
+      end
     end
   end
 

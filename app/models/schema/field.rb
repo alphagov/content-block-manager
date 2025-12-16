@@ -24,6 +24,10 @@ class Schema
       end
     end
 
+    def config
+      @config ||= schema.config.dig("fields", name) || {}
+    end
+
     def format
       @format ||= properties["type"]
     end
@@ -38,7 +42,7 @@ class Schema
 
     def nested_fields
       if format == "object"
-        embedded_schema = Schema::EmbeddedSchema.new(name, properties, schema)
+        embedded_schema = Schema::EmbeddedSchema.new(name, properties, schema, config)
         embedded_schema.fields
       end
     end
@@ -99,10 +103,6 @@ class Schema
 
     def properties
       @properties ||= schema.body.dig("properties", name) || {}
-    end
-
-    def config
-      @config ||= schema.config.dig("fields", name) || {}
     end
 
     def field_ordering_rule

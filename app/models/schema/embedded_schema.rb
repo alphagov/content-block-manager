@@ -2,8 +2,9 @@ class Schema
   class EmbeddedSchema < Schema
     attr_reader :parent_schema
 
-    def initialize(id, body, parent_schema)
+    def initialize(id, body, parent_schema, config = nil)
       @parent_schema = parent_schema
+      @config = config
       body = body["patternProperties"].present? ? body["patternProperties"].values.first : body
       super(id, body)
     end
