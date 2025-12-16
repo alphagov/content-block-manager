@@ -27,6 +27,10 @@ Then(/I see a notification that the transition to ([^"]*) was successful/) do |s
               I18n.t("edition.states.transition_message.awaiting_factcheck")
             when "deleted"
               I18n.t("edition.states.transition_message.deleted")
+            when "Published"
+              I18n.t("edition.states.transition_message.published")
+            when "Scheduled"
+              I18n.t("edition.states.transition_message.scheduled")
             else
               "Edition has been moved into state '#{state}'"
             end
@@ -44,6 +48,8 @@ Then(/I see an alert that the transition failed to transition to ([^"]*)/) do |s
     error_details = "Can't fire event `ready_for_review` in current state `awaiting_review`"
   when :awaiting_factcheck
     error_details = "Can't fire event `ready_for_factcheck` in current state `awaiting_factcheck`"
+  when :published
+    error_details = "Can't fire event `publish` in current state `published`"
   else
     raise "Only the 'awaiting_review' and 'awaiting_factcheck' states are supported currently"
   end
@@ -65,6 +71,10 @@ Then(/the calls to action are suited to the ([^"]*) state/) do |state|
     within ".actions" do
       expect(page).to have_link("Complete draft")
       expect(page).to have_link("Delete draft")
+    end
+  when :published
+    within ".actions" do
+      expect(page).to have_link("Edit pension")
     end
   else
     raise "Only the 'awaiting_review' and 'awaiting_factcheck' states are supported currently"

@@ -51,6 +51,7 @@ RSpec.describe Edition::Workflow, type: :model do
     it "transitions into the scheduled state when scheduling" do
       edition = create(:edition,
                        scheduled_publication: 7.days.since(Time.zone.now).to_date,
+                       state: :awaiting_factcheck,
                        document: create(
                          :document,
                          block_type: "pension",

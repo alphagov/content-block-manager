@@ -251,4 +251,55 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
       end
     end
   end
+
+  describe "button to publish or schedule the edition via the factcheck outcome page" do
+    context "when the edition is in an awaiting_factcheck state" do
+      before do
+        edition.state = :awaiting_factcheck
+      end
+
+      context "when the edition doesn't have a scheduled publication date" do
+        before do
+          edition.scheduled_publication = nil
+          component = described_class.new(edition: edition)
+          render_inline component
+        end
+
+        it "offers a button to publish the edition" do
+          expect(page).to have_link("Publish block",
+                                    href: "/editions/123/factcheck_outcomes/new")
+        end
+      end
+
+      context "when the edition has a scheduled publication date" do
+        before do
+          edition.scheduled_publication = Time.zone.now + 1.day
+          component = described_class.new(edition: edition)
+          render_inline component
+        end
+
+        it "offers a button to schedule the edition" do
+          expect(page).to have_link("Schedule block",
+                                    href: "/editions/123/factcheck_outcomes/new")
+        end
+      end
+    end
+
+    context "when the edition is NOT in an awaiting_factcheck state" do
+      (Edition.available_states - %i[awaiting_factcheck]).each do |state|
+        before do
+          edition.state = state
+          component = described_class.new(edition: edition)
+          render_inline component
+        end
+
+        it "does NOT offer a button to publish or schedule the edition (#{state} state)" do
+          aggregate_failures "checking for publish/schedule button" do
+            expect(page).to have_no_link("Publish block")
+            expect(page).to have_no_link("Schedule block")
+          end
+        end
+      end
+    end
+  end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_04_134235) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_08_154605) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -50,11 +50,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_134235) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "lead_organisation_id"
+    t.string "auth_bypass_id"
     t.boolean "review_skipped"
     t.integer "review_outcome_recorded_by"
     t.datetime "review_outcome_recorded_at"
-    t.string "auth_bypass_id"
     t.datetime "workflow_completed_at", precision: nil
+    t.boolean "factcheck_skipped"
+    t.integer "factcheck_outcome_recorded_by"
+    t.datetime "factcheck_outcome_recorded_at"
+    t.string "factcheck_outcome_reviewer"
     t.index ["document_id"], name: "index_editions_on_document_id"
     t.index ["title"], name: "index_editions_on_title"
   end
