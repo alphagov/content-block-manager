@@ -170,6 +170,71 @@ RSpec.describe Schema::Field do
         end
       end
     end
+
+    describe "when there are nested fields present within an array" do
+      let(:body) do
+        {
+          "properties" => {
+            "something" => {
+              "type" => "array",
+              "items" => {
+                "type" => "object",
+                "properties" => {
+                  "foo" => { "type" => "string" },
+                  "bar" => { "type" => "string", "enum" => %w[foo bar] },
+                },
+              },
+            },
+          },
+        }
+      end
+
+      it "returns nested fields" do
+        nested_fields = field.nested_fields
+
+        expect(nested_fields.count).to eq(2)
+
+        expect(nested_fields[0].name).to eq("foo")
+        expect(nested_fields[0].format).to eq("string")
+        expect(nested_fields[0].enum_values).to be_nil
+        expect(nested_fields[0].name_attribute).to eq("edition[details][something][foo]")
+        expect(nested_fields[0].id_attribute).to eq("edition_details_something_foo")
+
+        expect(nested_fields[1].name).to eq("bar")
+        expect(nested_fields[1].format).to eq("string")
+        expect(nested_fields[1].enum_values).to eq(%w[foo bar])
+        expect(nested_fields[1].name_attribute).to eq("edition[details][something][bar]")
+        expect(nested_fields[1].id_attribute).to eq("edition_details_something_bar")
+      end
+
+      describe "when config is set for the nested fields" do
+        let(:config) do
+          {
+            "fields" => {
+              "something" => {
+                "fields" => {
+                  "foo" => {
+                    "component" => "custom",
+                  },
+                  "bar" => {
+                    "component" => "textarea",
+                  },
+                },
+              },
+            },
+          }
+        end
+
+        it "returns config for each field" do
+          nested_fields = field.nested_fields
+
+          expect(nested_fields.count).to eq(2)
+
+          expect(nested_fields[0].config).to eq({ "component" => "custom" })
+          expect(nested_fields[1].config).to eq({ "component" => "textarea" })
+        end
+      end
+    end
   end
 
   describe "nested_field(name)" do

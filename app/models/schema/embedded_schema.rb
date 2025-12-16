@@ -31,10 +31,10 @@ class Schema
 
     def permitted_params
       fields.map do |field|
-        if field.nested_fields.present?
-          { field.name => field.nested_fields.map(&:name) }
-        elsif field.format == "array"
+        if field.format == "array"
           { field.name => [*field.array_items["properties"]&.keys, "_destroy"] || [] }
+        elsif field.nested_fields.present?
+          { field.name => field.nested_fields.map(&:name) }
         else
           field.name
         end

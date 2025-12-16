@@ -272,7 +272,7 @@ RSpec.describe Schema::EmbeddedSchema do
       end
 
       it "returns permitted params" do
-        expect(["title", { "foo" => %w[_destroy] }, { "bar" => %w[my_string _destroy] }]).to eq(schema.permitted_params)
+        expect(schema.permitted_params).to eq(["title", { "foo" => %w[_destroy] }, { "bar" => %w[my_string _destroy] }])
       end
     end
   end

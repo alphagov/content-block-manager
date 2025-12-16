@@ -44,6 +44,9 @@ class Schema
       if format == "object"
         embedded_schema = Schema::EmbeddedSchema.new(name, properties, schema, config)
         embedded_schema.fields
+      elsif format == "array" && properties["items"]["type"] == "object"
+        embedded_schema = Schema::EmbeddedSchema.new(name, properties["items"], schema, config)
+        embedded_schema.fields
       end
     end
 
