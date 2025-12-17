@@ -40,7 +40,7 @@ private
       value: value,
       index: index,
       errors:,
-      error_lookup_prefix: "details_#{id_suffix}",
+      error_lookup_prefix: field.error_key,
       can_be_deleted: can_be_deleted?(index),
       hints: hint_text,
     )

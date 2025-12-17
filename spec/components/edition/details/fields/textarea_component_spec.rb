@@ -372,13 +372,13 @@ RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
       context "when there is an error on the field" do
         before do
           edition.errors.add(
-            :details_telephones_video_relay_service_prefix,
+            field.error_key,
             "blank",
           )
 
           expect(I18n).to receive(:t).with(
             "activerecord.errors.models.edition" \
-              ".attributes.details_telephones_video_relay_service_prefix.format".to_sym,
+              ".attributes.#{field.error_key}.format".to_sym,
             hash_including(message: "blank"),
           ).and_return("Prefix must be present")
         end
@@ -417,9 +417,7 @@ RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
 
           describe "hint ID mapping to textarea 'aria-describedby'" do
             let(:expected_hint_id_to_aria_mapping) do
-              "edition_details_" \
-                "telephones_video_relay_service_prefix-" \
-                "hint"
+              "#{field.id_attribute}-hint"
             end
 
             it "includes an 'aria-describedby' attribute on the textarea, to match the label hint's ID" do
@@ -516,11 +514,8 @@ RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
   end
 
   def gives_textarea_id_describing_path_to_field(component)
-    expected_id =
-      "edition_details_telephones_video_relay_service_prefix"
-
     expect(component).to have_css(
-      "textarea[id='#{expected_id}']",
+      "textarea[id='#{field.id_attribute}']",
     )
   end
 
@@ -532,11 +527,8 @@ RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
   end
 
   def sets_name_attribute_on_textarea_describing_nested_path_to_field(component)
-    expected_name_attribute =
-      "edition[details][telephones][video_relay_service][prefix]"
-
     expect(component).to have_css(
-      "textarea[name='#{expected_name_attribute}']",
+      "textarea[name='#{field.name_attribute}']",
     )
   end
 
