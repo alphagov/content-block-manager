@@ -117,6 +117,12 @@ class Schema
     id_part
   end
 
+  def value_lookup_parts(index = nil)
+    lookup_parts = [block_type]
+    lookup_parts << index if is_array? && index.present?
+    lookup_parts
+  end
+
 private
 
   def field_names

@@ -110,6 +110,14 @@ class Schema
       id_attribute(index).delete_prefix("edition_")
     end
 
+    def value_lookup_path(index = nil)
+      path = []
+      parent_schemas.each { |parent_schema| path << parent_schema.value_lookup_parts(index) }
+      path << name
+      path << index if format == "array"
+      path.flatten
+    end
+
   private
 
     def custom_component

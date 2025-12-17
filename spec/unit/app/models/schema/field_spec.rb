@@ -400,6 +400,12 @@ RSpec.describe Schema::Field do
         expect(field.error_key).to eq("details_something")
       end
     end
+
+    describe "#value_lookup_path" do
+      it "returns an array with the field name" do
+        expect(field.value_lookup_path).to eq(%w[something])
+      end
+    end
   end
 
   context "when the schema is an embedded schema" do
@@ -420,6 +426,12 @@ RSpec.describe Schema::Field do
     describe "#error_key" do
       it "returns the field id without the leading `edition`" do
         expect(field.error_key).to eq("details_embedded_something")
+      end
+    end
+
+    describe "#value_lookup_path" do
+      it "returns an array with the field and schema name" do
+        expect(field.value_lookup_path).to eq(%w[embedded something])
       end
     end
 
@@ -466,6 +478,12 @@ RSpec.describe Schema::Field do
           expect(field.error_key(1)).to eq("details_embedded_something_1")
         end
       end
+
+      describe "#value_lookup_path" do
+        it "returns an array with the field name, schema name and index" do
+          expect(field.value_lookup_path(1)).to eq(["embedded", "something", 1])
+        end
+      end
     end
   end
 
@@ -489,6 +507,12 @@ RSpec.describe Schema::Field do
     describe "#error_key" do
       it "returns the field id without the leading `edition`" do
         expect(field.error_key).to eq("details_level_1_level_2_something")
+      end
+    end
+
+    describe "#value_lookup_path" do
+      it "returns an array with the field name and schemas" do
+        expect(field.value_lookup_path).to eq(%w[level_1 level_2 something])
       end
     end
 
@@ -522,6 +546,12 @@ RSpec.describe Schema::Field do
 
         it "includes an index if present" do
           expect(field.error_key(1)).to eq("details_level_1_level_2_1_something")
+        end
+      end
+
+      describe "#value_lookup_path" do
+        it "returns an array with the 2 parent schema names, the index and the field name" do
+          expect(field.value_lookup_path(1)).to eq(["level_1", "level_2", 1, "something"])
         end
       end
     end
