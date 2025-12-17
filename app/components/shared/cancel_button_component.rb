@@ -6,8 +6,4 @@ class Shared::CancelButtonComponent < ViewComponent::Base
 private
 
   attr_reader :edition
-
-  def is_editing?
-    edition.document.editions.count > 1
-  end
 end

@@ -95,13 +95,13 @@ RSpec.describe Edition::Workflow::ReviewActionsComponent, type: :component do
           expect(edition.document.editions.count).to eq(1)
         end
 
-        it "is a form to delete the edition and the document" do
+        it "has a link to confirm deletion of the edition and the document" do
           render_inline(component)
 
-          expect(page).to have_css("form[action='/editions/123?redirect_path=%2F']") do |form|
-            expect(form).to have_css("input[name='_method'][value='delete']", visible: false)
-            expect(form).to have_css("button.govuk-button--secondary", text: "Cancel")
-          end
+          expect(page).to have_css(
+            "a.govuk-button--secondary[href='/editions/123/workflow/cancel']",
+            text: "Cancel",
+          )
         end
       end
     end
@@ -195,13 +195,13 @@ RSpec.describe Edition::Workflow::ReviewActionsComponent, type: :component do
           expect(edition.document.editions.count).to eq(1)
         end
 
-        it "is a form to delete the edition and the document" do
+        it "has a link to confirm deletion of the edition and the document" do
           render_inline(component)
 
-          page.assert_selector("form[action='/editions/123?redirect_path=%2F']") do |form|
-            expect(form).to have_css("input[name='_method'][value='delete']", visible: false)
-            expect(form).to have_css("button.govuk-button--secondary", text: "Cancel")
-          end
+          expect(page).to have_css(
+            "a.govuk-button--secondary[href='/editions/123/workflow/cancel']",
+            text: "Cancel",
+          )
         end
       end
     end
