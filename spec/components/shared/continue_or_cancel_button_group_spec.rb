@@ -2,7 +2,7 @@ RSpec.describe Shared::ContinueOrCancelButtonGroup, type: :component do
   include Rails.application.routes.url_helpers
 
   let(:form_id) { "my_form_id" }
-  let(:edition) { build_stubbed(:edition, document: build_stubbed(:document)) }
+  let(:edition) { build_stubbed(:edition, id: 123, document: build_stubbed(:document)) }
 
   let(:component) do
     described_class.new(form_id:, edition:)
@@ -17,10 +17,7 @@ RSpec.describe Shared::ContinueOrCancelButtonGroup, type: :component do
       render_inline component
 
       expect(page).to have_css "button[form='my_form_id']", text: "Save and continue"
-      expect(page).to have_css "form[action='#{edition_path(
-        edition,
-        redirect_path: documents_path,
-      )}']"
+      expect(page).to have_css "a.govuk-button--secondary[href='/editions/123/workflow/cancel']", text: "Cancel"
     end
 
     describe "when custom button text is provided" do

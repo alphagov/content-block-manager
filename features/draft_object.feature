@@ -28,7 +28,8 @@ Feature: Drafting a content block
       | my basic pension | this is basic | Ministry of Example | this is important  |
 
   Scenario: GDS editor cancels the creation of an object
-    And I click cancel
+    And I click the cancel link
+    And I choose to delete the in-progress draft
     Then I am taken back to Content Block Manager home page
     And no draft Content Block Edition has been created
     And no draft Content Block Document has been created
