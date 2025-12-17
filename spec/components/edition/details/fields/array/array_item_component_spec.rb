@@ -1,36 +1,27 @@
 RSpec.describe Edition::Details::Fields::Array::ItemComponent, type: :component do
-  let(:component) do
-    described_class.new(
-      field_name:,
-      array_items:,
-      name_prefix:,
-      id_prefix:,
-      value: field_value,
-      index:,
-      errors:,
-      error_lookup_prefix:,
-      can_be_deleted:,
-      hints:,
-    )
-  end
-
-  let(:errors) { double(:errors) }
-  let(:error_lookup_prefix) { "foo_bar" }
-  let(:errors_for_field) { [] }
+  let(:field_name) { "foo" }
+  let(:field) { build(:field, name: field_name, enum_values: nil, default_value: nil, nested_fields:) }
+  let(:edition) { build(:edition) }
+  let(:schema) { build(:schema) }
   let(:can_be_deleted) { true }
   let(:hints) { nil }
 
-  before do
-    allow(component).to receive(:errors_for).and_return(errors_for_field)
+  let(:component) do
+    described_class.new(
+      field:,
+      edition:,
+      schema:,
+      value:,
+      can_be_deleted:,
+      hints:,
+      index:,
+    )
   end
 
-  describe "if the array item is a string" do
-    let(:field_name) { "bar" }
-    let(:array_items) { { "type" => "string" } }
-    let(:name_prefix) { "foo[bar]" }
-    let(:id_prefix) { "foo_bar" }
-    let(:field_value) { ["", "Some text"] }
+  describe "if the field contains no nested fields" do
+    let(:nested_fields) { nil }
     let(:index) { 1 }
+    let(:value) { "Some text" }
 
     describe "if the item can be deleted" do
       let(:can_be_deleted) { true }
@@ -45,24 +36,20 @@ RSpec.describe Edition::Details::Fields::Array::ItemComponent, type: :component 
       it "renders a text field" do
         render_inline(component)
 
-        expect(page).to have_css "label", text: "Bar"
-        expect(page).to have_css "input[type='text'][value='Some text'][name='foo[bar][]'][id='foo_bar_1']"
+        expect(page).to have_css "label", text: "Foo"
+        expect(page).to have_css "input[type='text'][value='Some text'][name='#{field.name_attribute}'][id='#{field.id_attribute(1)}']"
       end
 
       describe "when error messages are present" do
-        let(:errors_for_field) do
-          [{ text: "Bar cannot be blank" }]
-        end
-
         before do
-          expect(component).to receive(:errors_for).with(errors, "#{error_lookup_prefix}_#{index}".to_sym).and_return(errors_for_field)
+          edition.errors.add(field.error_key(1).to_sym, "Cannot be blank")
         end
 
         it "renders an error" do
           render_inline(component)
 
           expect(page).to have_css ".govuk-form-group--error" do |form_group|
-            expect(form_group).to have_css ".govuk-error-message", text: "Bar cannot be blank"
+            expect(form_group).to have_css ".govuk-error-message", text: "Cannot be blank"
           end
         end
       end
@@ -78,132 +65,44 @@ RSpec.describe Edition::Details::Fields::Array::ItemComponent, type: :component 
         expect(page).to have_css ".app-c-content-block-manager-array-item-component--immutable"
       end
     end
-
-    describe "if a hint is present" do
-      let(:hints) do
-        { bar: "Some hint" }
-      end
-
-      it "renders a hint" do
-        render_inline(component)
-
-        expect(page).to have_css ".govuk-form-group" do |form_group|
-          expect(form_group).to have_css ".govuk-hint", text: "Some hint"
-        end
-      end
-    end
   end
 
-  describe "if the array item is an enum" do
-    let(:field_name) { "bar" }
-    let(:array_items) { { "type" => "string", "enum" => %w[foo bar baz] } }
-    let(:name_prefix) { "foo[bar]" }
-    let(:id_prefix) { "foo_bar" }
-    let(:field_value) { nil }
+  describe "if the field contains nested fields" do
+    let(:field_1) { build(:field, name: "fizz") }
+    let(:field_2) { build(:field, name: "buzz") }
+
+    let(:nested_fields) do
+      [
+        field_1,
+        field_2,
+      ]
+    end
     let(:index) { 1 }
-
-    it "renders a select field" do
-      render_inline(component)
-
-      expect(page).to have_css "label", text: "Bar"
-      expect(page).to have_css "select[name='foo[bar][]'][id='foo_bar_1']" do |select|
-        expect(select).to have_css "option[value=''][selected]", text: "Select"
-        expect(select).to have_css "option[value='foo']", text: "Foo"
-        expect(select).to have_css "option[value='bar']", text: "Bar"
-        expect(select).to have_css "option[value='baz']", text: "Baz"
-      end
-    end
-
-    describe "when the value is set" do
-      let(:field_value) { "baz" }
-
-      it "marks the appropriate option as selected" do
-        render_inline(component)
-
-        expect(page).to have_css "label", text: "Bar"
-        expect(page).to have_css "select[name='foo[bar][]'][id='foo_bar_1']" do |select|
-          expect(select).to have_css "option[value='foo']", text: "Foo"
-          expect(select).to have_css "option[value='bar']", text: "Bar"
-          expect(select).to have_css "option[value='baz'][selected]", text: "Baz"
-        end
-      end
-    end
-
-    describe "when error messages are present" do
-      let(:errors_for_field) do
-        [{ text: "Bar cannot be blank" }]
-      end
-
-      before do
-        expect(component).to receive(:errors_for).with(errors, "#{error_lookup_prefix}_#{index}".to_sym).and_return(errors_for_field)
-      end
-
-      it "renders an error" do
-        render_inline(component)
-
-        expect(page).to have_css ".govuk-form-group--error" do |form_group|
-          expect(form_group).to have_css ".govuk-error-message", text: "Bar cannot be blank"
-        end
-      end
-    end
-
-    describe "if a hint is present" do
-      let(:hints) do
-        { bar: "Some hint" }
-      end
-
-      it "renders a hint" do
-        render_inline(component)
-
-        expect(page).to have_css ".govuk-form-group" do |form_group|
-          expect(form_group).to have_css ".govuk-hint", text: "Some hint"
-        end
-      end
-    end
-  end
-
-  describe "if the array item is an object" do
-    let(:field_name) { "bar" }
-    let(:array_items) do
+    let(:value) do
       {
-        "type" => "object",
-        "properties" => {
-          "fizz" => { "type" => "string" },
-          "buzz" => { "type" => "string" },
-        },
+        "fizz" => "Field 1 value",
+        "buzz" => "Field 2 value",
       }
     end
-    let(:name_prefix) { "foo[bar]" }
-    let(:id_prefix) { "foo_bar" }
-    let(:field_value) { [{}, { "fizz" => "Something", "buzz" => "Else" }] }
-    let(:index) { 1 }
 
-    it "renders a text field for each item" do
+    it "renders a field for each item" do
       render_inline(component)
 
       expect(page).to have_css ".govuk-form-group", text: /Fizz/ do |form_group|
         expect(form_group).to have_css "label", text: "Fizz"
-        expect(form_group).to have_css "input[type='text'][value='Something'][name='foo[bar][][fizz]'][id='foo_bar_1_fizz']"
+        expect(form_group).to have_css "input[type='text'][value='Field 1 value'][name='#{field_1.name_attribute}'][id='#{field_1.id_attribute(1)}']"
       end
 
       expect(page).to have_css ".govuk-form-group", text: /Buzz/ do |form_group|
         expect(form_group).to have_css "label", text: "Buzz"
-        expect(form_group).to have_css "input[type='text'][value='Else'][name='foo[bar][][buzz]'][id='foo_bar_1_buzz']"
+        expect(form_group).to have_css "input[type='text'][value='Field 2 value'][name='#{field_2.name_attribute}'][id='#{field_2.id_attribute(1)}']"
       end
     end
 
     describe "when error messages are present" do
-      let(:fizz_errors) do
-        [{ text: "Fizz cannot be blank" }]
-      end
-
-      let(:buzz_errors) do
-        [{ text: "Buzz cannot be blank" }]
-      end
-
       before do
-        expect(component).to receive(:errors_for).with(errors, "#{error_lookup_prefix}_#{index}_fizz".to_sym).and_return(fizz_errors)
-        expect(component).to receive(:errors_for).with(errors, "#{error_lookup_prefix}_#{index}_buzz".to_sym).and_return(buzz_errors)
+        edition.errors.add(field_1.error_key(1).to_sym, "Fizz cannot be blank")
+        edition.errors.add(field_2.error_key(1).to_sym, "Buzz cannot be blank")
       end
 
       it "renders errors" do
@@ -215,79 +114,6 @@ RSpec.describe Edition::Details::Fields::Array::ItemComponent, type: :component 
 
         expect(page).to have_css ".govuk-form-group--error", text: /Buzz/ do |form_group|
           expect(form_group).to have_css ".govuk-error-message", text: "Buzz cannot be blank"
-        end
-      end
-    end
-
-    describe "if a hint is present" do
-      let(:hints) do
-        { fizz: "Some hint", buzz: "Another hint" }
-      end
-
-      it "renders a hint" do
-        render_inline(component)
-
-        expect(page).to have_css ".govuk-form-group", text: /Fizz/ do |form_group|
-          expect(form_group).to have_css ".govuk-hint", text: "Some hint"
-        end
-
-        expect(page).to have_css ".govuk-form-group", text: /Buzz/ do |form_group|
-          expect(form_group).to have_css ".govuk-hint", text: "Another hint"
-        end
-      end
-    end
-
-    describe "when an enum is included" do
-      let(:array_items) do
-        {
-          "type" => "object",
-          "properties" => {
-            "fizz" => { "type" => "string", "enum" => %w[foo bar baz] },
-          },
-        }
-      end
-
-      it "renders a select field" do
-        render_inline(component)
-
-        expect(page).to have_css "label", text: "Fizz"
-        expect(page).to have_css "select[name='foo[bar][][fizz]'][id='foo_bar_1_fizz']" do |select|
-          expect(select).to have_css "option[value='foo']", text: "Foo"
-          expect(select).to have_css "option[value='bar']", text: "Bar"
-          expect(select).to have_css "option[value='baz']", text: "Baz"
-        end
-      end
-
-      describe "when the value is set" do
-        let(:field_value) { [{}, { "fizz" => "baz" }] }
-
-        it "marks the appropriate option as selected" do
-          render_inline(component)
-
-          expect(page).to have_css "label", text: "Fizz"
-          expect(page).to have_css "select[name='foo[bar][][fizz]'][id='foo_bar_1_fizz']" do |select|
-            expect(select).to have_css "option[value='foo']", text: "Foo"
-            expect(select).to have_css "option[value='bar']", text: "Bar"
-            expect(select).to have_css "option[value='baz'][selected]", text: "Baz"
-          end
-        end
-      end
-
-      describe "when error messages are present" do
-        let(:errors_for_field) do
-          [{ text: "Fizz cannot be blank" }]
-        end
-
-        before do
-          expect(component).to receive(:errors_for).with(errors, "#{error_lookup_prefix}_#{index}_fizz".to_sym).and_return(errors_for_field)
-        end
-
-        it "renders an error" do
-          render_inline(component)
-
-          expect(page).to have_css ".govuk-form-group--error" do |form_group|
-            expect(form_group).to have_css ".govuk-error-message", text: "Fizz cannot be blank"
-          end
         end
       end
     end
