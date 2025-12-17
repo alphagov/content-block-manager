@@ -302,4 +302,53 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
       end
     end
   end
+
+  describe "link to go back to the latest edition" do
+    context "when the edition being viewed is published" do
+      let(:latest_edition_id) { 123 }
+      let(:newer_draft_edition_id) { 124 }
+
+      before do
+        edition.state = :published
+      end
+
+      context "and the edition being viewed is not the latest edition" do
+        before do
+          allow(document).to receive(:most_recent_edition).and_return(double(:edition, id: newer_draft_edition_id))
+          component = described_class.new(edition: edition)
+          render_inline component
+        end
+
+        it "shows the link to return to the latest edition" do
+          expect(page).to have_link("Return to latest edition", href: "/456")
+        end
+      end
+
+      context "and the edition being viewed is the latest edition" do
+        before do
+          allow(document).to receive(:most_recent_edition).and_return(double(:edition, id: latest_edition_id))
+          component = described_class.new(edition: edition)
+          render_inline component
+        end
+
+        it "shows the link to return to the latest edition" do
+          expect(page).to have_no_link("Return to latest edition", href: "/456")
+        end
+      end
+    end
+
+    (Edition.available_states - [:published]).each do |state|
+      context "when the edition being viewed is not published (#{state})" do
+        before do
+          edition.state = state
+          component = described_class.new(edition: edition)
+          render_inline component
+        end
+
+        it "does not show the link to return to the latest edition" do
+          expect(page).to have_no_link("Return to latest edition")
+        end
+      end
+    end
+  end
 end
