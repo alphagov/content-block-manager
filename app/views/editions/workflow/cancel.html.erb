@@ -9,18 +9,6 @@
     } %>
   </div>
   <div>
-    <%= form_with(
-          url: edition_path(
-            @edition,
-            redirect_path: document_path(@edition.document),
-          ),
-          method: :delete,
-        ) do %>
-      <%= render "govuk_publishing_components/components/button", {
-        text: "Delete draft",
-        type: "submit",
-        destructive: true,
-      } %>
-    <% end %>
+    <%= render(Shared::DeleteDraftComponent.new(edition: @edition)) %>
   </div>
 </div>
