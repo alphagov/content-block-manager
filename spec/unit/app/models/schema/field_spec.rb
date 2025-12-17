@@ -197,13 +197,13 @@ RSpec.describe Schema::Field do
         expect(nested_fields[0].name).to eq("foo")
         expect(nested_fields[0].format).to eq("string")
         expect(nested_fields[0].enum_values).to be_nil
-        expect(nested_fields[0].name_attribute).to eq("edition[details][something][foo]")
+        expect(nested_fields[0].name_attribute).to eq("edition[details][something][][foo]")
         expect(nested_fields[0].id_attribute).to eq("edition_details_something_foo")
 
         expect(nested_fields[1].name).to eq("bar")
         expect(nested_fields[1].format).to eq("string")
         expect(nested_fields[1].enum_values).to eq(%w[foo bar])
-        expect(nested_fields[1].name_attribute).to eq("edition[details][something][bar]")
+        expect(nested_fields[1].name_attribute).to eq("edition[details][something][][bar]")
         expect(nested_fields[1].id_attribute).to eq("edition_details_something_bar")
       end
 
@@ -403,7 +403,7 @@ RSpec.describe Schema::Field do
   end
 
   context "when the schema is an embedded schema" do
-    let(:schema) { double(:embedded_schema, parent_schema: build(:schema), block_type: "embedded") }
+    let(:schema) { build(:embedded_schema, parent_schema: build(:schema), block_type: "embedded") }
 
     describe "#name_attribute" do
       it "returns the field name" do
@@ -422,12 +422,57 @@ RSpec.describe Schema::Field do
         expect(field.error_key).to eq("details_embedded_something")
       end
     end
+
+    context "when the field is an array" do
+      let(:body) do
+        {
+          "properties" => {
+            "something" => {
+              "type" => "array",
+              "items" => {
+                "type" => "string",
+              },
+            },
+          },
+        }
+      end
+
+      describe "#name_attribute" do
+        it "returns the field name" do
+          expect(field.name_attribute).to eq("edition[details][embedded][something][]")
+        end
+
+        it "includes an index if present" do
+          expect(field.name_attribute(1)).to eq("edition[details][embedded][something][1]")
+        end
+      end
+
+      describe "#id_attribute" do
+        it "returns the field id" do
+          expect(field.id_attribute).to eq("edition_details_embedded_something")
+        end
+
+        it "includes an index if present" do
+          expect(field.id_attribute(1)).to eq("edition_details_embedded_something_1")
+        end
+      end
+
+      describe "#error_key" do
+        it "returns the field id without the leading `edition`" do
+          expect(field.error_key).to eq("details_embedded_something")
+        end
+
+        it "includes an index if present" do
+          expect(field.error_key(1)).to eq("details_embedded_something_1")
+        end
+      end
+    end
   end
 
   context "when the schema is deeply nested" do
     let(:root_schema) { build(:schema) }
-    let(:parent_schema) { double(:embedded_schema, block_type: "level_1", parent_schema: root_schema) }
-    let(:schema) { double(:embedded_schema, parent_schema: parent_schema, block_type: "level_2") }
+    let(:parent_schema) { build(:embedded_schema, block_type: "level_1", parent_schema: root_schema) }
+    let(:schema) { build(:embedded_schema, parent_schema: parent_schema, block_type: "level_2") }
 
     describe "#name_attribute" do
       it "returns the field name" do
@@ -444,6 +489,40 @@ RSpec.describe Schema::Field do
     describe "#error_key" do
       it "returns the field id without the leading `edition`" do
         expect(field.error_key).to eq("details_level_1_level_2_something")
+      end
+    end
+
+    context "when the parent schema is an array" do
+      let(:schema) { build(:embedded_schema, parent_schema: parent_schema, block_type: "level_2", is_array: true) }
+
+      describe "#name_attribute" do
+        it "returns the field name" do
+          expect(field.name_attribute).to eq("edition[details][level_1][level_2][][something]")
+        end
+
+        it "includes an index if present" do
+          expect(field.name_attribute(1)).to eq("edition[details][level_1][level_2][1][something]")
+        end
+      end
+
+      describe "#id_attribute" do
+        it "returns the field id" do
+          expect(field.id_attribute).to eq("edition_details_level_1_level_2_something")
+        end
+
+        it "includes an index if present" do
+          expect(field.id_attribute(1)).to eq("edition_details_level_1_level_2_1_something")
+        end
+      end
+
+      describe "#error_key" do
+        it "returns the field id without the leading `edition`" do
+          expect(field.error_key).to eq("details_level_1_level_2_something")
+        end
+
+        it "includes an index if present" do
+          expect(field.error_key(1)).to eq("details_level_1_level_2_1_something")
+        end
       end
     end
   end

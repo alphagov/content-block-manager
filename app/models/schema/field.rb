@@ -45,7 +45,7 @@ class Schema
         embedded_schema = Schema::EmbeddedSchema.new(name, properties, schema, config)
         embedded_schema.fields
       elsif format == "array" && properties["items"]["type"] == "object"
-        embedded_schema = Schema::EmbeddedSchema.new(name, properties["items"], schema, config)
+        embedded_schema = Schema::EmbeddedSchema.new(name, properties["items"], schema, config, is_array: true)
         embedded_schema.fields
       end
     end
@@ -82,20 +82,32 @@ class Schema
       @govspeak_enabled ||= config[GOVSPEAK_ENABLED_PROPERTY_KEY] == true
     end
 
-    def name_attribute
+    def name_attribute(index = nil)
       output = "edition[details]"
-      parent_schemas.each { |parent_schema| output += "[#{parent_schema.block_type}]" }
-      output + "[#{name}]"
+      parent_schemas.each { |parent_schema| output += parent_schema.html_name_part(index) }
+      output + name_attribute_part(index)
     end
 
-    def id_attribute
+    def name_attribute_part(index = nil)
+      name_part = "[#{name}]"
+      name_part += "[#{index}]" if format == "array"
+      name_part
+    end
+
+    def id_attribute(index = nil)
       output = "edition_details"
-      parent_schemas.each { |parent_schema| output += "_#{parent_schema.block_type}" }
-      output + "_#{name}"
+      parent_schemas.each { |parent_schema| output += parent_schema.html_id_part(index) }
+      output + id_attribute_part(index)
     end
 
-    def error_key
-      id_attribute.delete_prefix("edition_")
+    def id_attribute_part(index = nil)
+      id_part = "_#{name}"
+      id_part += "_#{index}" if format == "array" && index.present?
+      id_part
+    end
+
+    def error_key(index = nil)
+      id_attribute(index).delete_prefix("edition_")
     end
 
   private
