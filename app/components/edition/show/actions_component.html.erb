@@ -56,6 +56,12 @@
     </li>
   <% end %>
 
+  <% if state == "published" && document.most_recent_edition&.id != edition.id %>
+    <li class="govuk-!-static-margin-top-3">
+      <%= link_to("Return to latest edition", document_path(document), class: "govuk-link") %>
+    </li>
+  <% end %>
+
   <% if edition.is_deletable? %>
     <li class="govuk-!-static-margin-top-3">
       <%= link_to "Delete draft", delete_edition_path(edition), class: "govuk-link govuk-link--no-visited-state gem-link--destructive" %>
