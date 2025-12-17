@@ -21,8 +21,7 @@
 
   <%= render(
         Edition::Details::EmbeddedObjects::CancelComponent.new(
-          edition: @edition,
-          subschema: @subschema,
+          back_link: @back_link,
           redirect_url: @redirect_url,
         ),
       ) %>

@@ -189,6 +189,10 @@ When(/^I click to edit the first rate$/) do
   end
 end
 
+Given("I then decide to abandon the creation of a new contact link") do
+  click_link("Cancel")
+end
+
 And(/^I should see the updated rates for that block$/) do
   @details.keys.each do |k|
     assert_text @details[k]
