@@ -1,15 +1,18 @@
 RSpec.describe Shared::EmbeddedObjects::SummaryCard::NestedItemComponent, type: :component do
   include Rails.application.routes.url_helpers
 
+  let(:field_name) { "nested_item_field" }
+  let(:field_value) { "field *value*" }
+  let(:response) { "GOVSPEAK FORMATTED VALUE" }
+
   let(:nested_items) do
-    { "nested_item_field" => "field *value*" }
+    { field_name => field_value }
   end
 
   let(:schema) do
     double(
       "sub-schema",
       name: "schema",
-      govspeak_enabled?: true,
     )
   end
 
@@ -26,35 +29,18 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCard::NestedItemComponent, type: 
     )
   end
 
-  context "when a field is govspeak enabled" do
-    it "renders the value as HTML" do
-      render_inline component
-      rendered_value = page.find("dt.govuk-summary-list__value").native.children.to_html.strip
-
-      assert_equal(
-        "<p>field <em>value</em></p>",
-        rendered_value,
-      )
-    end
+  before do
+    allow(component).to receive(:render_govspeak_if_enabled_for_field).with(
+      field_name:,
+      value: field_value,
+    ).and_return(response)
   end
 
-  context "when a field is NOT govspeak enabled" do
-    let(:schema) do
-      double(
-        "sub-schema",
-        govspeak_enabled?: false,
-      )
-    end
+  it "renders the value as HTML" do
+    render_inline component
+    rendered_value = page.find("dt.govuk-summary-list__value").native.children.to_html.strip
 
-    it "renders the value unconverted" do
-      render_inline component
-      rendered_value = page.find("dt.govuk-summary-list__value").native.children.to_html.strip
-
-      assert_equal(
-        "field *value*",
-        rendered_value,
-      )
-    end
+    expect(rendered_value).to eq(response)
   end
 
   describe "when a field has a translation" do

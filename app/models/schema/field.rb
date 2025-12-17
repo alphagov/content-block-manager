@@ -2,6 +2,9 @@ class Schema
   class Field
     attr_reader :name, :schema
 
+    HIDDEN_FIELD_PROPERTY_KEY = "hidden_field".freeze
+    GOVSPEAK_ENABLED_PROPERTY_KEY = "govspeak_enabled".freeze
+
     def initialize(name, schema)
       @name = name
       @schema = schema
@@ -64,7 +67,15 @@ class Schema
       @data_attributes ||= config["data_attributes"] || {}
     end
 
-    def html_name
+    def hidden?
+      @hidden ||= config[HIDDEN_FIELD_PROPERTY_KEY] == true
+    end
+
+    def govspeak_enabled?
+      @govspeak_enabled ||= config[GOVSPEAK_ENABLED_PROPERTY_KEY] == true
+    end
+
+    def name_attribute
       output = "edition[details]"
       parent_schemas.each { |parent_schema| output += "[#{parent_schema.block_type}]" }
       output + "[#{name}]"

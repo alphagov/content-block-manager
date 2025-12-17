@@ -354,4 +354,40 @@ RSpec.describe Schema::Field do
       end
     end
   end
+
+  describe "#hidden?" do
+    describe "when a config var is set to hide the field" do
+      let(:config) do
+        { "fields" => { "something" => { Schema::Field::HIDDEN_FIELD_PROPERTY_KEY => true } } }
+      end
+
+      it "returns true" do
+        expect(field.hidden?).to be_truthy
+      end
+    end
+
+    describe "when a config var is not set" do
+      it "returns false" do
+        expect(field.hidden?).to be_falsey
+      end
+    end
+  end
+
+  describe "#govspeak_enabled?" do
+    describe "when a config var is set to enable Govspeak" do
+      let(:config) do
+        { "fields" => { "something" => { Schema::Field::GOVSPEAK_ENABLED_PROPERTY_KEY => true } } }
+      end
+
+      it "returns true" do
+        expect(field.govspeak_enabled?).to be_truthy
+      end
+    end
+
+    describe "when a config var is not set" do
+      it "returns false" do
+        expect(field.govspeak_enabled?).to be_falsey
+      end
+    end
+  end
 end

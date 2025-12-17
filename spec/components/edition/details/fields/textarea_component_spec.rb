@@ -311,14 +311,15 @@ RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
     end
 
     let(:schema) { double(:schema, block_type: "schema") }
+    let(:govspeak_enabled) { false }
 
     let(:field) do
-      Schema::Field::NestedField.new(
-        name: "prefix",
-        format: "string",
-        enum_values: nil,
-        default_value: "**Default** prefix: 18000 then",
-      )
+      double(:field,
+             name: "prefix",
+             format: "string",
+             enum_values: nil,
+             default_value: "**Default** prefix: 18000 then",
+             govspeak_enabled?: govspeak_enabled)
     end
 
     let(:field_value) { nil }
@@ -401,27 +402,10 @@ RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
           end
         end
       end
+
       describe "'Govspeak supported' indicator" do
-        context "when the field IS declared 'govspeak-enabled' in the config" do
-          let(:config) do
-            {
-              "schemas" => {
-                "parent_schema_id" => {
-                  "subschemas" => {
-                    "telephones" => {
-                      "fields" => {
-                        "video_relay_service" => {
-                          "fields" => {
-                            "prefix" => { "govspeak_enabled" => true },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            }
-          end
+        context "when the field IS declared as govspeak enabled" do
+          let(:govspeak_enabled) { true }
 
           it "displays guidance to indicate 'Govspeak supported'" do
             render_inline component
@@ -483,26 +467,8 @@ RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
           end
         end
 
-        context "when the field is NOT declared 'govspeak-enabled in the config" do
-          let(:config) do
-            {
-              "schemas" => {
-                "parent_schema_id" => {
-                  "subschemas" => {
-                    "telephones" => {
-                      "fields" => {
-                        "video_relay_service" => {
-                          "fields" => {
-                            "prefix" => {},
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            }
-          end
+        context "when the field is NOT declared as govspeak enabled" do
+          let(:govspeak_enabled) { false }
 
           it "does NOT display the 'Govspeak supported' hint" do
             render_inline component

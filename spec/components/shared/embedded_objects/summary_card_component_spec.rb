@@ -37,6 +37,9 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
 
   before do
     allow(schema).to receive(:subschema).and_return(subschema)
+    fields.each do |field|
+      allow(schema).to receive(:field).with(field.name).and_return(field)
+    end
   end
 
   it "renders a summary list" do
@@ -262,6 +265,12 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
         }
       end
 
+      let(:item_field) { double(:field, name: "item", govspeak_enabled?: false) }
+
+      before do
+        allow(subschema).to receive(:field).with("item").and_return(item_field)
+      end
+
       it "renders a nested summary card" do
         component = described_class.new(
           edition:,
@@ -350,6 +359,12 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
             },
           },
         }
+      end
+
+      let(:item_field) { double(:field, name: "item", govspeak_enabled?: false) }
+
+      before do
+        allow(subschema).to receive(:field).with("item").and_return(item_field)
       end
 
       it "renders a nested summary card" do
