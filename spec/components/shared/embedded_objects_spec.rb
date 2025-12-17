@@ -21,8 +21,8 @@ RSpec.describe Shared::EmbeddedObjects, type: :component do
   let(:schema) { double(:schema) }
   let(:fields) do
     [
-      double(:field, name: "field-1"),
-      double(:field, name: "field-2"),
+      build(:field, name: "field-1"),
+      build(:field, name: "field-2"),
     ]
   end
   let(:subschema) { double(:subschema, block_type: "embedded-objects", name: "Embedded objects", fields:) }

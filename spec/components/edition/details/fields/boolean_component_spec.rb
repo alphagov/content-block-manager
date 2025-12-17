@@ -2,7 +2,7 @@ RSpec.describe Edition::Details::Fields::BooleanComponent, type: :component do
   let(:described_class) { Edition::Details::Fields::BooleanComponent }
 
   let(:edition) { build(:edition, :pension) }
-  let(:field) { double("field", name: "email_address", is_required?: true) }
+  let(:field) { build(:field, name: "email_address", is_required?: true) }
   let(:schema) { double(:schema, block_type: "schema") }
 
   before do

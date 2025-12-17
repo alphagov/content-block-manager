@@ -22,8 +22,8 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
   end
   let(:fields) do
     [
-      double("field", name: "foo"),
-      double("field", name: "something"),
+      build(:field, name: "foo"),
+      build(:field, name: "something"),
     ]
   end
   let(:schema_with_block_display_fields) { double(:schema, block_display_fields: %w[foo], fields:) }
@@ -110,7 +110,7 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
 
     it "humanizes field names" do
       fields_with_underscores = [
-        double("field", name: "field_with_underscores"),
+        build(:field, name: "field_with_underscores"),
       ]
       schema = double(:schema, block_display_fields: [], fields: fields_with_underscores)
       allow(document).to receive(:schema).and_return(schema)

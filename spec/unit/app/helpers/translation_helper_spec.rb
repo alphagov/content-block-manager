@@ -80,7 +80,7 @@ RSpec.describe TranslationHelper do
   describe "#hint_text" do
     let(:schema) { double(:schema, block_type: "schema") }
     let(:subschema) { double(:subschema, block_type: "subschema") }
-    let(:field) { double(:field, name: "field") }
+    let(:field) { build(:field, name: "field") }
 
     let(:response) { "RESPONSE" }
 

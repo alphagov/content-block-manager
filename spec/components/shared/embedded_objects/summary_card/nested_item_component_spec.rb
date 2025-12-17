@@ -5,8 +5,8 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCard::NestedItemComponent, type: 
   let(:field_value) { "field *value*" }
   let(:govspeak_formatted_value) { "GOVSPEAK FORMATTED VALUE" }
 
-  let(:nested_field) { double("field", name: field_name, govspeak_enabled?: govspeak_enabled) }
-  let(:field) { double("field", name: "nested_object") }
+  let(:nested_field) { build(:field, name: field_name, govspeak_enabled?: govspeak_enabled) }
+  let(:field) { build(:field, name: "nested_object") }
   let(:govspeak_enabled) { false }
 
   let(:nested_items) do

@@ -4,11 +4,11 @@ RSpec.describe Edition::Details::EmbeddedObjects::FormComponent, type: :componen
   let(:block_type) { "some_object" }
   let(:subschema) { build(:schema, block_type:) }
 
-  let(:foo_field) { double("field", name: "foo", component_name: "string", enum_values: nil, default_value: nil, data_attributes: nil) }
-  let(:bar_field) { double("field", name: "bar", component_name: "string", enum_values: nil, default_value: nil, data_attributes: nil) }
-  let(:enum_field) { double("field", name: "enum", component_name: "enum", enum_values: ["some value", "another value"], default_value: "some value", data_attributes: nil) }
-  let(:textarea_field) { double("field", name: "enum", component_name: "textarea", enum_values: nil, default_value: nil, data_attributes: nil) }
-  let(:boolean_field) { double("field", name: "boolean", component_name: "boolean", enum_values: nil, default_value: nil, data_attributes: nil) }
+  let(:foo_field) { build(:field, name: "foo", component_name: "string", enum_values: nil, default_value: nil, data_attributes: nil) }
+  let(:bar_field) { build(:field, name: "bar", component_name: "string", enum_values: nil, default_value: nil, data_attributes: nil) }
+  let(:enum_field) { build(:field, name: "enum", component_name: "enum", enum_values: ["some value", "another value"], default_value: "some value", data_attributes: nil) }
+  let(:textarea_field) { build(:field, name: "enum", component_name: "textarea", enum_values: nil, default_value: nil, data_attributes: nil) }
+  let(:boolean_field) { build(:field, name: "boolean", component_name: "boolean", enum_values: nil, default_value: nil, data_attributes: nil) }
 
   let(:foo_stub) { double("string_component") }
   let(:bar_stub) { double("string_component") }

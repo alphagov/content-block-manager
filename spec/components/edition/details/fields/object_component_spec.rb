@@ -5,13 +5,13 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
   let(:edition) { build(:edition, :pension) }
   let(:nested_fields) do
     [
-      double("field", name: "label", enum_values: nil, default_value: nil),
-      double("field", name: "type", enum_values: %w[enum_1 enum_2 enum_3], default_value: nil),
-      double("field", name: "email_address", enum_values: nil, default_value: nil),
+      build("field", name: "label", enum_values: nil, default_value: nil),
+      build("field", name: "type", enum_values: %w[enum_1 enum_2 enum_3], default_value: nil),
+      build("field", name: "email_address", enum_values: nil, default_value: nil),
     ]
   end
   let(:schema) { double("schema", id: "root", block_type: "schema") }
-  let(:field) { double("field", name: "nested", nested_fields:, schema:, is_required?: true, default_value: nil) }
+  let(:field) { build(:field, name: "nested", nested_fields:, schema:, is_required?: true, default_value: nil) }
 
   let(:label_stub) { double("string_component") }
   let(:type_stub) { double("enum_component") }
@@ -73,9 +73,9 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
   describe "when default values are present for the object" do
     let(:nested_fields) do
       [
-        double("field", name: "label", enum_values: nil, default_value: "LABEL DEFAULT"),
-        double("field", name: "type", enum_values: %w[enum_1 enum_2 enum_3], default_value: "TYPE DEFAULT"),
-        double("field", name: "email_address", enum_values: nil, default_value: "EMAIL DEFAULT"),
+        build(:field, name: "label", enum_values: nil, default_value: "LABEL DEFAULT"),
+        build(:field, name: "type", enum_values: %w[enum_1 enum_2 enum_3], default_value: "TYPE DEFAULT"),
+        build(:field, name: "email_address", enum_values: nil, default_value: "EMAIL DEFAULT"),
       ]
     end
 

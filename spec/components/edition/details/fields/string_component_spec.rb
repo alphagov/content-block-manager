@@ -1,6 +1,6 @@
 RSpec.describe Edition::Details::Fields::StringComponent, type: :component do
   let(:edition) { build(:edition, :pension) }
-  let(:field) { double("field", name: "email_address", is_required?: true, default_value: nil) }
+  let(:field) { build("field", name: "email_address", is_required?: true, default_value: nil) }
   let(:schema) { double(:schema, block_type: "schema") }
 
   let(:described_class) { Edition::Details::Fields::StringComponent }
@@ -31,7 +31,7 @@ RSpec.describe Edition::Details::Fields::StringComponent, type: :component do
   end
 
   it "should show optional label when field is optional" do
-    optional_field = double("field", name: "email_address", is_required?: false, default_value: nil)
+    optional_field = build(:field, name: "email_address", is_required?: false, default_value: nil)
     allow(helper_stub).to receive(:humanized_label).and_return("Email address")
 
     render_inline(

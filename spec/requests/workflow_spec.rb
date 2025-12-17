@@ -115,7 +115,7 @@ RSpec.describe "Workflow", type: :request do
     describe "when subschemas are present" do
       let(:subschemas) do
         [
-          double("subschema_1", id: "subschema_1", name: "subschema_1", block_type: "subschema_1", block_display_fields: [], fields: [double("field", name: "name", data_attributes: nil)], group: nil),
+          double("subschema_1", id: "subschema_1", name: "subschema_1", block_type: "subschema_1", block_display_fields: [], fields: [build(:field, name: "name", data_attributes: nil)], group: nil),
           double("subschema_2", id: "subschema_2", name: "subschema_2", block_type: "subschema_1", fields: [], group: nil),
         ]
       end

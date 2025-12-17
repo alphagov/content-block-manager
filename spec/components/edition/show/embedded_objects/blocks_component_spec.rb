@@ -122,9 +122,9 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         }
       end
 
-      let(:field) { double(:field, hidden?: false) }
-      let(:title_field) { double(:field, hidden?: false) }
-      let(:value_field) { double(:field, hidden?: false) }
+      let(:field) { build(:field, hidden?: false) }
+      let(:title_field) { build(:field, hidden?: false) }
+      let(:value_field) { build(:field, hidden?: false) }
 
       before do
         allow(subschema).to receive(:field).with("things").and_return(field)
@@ -156,7 +156,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
       end
 
       context "when a field is configured to be 'hidden', e.g. it's an internal flag" do
-        let(:value_field) { double(:field, hidden?: true) }
+        let(:value_field) { build(:field, hidden?: true) }
 
         it "is not displayed" do
           render_inline component
@@ -318,9 +318,9 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         }
       end
 
-      let(:field) { double(:field, hidden?: false) }
-      let(:title_field) { double(:field, hidden?: false) }
-      let(:value_field) { double(:field, hidden?: false) }
+      let(:field) { build(:field, hidden?: false) }
+      let(:title_field) { build(:field, hidden?: false) }
+      let(:value_field) { build(:field, hidden?: false) }
 
       before do
         allow(subschema).to receive(:field).with("things").and_return(field)

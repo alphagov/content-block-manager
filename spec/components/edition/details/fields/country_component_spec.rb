@@ -2,7 +2,7 @@ RSpec.describe Edition::Details::Fields::CountryComponent, type: :component do
   let(:described_class) { Edition::Details::Fields::CountryComponent }
 
   let(:edition) { build(:edition, :pension) }
-  let(:field) { double("field", name: "country", is_required?: true, default_value: nil) }
+  let(:field) { build("field", name: "country", is_required?: true, default_value: nil) }
 
   let(:world_locations) { 5.times.map { |i| build(:world_location, name: "World location #{i}") } }
   let(:uk) { build(:world_location, name: "United Kingdom") }

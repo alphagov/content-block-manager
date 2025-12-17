@@ -314,12 +314,12 @@ RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
     let(:govspeak_enabled) { false }
 
     let(:field) do
-      double(:field,
-             name: "prefix",
-             format: "string",
-             enum_values: nil,
-             default_value: "**Default** prefix: 18000 then",
-             govspeak_enabled?: govspeak_enabled)
+      build(:field,
+            name: "prefix",
+            format: "string",
+            enum_values: nil,
+            default_value: "**Default** prefix: 18000 then",
+            govspeak_enabled?: govspeak_enabled)
     end
 
     let(:field_value) { nil }
