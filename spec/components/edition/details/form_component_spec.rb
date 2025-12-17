@@ -79,7 +79,6 @@ RSpec.describe Edition::Details::FormComponent, type: :component do
       edition:,
       field: baz_field,
       schema:,
-      enum: %w[some enum],
     )
   end
 

@@ -33,7 +33,7 @@ private
   def component_for_field(field)
     component_name = field.component_name
     component_class = "Edition::Details::Fields::#{component_name.camelize}Component".constantize
-    args = component_args(field).merge(enum: field.enum_values, default: field.default_value)
+    args = component_args(field)
 
     component_class.new(**args.compact)
   end
