@@ -58,6 +58,20 @@ RSpec.describe Schema::Field do
     end
   end
 
+  describe "#component_class" do
+    it "returns the class name for a component" do
+      expect(field).to receive(:component_name).and_return("string")
+
+      expect(field.component_class).to eq(Edition::Details::Fields::StringComponent)
+    end
+
+    it "throws an error if the component does not exist" do
+      expect(field).to receive(:component_name).and_return("non_existent")
+
+      expect { field.component_class }.to raise_error("Component Edition::Details::Fields::NonExistentComponent not found")
+    end
+  end
+
   describe "#enum_values" do
     describe "when the field has enum values" do
       let(:body) do

@@ -24,6 +24,13 @@ class Schema
       end
     end
 
+    def component_class
+      class_name = "Edition::Details::Fields::#{component_name.camelize}Component"
+      class_name.constantize
+    rescue NameError
+      raise("Component #{class_name} not found")
+    end
+
     def config
       @config ||= schema.config.dig("fields", name) || {}
     end
