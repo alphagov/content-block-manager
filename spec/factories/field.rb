@@ -15,6 +15,7 @@ FactoryBot.define do
       component_for_field { Edition::Details::Fields::StringComponent }
       data_attributes { nil }
       hidden? { false }
+      show_field { nil }
     end
 
     initialize_with do
@@ -33,6 +34,7 @@ FactoryBot.define do
       allow(field).to receive(:data_attributes).and_return(evaluator.data_attributes)
       allow(field).to receive(:hidden?).and_return(evaluator.hidden?)
       allow(field).to receive(:component_class).and_return(evaluator.component_class)
+      allow(field).to receive(:show_field).and_return(evaluator.show_field)
     end
   end
 end

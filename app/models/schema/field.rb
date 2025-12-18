@@ -47,6 +47,10 @@ class Schema
       @default_value ||= properties["default"]
     end
 
+    def show_field
+      @show_field ||= config["show_field_name"] ? nested_field(config["show_field_name"]) : nil
+    end
+
     def nested_fields
       if format == "object"
         embedded_schema = Schema::EmbeddedSchema.new(name, properties, schema, config)
