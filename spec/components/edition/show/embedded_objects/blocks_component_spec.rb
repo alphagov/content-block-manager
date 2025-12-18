@@ -15,8 +15,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
   let(:subschema) do
     double("subschema",
            embeddable_as_block?: embeddable_as_block,
-           block_type: "subschema",
-           hidden_field?: false)
+           block_type: "subschema")
   end
   let(:schema_name) { "schema_name" }
 
@@ -123,6 +122,16 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         }
       end
 
+      let(:field) { build(:field, hidden?: false) }
+      let(:title_field) { build(:field, hidden?: false) }
+      let(:value_field) { build(:field, hidden?: false) }
+
+      before do
+        allow(subschema).to receive(:field).with("things").and_return(field)
+        allow(field).to receive(:nested_field).with("title").and_return(title_field)
+        allow(field).to receive(:nested_field).with("value").and_return(value_field)
+      end
+
       it "renders a summary card" do
         render_inline component
 
@@ -147,11 +156,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
       end
 
       context "when a field is configured to be 'hidden', e.g. it's an internal flag" do
-        before do
-          allow(subschema).to receive(:hidden_field?)
-                                .with(field_name: "value", nested_object_key: "things")
-                                .and_return(true)
-        end
+        let(:value_field) { build(:field, hidden?: true) }
 
         it "is not displayed" do
           render_inline component
@@ -311,6 +316,16 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
             },
           ],
         }
+      end
+
+      let(:field) { build(:field, hidden?: false) }
+      let(:title_field) { build(:field, hidden?: false) }
+      let(:value_field) { build(:field, hidden?: false) }
+
+      before do
+        allow(subschema).to receive(:field).with("things").and_return(field)
+        allow(field).to receive(:nested_field).with("title").and_return(title_field)
+        allow(field).to receive(:nested_field).with("value").and_return(value_field)
       end
 
       it "renders a summary card" do

@@ -27,8 +27,8 @@ RSpec.describe Schema::EmbeddedSchema do
     }
   end
   let(:schema_id) { "bar" }
-  let(:parent_schema_id) { "parent_schema_id" }
-  let(:schema) { Schema::EmbeddedSchema.new(schema_id, body, parent_schema_id) }
+  let(:parent_schema) { double(:schema, id: "parent_schema_id") }
+  let(:schema) { Schema::EmbeddedSchema.new(schema_id, body, parent_schema) }
 
   it "returns the subschema id" do
     expect(schema_id).to eq(schema.id)
@@ -44,7 +44,7 @@ RSpec.describe Schema::EmbeddedSchema do
         allow(Schema::EmbeddedSchema)
           .to receive(:schema_settings)
           .and_return({ "schemas" => {
-            parent_schema_id => {
+            parent_schema.id => {
               "subschemas" => {
                 "bar" => {
                   "group" => "a_group",
@@ -72,7 +72,7 @@ RSpec.describe Schema::EmbeddedSchema do
         .to receive(:schema_settings)
         .and_return({
           "schemas" => {
-            parent_schema_id => {
+            parent_schema.id => {
               "subschemas" => {
                 schema_id => {
                   "field_order" => %w[frequency amount description title],
@@ -100,7 +100,7 @@ RSpec.describe Schema::EmbeddedSchema do
     end
   end
 
-  describe "when an invalid subschema is given" do
+  describe "when an subschema that is not used for a first-class embedded object is used" do
     let(:body) do
       {
         "properties" => {
@@ -122,10 +122,12 @@ RSpec.describe Schema::EmbeddedSchema do
       }
     end
 
-    it "raises an error" do
-      assert_raises ArgumentError, "Subschema `bar` is invalid" do
-        schema
-      end
+    it "returns the subschema id" do
+      expect(schema.id).to eq(schema_id)
+    end
+
+    it "returns the fields" do
+      expect(schema.fields.map(&:name)).to eq(%w[foo bar])
     end
   end
 
@@ -136,7 +138,7 @@ RSpec.describe Schema::EmbeddedSchema do
           .to receive(:schema_settings)
           .and_return({
             "schemas" => {
-              parent_schema_id => {
+              parent_schema.id => {
                 "subschemas" => {
                   schema_id => {
                     "embeddable_as_block" => true,
@@ -158,7 +160,7 @@ RSpec.describe Schema::EmbeddedSchema do
           .to receive(:schema_settings)
           .and_return({
             "schemas" => {
-              parent_schema_id => {
+              parent_schema.id => {
                 "subschemas" => {
                   schema_id => {},
                 },
@@ -180,7 +182,7 @@ RSpec.describe Schema::EmbeddedSchema do
           .to receive(:schema_settings)
           .and_return({
             "schemas" => {
-              parent_schema_id => {
+              parent_schema.id => {
                 "subschemas" => {
                   schema_id => {
                     "group_order" => "12",
@@ -202,7 +204,7 @@ RSpec.describe Schema::EmbeddedSchema do
           .to receive(:schema_settings)
           .and_return({
             "schemas" => {
-              parent_schema_id => {
+              parent_schema.id => {
                 "subschemas" => {
                   schema_id => {},
                 },
@@ -270,153 +272,7 @@ RSpec.describe Schema::EmbeddedSchema do
       end
 
       it "returns permitted params" do
-        expect(["title", { "foo" => %w[_destroy] }, { "bar" => %w[my_string _destroy] }]).to eq(schema.permitted_params)
-      end
-    end
-  end
-
-  describe "#govspeak_enabled?(field:)" do
-    let(:body) do
-      {
-        "type" => "object",
-        "patternProperties" => {
-          "*" => {
-            "type" => "object",
-            "properties" => {},
-          },
-        },
-      }
-    end
-
-    let(:subschema_id) { "subschema_id" }
-    let(:parent_schema_id) { "parent_schema_id" }
-    let(:schema) { Schema::EmbeddedSchema.new(subschema_id, body, parent_schema_id) }
-
-    let(:config) do
-      {
-        "schemas" => {
-          parent_schema_id => {
-            "subschemas" => {
-              subschema_id => {
-                "fields" => {
-                  "field_1" => {},
-                  "field_2" => { "govspeak_enabled" => true },
-                  "nested_object_1" => {
-                    "fields" => {
-                      "field_1" => {},
-                      "field_2" => { "govspeak_enabled" => true },
-                    },
-                  },
-                  "nested_object_2" => {
-                    "fields" => {
-                      "field_1" => { "govspeak_enabled" => true },
-                      "field_2" => {},
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      }
-    end
-
-    before do
-      allow(Schema::EmbeddedSchema)
-        .to receive(:schema_settings)
-        .and_return(config)
-    end
-
-    context "when a nested_object_key is given" do
-      it "returns true if the given field in the nested object is declared govspeak_enabled" do
-        assert(schema.govspeak_enabled?(nested_object_key: "nested_object_1", field_name: "field_2"))
-      end
-
-      it "returns false if the given field in the nested object is NOT govspeak_enabled" do
-        assert_not(schema.govspeak_enabled?(nested_object_key: "nested_object_2", field_name: "field_2"))
-      end
-    end
-
-    context "when a nested_object_key is NOT given" do
-      it "returns true if the given field in the top-level properties is govspeak_enabled" do
-        assert(schema.govspeak_enabled?(field_name: "field_2"))
-      end
-
-      it "returns false if the given field in the top-level properties is NOT govspeak_enabled" do
-        assert_not(schema.govspeak_enabled?(field_name: "field_1"))
-      end
-    end
-  end
-
-  describe "#hidden_field?(field:)" do
-    let(:body) do
-      {
-        "type" => "object",
-        "patternProperties" => {
-          "*" => {
-            "type" => "object",
-            "properties" => {},
-          },
-        },
-      }
-    end
-
-    let(:subschema_id) { "subschema_id" }
-    let(:parent_schema_id) { "parent_schema_id" }
-    let(:schema) { Schema::EmbeddedSchema.new(subschema_id, body, parent_schema_id) }
-
-    let(:config) do
-      {
-        "schemas" => {
-          parent_schema_id => {
-            "subschemas" => {
-              subschema_id => {
-                "fields" => {
-                  "field_1" => {},
-                  "field_2" => { "hidden_field" => true },
-                  "nested_object_1" => {
-                    "fields" => {
-                      "field_1" => {},
-                      "field_2" => { "hidden_field" => true },
-                    },
-                  },
-                  "nested_object_2" => {
-                    "fields" => {
-                      "field_1" => { "hidden_field" => true },
-                      "field_2" => {},
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      }
-    end
-
-    before do
-      allow(Schema::EmbeddedSchema)
-        .to receive(:schema_settings)
-        .and_return(config)
-    end
-
-    context "when a nested_object_key is given" do
-      it "returns true if the given field in the nested object is declared hidden_field" do
-        assert(schema.hidden_field?(nested_object_key: "nested_object_1", field_name: "field_2"))
-      end
-
-      it "returns false if the given field in the nested object is NOT hidden_field" do
-        assert_not(schema.hidden_field?(nested_object_key: "nested_object_2", field_name: "field_2"))
-      end
-    end
-
-    context "when a nested_object_key is NOT given" do
-      it "returns true if the given field in the top-level properties is hidden_field" do
-        assert(schema.hidden_field?(field_name: "field_2"))
-      end
-
-      it "returns false if the given field in the top-level properties is NOT hidden_field" do
-        assert_not(schema.hidden_field?(field_name: "field_1"))
+        expect(schema.permitted_params).to eq(["title", { "foo" => %w[_destroy] }, { "bar" => %w[my_string _destroy] }])
       end
     end
   end

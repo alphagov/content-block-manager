@@ -3,7 +3,7 @@ RSpec.describe Edition::Details::Fields::EnumComponent, type: :component do
   let(:helper_stub) { double(:helpers) }
 
   let(:edition) { build(:edition, :pension) }
-  let(:field) { double("field", name: "something", is_required?: true, default_value: nil) }
+  let(:field) { build("field", name: "something", is_required?: true, default_value: nil) }
   let(:schema) { double(:schema, block_type: "schema") }
 
   before do

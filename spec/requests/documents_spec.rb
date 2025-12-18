@@ -15,7 +15,7 @@ RSpec.describe "Documents", type: :request do
     let(:document) { create(:document, :contact) }
 
     before do
-      stub_request_for_schema(document.block_type, fields: [double(:field, name: "email_address")])
+      stub_request_for_schema(document.block_type, fields: [build(:field, name: "email_address")])
     end
 
     it "only returns the most recent edition when multiple editions exist for a document" do

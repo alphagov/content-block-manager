@@ -6,9 +6,6 @@ class Schema
 
   CONFIG_PATH = Rails.root.join("config/content_block_manager.yml").to_s
 
-  HIDDEN_FIELD_PROPERTY_KEY = "hidden_field".freeze
-  GOVSPEAK_ENABLED_PROPERTY_KEY = "govspeak_enabled".freeze
-
   class << self
     def valid_schemas
       Flipflop.show_all_content_block_types? ? VALID_SCHEMAS : %w[pension]
@@ -54,12 +51,16 @@ class Schema
     field_names.map { |field_name| Field.new(field_name, self) }
   end
 
+  def field(name)
+    fields.find(proc { raise "Field '#{name}' not found" }) { |f| f.name == name }
+  end
+
   def subschema(name)
     subschemas.find { |s| s.id == name }
   end
 
   def subschemas
-    @subschemas ||= embedded_objects.map { |object| EmbeddedSchema.new(*object, @id) }
+    @subschemas ||= embedded_objects.map { |object| EmbeddedSchema.new(*object, self) }
   end
 
   def subschemas_for_group(group)
@@ -84,14 +85,6 @@ class Schema
 
   def config
     @config ||= self.class.schema_settings.dig("schemas", @id) || {}
-  end
-
-  def hidden_field?(field_name:)
-    config.dig("fields", field_name, HIDDEN_FIELD_PROPERTY_KEY) == true
-  end
-
-  def govspeak_enabled?(field_name:)
-    config.dig("fields", field_name, GOVSPEAK_ENABLED_PROPERTY_KEY) == true
   end
 
   def field_ordering_rule(field)

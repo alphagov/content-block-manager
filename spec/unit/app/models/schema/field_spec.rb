@@ -127,16 +127,112 @@ RSpec.describe Schema::Field do
       it "returns nested fields" do
         nested_fields = field.nested_fields
 
-        expect(2).to eq(nested_fields.count)
+        expect(nested_fields.count).to eq(2)
 
-        expect("foo").to eq(nested_fields[0].name)
-        expect("bar").to eq(nested_fields[1].name)
-
-        expect("string").to eq(nested_fields[0].format)
-        expect("string").to eq(nested_fields[1].format)
-
+        expect(nested_fields[0].name).to eq("foo")
+        expect(nested_fields[0].format).to eq("string")
         expect(nested_fields[0].enum_values).to be_nil
-        expect(%w[foo bar]).to eq(nested_fields[1].enum_values)
+        expect(nested_fields[0].name_attribute).to eq("edition[details][something][foo]")
+        expect(nested_fields[0].id_attribute).to eq("edition_details_something_foo")
+
+        expect(nested_fields[1].name).to eq("bar")
+        expect(nested_fields[1].format).to eq("string")
+        expect(nested_fields[1].enum_values).to eq(%w[foo bar])
+        expect(nested_fields[1].name_attribute).to eq("edition[details][something][bar]")
+        expect(nested_fields[1].id_attribute).to eq("edition_details_something_bar")
+      end
+
+      describe "when config is set for the nested fields" do
+        let(:config) do
+          {
+            "fields" => {
+              "something" => {
+                "fields" => {
+                  "foo" => {
+                    "component" => "custom",
+                  },
+                  "bar" => {
+                    "component" => "textarea",
+                  },
+                },
+              },
+            },
+          }
+        end
+
+        it "returns config for each field" do
+          nested_fields = field.nested_fields
+
+          expect(nested_fields.count).to eq(2)
+
+          expect(nested_fields[0].config).to eq({ "component" => "custom" })
+          expect(nested_fields[1].config).to eq({ "component" => "textarea" })
+        end
+      end
+    end
+
+    describe "when there are nested fields present within an array" do
+      let(:body) do
+        {
+          "properties" => {
+            "something" => {
+              "type" => "array",
+              "items" => {
+                "type" => "object",
+                "properties" => {
+                  "foo" => { "type" => "string" },
+                  "bar" => { "type" => "string", "enum" => %w[foo bar] },
+                },
+              },
+            },
+          },
+        }
+      end
+
+      it "returns nested fields" do
+        nested_fields = field.nested_fields
+
+        expect(nested_fields.count).to eq(2)
+
+        expect(nested_fields[0].name).to eq("foo")
+        expect(nested_fields[0].format).to eq("string")
+        expect(nested_fields[0].enum_values).to be_nil
+        expect(nested_fields[0].name_attribute).to eq("edition[details][something][foo]")
+        expect(nested_fields[0].id_attribute).to eq("edition_details_something_foo")
+
+        expect(nested_fields[1].name).to eq("bar")
+        expect(nested_fields[1].format).to eq("string")
+        expect(nested_fields[1].enum_values).to eq(%w[foo bar])
+        expect(nested_fields[1].name_attribute).to eq("edition[details][something][bar]")
+        expect(nested_fields[1].id_attribute).to eq("edition_details_something_bar")
+      end
+
+      describe "when config is set for the nested fields" do
+        let(:config) do
+          {
+            "fields" => {
+              "something" => {
+                "fields" => {
+                  "foo" => {
+                    "component" => "custom",
+                  },
+                  "bar" => {
+                    "component" => "textarea",
+                  },
+                },
+              },
+            },
+          }
+        end
+
+        it "returns config for each field" do
+          nested_fields = field.nested_fields
+
+          expect(nested_fields.count).to eq(2)
+
+          expect(nested_fields[0].config).to eq({ "component" => "custom" })
+          expect(nested_fields[1].config).to eq({ "component" => "textarea" })
+        end
       end
     end
   end
@@ -166,20 +262,13 @@ RSpec.describe Schema::Field do
     end
 
     context "when a valid name is given" do
-      let(:expected_match) do
-        Schema::Field::NestedField.new(
-          name: "bar",
-          format: "string",
-          enum_values: %w[bat cat],
-          default_value: "cat",
-        )
-      end
-
       it "returns the nested field with the matching name" do
-        assert_equal(
-          expected_match,
-          field.nested_field("bar"),
-        )
+        nested_field = field.nested_field("bar")
+
+        expect(nested_field.name).to eq("bar")
+        expect(nested_field.format).to eq("string")
+        expect(nested_field.enum_values).to eq(%w[bat cat])
+        expect(nested_field.default_value).to eq("cat")
       end
     end
 
@@ -289,6 +378,108 @@ RSpec.describe Schema::Field do
     describe "when a `data_attributes` config var is not set" do
       it "returns an empty hash" do
         expect({}).to eq(field.data_attributes)
+      end
+    end
+  end
+
+  context "when the schema does not have a parent" do
+    describe "#name_attribute" do
+      it "returns the field name" do
+        expect(field.name_attribute).to eq("edition[details][something]")
+      end
+    end
+
+    describe "#id_attribute" do
+      it "returns the field id" do
+        expect(field.id_attribute).to eq("edition_details_something")
+      end
+    end
+
+    describe "#error_key" do
+      it "returns the field id without the leading `edition`" do
+        expect(field.error_key).to eq("details_something")
+      end
+    end
+  end
+
+  context "when the schema is an embedded schema" do
+    let(:schema) { double(:embedded_schema, parent_schema: build(:schema), block_type: "embedded") }
+
+    describe "#name_attribute" do
+      it "returns the field name" do
+        expect(field.name_attribute).to eq("edition[details][embedded][something]")
+      end
+    end
+
+    describe "#id_attribute" do
+      it "returns the field id" do
+        expect(field.id_attribute).to eq("edition_details_embedded_something")
+      end
+    end
+
+    describe "#error_key" do
+      it "returns the field id without the leading `edition`" do
+        expect(field.error_key).to eq("details_embedded_something")
+      end
+    end
+  end
+
+  context "when the schema is deeply nested" do
+    let(:root_schema) { build(:schema) }
+    let(:parent_schema) { double(:embedded_schema, block_type: "level_1", parent_schema: root_schema) }
+    let(:schema) { double(:embedded_schema, parent_schema: parent_schema, block_type: "level_2") }
+
+    describe "#name_attribute" do
+      it "returns the field name" do
+        expect(field.name_attribute).to eq("edition[details][level_1][level_2][something]")
+      end
+    end
+
+    describe "#id_attribute" do
+      it "returns the field id" do
+        expect(field.id_attribute).to eq("edition_details_level_1_level_2_something")
+      end
+    end
+
+    describe "#error_key" do
+      it "returns the field id without the leading `edition`" do
+        expect(field.error_key).to eq("details_level_1_level_2_something")
+      end
+    end
+  end
+
+  describe "#hidden?" do
+    describe "when a config var is set to hide the field" do
+      let(:config) do
+        { "fields" => { "something" => { Schema::Field::HIDDEN_FIELD_PROPERTY_KEY => true } } }
+      end
+
+      it "returns true" do
+        expect(field.hidden?).to be_truthy
+      end
+    end
+
+    describe "when a config var is not set" do
+      it "returns false" do
+        expect(field.hidden?).to be_falsey
+      end
+    end
+  end
+
+  describe "#govspeak_enabled?" do
+    describe "when a config var is set to enable Govspeak" do
+      let(:config) do
+        { "fields" => { "something" => { Schema::Field::GOVSPEAK_ENABLED_PROPERTY_KEY => true } } }
+      end
+
+      it "returns true" do
+        expect(field.govspeak_enabled?).to be_truthy
+      end
+    end
+
+    describe "when a config var is not set" do
+      it "returns false" do
+        expect(field.govspeak_enabled?).to be_falsey
       end
     end
   end

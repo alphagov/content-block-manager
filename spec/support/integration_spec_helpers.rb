@@ -3,8 +3,8 @@ module IntegrationSpecHelpers
     schema = double(
       id: "content_block_type",
       fields: fields || [
-        double(:field, name: "foo", component_name: "string", enum_values: nil, default_value: nil, is_required?: false, data_attributes: nil),
-        double(:field, name: "bar", component_name: "string", enum_values: nil, default_value: nil, is_required?: false, data_attributes: nil),
+        build(:field, name: "foo", component_name: "string", enum_values: nil, default_value: nil, is_required?: false, data_attributes: nil),
+        build(:field, name: "bar", component_name: "string", enum_values: nil, default_value: nil, is_required?: false, data_attributes: nil),
       ],
       name: "schema",
       body: {

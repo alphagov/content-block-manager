@@ -2,15 +2,15 @@ class Edition::Details::Fields::ObjectComponent < Edition::Details::Fields::Base
 private
 
   def name_for_field(field)
-    "#{name}[#{field.name}]"
+    field.name_attribute
   end
 
   def id_for_field(field)
-    "#{id}_#{field.name}"
+    field.id_attribute
   end
 
   def errors_for_field(field)
-    errors_for(edition.errors, "details_#{id_suffix}_#{field.name}".to_sym)
+    errors_for(edition.errors, field.error_key.to_sym)
   end
 
   def value_for_field(field)

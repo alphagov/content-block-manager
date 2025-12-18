@@ -23,8 +23,8 @@ RSpec.describe Document::Index::SummaryCardComponent, type: :component do
   end
   let(:fields) do
     [
-      double(:field, name: "foo"),
-      double(:field, name: "something"),
+      build(:field, name: "foo"),
+      build(:field, name: "something"),
     ]
   end
   let(:schema) { double(:schema, fields:) }

@@ -15,22 +15,22 @@
     <%= render "govuk_publishing_components/components/summary_list", {
       items: rows,
     } %>
-    <% nested_items(items).each do |key, items| %>
+    <% nested_items(items).each do |field, items| %>
       <% if items.is_a?(Array) %>
         <%= render Shared::EmbeddedObjects::SummaryCard::NestedItemComponent.with_collection(
           items,
-          object_key: key,
+          field:,
           object_type:,
-          title: key_to_title(key, edition.schema.block_type, schema.id),
+          title: key_to_title(field.name, edition.schema.block_type, schema.id),
           subschema: schema,
           root_schema_name: root_schema.block_type,
         ) %>
       <% else %>
         <%= render Shared::EmbeddedObjects::SummaryCard::NestedItemComponent.new(
           nested_items: items,
-          object_key: key,
+          field:,
           object_type:,
-          title: key_to_title(key, edition.schema.block_type, schema.id),
+          title: key_to_title(field.name, edition.schema.block_type, schema.id),
           subschema: schema,
           root_schema_name: root_schema.block_type,
         ) %>

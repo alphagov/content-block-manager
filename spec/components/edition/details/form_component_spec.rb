@@ -22,9 +22,9 @@ RSpec.describe Edition::Details::FormComponent, type: :component do
   let(:edition) { build(:edition) }
   let(:schema) { build(:schema, body:) }
 
-  let(:foo_field) { double("field", name: "foo", component_name: "string", enum_values: nil, default_value: nil, data_attributes: nil) }
-  let(:bar_field) { double("field", name: "bar", component_name: "string", enum_values: nil, default_value: nil, data_attributes: nil) }
-  let(:baz_field) { double("field", name: "baz", component_name: "enum", enum_values: %w[some enum], default_value: nil, data_attributes: nil) }
+  let(:foo_field) { build(:field, name: "foo", component_name: "string", enum_values: nil, default_value: nil, data_attributes: nil) }
+  let(:bar_field) { build(:field, name: "bar", component_name: "string", enum_values: nil, default_value: nil, data_attributes: nil) }
+  let(:baz_field) { build(:field, name: "baz", component_name: "enum", enum_values: %w[some enum], default_value: nil, data_attributes: nil) }
 
   let(:foo_stub) { double("string_component") }
   let(:bar_stub) { double("string_component") }
@@ -106,9 +106,9 @@ RSpec.describe Edition::Details::FormComponent, type: :component do
   end
 
   describe "when data_attributes are provided" do
-    let(:foo_field) { double("field", name: "foo", component_name: "string", enum_values: nil, default_value: nil, data_attributes: { "field" => "foo" }) }
-    let(:bar_field) { double("field", name: "bar", component_name: "string", enum_values: nil, default_value: nil, data_attributes: { "field" => "bar" }) }
-    let(:baz_field) { double("field", name: "baz", component_name: "enum", enum_values: %w[some enum], default_value: nil, data_attributes: { "field" => "baz" }) }
+    let(:foo_field) { build(:field, name: "foo", component_name: "string", enum_values: nil, default_value: nil, data_attributes: { "field" => "foo" }) }
+    let(:bar_field) { build(:field, name: "bar", component_name: "string", enum_values: nil, default_value: nil, data_attributes: { "field" => "bar" }) }
+    let(:baz_field) { build(:field, name: "baz", component_name: "enum", enum_values: %w[some enum], default_value: nil, data_attributes: { "field" => "baz" }) }
 
     it "renders inside a div with data attributes" do
       render_inline(component)

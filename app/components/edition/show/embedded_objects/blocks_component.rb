@@ -31,11 +31,21 @@ private
   end
 
   def attribute_rows(key_name = :key)
-    first_class_items(items).map do |key, value|
+    first_class_items(items).flat_map do |key, value|
+      build_rows_for_field(key_name, key, value)
+    end
+  end
+
+  def build_rows_for_field(key_name, key, value)
+    is_list = value.is_a?(Array)
+
+    Array(value).each_with_index.map do |item, index|
+      suffix = is_list ? "#{key}/#{index}" : key
+
       {
-        "#{key_name}": key_to_label(key, schema_name, object_type),
-        value: content_for_row(key, value),
-        data: data_attributes_for_row(key),
+        "#{key_name}": key_to_label(suffix, schema_name, object_type),
+        value: content_for_row(suffix, item),
+        data: data_attributes_for_row(suffix),
       }
     end
   end
@@ -67,7 +77,7 @@ private
   end
 
   def rows_for_nested_items(items, nested_name, index)
-    visible_fields(nested_item_name: nested_name, fields: items).map do |key, value|
+    visible_fields(items, nested_name).map do |key, value|
       {
         key: key_to_label(key, schema_name, "#{object_type}.#{nested_name}"),
         value: content_for_row(embed_code_identifier(nested_name, index, key), translated_value(key, value)),
@@ -76,9 +86,11 @@ private
     end
   end
 
-  def visible_fields(nested_item_name:, fields:)
+  def visible_fields(fields, nested_name)
     fields.reject do |field_name, _v|
-      schema.hidden_field?(nested_object_key: nested_item_name, field_name: field_name)
+      parent_field = schema.field(nested_name)
+      field = parent_field.nested_field(field_name)
+      field.hidden?
     end
   end
 

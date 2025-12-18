@@ -58,86 +58,6 @@ RSpec.describe Schema do
     end
   end
 
-  describe "#govspeak_enabled?(field_name:)" do
-    let(:schema_id) { "content_block_contact" }
-
-    let(:body) do
-      {
-        "type" => "object",
-        "properties" => {},
-      }
-    end
-
-    let(:schema) { Schema.new(schema_id, body) }
-
-    let(:config) do
-      {
-        "schemas" => {
-          schema_id => {
-            "fields" => {
-              "field_1" => {},
-              "field_2" => { "govspeak_enabled" => true },
-            },
-          },
-        },
-      }
-    end
-
-    before do
-      allow(Schema)
-        .to receive(:schema_settings)
-        .and_return(config)
-    end
-
-    it "returns true if the given field is govspeak_enabled" do
-      assert(schema.govspeak_enabled?(field_name: "field_2"))
-    end
-
-    it "returns false if the given field is NOT govspeak_enabled" do
-      assert_not(schema.govspeak_enabled?(field_name: "field_1"))
-    end
-  end
-
-  describe "#hidden_field?(field_name:)" do
-    let(:schema_id) { "content_block_contact" }
-
-    let(:body) do
-      {
-        "type" => "object",
-        "properties" => {},
-      }
-    end
-
-    let(:schema) { Schema.new(schema_id, body) }
-
-    let(:config) do
-      {
-        "schemas" => {
-          schema_id => {
-            "fields" => {
-              "field_1" => {},
-              "field_2" => { "hidden_field" => true },
-            },
-          },
-        },
-      }
-    end
-
-    before do
-      allow(Schema)
-        .to receive(:schema_settings)
-        .and_return(config)
-    end
-
-    it "returns true if the given field is set as hidden_field" do
-      assert(schema.hidden_field?(field_name: "field_2"))
-    end
-
-    it "returns false if the given field is NOT set as hidden_field" do
-      assert_not(schema.hidden_field?(field_name: "field_1"))
-    end
-  end
-
   describe "#required_fields" do
     describe "when there are no required fields" do
       it "returns an empty array" do
@@ -501,6 +421,17 @@ RSpec.describe Schema do
       it "returns false" do
         assert_not schema.embeddable_as_block?
       end
+    end
+  end
+
+  describe "#field" do
+    it "returns the field with the given name" do
+      field = schema.field("foo")
+      expect(field.name).to eq("foo")
+    end
+
+    it "raises an error if the field does not exist" do
+      expect { schema.field("invalid_field") }.to raise_error("Field 'invalid_field' not found")
     end
   end
 end

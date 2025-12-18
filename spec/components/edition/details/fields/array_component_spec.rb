@@ -3,7 +3,7 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
 
   let(:edition) { build(:edition, :pension) }
   let(:default_value) { nil }
-  let(:field) { double("field", name: "items", array_items:, is_required?: true, default_value:) }
+  let(:field) { build("field", name: "items", array_items:, is_required?: true, default_value:) }
   let(:schema) { double(:schema, block_type: "schema") }
   let(:array_items) { { "type" => "string" } }
   let(:field_value) { nil }

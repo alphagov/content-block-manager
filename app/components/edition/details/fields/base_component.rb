@@ -31,26 +31,18 @@ private
   end
 
   def name
-    if subschema_block_type
-      "edition[details][#{subschema_block_type}][#{field.name}]"
-    else
-      "edition[details][#{field.name}]"
-    end
+    field.name_attribute
   end
 
   def id
-    "#{PARENT_CLASS}_details_#{id_suffix}"
+    field.id_attribute
   end
 
   def error_items
-    errors_for(edition.errors, "details_#{id_suffix}".to_sym)
+    errors_for(edition.errors, field.error_key.to_sym)
   end
 
   def hint_text
     helpers.hint_text(schema:, subschema:, field:)
-  end
-
-  def id_suffix
-    subschema_block_type ? "#{subschema_block_type}_#{field.name}" : field.name
   end
 end

@@ -5,13 +5,13 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
   let(:edition) { build(:edition, :pension) }
   let(:nested_fields) do
     [
-      double("field", name: "label", enum_values: nil, default_value: nil),
-      double("field", name: "type", enum_values: %w[enum_1 enum_2 enum_3], default_value: nil),
-      double("field", name: "email_address", enum_values: nil, default_value: nil),
+      build("field", name: "label", enum_values: nil, default_value: nil),
+      build("field", name: "type", enum_values: %w[enum_1 enum_2 enum_3], default_value: nil),
+      build("field", name: "email_address", enum_values: nil, default_value: nil),
     ]
   end
   let(:schema) { double("schema", id: "root", block_type: "schema") }
-  let(:field) { double("field", name: "nested", nested_fields:, schema:, is_required?: true, default_value: nil) }
+  let(:field) { build(:field, name: "nested", nested_fields:, schema:, is_required?: true, default_value: nil) }
 
   let(:label_stub) { double("string_component") }
   let(:type_stub) { double("enum_component") }
@@ -43,15 +43,15 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
       expect(fieldset).to have_css ".govuk-form-group", count: 3
 
       expect(fieldset).to have_css ".govuk-form-group", text: /Label/ do |form_group|
-        expect(form_group).to have_css "input[name=\"edition[details][nested][label]\"]"
+        expect(form_group).to have_css "input[name=\"#{nested_fields[0].name_attribute}\"]"
       end
 
       expect(fieldset).to have_css ".govuk-form-group", text: /Type/ do |form_group|
-        expect(form_group).to have_css "input[name=\"edition[details][nested][type]\"]"
+        expect(form_group).to have_css "input[name=\"#{nested_fields[1].name_attribute}\"]"
       end
 
       expect(fieldset).to have_css ".govuk-form-group", text: /Email address/ do |form_group|
-        expect(form_group).to have_css "input[name=\"edition[details][nested][email_address]\"]"
+        expect(form_group).to have_css "input[name=\"#{nested_fields[2].name_attribute}\"]"
       end
     end
   end
@@ -66,16 +66,16 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
     it "renders the field with the value" do
       render_inline(component)
 
-      expect(page).to have_css "input[name=\"edition[details][nested][label]\"][value=\"something\"]"
+      expect(page).to have_css "input[name=\"#{nested_fields[0].name_attribute}\"][value=\"something\"]"
     end
   end
 
   describe "when default values are present for the object" do
     let(:nested_fields) do
       [
-        double("field", name: "label", enum_values: nil, default_value: "LABEL DEFAULT"),
-        double("field", name: "type", enum_values: %w[enum_1 enum_2 enum_3], default_value: "TYPE DEFAULT"),
-        double("field", name: "email_address", enum_values: nil, default_value: "EMAIL DEFAULT"),
+        build(:field, name: "label", enum_values: nil, default_value: "LABEL DEFAULT"),
+        build(:field, name: "type", enum_values: %w[enum_1 enum_2 enum_3], default_value: "TYPE DEFAULT"),
+        build(:field, name: "email_address", enum_values: nil, default_value: "EMAIL DEFAULT"),
       ]
     end
 
@@ -85,9 +85,9 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
     it "renders the field with the default values" do
       render_inline(component)
 
-      expect(page).to have_css "input[name=\"edition[details][nested][label]\"][value=\"LABEL DEFAULT\"]"
-      expect(page).to have_css "input[name=\"edition[details][nested][type]\"][value=\"TYPE DEFAULT\"]"
-      expect(page).to have_css "input[name=\"edition[details][nested][email_address]\"][value=\"EMAIL DEFAULT\"]"
+      expect(page).to have_css "input[name=\"#{nested_fields[0].name_attribute}\"][value=\"LABEL DEFAULT\"]"
+      expect(page).to have_css "input[name=\"#{nested_fields[1].name_attribute}\"][value=\"TYPE DEFAULT\"]"
+      expect(page).to have_css "input[name=\"#{nested_fields[2].name_attribute}\"][value=\"EMAIL DEFAULT\"]"
     end
 
     describe "but real values are also present" do
@@ -102,19 +102,19 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
       it "renders the real values instead of defaults" do
         render_inline(component)
 
-        expect(page).to have_css "input[name=\"edition[details][nested][label]\"][value=\"Real Label\"]"
-        expect(page).to have_css "input[name=\"edition[details][nested][type]\"][value=\"Real Type\"]"
+        expect(page).to have_css "input[name=\"#{nested_fields[0].name_attribute}\"][value=\"Real Label\"]"
+        expect(page).to have_css "input[name=\"#{nested_fields[1].name_attribute}\"][value=\"Real Type\"]"
         # Email address has no real value, so it should use the default
-        expect(page).to have_css "input[name=\"edition[details][nested][email_address]\"][value=\"Real Email Address\"]"
+        expect(page).to have_css "input[name=\"#{nested_fields[2].name_attribute}\"][value=\"Real Email Address\"]"
       end
     end
   end
 
   describe "when errors are present for the object" do
     before do
-      edition.errors.add(:details_nested_label, "Label error")
-      edition.errors.add(:details_nested_type, "Type error")
-      edition.errors.add(:details_nested_email_address, "Email address error")
+      edition.errors.add(nested_fields[0].error_key, "Label error")
+      edition.errors.add(nested_fields[1].error_key, "Type error")
+      edition.errors.add(nested_fields[2].error_key, "Email address error")
     end
 
     it "should show errors" do

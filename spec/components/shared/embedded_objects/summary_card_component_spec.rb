@@ -16,9 +16,9 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
   let(:schema) { double(:schema, block_type: "schema") }
   let(:fields) do
     [
-      double("field", name: "name"),
-      double("field", name: "field-1"),
-      double("field", name: "field-2"),
+      build(:field, name: "name"),
+      build(:field, name: "field-1"),
+      build(:field, name: "field-2"),
     ]
   end
 
@@ -37,6 +37,9 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
 
   before do
     allow(schema).to receive(:subschema).and_return(subschema)
+    fields.each do |field|
+      allow(schema).to receive(:field).with(field.name).and_return(field)
+    end
   end
 
   it "renders a summary list" do
@@ -200,8 +203,8 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
   describe "when arrays are present" do
     let(:fields) do
       [
-        double("field", name: "name"),
-        double("field", name: "field"),
+        build(:field, name: "name"),
+        build(:field, name: "field"),
       ]
     end
 
@@ -244,10 +247,13 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
     end
 
     describe "when arrays are present with hashes" do
+      let(:name_field) { build(:field, name: "name") }
+      let(:field_field) { build(:field, name: "field") }
+
       let(:fields) do
         [
-          double("field", name: "name"),
-          double("field", name: "field"),
+          name_field,
+          field_field,
         ]
       end
 
@@ -260,6 +266,12 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
             },
           },
         }
+      end
+
+      let(:item_field) { build(:field, name: "item", govspeak_enabled?: false) }
+
+      before do
+        allow(field_field).to receive(:nested_field).with("item").and_return(item_field)
       end
 
       it "renders a nested summary card" do
@@ -334,10 +346,13 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
     end
 
     describe "when hashes are present" do
+      let(:name_field) { build(:field, name: "name") }
+      let(:field_field) { build(:field, name: "field") }
+
       let(:fields) do
         [
-          double("field", name: "name"),
-          double("field", name: "field"),
+          name_field,
+          field_field,
         ]
       end
 
@@ -350,6 +365,12 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
             },
           },
         }
+      end
+
+      let(:item_field) { build(:field, name: "item", govspeak_enabled?: false) }
+
+      before do
+        allow(field_field).to receive(:nested_field).with("item").and_return(item_field)
       end
 
       it "renders a nested summary card" do

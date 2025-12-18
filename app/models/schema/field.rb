@@ -2,11 +2,8 @@ class Schema
   class Field
     attr_reader :name, :schema
 
-    NestedField = Data.define(:name, :format, :enum_values, :default_value) do
-      def initialize(name:, format:, enum_values:, default_value: nil)
-        super(name:, format:, enum_values:, default_value:)
-      end
-    end
+    HIDDEN_FIELD_PROPERTY_KEY = "hidden_field".freeze
+    GOVSPEAK_ENABLED_PROPERTY_KEY = "govspeak_enabled".freeze
 
     def initialize(name, schema)
       @name = name
@@ -27,6 +24,10 @@ class Schema
       end
     end
 
+    def config
+      @config ||= schema.config.dig("fields", name) || {}
+    end
+
     def format
       @format ||= properties["type"]
     end
@@ -41,14 +42,11 @@ class Schema
 
     def nested_fields
       if format == "object"
-        properties.fetch("properties", {}).map do |key, value|
-          NestedField.new(
-            name: key,
-            format: value["type"],
-            enum_values: value["enum"],
-            default_value: value["default"],
-          )
-        end
+        embedded_schema = Schema::EmbeddedSchema.new(name, properties, schema, config)
+        embedded_schema.fields
+      elsif format == "array" && properties["items"]["type"] == "object"
+        embedded_schema = Schema::EmbeddedSchema.new(name, properties["items"], schema, config)
+        embedded_schema.fields
       end
     end
 
@@ -76,6 +74,30 @@ class Schema
       @data_attributes ||= config["data_attributes"] || {}
     end
 
+    def hidden?
+      @hidden ||= config[HIDDEN_FIELD_PROPERTY_KEY] == true
+    end
+
+    def govspeak_enabled?
+      @govspeak_enabled ||= config[GOVSPEAK_ENABLED_PROPERTY_KEY] == true
+    end
+
+    def name_attribute
+      output = "edition[details]"
+      parent_schemas.each { |parent_schema| output += "[#{parent_schema.block_type}]" }
+      output + "[#{name}]"
+    end
+
+    def id_attribute
+      output = "edition_details"
+      parent_schemas.each { |parent_schema| output += "_#{parent_schema.block_type}" }
+      output + "_#{name}"
+    end
+
+    def error_key
+      id_attribute.delete_prefix("edition_")
+    end
+
   private
 
     def custom_component
@@ -86,12 +108,19 @@ class Schema
       @properties ||= schema.body.dig("properties", name) || {}
     end
 
-    def config
-      @config ||= schema.config.dig("fields", name) || {}
-    end
-
     def field_ordering_rule
       @field_ordering_rule ||= config["field_order"] || []
+    end
+
+    def parent_schemas
+      @parent_schemas ||= [].tap { |parents|
+        current = schema
+
+        while current.respond_to?(:parent_schema)
+          parents << current
+          current = current.parent_schema
+        end
+      }.reverse
     end
   end
 end

@@ -1,8 +1,8 @@
 <div class="app-c-content-block-manager-textarea-component">
-  <% if govspeak_enabled? %>
+  <% if field.govspeak_enabled? %>
     <%= render "components/govspeak_editor", {
-                name: name_attribute,
-                id: id_attribute,
+                name:,
+                id:,
                 label: { text: label_element, hint_text:, hint_id: aria_described_by },
                 value:,
                 error_items: error_items,
@@ -15,8 +15,8 @@
   <% else %>
     <%= render "govuk_publishing_components/components/textarea", {
                 label: { text: label_element },
-                name: name_attribute,
-                textarea_id: id_attribute,
+                name:,
+                textarea_id: id,
                 value:,
                 error_items: error_items,
                 hint: hint_text,
