@@ -5,6 +5,8 @@ class Schema
     HIDDEN_FIELD_PROPERTY_KEY = "hidden_field".freeze
     GOVSPEAK_ENABLED_PROPERTY_KEY = "govspeak_enabled".freeze
 
+    include Schema::Field::Translations
+
     def initialize(name, schema)
       @name = name
       @schema = schema
@@ -141,6 +143,10 @@ class Schema
 
     def field_ordering_rule
       @field_ordering_rule ||= config["field_order"] || []
+    end
+
+    def root_schema
+      @root_schema ||= parent_schemas.any? ? parent_schemas[0].parent_schema : schema
     end
 
     def parent_schemas
