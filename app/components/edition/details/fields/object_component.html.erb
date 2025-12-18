@@ -1,14 +1,6 @@
 <% embedded_fields = capture do %>
   <% field.nested_fields.each do |embedded_field| %>
-    <%= render "govuk_publishing_components/components/input", {
-      label: {
-        text: embedded_field.name.humanize,
-      },
-      name: name_for_field(embedded_field),
-      id: id_for_field(embedded_field),
-      value: value_for_field(embedded_field),
-      error_items: errors_for_field(embedded_field),
-    } %>
+    <%= render helpers.component_for_field(embedded_field, component_args(embedded_field)) %>>
   <% end %>
 <% end %>
 

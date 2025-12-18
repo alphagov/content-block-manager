@@ -1,16 +1,13 @@
 class Edition::Details::Fields::ObjectComponent < Edition::Details::Fields::BaseComponent
 private
 
-  def name_for_field(field)
-    field.name_attribute
-  end
-
-  def id_for_field(field)
-    field.id_attribute
-  end
-
-  def errors_for_field(field)
-    errors_for(edition.errors, field.error_key.to_sym)
+  def component_args(field)
+    {
+      edition:,
+      field:,
+      value: value_for_field(field),
+      schema:,
+    }
   end
 
   def value_for_field(field)

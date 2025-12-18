@@ -1,6 +1,5 @@
 RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
   let(:described_class) { Edition::Details::Fields::ObjectComponent }
-  let(:helper_stub) { double(:helpers) }
 
   let(:edition) { build(:edition, :pension) }
   let(:nested_fields) do
@@ -28,14 +27,7 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
     )
   end
 
-  before do
-    allow(component).to receive(:helpers).and_return(helper_stub)
-    allow(helper_stub).to receive(:humanized_label).and_return("Label")
-  end
-
   it "renders fields for each property" do
-    allow(helper_stub).to receive(:humanized_label).and_return("Nested")
-
     render_inline(component)
 
     expect(page).to have_css(".govuk-fieldset") do |fieldset|

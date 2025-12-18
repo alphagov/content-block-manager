@@ -12,6 +12,7 @@ FactoryBot.define do
       govspeak_enabled? { false }
       nested_fields { nil }
       component_name { "string" }
+      component_for_field { Edition::Details::Fields::StringComponent }
       data_attributes { nil }
       hidden? { false }
     end
@@ -31,6 +32,7 @@ FactoryBot.define do
       allow(field).to receive(:component_name).and_return(evaluator.component_name)
       allow(field).to receive(:data_attributes).and_return(evaluator.data_attributes)
       allow(field).to receive(:hidden?).and_return(evaluator.hidden?)
+      allow(field).to receive(:component_class).and_return(evaluator.component_class)
     end
   end
 end
