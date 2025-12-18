@@ -52,7 +52,7 @@ class Schema
   end
 
   def field(name)
-    fields.find { |f| f.name == name }
+    fields.find(proc { raise "Field '#{name}' not found" }) { |f| f.name == name }
   end
 
   def subschema(name)

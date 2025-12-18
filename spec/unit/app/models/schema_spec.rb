@@ -430,9 +430,8 @@ RSpec.describe Schema do
       expect(field.name).to eq("foo")
     end
 
-    it "returns nil if the field does not exist" do
-      field = schema.field("invalid_field")
-      expect(field).to be_nil
+    it "raises an error if the field does not exist" do
+      expect { schema.field("invalid_field") }.to raise_error("Field 'invalid_field' not found")
     end
   end
 end
