@@ -41,6 +41,42 @@ fields:
 
 The [Boolean](https://github.com/alphagov/content-block-manager/blob/main/app/components/edition/details/fields/boolean_component.html.erb) component will be used.
 
+#### `schemas.<schema_name>.fields.<field_name>.show_field_name`
+
+When a field is an object, this allows an attribute within that object to serve as a flag to specify if the rest of
+the fields should be shown/hidden using the Checkbox component's [Conditional reveal](https://components.publishing.service.gov.uk/component-guide/checkboxes#checkbox_items_with_conditional_reveal)
+functionality.
+
+For example, with a field with a JSON schema like so:
+
+```json
+{
+    "type": "object",
+    "properties": {
+        "show_the_object": {
+            "type": "boolean"
+        },
+        "field_1": {
+            "type": "string"
+        },
+        "field_2": {
+            "type": "string"
+        }
+    }
+}
+```
+
+You can then specify to make `show_the_object` appear as a checkbox, with `field_1` and `field_2` conditionally showing
+like so:
+
+```yaml
+...
+fields:
+  my_field:
+    show_field_name: show_the_object
+...
+```
+
 #### `schemas.<schema_name>.fields.<field_name>.field_order`
 
 If thew field is an array of objects, specifies an array of strings that defines the order that fields appear in when
