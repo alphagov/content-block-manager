@@ -277,7 +277,8 @@ Feature: Create a contact object
     When I click to close the preview
     And I click to add another "contact_method"
     And I click on the "contact_links" subschema
-    And I complete the "contact_link" form with the following fields:
+    Then I see see that URL must be supplied in full, with scheme
+    When I complete the "contact_link" form with the following fields:
       | title              | label      | url                | description |
       | Other Contact Form | Contact Us | http://example.com | Description |
     And I click on Preview and reorder

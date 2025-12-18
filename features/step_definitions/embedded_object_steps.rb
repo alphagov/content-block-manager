@@ -211,3 +211,7 @@ Then("the {string} field should not be populated") do |field|
   field = find("input[name='edition[details][#{@object_type.pluralize}][#{field}]']")
   assert_nil field.value
 end
+
+Then("I see see that URL must be supplied in full, with scheme") do
+  expect(page).to have_css(".govuk-hint", text: I18n.t("edition.hints.contact.contact_links.url"))
+end
