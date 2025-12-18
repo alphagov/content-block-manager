@@ -11,14 +11,6 @@ class Edition
 
       attr_reader :edition, :schema, :populate_with_defaults
 
-      def component_for_field(field)
-        component_name = field.component_name
-        component_class = "Edition::Details::Fields::#{component_name.camelize}Component".constantize
-        args = component_args(field)
-
-        component_class.new(**args.compact)
-      end
-
       def component_args(field)
         {
           edition:,

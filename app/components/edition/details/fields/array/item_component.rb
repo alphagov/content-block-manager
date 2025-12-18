@@ -26,16 +26,8 @@ private
     fields = field.nested_fields || [field]
 
     fields.map do |item|
-      component_for_field(item)
+      helpers.component_for_field(item, component_args(item))
     end
-  end
-
-  def component_for_field(field)
-    component_name = field.component_name
-    component_class = "Edition::Details::Fields::#{component_name.camelize}Component".constantize
-    args = component_args(field)
-
-    component_class.new(**args.compact)
   end
 
   def component_args(field)

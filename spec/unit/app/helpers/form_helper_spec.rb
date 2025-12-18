@@ -161,4 +161,19 @@ RSpec.describe FormHelper, type: :helper do
       end
     end
   end
+
+  describe "#component_for_field" do
+    it "initializes a field's component with the correct arguments" do
+      args = { argument: "value", empty: nil }
+      component_class = double(:component_class)
+      field = build(:field)
+
+      allow(field).to receive(:component_class).and_return(component_class)
+      allow(component_class).to receive(:new).and_return("RESPONSE")
+
+      expect(component_for_field(field, args)).to eq("RESPONSE")
+
+      expect(component_class).to have_received(:new).with(argument: "value")
+    end
+  end
 end
