@@ -83,6 +83,7 @@ en:
         description: For example, is there anything the user should know, prepare or include before using any contact method.
         contact_links:
           label: This will display as link text.
+          url: This should be the full URL e.g. 'https://example.com/document.html'
           description: For example, is there anything the user should know, prepare or include before using the contact link.
         addresses:
           description: For example, is there anything the user should know, prepare or include before using the address.
