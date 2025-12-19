@@ -50,8 +50,6 @@ RSpec.describe Edition::Show::EmbeddedObjects::SubschemaItemComponent, type: :co
 
     expect(Edition::Show::EmbeddedObjects::MetadataComponent).to receive(:new).with(
       items: { "title" => "Some title" },
-      object_type:,
-      schema_name:,
       schema: subschema,
     ).and_return(metadata_response)
 
