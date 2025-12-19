@@ -23,7 +23,7 @@ private
 
   def label
     optional = field.is_required? ? nil : optional_label
-    "#{helpers.humanized_label(schema_name: schema.block_type, relative_key: field.name, root_object: subschema_block_type)}" \
+    "#{field.label}" \
     "#{optional}"
   end
 
@@ -44,6 +44,6 @@ private
   end
 
   def hint_text
-    helpers.hint_text(schema:, subschema:, field:)
+    field.hint
   end
 end

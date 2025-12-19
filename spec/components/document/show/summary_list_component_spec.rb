@@ -60,6 +60,7 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
 
   describe "#title_item" do
     before do
+      allow(I18n).to receive(:t).and_call_original
       allow(I18n).to receive(:t).with("activerecord.attributes.edition/document.title.default").and_return("Default Title")
       allow(I18n).to receive(:t).with("edition.states.label_extended.published", a_hash_including(user: a_string_including("user"))).and_return("Label")
     end

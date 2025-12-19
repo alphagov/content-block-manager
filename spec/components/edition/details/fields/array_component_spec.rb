@@ -3,13 +3,11 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
 
   let(:edition) { build(:edition, :pension) }
   let(:default_value) { nil }
-  let(:field) { build("field", name: "items", array_items:, is_required?: true, default_value:) }
+  let(:field) { build("field", name: "items", array_items:, is_required?: true, default_value:, label: "Items") }
   let(:schema) { double(:schema, block_type: "schema") }
   let(:array_items) { { "type" => "string" } }
   let(:field_value) { nil }
   let(:object_title) { nil }
-
-  let(:helper_stub) { double(:helpers) }
 
   let(:component) do
     described_class.new(
@@ -19,12 +17,6 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
       value: field_value,
       object_title:,
     )
-  end
-
-  before do
-    allow(component).to receive(:helpers).and_return(helper_stub)
-    allow(helper_stub).to receive(:humanized_label).and_return("Item")
-    allow(helper_stub).to receive(:hint_text).and_return(nil)
   end
 
   describe "when there are no items present" do

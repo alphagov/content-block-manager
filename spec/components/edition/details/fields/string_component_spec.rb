@@ -1,20 +1,11 @@
 RSpec.describe Edition::Details::Fields::StringComponent, type: :component do
   let(:edition) { build(:edition, :pension) }
-  let(:field) { build("field", name: "email_address", is_required?: true, default_value: nil) }
+  let(:field) { build("field", name: "email_address", is_required?: true, default_value: nil, label: "Email address") }
   let(:schema) { double(:schema, block_type: "schema") }
 
   let(:described_class) { Edition::Details::Fields::StringComponent }
-  let(:helper_stub) { double(:helpers) }
-
-  before do
-    allow_any_instance_of(described_class).to receive(:helpers).and_return(helper_stub)
-    allow(helper_stub).to receive(:humanized_label).and_return("Label")
-    allow(helper_stub).to receive(:hint_text).and_return(nil)
-  end
 
   it "should render an input field with default parameters" do
-    allow(helper_stub).to receive(:humanized_label).and_return("Email address")
-
     render_inline(
       described_class.new(
         edition:,
@@ -31,8 +22,7 @@ RSpec.describe Edition::Details::Fields::StringComponent, type: :component do
   end
 
   it "should show optional label when field is optional" do
-    optional_field = build(:field, name: "email_address", is_required?: false, default_value: nil)
-    allow(helper_stub).to receive(:humanized_label).and_return("Email address")
+    optional_field = build(:field, name: "email_address", is_required?: false, default_value: nil, label: "Email address")
 
     render_inline(
       described_class.new(
@@ -88,7 +78,7 @@ RSpec.describe Edition::Details::Fields::StringComponent, type: :component do
   end
 
   it "should render hint text when a translation exists" do
-    allow(helper_stub).to receive(:hint_text).with(schema:, subschema: nil, field:).and_return("Some hint text")
+    allow(field).to receive(:hint).and_return("Some hint text")
 
     render_inline(
       described_class.new(
@@ -104,7 +94,7 @@ RSpec.describe Edition::Details::Fields::StringComponent, type: :component do
 
   describe "when there is a translation for a field label" do
     it "should return the translation" do
-      allow(helper_stub).to receive(:humanized_label).and_return("Email address translated")
+      allow(field).to receive(:label).and_return("Email address translated")
 
       render_inline(
         described_class.new(
@@ -138,7 +128,7 @@ RSpec.describe Edition::Details::Fields::StringComponent, type: :component do
     end
 
     it "should use the subschema for the hint text when provided" do
-      allow(helper_stub).to receive(:hint_text).with(schema:, subschema:, field:).and_return("Some hint text")
+      allow(field).to receive(:hint).and_return("Some hint text")
 
       render_inline component
 

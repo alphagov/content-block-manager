@@ -28,10 +28,10 @@ class Edition::Details::Fields::ObjectComponent < Edition::Details::Fields::Base
   end
 
   def label_for(field)
-    helpers.humanized_label(schema_name: schema.block_type, relative_key: field.name, root_object: field.send(:parent_schemas).map(&:id).join("."))
+    field.label
   end
 
   def hint_text_for(field)
-    hint_text&.fetch(field.name, nil)
+    field.hint
   end
 end
