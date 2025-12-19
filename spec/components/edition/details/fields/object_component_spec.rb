@@ -1,6 +1,5 @@
 RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
   let(:described_class) { Edition::Details::Fields::ObjectComponent }
-  let(:helper_stub) { double(:helpers) }
 
   let(:edition) { build(:edition, :pension) }
   let(:nested_fields) do
@@ -11,7 +10,7 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
     ]
   end
   let(:schema) { double("schema", id: "root", block_type: "schema") }
-  let(:field) { build(:field, name: "nested", nested_fields:, schema:, is_required?: true, default_value: nil) }
+  let(:field) { build(:field, name: "nested", nested_fields:, schema:, is_required?: true, default_value: nil, show_field: nil) }
 
   let(:label_stub) { double("string_component") }
   let(:type_stub) { double("enum_component") }
@@ -28,14 +27,7 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
     )
   end
 
-  before do
-    allow(component).to receive(:helpers).and_return(helper_stub)
-    allow(helper_stub).to receive(:humanized_label).and_return("Label")
-  end
-
   it "renders fields for each property" do
-    allow(helper_stub).to receive(:humanized_label).and_return("Nested")
-
     render_inline(component)
 
     expect(page).to have_css(".govuk-fieldset") do |fieldset|
@@ -133,6 +125,56 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
       expect(page).to have_css ".govuk-form-group.govuk-form-group--error", text: /Email address/ do |form_group|
         expect(form_group).to have_css ".govuk-error-message", text: "Email address error"
         expect(form_group).to have_css "input.govuk-input--error"
+      end
+    end
+  end
+
+  context "when a show_field is present" do
+    let(:nested_fields) do
+      [
+        build("field", name: "show"),
+        build("field", name: "label"),
+        build("field", name: "email_address"),
+      ]
+    end
+    let(:field) { build(:field, name: "nested", nested_fields:, schema:, is_required?: true, default_value: nil, show_field: nested_fields[0]) }
+
+    it "shows a checkbox to toggle 'show' option" do
+      render_inline(component)
+
+      expect(page).to have_css "input[name=\"#{nested_fields[0].name_attribute}\"]"
+      expect(page).to_not have_css "input[name=\"#{nested_fields[0].name_attribute}\"][checked='checked']"
+    end
+
+    it "nests the other fields within the checkbox component" do
+      render_inline(component)
+
+      expect(page).to have_css "div[id=\"#{nested_fields[0].id_attribute}\"]" do |wrapper|
+        expect(wrapper).to have_css ".govuk-checkboxes__conditional" do
+          expect(wrapper).to have_css ".govuk-form-group", count: 2
+
+          expect(wrapper).to have_css ".govuk-form-group", text: /Label/ do |form_group|
+            expect(form_group).to have_css "input[name=\"#{nested_fields[1].name_attribute}\"]"
+          end
+
+          expect(wrapper).to have_css ".govuk-form-group", text: /Email address/ do |form_group|
+            expect(form_group).to have_css "input[name=\"#{nested_fields[2].name_attribute}\"]"
+          end
+        end
+      end
+    end
+
+    context "when the checkbox is checked" do
+      let(:form_value) do
+        {
+          "show" => true,
+        }
+      end
+
+      it "checks the checkbox" do
+        render_inline(component)
+
+        expect(page).to have_css "input[name=\"#{nested_fields[0].name_attribute}\"][checked='checked']"
       end
     end
   end

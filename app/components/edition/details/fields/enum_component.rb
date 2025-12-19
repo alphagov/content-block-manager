@@ -1,10 +1,4 @@
 class Edition::Details::Fields::EnumComponent < Edition::Details::Fields::BaseComponent
-  def initialize(enum:, default: "", **args)
-    @enum = enum
-    @default = default
-    super(**args)
-  end
-
   def options
     options = [
       {
@@ -27,17 +21,23 @@ class Edition::Details::Fields::EnumComponent < Edition::Details::Fields::BaseCo
 
 private
 
-  attr_reader :enum
+  def enum
+    field.enum_values
+  end
 
   def error_message
     error_items&.first&.fetch(:text)
   end
 
+  def default_value
+    field.default_value || ""
+  end
+
   def selected?(item)
-    item == (value.presence || @default)
+    item == (value.presence || default_value)
   end
 
   def blank_option
-    @default.empty? ? "" : nil
+    default_value.empty? ? "" : nil
   end
 end

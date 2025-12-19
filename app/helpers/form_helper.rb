@@ -23,4 +23,8 @@ module FormHelper
     default_value = populate_with_defaults ? field.default_value : nil
     details&.dig(field.name) || default_value
   end
+
+  def component_for_field(field, args)
+    field.component_class.new(**args.compact)
+  end
 end

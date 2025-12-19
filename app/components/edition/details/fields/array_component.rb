@@ -33,14 +33,11 @@ private
 
   def component(index)
     Edition::Details::Fields::Array::ItemComponent.new(
-      field_name: label,
-      array_items: field.array_items,
-      name_prefix: name,
-      id_prefix: id,
-      value: value,
+      field:,
+      edition:,
+      schema:,
+      value: value[index],
       index: index,
-      errors:,
-      error_lookup_prefix: field.error_key,
       can_be_deleted: can_be_deleted?(index),
       hints: hint_text,
     )
@@ -53,10 +50,6 @@ private
     else
       hidden_field_tag(field_name, 0)
     end
-  end
-
-  def errors
-    edition.errors
   end
 
   def can_be_deleted?(index)

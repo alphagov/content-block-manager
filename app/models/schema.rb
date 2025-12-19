@@ -101,6 +101,28 @@ class Schema
     @body["required"] || []
   end
 
+  def is_array?
+    !!@is_array
+  end
+
+  def html_name_part(index = nil)
+    name_part = "[#{block_type}]"
+    name_part += "[#{index}]" if is_array?
+    name_part
+  end
+
+  def html_id_part(index = nil)
+    id_part = "_#{block_type}"
+    id_part += "_#{index}" if is_array? && index.present?
+    id_part
+  end
+
+  def value_lookup_parts(index = nil)
+    lookup_parts = [block_type]
+    lookup_parts << index if is_array? && index.present?
+    lookup_parts
+  end
+
 private
 
   def field_names

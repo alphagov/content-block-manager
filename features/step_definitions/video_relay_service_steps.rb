@@ -3,7 +3,7 @@ Given("I indicate that the video relay service info should be displayed") do
 end
 
 Given("I provide custom video relay service info where available") do
-  within(".app-c-content-block-manager-video-relay-service-component") do
+  within("#edition_details_telephones_video_relay_service_show") do
     fill_in(label_for("label"), with: "Custom label")
     fill_in(label_for("telephone_number"), with: "01777 123 1234")
     fill_in(label_for("source"), with: "[Custom source](www.example.com)")

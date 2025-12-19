@@ -80,9 +80,7 @@ RSpec.describe Edition::Details::EmbeddedObjects::FormComponent, type: :componen
       edition:,
       field: enum_field,
       subschema:,
-      enum: ["some value", "another value"],
       value: "some value",
-      default: "some value",
       schema:,
     )
 

@@ -145,4 +145,26 @@ RSpec.describe Edition::Details::Fields::StringComponent, type: :component do
       expect(page).to have_css ".govuk-hint", text: "Some hint text"
     end
   end
+
+  describe "when an index is present" do
+    let(:component) do
+      described_class.new(
+        edition:,
+        field:,
+        schema:,
+        value: "some custom value",
+        index: 1,
+      )
+    end
+
+    it "should call id_attribute and error_key with the index" do
+      allow(field).to receive(:id_attribute).and_call_original
+      allow(field).to receive(:error_key).and_call_original
+
+      render_inline component
+
+      expect(field).to have_received(:id_attribute).with(1).at_least(:once)
+      expect(field).to have_received(:error_key).with(1).at_least(:once)
+    end
+  end
 end

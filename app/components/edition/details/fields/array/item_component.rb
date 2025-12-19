@@ -1,22 +1,19 @@
 class Edition::Details::Fields::Array::ItemComponent < ViewComponent::Base
   include ErrorsHelper
 
-  def initialize(field_name:, array_items:, name_prefix:, id_prefix:, value:, index:, errors:, error_lookup_prefix:, can_be_deleted:, hints:)
-    @field_name = field_name
-    @array_items = array_items
-    @name_prefix = name_prefix
-    @id_prefix = id_prefix
+  def initialize(field:, edition:, schema:, value:, index:, can_be_deleted:, hints:)
+    @field = field
+    @edition = edition
+    @schema = schema
     @value = value
     @index = index
-    @errors = errors
-    @error_lookup_prefix = error_lookup_prefix
     @can_be_deleted = can_be_deleted
     @hints = hints || {}
   end
 
 private
 
-  attr_reader :field_name, :array_items, :name_prefix, :id_prefix, :value, :index, :errors, :error_lookup_prefix, :can_be_deleted, :hints
+  attr_reader :field, :edition, :schema, :value, :index, :can_be_deleted, :hints
 
   def wrapper_classes
     [
@@ -25,57 +22,29 @@ private
     ].join(" ")
   end
 
-  def name
-    "#{name_prefix}[]"
-  end
+  def components
+    fields = field.nested_fields || [field]
 
-  def id
-    "#{id_prefix}_#{index}"
-  end
-
-  def field_value
-    value[index]
-  end
-
-  def error_items(field = nil)
-    errors_for(errors, [error_lookup_prefix, index, field].compact.join("_").to_sym)
-  end
-
-  def select_error_message(field = nil)
-    error_items(field)&.first&.fetch(:text)
-  end
-
-  def object_field_name(field)
-    "#{name}[#{field}]"
-  end
-
-  def object_field_id(field)
-    "#{id}_#{field}"
-  end
-
-  def object_field_value(field)
-    value ? field_value&.fetch(field) : nil
-  end
-
-  def hint_text_for_field(field)
-    hints.fetch(field.to_sym, nil)
-  end
-
-  def select_options(enum, value)
-    options = [{
-      text: "Select",
-      value: "",
-      selected: value.nil?,
-    }]
-
-    enum.each do |item|
-      options << {
-        text: item.humanize,
-        value: item,
-        selected: item == value,
-      }
+    fields.map do |item|
+      helpers.component_for_field(item, component_args(item))
     end
+  end
 
-    options
+  def component_args(field)
+    {
+      edition:,
+      field:,
+      value: fetch_value(field),
+      schema:,
+      index:,
+    }
+  end
+
+  def fetch_value(field)
+    if value.is_a?(Hash) || value.is_a?(ActionController::Parameters)
+      value.fetch(field.name, nil)
+    else
+      value
+    end
   end
 end

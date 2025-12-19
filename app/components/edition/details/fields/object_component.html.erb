@@ -1,21 +1,34 @@
 <% embedded_fields = capture do %>
-  <% field.nested_fields.each do |embedded_field| %>
-    <%= render "govuk_publishing_components/components/input", {
-      label: {
-        text: embedded_field.name.humanize,
-      },
-      name: name_for_field(embedded_field),
-      id: id_for_field(embedded_field),
-      value: value_for_field(embedded_field),
-      error_items: errors_for_field(embedded_field),
-    } %>
+  <% nested_fields.each do |embedded_field| %>
+    <%= render helpers.component_for_field(embedded_field, component_args(embedded_field)) %>
   <% end %>
 <% end %>
 
-<%= render "govuk_publishing_components/components/fieldset", {
-  legend_text: label,
-  heading_level: 3,
-  heading_size: "m",
-} do %>
-  <%= embedded_fields %>
+<% if conditionally_revealed? %>
+  <%= render "govuk_publishing_components/components/checkboxes", {
+    name: show_field.name_attribute,
+    id: show_field.id_attribute,
+    text: label_for(show_field),
+    heading: label_for(show_field),
+    visually_hide_heading: true,
+    no_hint_text: true,
+    small: true,
+    items: [
+      {
+        label: label_for(show_field),
+        value: "true",
+        checked: value_for_field(show_field) == true,
+        conditional: embedded_fields,
+        hint: hint_text_for(field),
+      },
+    ],
+  } %>
+<% else %>
+  <%= render "govuk_publishing_components/components/fieldset", {
+    legend_text: label,
+    heading_level: 3,
+    heading_size: "m",
+  } do %>
+    <%= embedded_fields %>
+  <% end %>
 <% end %>

@@ -58,6 +58,20 @@ RSpec.describe Schema::Field do
     end
   end
 
+  describe "#component_class" do
+    it "returns the class name for a component" do
+      expect(field).to receive(:component_name).and_return("string")
+
+      expect(field.component_class).to eq(Edition::Details::Fields::StringComponent)
+    end
+
+    it "throws an error if the component does not exist" do
+      expect(field).to receive(:component_name).and_return("non_existent")
+
+      expect { field.component_class }.to raise_error("Component Edition::Details::Fields::NonExistentComponent not found")
+    end
+  end
+
   describe "#enum_values" do
     describe "when the field has enum values" do
       let(:body) do
@@ -197,13 +211,13 @@ RSpec.describe Schema::Field do
         expect(nested_fields[0].name).to eq("foo")
         expect(nested_fields[0].format).to eq("string")
         expect(nested_fields[0].enum_values).to be_nil
-        expect(nested_fields[0].name_attribute).to eq("edition[details][something][foo]")
+        expect(nested_fields[0].name_attribute).to eq("edition[details][something][][foo]")
         expect(nested_fields[0].id_attribute).to eq("edition_details_something_foo")
 
         expect(nested_fields[1].name).to eq("bar")
         expect(nested_fields[1].format).to eq("string")
         expect(nested_fields[1].enum_values).to eq(%w[foo bar])
-        expect(nested_fields[1].name_attribute).to eq("edition[details][something][bar]")
+        expect(nested_fields[1].name_attribute).to eq("edition[details][something][][bar]")
         expect(nested_fields[1].id_attribute).to eq("edition_details_something_bar")
       end
 
@@ -400,10 +414,16 @@ RSpec.describe Schema::Field do
         expect(field.error_key).to eq("details_something")
       end
     end
+
+    describe "#value_lookup_path" do
+      it "returns an array with the field name" do
+        expect(field.value_lookup_path).to eq(%w[something])
+      end
+    end
   end
 
   context "when the schema is an embedded schema" do
-    let(:schema) { double(:embedded_schema, parent_schema: build(:schema), block_type: "embedded") }
+    let(:schema) { build(:embedded_schema, parent_schema: build(:schema), block_type: "embedded") }
 
     describe "#name_attribute" do
       it "returns the field name" do
@@ -422,12 +442,69 @@ RSpec.describe Schema::Field do
         expect(field.error_key).to eq("details_embedded_something")
       end
     end
+
+    describe "#value_lookup_path" do
+      it "returns an array with the field and schema name" do
+        expect(field.value_lookup_path).to eq(%w[embedded something])
+      end
+    end
+
+    context "when the field is an array" do
+      let(:body) do
+        {
+          "properties" => {
+            "something" => {
+              "type" => "array",
+              "items" => {
+                "type" => "string",
+              },
+            },
+          },
+        }
+      end
+
+      describe "#name_attribute" do
+        it "returns the field name" do
+          expect(field.name_attribute).to eq("edition[details][embedded][something][]")
+        end
+
+        it "includes an index if present" do
+          expect(field.name_attribute(1)).to eq("edition[details][embedded][something][1]")
+        end
+      end
+
+      describe "#id_attribute" do
+        it "returns the field id" do
+          expect(field.id_attribute).to eq("edition_details_embedded_something")
+        end
+
+        it "includes an index if present" do
+          expect(field.id_attribute(1)).to eq("edition_details_embedded_something_1")
+        end
+      end
+
+      describe "#error_key" do
+        it "returns the field id without the leading `edition`" do
+          expect(field.error_key).to eq("details_embedded_something")
+        end
+
+        it "includes an index if present" do
+          expect(field.error_key(1)).to eq("details_embedded_something_1")
+        end
+      end
+
+      describe "#value_lookup_path" do
+        it "returns an array with the field name, schema name and index" do
+          expect(field.value_lookup_path(1)).to eq(["embedded", "something", 1])
+        end
+      end
+    end
   end
 
   context "when the schema is deeply nested" do
     let(:root_schema) { build(:schema) }
-    let(:parent_schema) { double(:embedded_schema, block_type: "level_1", parent_schema: root_schema) }
-    let(:schema) { double(:embedded_schema, parent_schema: parent_schema, block_type: "level_2") }
+    let(:parent_schema) { build(:embedded_schema, block_type: "level_1", parent_schema: root_schema) }
+    let(:schema) { build(:embedded_schema, parent_schema: parent_schema, block_type: "level_2") }
 
     describe "#name_attribute" do
       it "returns the field name" do
@@ -444,6 +521,52 @@ RSpec.describe Schema::Field do
     describe "#error_key" do
       it "returns the field id without the leading `edition`" do
         expect(field.error_key).to eq("details_level_1_level_2_something")
+      end
+    end
+
+    describe "#value_lookup_path" do
+      it "returns an array with the field name and schemas" do
+        expect(field.value_lookup_path).to eq(%w[level_1 level_2 something])
+      end
+    end
+
+    context "when the parent schema is an array" do
+      let(:schema) { build(:embedded_schema, parent_schema: parent_schema, block_type: "level_2", is_array: true) }
+
+      describe "#name_attribute" do
+        it "returns the field name" do
+          expect(field.name_attribute).to eq("edition[details][level_1][level_2][][something]")
+        end
+
+        it "includes an index if present" do
+          expect(field.name_attribute(1)).to eq("edition[details][level_1][level_2][1][something]")
+        end
+      end
+
+      describe "#id_attribute" do
+        it "returns the field id" do
+          expect(field.id_attribute).to eq("edition_details_level_1_level_2_something")
+        end
+
+        it "includes an index if present" do
+          expect(field.id_attribute(1)).to eq("edition_details_level_1_level_2_1_something")
+        end
+      end
+
+      describe "#error_key" do
+        it "returns the field id without the leading `edition`" do
+          expect(field.error_key).to eq("details_level_1_level_2_something")
+        end
+
+        it "includes an index if present" do
+          expect(field.error_key(1)).to eq("details_level_1_level_2_1_something")
+        end
+      end
+
+      describe "#value_lookup_path" do
+        it "returns an array with the 2 parent schema names, the index and the field name" do
+          expect(field.value_lookup_path(1)).to eq(["level_1", "level_2", 1, "something"])
+        end
       end
     end
   end
@@ -480,6 +603,47 @@ RSpec.describe Schema::Field do
     describe "when a config var is not set" do
       it "returns false" do
         expect(field.govspeak_enabled?).to be_falsey
+      end
+    end
+  end
+
+  describe "#show_field" do
+    let(:body) do
+      {
+        "properties" => {
+          "something" => {
+            "type" => "object",
+            "properties" => {
+              "show_field" => { "type" => "boolean" },
+              "text" => { "type" => "string" },
+            },
+          },
+        },
+      }
+    end
+
+    context "when the field does not have a show_field_name set in the config" do
+      let(:config) do
+        { "fields" => { "something" => {} } }
+      end
+
+      it "returns the field to conditionally reveal an object" do
+        show_field = field.show_field
+
+        expect(show_field).to be_nil
+      end
+    end
+
+    context "when the field does have a show_field_name set in the config" do
+      let(:config) do
+        { "fields" => { "something" => { "show_field_name" => "show_field" } } }
+      end
+
+      it "returns the field to conditionally reveal an object" do
+        show_field = field.show_field
+
+        expect(show_field).to_not be_nil
+        expect(show_field.name).to eq("show_field")
       end
     end
   end
