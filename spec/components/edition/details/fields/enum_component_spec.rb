@@ -1,11 +1,10 @@
 RSpec.describe Edition::Details::Fields::EnumComponent, type: :component do
   let(:described_class) { Edition::Details::Fields::EnumComponent }
-  let(:helper_stub) { double(:helpers) }
 
   let(:edition) { build(:edition, :pension) }
   let(:enum_values) { ["a week", "a month"] }
   let(:default_value) { nil }
-  let(:field) { build("field", name: "something", is_required?: true, default_value:, enum_values:) }
+  let(:field) { build("field", name: "something", is_required?: true, default_value:, enum_values:, label: "Something") }
   let(:schema) { double(:schema, block_type: "schema") }
   let(:value) { nil }
 
@@ -16,12 +15,6 @@ RSpec.describe Edition::Details::Fields::EnumComponent, type: :component do
       schema:,
       value:,
     )
-  end
-
-  before do
-    allow(component).to receive(:helpers).and_return(helper_stub)
-    allow(helper_stub).to receive(:humanized_label).and_return("Something")
-    allow(helper_stub).to receive(:hint_text).and_return(nil)
   end
 
   describe "when there is no default value" do

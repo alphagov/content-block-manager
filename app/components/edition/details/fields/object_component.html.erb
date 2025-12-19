@@ -8,18 +8,18 @@
   <%= render "govuk_publishing_components/components/checkboxes", {
     name: show_field.name_attribute,
     id: show_field.id_attribute,
-    text: label_for(show_field),
-    heading: label_for(show_field),
+    text: show_field.label,
+    heading: show_field.label,
     visually_hide_heading: true,
     no_hint_text: true,
     small: true,
     items: [
       {
-        label: label_for(show_field),
+        label: show_field.label,
         value: "true",
         checked: value_for_field(show_field) == true,
         conditional: embedded_fields,
-        hint: hint_text_for(field),
+        hint: show_field.hint,
       },
     ],
   } %>
