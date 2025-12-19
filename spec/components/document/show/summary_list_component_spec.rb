@@ -22,8 +22,8 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
   end
   let(:fields) do
     [
-      build(:field, name: "foo"),
-      build(:field, name: "something"),
+      build(:field, name: "foo", label: "Foo"),
+      build(:field, name: "something", label: "Something"),
     ]
   end
   let(:schema_with_block_display_fields) { double(:schema, block_display_fields: %w[foo], fields:) }
@@ -107,20 +107,6 @@ RSpec.describe Document::Show::SummaryListComponent, type: :component do
       expect(page).to have_css ".govuk-summary-list__value", text: "bar"
       expect(page).to have_css ".govuk-summary-list__key", text: "Something"
       expect(page).to have_css ".govuk-summary-list__value", text: "else"
-    end
-
-    it "humanizes field names" do
-      fields_with_underscores = [
-        build(:field, name: "field_with_underscores"),
-      ]
-      schema = double(:schema, block_display_fields: [], fields: fields_with_underscores)
-      allow(document).to receive(:schema).and_return(schema)
-      edition.details = { "field_with_underscores" => "test value" }
-
-      render_inline(described_class.new(edition: edition))
-
-      expect(page).to have_css ".govuk-summary-list__key", text: "Field with underscores"
-      expect(page).to have_css ".govuk-summary-list__value", text: "test value"
     end
   end
 
