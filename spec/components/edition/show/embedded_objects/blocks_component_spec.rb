@@ -19,9 +19,14 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
   end
   let(:schema_name) { "schema_name" }
 
+  let(:foo_field) { build(:field, label: "Foo") }
+  let(:fizz_field) { build(:field, label: "Fizz") }
+
   before do
     allow(document).to receive(:schema).and_return(schema)
     allow(schema).to receive(:subschema).with(object_type).and_return(subschema)
+    allow(subschema).to receive(:field).with("foo").and_return(foo_field)
+    allow(subschema).to receive(:field).with("fizz").and_return(fizz_field)
   end
 
   let(:component) do
@@ -44,13 +49,6 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
 
       expect_summary_list_row(test_id: "else_foo", key: "Foo", value: "bar", embed_code_suffix: "foo")
       expect_summary_list_row(test_id: "else_fizz", key: "Fizz", value: "buzz", embed_code_suffix: "fizz")
-    end
-
-    it "calls key_to_label with the correct parameters for attribute rows" do
-      expect(component).to receive(:key_to_label).with("foo", schema_name, object_type).and_return("Foo")
-      expect(component).to receive(:key_to_label).with("fizz", schema_name, object_type).and_return("Fizz")
-
-      render_inline component
     end
 
     it "includes embed code and details in the row's data attrs along with name of JS module to be invoked" do
@@ -89,6 +87,12 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         }
       end
 
+      let(:things_field) { build(:field, label: "Things") }
+
+      before do
+        allow(subschema).to receive(:field).with("things").and_return(things_field)
+      end
+
       it "renders a summary card" do
         render_inline component
 
@@ -96,13 +100,6 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
 
         expect_summary_list_row(test_id: "else_things/0", key: "Thing 1", value: "foo", embed_code_suffix: "things/0")
         expect_summary_list_row(test_id: "else_things/1", key: "Thing 2", value: "bar", embed_code_suffix: "things/1")
-      end
-
-      it "calls key_to_label with the correct parameters for array items" do
-        expect(component).to receive(:key_to_label).with("things/0", schema_name, object_type).and_return("Thing 1")
-        expect(component).to receive(:key_to_label).with("things/1", schema_name, object_type).and_return("Thing 2")
-
-        render_inline component
       end
     end
 
@@ -122,9 +119,9 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         }
       end
 
-      let(:field) { build(:field, hidden?: false) }
-      let(:title_field) { build(:field, hidden?: false) }
-      let(:value_field) { build(:field, hidden?: false) }
+      let(:field) { build(:field, hidden?: false, title: "Thing") }
+      let(:title_field) { build(:field, hidden?: false, label: "Title") }
+      let(:value_field) { build(:field, hidden?: false, label: "Value") }
 
       before do
         allow(subschema).to receive(:field).with("things").and_return(field)
@@ -148,13 +145,6 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         end
       end
 
-      it "calls key_to_label with the correct parameters for nested items" do
-        expect(component).to receive(:key_to_label).with("title", schema_name, "#{object_type}.things").and_return("Title").twice
-        expect(component).to receive(:key_to_label).with("value", schema_name, "#{object_type}.things").and_return("Value").twice
-
-        render_inline component
-      end
-
       context "when a field is configured to be 'hidden', e.g. it's an internal flag" do
         let(:value_field) { build(:field, hidden?: true) }
 
@@ -170,13 +160,6 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
           expect(page).to have_css ".gem-c-summary-card[title='Thing 2']" do
             expect(page).to_not have_css "[data-testid='else_things/1/value}']"
           end
-        end
-
-        it "calls key_to_label only for visible fields" do
-          expect(component).to receive(:key_to_label).with("title", schema_name, "#{object_type}.things").and_return("Title").twice
-          expect(component).to receive(:key_to_label).with("value", schema_name, "#{object_type}.things").never
-
-          render_inline component
         end
       end
     end
@@ -248,13 +231,6 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
       end
     end
 
-    it "calls key_to_label with the correct parameters for attribute rows in details" do
-      expect(component).to receive(:key_to_label).with("foo", schema_name, object_type).and_return("Foo")
-      expect(component).to receive(:key_to_label).with("fizz", schema_name, object_type).and_return("Fizz")
-
-      render_inline component
-    end
-
     it "adds the correct class to the wrapper" do
       render_inline component
 
@@ -266,6 +242,12 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         {
           "things" => %w[foo bar],
         }
+      end
+
+      let(:things_field) { build(:field, label: "Things") }
+
+      before do
+        allow(subschema).to receive(:field).with("things").and_return(things_field)
       end
 
       it "renders a summary card" do
@@ -293,13 +275,6 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
           )
         end
       end
-
-      it "calls key_to_label with the correct parameters for array items in details" do
-        expect(component).to receive(:key_to_label).with("things/0", schema_name, object_type).and_return("Thing 1")
-        expect(component).to receive(:key_to_label).with("things/1", schema_name, object_type).and_return("Thing 2")
-
-        render_inline component
-      end
     end
 
     describe "when items contain an array of objects" do
@@ -318,9 +293,9 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         }
       end
 
-      let(:field) { build(:field, hidden?: false) }
-      let(:title_field) { build(:field, hidden?: false) }
-      let(:value_field) { build(:field, hidden?: false) }
+      let(:field) { build(:field, hidden?: false, title: "Thing") }
+      let(:title_field) { build(:field, hidden?: false, label: "Title") }
+      let(:value_field) { build(:field, hidden?: false, label: "Value") }
 
       before do
         allow(subschema).to receive(:field).with("things").and_return(field)
@@ -372,13 +347,6 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
             )
           end
         end
-      end
-
-      it "calls key_to_label with the correct parameters for nested items in details" do
-        expect(component).to receive(:key_to_label).with("title", schema_name, "#{object_type}.things").and_return("Title").twice
-        expect(component).to receive(:key_to_label).with("value", schema_name, "#{object_type}.things").and_return("Value").twice
-
-        render_inline component
       end
     end
   end
