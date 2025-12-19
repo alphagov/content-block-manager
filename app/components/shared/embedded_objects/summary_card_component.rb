@@ -2,7 +2,6 @@ class Shared::EmbeddedObjects::SummaryCardComponent < ViewComponent::Base
   include SummaryListHelper
 
   delegate :translated_value, to: :helpers
-  delegate :humanized_label, to: :helpers
 
   delegate :document, to: :edition
 
@@ -42,17 +41,14 @@ private
 
     Array(value).each_with_index.map do |item, index|
       suffix = is_list ? "#{field.name}/#{index}" : field.name
+      label = is_list ? "#{field.label.singularize} #{index + 1}" : field.label
 
       {
-        field: label_for(suffix),
+        field: label,
         value: translated_value(field.name, item),
         data: { testid: testid_for(suffix) },
       }
     end
-  end
-
-  def label_for(key)
-    key_to_label(key, edition.schema.block_type, object_type)
   end
 
   def testid_for(key)
