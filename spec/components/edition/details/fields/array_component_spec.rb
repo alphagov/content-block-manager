@@ -9,8 +9,6 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
   let(:field_value) { nil }
   let(:object_title) { nil }
 
-  let(:helper_stub) { double(:helpers) }
-
   let(:component) do
     described_class.new(
       edition:,
@@ -19,12 +17,6 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
       value: field_value,
       object_title:,
     )
-  end
-
-  before do
-    allow(component).to receive(:helpers).and_return(helper_stub)
-    allow(helper_stub).to receive(:humanized_label).and_return("Item")
-    allow(helper_stub).to receive(:hint_text).and_return(nil)
   end
 
   describe "when there are no items present" do
