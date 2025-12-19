@@ -1,15 +1,13 @@
 class Edition::Show::EmbeddedObjects::MetadataComponent < ViewComponent::Base
   include TranslationHelper
-  def initialize(items:, object_type:, schema_name:, schema:)
+  def initialize(items:, schema:)
     @items = items
-    @object_type = object_type
-    @schema_name = schema_name
     @schema = schema
   end
 
 private
 
-  attr_reader :items, :schema_name, :object_type, :object_title
+  attr_reader :items, :schema
 
   def rows
     unordered_rows.sort_by { |row| row_ordering_rule(row) }
@@ -17,8 +15,9 @@ private
 
   def unordered_rows
     items.map do |key, value|
+      field = schema.field(key)
       {
-        field: helpers.humanized_label(schema_name:, relative_key: key, root_object: object_type),
+        field: field.label,
         value: helpers.translated_value(key, value),
       }
     end

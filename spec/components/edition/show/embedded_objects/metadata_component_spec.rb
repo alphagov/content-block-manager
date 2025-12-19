@@ -34,10 +34,9 @@ RSpec.describe Edition::Show::EmbeddedObjects::MetadataComponent, type: :compone
 
   let(:schema_id) { "bar" }
 
-  let(:parent_schema_id) { "parent_schema_id" }
-
+  let(:parent_schema) { build(:schema) }
   let(:schema) do
-    Schema::EmbeddedSchema.new(schema_id, body, parent_schema_id)
+    Schema::EmbeddedSchema.new(schema_id, body, parent_schema)
   end
 
   let(:schema_config) do
@@ -47,8 +46,6 @@ RSpec.describe Edition::Show::EmbeddedObjects::MetadataComponent, type: :compone
   let(:component) do
     described_class.new(
       items:,
-      schema_name:,
-      object_type:,
       schema:,
     )
   end
@@ -85,6 +82,20 @@ RSpec.describe Edition::Show::EmbeddedObjects::MetadataComponent, type: :compone
           "foo" => "bar",
           "nested" => {
             "field" => "item",
+          },
+        }
+      end
+
+      let(:properties) do
+        {
+          "foo" => {
+            "type" => "string",
+          },
+          "nested" => {
+            "type" => "object",
+            "properties" => {
+              "field" => { "type" => "string" },
+            },
           },
         }
       end
@@ -130,96 +141,6 @@ RSpec.describe Edition::Show::EmbeddedObjects::MetadataComponent, type: :compone
             {
               field: "Foo",
               value: "bar",
-            },
-          ],
-        }
-      ).and_return("STUB_RESPONSE")
-
-      render_inline component
-
-      expect(page).to have_text "STUB_RESPONSE"
-    end
-  end
-
-  describe "when there is a translated field label" do
-    let(:helpers) { double }
-
-    before do
-      allow(component).to receive(:helpers).and_return(helpers)
-    end
-
-    it "uses translated label" do
-      expect(helpers).to receive(:humanized_label)
-               .with(schema_name:, relative_key: "foo", root_object: object_type)
-               .and_return("Foo translated")
-
-      expect(helpers).to receive(:humanized_label)
-               .with(schema_name:, relative_key: "fizz", root_object: object_type)
-               .and_return("Fizz translated")
-
-      expect(helpers).to receive(:translated_value)
-               .with("foo", "bar")
-               .and_return("bar")
-
-      expect(helpers).to receive(:translated_value)
-               .with("fizz", "buzz")
-               .and_return("buzz")
-
-      expect(component).to receive(:render).with(
-        "govuk_publishing_components/components/summary_list", {
-          items: [
-            {
-              field: "Foo translated",
-              value: "bar",
-            },
-            {
-              field: "Fizz translated",
-              value: "buzz",
-            },
-          ],
-        }
-      ).and_return("STUB_RESPONSE")
-
-      render_inline component
-
-      expect(page).to have_text "STUB_RESPONSE"
-    end
-  end
-
-  describe "when there is a translated field value" do
-    let(:helpers) { double }
-
-    before do
-      allow(component).to receive(:helpers).and_return(helpers)
-    end
-
-    it "uses translated label" do
-      expect(helpers).to receive(:humanized_label)
-               .with(schema_name:, relative_key: "foo", root_object: object_type)
-               .and_return("Foo")
-
-      expect(helpers).to receive(:humanized_label)
-               .with(schema_name:, relative_key: "fizz", root_object: object_type)
-               .and_return("Fizz")
-
-      expect(helpers).to receive(:translated_value)
-               .with("foo", "bar")
-               .and_return("Bar translated")
-
-      expect(helpers).to receive(:translated_value)
-               .with("fizz", "buzz")
-               .and_return("Buzz translated")
-
-      expect(component).to receive(:render).with(
-        "govuk_publishing_components/components/summary_list", {
-          items: [
-            {
-              field: "Foo",
-              value: "Bar translated",
-            },
-            {
-              field: "Fizz",
-              value: "Buzz translated",
             },
           ],
         }
