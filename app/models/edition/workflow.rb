@@ -62,7 +62,7 @@ module Edition::Workflow
     end
 
     def has_review_outcome_recorded?
-      return true if review_outcome_recorded_at
+      return true if review_outcome.present?
 
       error_message = "Edition #{id} does not have a 2i Review outcome recorded and so " \
         "can't transition into the 'awaiting_factcheck' state"

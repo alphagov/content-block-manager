@@ -66,10 +66,9 @@ private
   end
 
   def record_factcheck_outcome
-    @edition.update(
-      "factcheck_skipped" => factcheck_skipped?,
-      "factcheck_outcome_recorded_at" => Time.current,
-      "factcheck_outcome_recorded_by" => Current.user.id,
+    @edition.create_factcheck_outcome!(
+      "skipped" => factcheck_skipped?,
+      "creator" => Current.user,
     )
   end
 

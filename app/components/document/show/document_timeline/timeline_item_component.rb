@@ -33,7 +33,7 @@ private
   def review_outcome
     return unless version.state == "awaiting_factcheck"
 
-    skipped_or_performed = version.item.review_skipped ? "skipped" : "performed"
+    skipped_or_performed = version.item.review_outcome&.skipped ? "skipped" : "performed"
     "2i review #{skipped_or_performed}"
   end
 

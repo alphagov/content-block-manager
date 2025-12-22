@@ -118,12 +118,14 @@ RSpec.describe Edition::Workflow, type: :model do
 
     describe "transition to 'awaiting_factcheck' state" do
       let(:edition) { create(:edition, :pension, :draft) }
+      let!(:current_user) { create(:user) }
+      let(:review_outcome) { instance_double(ReviewOutcome) }
 
       context "when in the 'awaiting_review' state" do
         before { edition.state = "awaiting_review" }
 
         context "when a Review outcome has been recorded" do
-          before { edition.review_outcome_recorded_at = 1.hour.ago }
+          before { allow(edition).to receive(:review_outcome).and_return(review_outcome) }
 
           it "allows the #ready_for_factcheck! transition" do
             expect(edition.ready_for_factcheck!).to be true
@@ -131,8 +133,6 @@ RSpec.describe Edition::Workflow, type: :model do
         end
 
         context "when a Review outcome has NOT been recorded" do
-          before { edition.review_outcome_recorded_at = nil }
-
           it "raises a ReviewOutcomeMissingError" do
             expect { edition.ready_for_factcheck! }.to raise_error(
               Edition::Workflow::ReviewOutcomeMissingError,

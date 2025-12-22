@@ -1,6 +1,6 @@
 RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
-  let(:document) { Document.new(id: 456) }
-  let(:edition) { Edition.new(id: 123, document: document) }
+  let(:document) { create(:document, :pension, id: 456) }
+  let(:edition) { create(:edition, :pension, id: 123, document: document) }
 
   before do
     allow(Edition).to receive(:find).and_return(edition)
@@ -17,7 +17,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
     end
 
     context "when the edition is going to be scheduled" do
-      let(:edition) { Edition.new(id: 123, document: document, scheduled_publication: Time.zone.now) }
+      let(:edition) { create(:edition, :pension, id: 123, document: document, scheduled_publication: Time.zone.now) }
 
       it "sets the page title to a 'schedule' call-to-action" do
         expect(assigns(:title)).to eq("Schedule block")
@@ -25,7 +25,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
     end
 
     context "when the edition is going to be published" do
-      let(:edition) { Edition.new(id: 123, document: document, scheduled_publication: nil) }
+      let(:edition) { create(:edition, :pension, id: 123, document: document, scheduled_publication: nil) }
 
       it "sets the page title to a 'publish' call-to-action" do
         expect(assigns(:title)).to eq("Publish block")
@@ -39,7 +39,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
 
   describe "POST to :create" do
     let(:time_now) { Time.current }
-    let(:current_user) { instance_double(User, id: 987) }
+    let(:current_user) { instance_double(User, id: 1) }
 
     before do
       allow(Time).to receive(:current).and_return(time_now)
@@ -48,7 +48,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
 
     context "when the form returned is valid" do
       before do
-        allow(edition).to receive(:update).and_return(true)
+        allow(edition).to receive(:create_factcheck_outcome!)
         allow(edition).to receive(:publish!)
       end
 
@@ -62,10 +62,9 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
           end
 
           it "saves the Factcheck outcome details" do
-            expect(edition).to have_received(:update).with(
-              "factcheck_skipped" => true,
-              "factcheck_outcome_recorded_at" => time_now,
-              "factcheck_outcome_recorded_by" => 987,
+            expect(edition).to have_received(:create_factcheck_outcome!).with(
+              "skipped" => true,
+              "creator" => current_user,
             )
           end
 
@@ -87,10 +86,9 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
           end
 
           it "saves the Factcheck outcome details" do
-            expect(edition).to have_received(:update).with(
-              "factcheck_skipped" => false,
-              "factcheck_outcome_recorded_at" => time_now,
-              "factcheck_outcome_recorded_by" => 987,
+            expect(edition).to have_received(:create_factcheck_outcome!).with(
+              "skipped" => false,
+              "creator" => current_user,
             )
           end
         end
@@ -162,6 +160,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
   describe "PUT to :update" do
     let(:time_now) { Time.current }
     let(:current_user) { instance_double(User, id: 987) }
+    let(:factcheck_outcome) { spy(FactcheckOutcome) }
 
     before do
       allow(Time).to receive(:current).and_return(time_now)
@@ -169,6 +168,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       allow(edition).to receive(:update)
       allow(edition).to receive(:schedule!)
       allow(edition).to receive(:publish!)
+      allow(edition).to receive(:factcheck_outcome).and_return(factcheck_outcome)
     end
 
     context "when the request is valid" do
