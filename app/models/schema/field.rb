@@ -131,6 +131,18 @@ class Schema
       path.flatten
     end
 
+    def permitted_params
+      if format == "array" && nested_fields.present?
+        { name => [*nested_fields.map(&:permitted_params), "_destroy"] || [] }
+      elsif format == "array"
+        { name => [*array_items["properties"]&.keys, "_destroy"] || [] }
+      elsif nested_fields.present?
+        { name => nested_fields.map(&:permitted_params) }
+      else
+        name
+      end
+    end
+
   private
 
     def custom_component
