@@ -16,9 +16,9 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
   let(:schema) { double(:schema, block_type: "schema") }
   let(:fields) do
     [
-      build(:field, name: "name"),
-      build(:field, name: "field-1"),
-      build(:field, name: "field-2"),
+      build(:field, name: "name", label: "Name"),
+      build(:field, name: "field-1", label: "Field 1"),
+      build(:field, name: "field-2", label: "Field 2"),
     ]
   end
 
@@ -80,39 +80,6 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
     render_inline component
 
     expect(page).to have_css ".govuk-summary-card[data-test-id='prefix_my-embedded-object']"
-  end
-
-  describe "when there is a translated value" do
-    it "returns a translated value" do
-      expect(I18n).to receive(:t).with("edition.labels.block_type.embedded-objects.name", default: "Name").and_return("Name")
-      expect(I18n).to receive(:t).with("edition.labels.block_type.embedded-objects.field-1", default: "Field 1").and_return("Field 1")
-      expect(I18n).to receive(:t).with("edition.labels.block_type.embedded-objects.field-2", default: "Field 2").and_return("Field 2")
-
-      component = described_class.new(
-        edition:,
-        object_type: "embedded-objects",
-        object_title: "my-embedded-object",
-        test_id_prefix: "prefix",
-      )
-
-      expect(component).to receive(:translated_value).with("name", "My Embedded Object").and_return("My Embedded Object translated")
-      expect(component).to receive(:translated_value).with("field-1", "Value 1").and_return("Value 1 translated")
-      expect(component).to receive(:translated_value).with("field-2", "Value 2").and_return("Value 2 translated")
-
-      render_inline component
-
-      expect(page).to have_css ".govuk-summary-list__row[data-testid='my_embedded_object_name']", text: /Name/ do
-        expect(page).to have_css ".govuk-summary-list__value", text: "My Embedded Object translated"
-      end
-
-      expect(page).to have_css ".govuk-summary-list__row[data-testid='my_embedded_object_field_1']", text: /Field 1/ do
-        expect(page).to have_css ".govuk-summary-list__value", text: "Value 1 translated"
-      end
-
-      expect(page).to have_css ".govuk-summary-list__row[data-testid='my_embedded_object_field_2']", text: /Field 2/ do
-        expect(page).to have_css ".govuk-summary-list__value", text: "Value 2 translated"
-      end
-    end
   end
 
   it "renders a summary list with a collection" do
@@ -201,10 +168,13 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
   end
 
   describe "when arrays are present" do
+    let(:name_field) { build(:field, name: "name", label: "Name") }
+    let(:field_field) { build(:field, name: "field", label: "Field") }
+
     let(:fields) do
       [
-        build(:field, name: "name"),
-        build(:field, name: "field"),
+        name_field,
+        field_field,
       ]
     end
 
@@ -247,8 +217,8 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
     end
 
     describe "when arrays are present with hashes" do
-      let(:name_field) { build(:field, name: "name") }
-      let(:field_field) { build(:field, name: "field") }
+      let(:name_field) { build(:field, name: "name", label: "Name") }
+      let(:field_field) { build(:field, name: "field", title: "Field") }
 
       let(:fields) do
         [
@@ -268,7 +238,7 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
         }
       end
 
-      let(:item_field) { build(:field, name: "item", govspeak_enabled?: false) }
+      let(:item_field) { build(:field, name: "item", govspeak_enabled?: false, label: "Item") }
 
       before do
         allow(field_field).to receive(:nested_field).with("item").and_return(item_field)
@@ -302,52 +272,11 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
           expect(page).to have_css ".govuk-summary-list__value", text: "Bar"
         end
       end
-
-      it "returns a translated field if there is one present" do
-        component = described_class.new(
-          edition:,
-          object_type: "embedded-objects",
-          object_title: "my-embedded-object",
-        )
-
-        expect(component).to receive(:key_to_label).with("name", "block_type", "embedded-objects").and_return("Name translated")
-        expect(component).to receive(:translated_value).with("name", "My Embedded Object").and_return("My Embedded Object translated")
-
-        expect(I18n).to receive(:t).with("edition.titles.#{edition.schema.block_type}.#{subschema.id}.field", default: "Field").and_return("Field translated")
-
-        allow_any_instance_of(Shared::EmbeddedObjects::SummaryCard::NestedItemComponent).to receive(:humanized_label)
-                                                                                               .with(schema_name: schema.block_type, relative_key: "item", root_object: "embedded-objects.field")
-                                                                                               .and_return("Item translated")
-
-        allow_any_instance_of(Shared::EmbeddedObjects::SummaryCard::NestedItemComponent).to receive(:translated_value)
-                                                                                               .with("item", "Foo")
-                                                                                               .and_return("Foo translated")
-
-        allow_any_instance_of(Shared::EmbeddedObjects::SummaryCard::NestedItemComponent).to receive(:translated_value)
-                                                                                               .with("item", "Bar")
-                                                                                               .and_return("Bar translated")
-        render_inline component
-
-        expect(page).to have_css ".govuk-summary-list__row[data-testid='my_embedded_object_name']", text: /Name/ do |nested_block|
-          expect(nested_block).to have_css ".govuk-summary-list__key", text: "Name translated"
-          expect(nested_block).to have_css ".govuk-summary-list__value", text: "My Embedded Object translated"
-        end
-
-        expect(page).to have_css ".app-c-content-block-manager-nested-item-component", text: /Field translated 1/ do |nested_block|
-          expect(nested_block).to have_css ".govuk-summary-list__key", text: "Item translated"
-          expect(nested_block).to have_css ".govuk-summary-list__value", text: "Foo translated"
-        end
-
-        expect(page).to have_css ".app-c-content-block-manager-nested-item-component", text: /Field translated 2/ do |nested_block|
-          expect(nested_block).to have_css ".govuk-summary-list__key", text: "Item translated"
-          expect(nested_block).to have_css ".govuk-summary-list__value", text: "Bar translated"
-        end
-      end
     end
 
     describe "when hashes are present" do
-      let(:name_field) { build(:field, name: "name") }
-      let(:field_field) { build(:field, name: "field") }
+      let(:name_field) { build(:field, name: "name", label: "Name") }
+      let(:field_field) { build(:field, name: "field", title: "Field") }
 
       let(:fields) do
         [
@@ -367,7 +296,7 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
         }
       end
 
-      let(:item_field) { build(:field, name: "item", govspeak_enabled?: false) }
+      let(:item_field) { build(:field, name: "item", govspeak_enabled?: false, label: "Item") }
 
       before do
         allow(field_field).to receive(:nested_field).with("item").and_return(item_field)

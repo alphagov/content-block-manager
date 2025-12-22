@@ -48,10 +48,9 @@ private
 
   def details_items
     schema.fields.map { |field|
-      key = field.name
       rows = [{
-        field: key.humanize,
-        value: edition.details[key],
+        field: field.label,
+        value: edition.details[field.name],
       }]
       rows
     }.flatten

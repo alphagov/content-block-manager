@@ -40,10 +40,12 @@ private
     is_list = value.is_a?(Array)
 
     Array(value).each_with_index.map do |item, index|
+      field = schema.field(key)
       suffix = is_list ? "#{key}/#{index}" : key
+      label = is_list ? "#{field.label.singularize} #{index + 1}" : field.label
 
       {
-        "#{key_name}": key_to_label(suffix, schema_name, object_type),
+        "#{key_name}": label,
         value: content_for_row(suffix, item),
         data: data_attributes_for_row(suffix),
       }
@@ -51,7 +53,7 @@ private
   end
 
   def block_title(key)
-    I18n.t("edition.titles.#{document.schema.block_type}.#{schema.block_type}.#{key}", default: key.humanize.capitalize)
+    schema.field(key).title
   end
 
   def nested_blocks
@@ -61,7 +63,7 @@ private
       if items.is_a?(Array)
         items.each_with_index do |nested_items, index|
           blocks << {
-            title: "#{block_title(key.singularize)} #{index + 1}",
+            title: "#{block_title(key).singularize} #{index + 1}",
             rows: rows_for_nested_items(nested_items, key, index),
           }
         end
@@ -78,8 +80,9 @@ private
 
   def rows_for_nested_items(items, nested_name, index)
     visible_fields(items, nested_name).map do |key, value|
+      field = schema.field(nested_name).nested_field(key)
       {
-        key: key_to_label(key, schema_name, "#{object_type}.#{nested_name}"),
+        key: field.label,
         value: content_for_row(embed_code_identifier(nested_name, index, key), translated_value(key, value)),
         data: data_attributes_for_row(embed_code_identifier(nested_name, index, key)),
       }

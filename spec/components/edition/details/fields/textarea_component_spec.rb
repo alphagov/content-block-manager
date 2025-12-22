@@ -2,15 +2,8 @@ COMPONENT_CLASS = ".app-c-content-block-manager-textarea-component".freeze
 
 RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
   let(:described_class) { Edition::Details::Fields::TextareaComponent }
-  let(:helper_stub) { double(:helpers) }
 
   let(:edition) { build(:edition, :contact) }
-
-  before do
-    allow_any_instance_of(described_class).to receive(:helpers).and_return(helper_stub)
-    allow(helper_stub).to receive(:humanized_label).and_return("Translated label")
-    allow(helper_stub).to receive(:hint_text).and_return(nil)
-  end
 
   context "when textarea is built for a schema" do
     let(:properties) do
@@ -94,7 +87,10 @@ RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
       render_inline component
 
       expect(page).to have_css(COMPONENT_CLASS) do |component|
-        displays_label_using_translation_system(component)
+        expect(component).to have_css(
+          "label",
+          text: rich_field.label,
+        )
       end
     end
 
@@ -118,6 +114,8 @@ RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
             :details_rich_field,
             "blank",
           )
+
+          allow(I18n).to receive(:t).and_call_original
 
           expect(I18n).to receive(:t).with(
             "activerecord.errors.models.edition" \
@@ -357,7 +355,10 @@ RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
         render_inline component
 
         expect(page).to have_css(COMPONENT_CLASS) do |component|
-          displays_label_using_translation_system(component)
+          expect(component).to have_css(
+            "label",
+            text: field.label,
+          )
         end
       end
 
@@ -375,6 +376,8 @@ RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
             field.error_key,
             "blank",
           )
+
+          allow(I18n).to receive(:t).and_call_original
 
           expect(I18n).to receive(:t).with(
             "activerecord.errors.models.edition" \

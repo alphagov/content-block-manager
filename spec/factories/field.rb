@@ -16,6 +16,9 @@ FactoryBot.define do
       data_attributes { nil }
       hidden? { false }
       show_field { nil }
+      label { nil }
+      title { nil }
+      hint { nil }
     end
 
     initialize_with do
@@ -35,6 +38,9 @@ FactoryBot.define do
       allow(field).to receive(:hidden?).and_return(evaluator.hidden?)
       allow(field).to receive(:component_class).and_return(evaluator.component_class)
       allow(field).to receive(:show_field).and_return(evaluator.show_field)
+      allow(field).to receive(:label).and_return(evaluator.label)
+      allow(field).to receive(:title).and_return(evaluator.title)
+      allow(field).to receive(:hint).and_return(evaluator.hint)
     end
   end
 end

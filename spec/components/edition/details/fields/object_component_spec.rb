@@ -4,13 +4,13 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
   let(:edition) { build(:edition, :pension) }
   let(:nested_fields) do
     [
-      build("field", name: "label", enum_values: nil, default_value: nil),
-      build("field", name: "type", enum_values: %w[enum_1 enum_2 enum_3], default_value: nil),
-      build("field", name: "email_address", enum_values: nil, default_value: nil),
+      build("field", name: "label", enum_values: nil, default_value: nil, label: "Label"),
+      build("field", name: "type", enum_values: %w[enum_1 enum_2 enum_3], default_value: nil, label: "Type"),
+      build("field", name: "email_address", enum_values: nil, default_value: nil, label: "Email address"),
     ]
   end
   let(:schema) { double("schema", id: "root", block_type: "schema") }
-  let(:field) { build(:field, name: "nested", nested_fields:, schema:, is_required?: true, default_value: nil, show_field: nil) }
+  let(:field) { build(:field, name: "nested", nested_fields:, schema:, is_required?: true, default_value: nil, show_field: nil, label: "Nested") }
 
   let(:label_stub) { double("string_component") }
   let(:type_stub) { double("enum_component") }
@@ -130,14 +130,15 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
   end
 
   context "when a show_field is present" do
+    let(:hint) { nil }
     let(:nested_fields) do
       [
-        build("field", name: "show"),
-        build("field", name: "label"),
-        build("field", name: "email_address"),
+        build("field", name: "show", label: "Show", hint:),
+        build("field", name: "label", label: "Label"),
+        build("field", name: "email_address", label: "Email address"),
       ]
     end
-    let(:field) { build(:field, name: "nested", nested_fields:, schema:, is_required?: true, default_value: nil, show_field: nested_fields[0]) }
+    let(:field) { build(:field, name: "nested", nested_fields:, schema:, is_required?: true, default_value: nil, show_field: nested_fields[0], label: "Nested") }
 
     it "shows a checkbox to toggle 'show' option" do
       render_inline(component)
@@ -175,6 +176,16 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
         render_inline(component)
 
         expect(page).to have_css "input[name=\"#{nested_fields[0].name_attribute}\"][checked='checked']"
+      end
+    end
+
+    context "when the checkbox has an associated hint" do
+      let(:hint) { "This is a hint" }
+
+      it "renders the hint" do
+        render_inline(component)
+
+        expect(page).to have_css "##{nested_fields[0].id_attribute}-0-item-hint", text: hint
       end
     end
   end

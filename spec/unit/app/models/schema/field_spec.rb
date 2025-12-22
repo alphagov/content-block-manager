@@ -415,7 +415,7 @@ RSpec.describe Schema::Field do
       end
     end
 
-    describe "#value_lookup_path" do
+    describe "#translation_lookup_path" do
       it "returns an array with the field name" do
         expect(field.value_lookup_path).to eq(%w[something])
       end

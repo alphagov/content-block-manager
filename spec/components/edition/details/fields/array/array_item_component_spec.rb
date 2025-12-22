@@ -1,6 +1,6 @@
 RSpec.describe Edition::Details::Fields::Array::ItemComponent, type: :component do
   let(:field_name) { "foo" }
-  let(:field) { build(:field, name: field_name, enum_values: nil, default_value: nil, nested_fields:) }
+  let(:field) { build(:field, name: field_name, enum_values: nil, default_value: nil, nested_fields:, label: "Foo") }
   let(:edition) { build(:edition) }
   let(:schema) { build(:schema) }
   let(:can_be_deleted) { true }
@@ -68,8 +68,8 @@ RSpec.describe Edition::Details::Fields::Array::ItemComponent, type: :component 
   end
 
   describe "if the field contains nested fields" do
-    let(:field_1) { build(:field, name: "fizz") }
-    let(:field_2) { build(:field, name: "buzz") }
+    let(:field_1) { build(:field, name: "fizz", label: "Fizz") }
+    let(:field_2) { build(:field, name: "buzz", label: "Buzz") }
 
     let(:nested_fields) do
       [
