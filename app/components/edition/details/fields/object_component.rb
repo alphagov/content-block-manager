@@ -26,12 +26,4 @@ class Edition::Details::Fields::ObjectComponent < Edition::Details::Fields::Base
 
     field_value
   end
-
-  def label_for(field)
-    field.label
-  end
-
-  def hint_text_for(field)
-    field.hint
-  end
 end
