@@ -20,6 +20,7 @@ private
         {
           fields: render(component(index)),
           destroy_checkbox: destroy_checkbox(index),
+          order_input: order_input(index),
         }
       end
     else
@@ -50,6 +51,10 @@ private
     else
       hidden_field_tag(field_name, 0)
     end
+  end
+
+  def order_input(index)
+    helpers.hidden_field_tag("#{name}[_order]", index + 1)
   end
 
   def can_be_deleted?(index)
