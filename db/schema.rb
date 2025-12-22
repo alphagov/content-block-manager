@@ -51,14 +51,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_19_135036) do
     t.datetime "updated_at", null: false
     t.uuid "lead_organisation_id"
     t.string "auth_bypass_id"
-    t.boolean "review_skipped"
-    t.integer "review_outcome_recorded_by"
-    t.datetime "review_outcome_recorded_at"
     t.datetime "workflow_completed_at", precision: nil
-    t.boolean "factcheck_skipped"
-    t.integer "factcheck_outcome_recorded_by"
-    t.datetime "factcheck_outcome_recorded_at"
-    t.string "factcheck_outcome_reviewer"
     t.index ["document_id"], name: "index_editions_on_document_id"
     t.index ["title"], name: "index_editions_on_title"
   end
