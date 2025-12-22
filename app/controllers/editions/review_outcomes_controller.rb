@@ -28,10 +28,9 @@ private
   end
 
   def record_review_outcome
-    @edition.update(
-      "review_skipped" => review_skipped?,
-      "review_outcome_recorded_at" => Time.current,
-      "review_outcome_recorded_by" => Current.user.id,
+    @edition.create_review_outcome!(
+      "skipped" => review_skipped?,
+      "creator" => Current.user,
     )
   end
 

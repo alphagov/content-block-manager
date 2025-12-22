@@ -6,7 +6,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
   let(:user) { create(:user) }
   let(:schema) { double(:schema, subschemas: []) }
 
-  let(:edition) { build(:edition, :pension, change_note: nil, internal_change_note: nil) }
+  let(:edition) { build(:edition, :pension, change_note: nil, internal_change_note: nil, review_outcome: ReviewOutcome.new) }
   let(:version) do
     build(
       :content_block_version,
@@ -364,7 +364,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
 
     context "and its edition indicates that the review was performed" do
       before do
-        edition.review_skipped = false
+        edition.review_outcome.skipped = false
       end
 
       it "shows the review outcome" do
@@ -378,7 +378,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
 
     context "and its edition indicates that the review was skipped" do
       before do
-        edition.review_skipped = true
+        edition.review_outcome.skipped = true
       end
 
       it "shows the review outcome" do
