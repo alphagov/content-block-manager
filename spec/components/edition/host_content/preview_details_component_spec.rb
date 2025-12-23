@@ -1,22 +1,18 @@
-require "test_helper"
-
-class Edition::HostContent::PreviewDetailsComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe Edition::HostContent::PreviewDetailsComponent, type: :component do
   let(:edition) { build(:edition, :pension, details: { "email_address": "example@example.com" }) }
   let(:preview_content) { build(:preview_content, instances_count: 2) }
 
   it "returns a list of details for preview content" do
     render_inline(
-      Edition::HostContent::PreviewDetailsComponent.new(
+      described_class.new(
         edition:,
         preview_content:,
       ),
     )
 
-    assert_selector "li", count: 2
-    assert_selector "li", text: "Email address: example@example.com"
-    assert_selector "li", text: "Instances: 2"
+    expect(page).to have_css "li", count: 2
+    expect(page).to have_css "li", text: "Email address: example@example.com"
+    expect(page).to have_css "li", text: "Instances: 2"
   end
 
   context "when there are subschemas in the edition's details" do
@@ -33,15 +29,15 @@ class Edition::HostContent::PreviewDetailsComponentTest < ViewComponent::TestCas
     end
     it "returns a list of details for preview content" do
       render_inline(
-        Edition::HostContent::PreviewDetailsComponent.new(
+        described_class.new(
           edition:,
           preview_content:,
         ),
       )
 
-      assert_selector "li", count: 2
-      assert_selector "li", text: "Description: Basic state pension"
-      assert_selector "li", text: "Instances: 2"
+      expect(page).to have_css "li", count: 2
+      expect(page).to have_css "li", text: "Description: Basic state pension"
+      expect(page).to have_css "li", text: "Instances: 2"
     end
   end
 end
