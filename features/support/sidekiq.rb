@@ -1,5 +1,5 @@
 require "sidekiq/testing/inline"
-require_relative "../../test/support/sidekiq_test_helpers"
+require_relative "sidekiq_test_helpers"
 
 World(SidekiqTestHelpers)
 
