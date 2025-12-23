@@ -1,16 +1,12 @@
-require "test_helper"
-
-class GovspeakeditorComponentTest < ActionView::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe "components/govspeak_editor", type: :view do
   def render_component(locals)
     render partial: "components/govspeak_editor", locals:
   end
 
   it "errors when no parameters given" do
-    assert_raises do
+    expect {
       render_component({})
-    end
+    }.to raise_error
   end
 
   it "renders the basic component" do
@@ -21,8 +17,8 @@ class GovspeakeditorComponentTest < ActionView::TestCase
       },
     })
 
-    assert_select ".app-c-govspeak-editor[data-module='govspeak-editor']"
-    assert_select ".govuk-label.govuk-label--s", false
+    expect(rendered).to have_css ".app-c-govspeak-editor[data-module='govspeak-editor']"
+    expect(rendered).not_to have_css ".govuk-label.govuk-label--s"
   end
 
   it "sets label to bold" do
@@ -34,7 +30,7 @@ class GovspeakeditorComponentTest < ActionView::TestCase
       },
     })
 
-    assert_select ".govuk-label.govuk-label--s"
+    expect(rendered).to have_css ".govuk-label.govuk-label--s"
   end
 
   it "includes hint" do
@@ -47,7 +43,7 @@ class GovspeakeditorComponentTest < ActionView::TestCase
       hint_id: "optional",
     })
 
-    assert_select ".govuk-hint[id='optional']", text: "look out"
+    expect(rendered).to have_css ".govuk-hint[id='optional']", text: "look out"
   end
 
   it "can display errors" do
@@ -68,8 +64,8 @@ class GovspeakeditorComponentTest < ActionView::TestCase
       ],
     })
 
-    assert_select ".app-c-govspeak-editor.govuk-form-group--error"
-    assert_select ".govuk-error-message", text: "Error: there's nothing hereno really, there's nothing here"
+    expect(rendered).to have_css ".app-c-govspeak-editor.govuk-form-group--error"
+    expect(rendered).to have_css ".govuk-error-message", text: "Error: there's nothing hereno really, there's nothing here"
   end
 
   it "can set number of rows on the textarea" do
@@ -81,7 +77,7 @@ class GovspeakeditorComponentTest < ActionView::TestCase
       rows: 2,
     })
 
-    assert_select ".govuk-textarea[rows='2']"
+    expect(rendered).to have_css ".govuk-textarea[rows='2']"
   end
 
   it "can set the textarea to right to left" do
@@ -93,7 +89,7 @@ class GovspeakeditorComponentTest < ActionView::TestCase
       right_to_left: true,
     })
 
-    assert_select ".govuk-textarea[dir='rtl']"
+    expect(rendered).to have_css ".govuk-textarea[dir='rtl']"
   end
 
   it "accepts data attributes" do
@@ -116,9 +112,9 @@ class GovspeakeditorComponentTest < ActionView::TestCase
       },
     })
 
-    assert_select ".app-c-govspeak-editor[data-some-attribute='This is for the main component'][data-module='one-module govspeak-editor']"
-    assert_select ".govuk-textarea[data-some-attribute='This is for the textarea'][data-module='two-module paste-html-to-govspeak']"
-    assert_select ".govuk-button[data-some-attribute='This is for the toggle preview button'][data-module='three-module']"
+    expect(rendered).to have_css ".app-c-govspeak-editor[data-some-attribute='This is for the main component'][data-module='one-module govspeak-editor']"
+    expect(rendered).to have_css ".govuk-textarea[data-some-attribute='This is for the textarea'][data-module='two-module paste-html-to-govspeak']"
+    expect(rendered).to have_css ".govuk-button[data-some-attribute='This is for the toggle preview button'][data-module='three-module']"
   end
 
   it "can have a value for the textarea" do
@@ -130,7 +126,7 @@ class GovspeakeditorComponentTest < ActionView::TestCase
       value: "Here is some text I wrote",
     })
 
-    assert_select ".govuk-textarea", text: "Here is some text I wrote"
+    expect(rendered).to have_css ".govuk-textarea", text: "Here is some text I wrote"
   end
 
   it "can have attachments and alternative format provider id" do
@@ -147,7 +143,7 @@ class GovspeakeditorComponentTest < ActionView::TestCase
       value: "This is an attachment: !@1 This is an image: !!1",
     })
 
-    assert_select ".app-c-govspeak-editor[data-alternative-format-provider-id='123'][data-image-ids='[1,2,3]'][data-attachment-ids='[3,4,5]']"
-    assert_select ".govuk-textarea", text: "This is an attachment: !@1 This is an image: !!1"
+    expect(rendered).to have_css ".app-c-govspeak-editor[data-alternative-format-provider-id='123'][data-image-ids='[1,2,3]'][data-attachment-ids='[3,4,5]']"
+    expect(rendered).to have_css ".govuk-textarea", text: "This is an attachment: !@1 This is an image: !!1"
   end
 end
