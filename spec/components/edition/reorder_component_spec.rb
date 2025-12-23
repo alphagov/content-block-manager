@@ -1,7 +1,4 @@
-require "test_helper"
-
-class Edition::ReorderComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
+RSpec.describe Edition::ReorderComponent, type: :component do
   include Rails.application.routes.url_helpers
   include FormHelper
 
@@ -15,29 +12,29 @@ class Edition::ReorderComponentTest < ViewComponent::TestCase
   end
   let(:default_order) { order }
   let(:redirect_path) { "/foo/bar" }
-  let(:component) { Edition::ReorderComponent.new(edition:, order:, redirect_path:) }
+  let(:component) { described_class.new(edition:, order:, redirect_path:) }
 
   before do
-    edition.stubs(:default_order).returns(default_order)
-    edition.stubs(:clone_without_blocks).returns(stub(:edition, render: "WITHOUT BLOCKS"))
-    edition.stubs(:clone_with_block).with("email_addresses.email_address_1").returns(stub(:edition, render: "email_addresses.email_address_1"))
-    edition.stubs(:clone_with_block).with("email_addresses.email_address_2").returns(stub(:edition, render: "email_addresses.email_address_2"))
-    edition.stubs(:clone_with_block).with("telephones.telephone_1").returns(stub(:edition, render: "telephones.telephone_1"))
+    allow(edition).to receive(:default_order).and_return(default_order)
+    allow(edition).to receive(:clone_without_blocks).and_return(double(:edition, render: "WITHOUT BLOCKS"))
+    allow(edition).to receive(:clone_with_block).with("email_addresses.email_address_1").and_return(double(:edition, render: "email_addresses.email_address_1"))
+    allow(edition).to receive(:clone_with_block).with("email_addresses.email_address_2").and_return(double(:edition, render: "email_addresses.email_address_2"))
+    allow(edition).to receive(:clone_with_block).with("telephones.telephone_1").and_return(double(:edition, render: "telephones.telephone_1"))
   end
 
   it "renders each part of the edition within their own constituent parts" do
     render_inline component
 
     wrapper = page.find(".app-c-content-block-manager-reorder-component")
-    wrapper.assert_selector ".govspeak:nth-child(1)", text: "WITHOUT BLOCKS"
+    expect(page).to have_css ".govspeak:nth-child(1)", text: "WITHOUT BLOCKS"
 
     items = wrapper.all(".app-c-content-block-manager-reorder-component__item")
 
-    assert_equal 3, items.count
+    expect(items.count).to eq(3)
 
-    items[0].assert_selector ".govspeak", text: "email_addresses.email_address_1"
-    items[1].assert_selector ".govspeak", text: "email_addresses.email_address_2"
-    items[2].assert_selector ".govspeak", text: "telephones.telephone_1"
+    expect(page).to have_css ".govspeak", text: "email_addresses.email_address_1"
+    expect(page).to have_css ".govspeak", text: "email_addresses.email_address_2"
+    expect(page).to have_css ".govspeak", text: "telephones.telephone_1"
   end
 
   it "renders up and down buttons with the correct paths" do
@@ -46,38 +43,38 @@ class Edition::ReorderComponentTest < ViewComponent::TestCase
     wrapper = page.find(".app-c-content-block-manager-reorder-component")
     items = wrapper.all(".app-c-content-block-manager-reorder-component__item")
 
-    assert_equal 3, items.count
+    expect(items.count).to eq(3)
 
-    items[0].assert_no_selector "a", text: "Up"
-    assert_button_exists(wrapper: items[0], label: "Down", order: %w[
+    expect(items[0]).not_to have_css "a", text: "Up"
+    expect_wrapper_to_have_button(wrapper: items[0], label: "Down", order: %w[
       email_addresses.email_address_2
       email_addresses.email_address_1
       telephones.telephone_1
-    ])
-
-    assert_button_exists(wrapper: items[1], label: "Up", order: %w[
-      email_addresses.email_address_2
-      email_addresses.email_address_1
-      telephones.telephone_1
-    ])
-    assert_button_exists(wrapper: items[1], label: "Down", order: %w[
-      email_addresses.email_address_1
-      telephones.telephone_1
-      email_addresses.email_address_2
     ])
 
-    assert_button_exists(wrapper: items[2], label: "Up", order: %w[
+    expect_wrapper_to_have_button(wrapper: items[1], label: "Up", order: %w[
+      email_addresses.email_address_2
+      email_addresses.email_address_1
+      telephones.telephone_1
+    ])
+    expect_wrapper_to_have_button(wrapper: items[1], label: "Down", order: %w[
       email_addresses.email_address_1
       telephones.telephone_1
       email_addresses.email_address_2
     ])
-    items[2].assert_no_selector "a", text: "Down"
+
+    expect_wrapper_to_have_button(wrapper: items[2], label: "Up", order: %w[
+      email_addresses.email_address_1
+      telephones.telephone_1
+      email_addresses.email_address_2
+    ])
+    expect(items[2]).not_to have_css "a", text: "Down"
   end
 
   it "renders the cancel button with the redirect path" do
     render_inline component
 
-    assert_selector "a[href='#{redirect_path}?preview=true']", text: "Cancel"
+    expect(page).to have_css "a[href='#{redirect_path}?preview=true']", text: "Cancel"
   end
 
   describe "when the edition contains blocks that are missing from the order" do
@@ -90,9 +87,9 @@ class Edition::ReorderComponentTest < ViewComponent::TestCase
     end
 
     before do
-      edition.stubs(:clone_with_block).with("email_addresses.email_address_3").returns(stub(:edition, render: "email_addresses.email_address_3"))
-      edition.stubs(:clone_with_block).with("email_addresses.email_address_4").returns(stub(:edition, render: "email_addresses.email_address_4"))
-      edition.stubs(:clone_with_block).with("telephones.telephone_2").returns(stub(:edition, render: "telephones.telephone_2"))
+      allow(edition).to receive(:clone_with_block).with("email_addresses.email_address_3").and_return(double(:edition, render: "email_addresses.email_address_3"))
+      allow(edition).to receive(:clone_with_block).with("email_addresses.email_address_4").and_return(double(:edition, render: "email_addresses.email_address_4"))
+      allow(edition).to receive(:clone_with_block).with("telephones.telephone_2").and_return(double(:edition, render: "telephones.telephone_2"))
     end
 
     it "renders the missing blocks" do
@@ -101,14 +98,14 @@ class Edition::ReorderComponentTest < ViewComponent::TestCase
       wrapper = page.find(".app-c-content-block-manager-reorder-component")
       items = wrapper.all(".app-c-content-block-manager-reorder-component__item")
 
-      assert_equal 6, items.count
+      expect(items.count).to eq(6)
 
-      items[0].assert_selector ".govspeak", text: "email_addresses.email_address_1"
-      items[1].assert_selector ".govspeak", text: "email_addresses.email_address_2"
-      items[2].assert_selector ".govspeak", text: "telephones.telephone_1"
-      items[3].assert_selector ".govspeak", text: "email_addresses.email_address_3"
-      items[4].assert_selector ".govspeak", text: "email_addresses.email_address_4"
-      items[5].assert_selector ".govspeak", text: "telephones.telephone_2"
+      expect(page).to have_css ".govspeak", text: "email_addresses.email_address_1"
+      expect(page).to have_css ".govspeak", text: "email_addresses.email_address_2"
+      expect(page).to have_css ".govspeak", text: "telephones.telephone_1"
+      expect(page).to have_css ".govspeak", text: "email_addresses.email_address_3"
+      expect(page).to have_css ".govspeak", text: "email_addresses.email_address_4"
+      expect(page).to have_css ".govspeak", text: "telephones.telephone_2"
     end
 
     it "renders up and down buttons with the correct paths" do
@@ -117,36 +114,27 @@ class Edition::ReorderComponentTest < ViewComponent::TestCase
       wrapper = page.find(".app-c-content-block-manager-reorder-component")
       items = wrapper.all(".app-c-content-block-manager-reorder-component__item")
 
-      assert_equal 6, items.count
+      expect(items.count).to eq(6)
 
-      items[0].assert_no_selector "a", text: "Up"
-      assert_button_exists(wrapper: items[0], label: "Down", order: %w[
+      expect(items[0]).not_to have_css "a", text: "Up"
+      expect_wrapper_to_have_button(wrapper: items[0], label: "Down", order: %w[
         email_addresses.email_address_2
         email_addresses.email_address_1
         telephones.telephone_1
-        email_addresses.email_address_3
-        email_addresses.email_address_4
-        telephones.telephone_2
-      ])
-
-      assert_button_exists(wrapper: items[1], label: "Up", order: %w[
-        email_addresses.email_address_2
-        email_addresses.email_address_1
-        telephones.telephone_1
-        email_addresses.email_address_3
-        email_addresses.email_address_4
-        telephones.telephone_2
-      ])
-      assert_button_exists(wrapper: items[1], label: "Down", order: %w[
-        email_addresses.email_address_1
-        telephones.telephone_1
-        email_addresses.email_address_2
         email_addresses.email_address_3
         email_addresses.email_address_4
         telephones.telephone_2
       ])
 
-      assert_button_exists(wrapper: items[2], label: "Up", order: %w[
+      expect_wrapper_to_have_button(wrapper: items[1], label: "Up", order: %w[
+        email_addresses.email_address_2
+        email_addresses.email_address_1
+        telephones.telephone_1
+        email_addresses.email_address_3
+        email_addresses.email_address_4
+        telephones.telephone_2
+      ])
+      expect_wrapper_to_have_button(wrapper: items[1], label: "Down", order: %w[
         email_addresses.email_address_1
         telephones.telephone_1
         email_addresses.email_address_2
@@ -154,7 +142,16 @@ class Edition::ReorderComponentTest < ViewComponent::TestCase
         email_addresses.email_address_4
         telephones.telephone_2
       ])
-      assert_button_exists(wrapper: items[2], label: "Down", order: %w[
+
+      expect_wrapper_to_have_button(wrapper: items[2], label: "Up", order: %w[
+        email_addresses.email_address_1
+        telephones.telephone_1
+        email_addresses.email_address_2
+        email_addresses.email_address_3
+        email_addresses.email_address_4
+        telephones.telephone_2
+      ])
+      expect_wrapper_to_have_button(wrapper: items[2], label: "Down", order: %w[
         email_addresses.email_address_1
         email_addresses.email_address_2
         email_addresses.email_address_3
@@ -163,7 +160,7 @@ class Edition::ReorderComponentTest < ViewComponent::TestCase
         telephones.telephone_2
       ])
 
-      assert_button_exists(wrapper: items[3], label: "Up", order: %w[
+      expect_wrapper_to_have_button(wrapper: items[3], label: "Up", order: %w[
         email_addresses.email_address_1
         email_addresses.email_address_2
         email_addresses.email_address_3
@@ -171,7 +168,7 @@ class Edition::ReorderComponentTest < ViewComponent::TestCase
         email_addresses.email_address_4
         telephones.telephone_2
       ])
-      assert_button_exists(wrapper: items[3], label: "Down", order: %w[
+      expect_wrapper_to_have_button(wrapper: items[3], label: "Down", order: %w[
         email_addresses.email_address_1
         email_addresses.email_address_2
         telephones.telephone_1
@@ -180,7 +177,7 @@ class Edition::ReorderComponentTest < ViewComponent::TestCase
         telephones.telephone_2
       ])
 
-      assert_button_exists(wrapper: items[4], label: "Up", order: %w[
+      expect_wrapper_to_have_button(wrapper: items[4], label: "Up", order: %w[
         email_addresses.email_address_1
         email_addresses.email_address_2
         telephones.telephone_1
@@ -188,7 +185,7 @@ class Edition::ReorderComponentTest < ViewComponent::TestCase
         email_addresses.email_address_3
         telephones.telephone_2
       ])
-      assert_button_exists(wrapper: items[4], label: "Down", order: %w[
+      expect_wrapper_to_have_button(wrapper: items[4], label: "Down", order: %w[
         email_addresses.email_address_1
         email_addresses.email_address_2
         telephones.telephone_1
@@ -197,7 +194,7 @@ class Edition::ReorderComponentTest < ViewComponent::TestCase
         email_addresses.email_address_4
       ])
 
-      assert_button_exists(wrapper: items[5], label: "Up", order: %w[
+      expect_wrapper_to_have_button(wrapper: items[5], label: "Up", order: %w[
         email_addresses.email_address_1
         email_addresses.email_address_2
         telephones.telephone_1
@@ -205,21 +202,21 @@ class Edition::ReorderComponentTest < ViewComponent::TestCase
         telephones.telephone_2
         email_addresses.email_address_4
       ])
-      items[5].assert_no_selector "a", text: "Down"
+      expect(items[5]).not_to have_css "a", text: "Down"
     end
   end
 
   it "renders the ga4 attributes" do
     render_inline component
 
-    assert_selector "form[data-module='ga4-form-tracker']"
+    expect(page).to have_css "form[data-module='ga4-form-tracker']"
 
     form_attributes = ga4_data_attributes(edition:, section: "reorder")[:data][:ga4_form]
-    assert_selector "form[data-ga4-form='#{form_attributes.to_json}']"
+    expect(page).to have_css "form[data-ga4-form='#{form_attributes.to_json}']"
   end
 
-  def assert_button_exists(wrapper:, label:, order:)
+  def expect_wrapper_to_have_button(wrapper:, label:, order:)
     href = order_edit_edition_path(edition, order:, redirect_path:)
-    wrapper.assert_selector "a[href='#{href}']", text: label
+    expect(wrapper).to have_css "a[href='#{href}']", text: label
   end
 end
