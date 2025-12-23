@@ -19,6 +19,8 @@ FactoryBot.define do
 
     after(:build) do |document, evaluator|
       allow(document).to receive(:schema).and_return(evaluator.schema)
+    rescue NoMethodError
+      # This won't work in tests outside of an RSpec environment (e.g. cucumber) so just rescuing with no body
     end
 
     before(:create) do |document, _evaluator|
