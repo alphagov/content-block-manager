@@ -1,8 +1,4 @@
-require "test_helper"
-
-class Edition::Workflow::GroupComponentTest < ViewComponent::TestCase
-  extend Minitest::Spec::DSL
-
+RSpec.describe Edition::Workflow::GroupComponent, type: :component do
   let(:details) do
     {
       "embedded-type-1" => {
@@ -19,9 +15,9 @@ class Edition::Workflow::GroupComponentTest < ViewComponent::TestCase
   end
   let(:edition) { build(:edition, :pension, details:) }
 
-  let(:subschema_1) { stub("subschema_1", id: "embedded-type-1", block_type: "embedded-type-1", name: "first embedded types", group_order: 1) }
-  let(:subschema_2) { stub("subschema_2", id: "embedded-type-1", block_type: "embedded-type-2", name: "second embedded types", group_order: 0) }
-  let(:subschema_3) { stub("subschema_3", id: "embedded-type-3", block_type: "embedded-type-3", name: "third embedded types", group_order: 2) }
+  let(:subschema_1) { double("subschema_1", id: "embedded-type-1", block_type: "embedded-type-1", name: "first embedded types", group_order: 1) }
+  let(:subschema_2) { double("subschema_2", id: "embedded-type-1", block_type: "embedded-type-2", name: "second embedded types", group_order: 0) }
+  let(:subschema_3) { double("subschema_3", id: "embedded-type-3", block_type: "embedded-type-3", name: "third embedded types", group_order: 2) }
 
   let(:subschemas) do
     [
@@ -32,40 +28,40 @@ class Edition::Workflow::GroupComponentTest < ViewComponent::TestCase
   end
 
   let(:component) do
-    Edition::Workflow::GroupComponent.new(
+    described_class.new(
       edition:,
       subschemas:,
     )
   end
 
-  let(:request) { stub(:request, fullpath: "/foo/bar") }
+  let(:request) { double(:request, fullpath: "/foo/bar") }
 
   before do
-    component.stubs(:request).returns(request)
+    allow(component).to receive(:request).and_return(request)
   end
 
   it "should render a tab for each subschema that has content" do
-    summary_card_stub_1 = stub("SummaryCard")
-    summary_card_stub_2 = stub("SummaryCard")
+    summary_card_stub_1 = double("SummaryCard")
+    summary_card_stub_2 = double("SummaryCard")
 
-    Shared::EmbeddedObjects::SummaryCardComponent.expects(:with_collection).with(
+    expect(Shared::EmbeddedObjects::SummaryCardComponent).to receive(:with_collection).with(
       %w[embedded-type-1-item-1 embedded-type-1-item-2],
       edition: edition,
       object_type: subschema_1.block_type,
       redirect_url: request.fullpath,
-    ).returns(summary_card_stub_1)
+    ).and_return(summary_card_stub_1)
 
-    Shared::EmbeddedObjects::SummaryCardComponent.expects(:with_collection).with(
+    expect(Shared::EmbeddedObjects::SummaryCardComponent).to receive(:with_collection).with(
       %w[embedded-type-2-item-1 embedded-type-2-item-2 embedded-type-2-item-3],
       edition: edition,
       object_type: subschema_2.block_type,
       redirect_url: request.fullpath,
-    ).returns(summary_card_stub_2)
+    ).and_return(summary_card_stub_2)
 
-    component.expects(:render).with(summary_card_stub_1).returns("summary_card_1_body")
-    component.expects(:render).with(summary_card_stub_2).returns("summary_card_2_body")
+    expect(component).to receive(:render).with(summary_card_stub_1).and_return("summary_card_1_body")
+    expect(component).to receive(:render).with(summary_card_stub_2).and_return("summary_card_2_body")
 
-    component.expects(:render).with("govuk_publishing_components/components/tabs", {
+    expect(component).to receive(:render).with("govuk_publishing_components/components/tabs", {
       tabs: [
         {
           id: subschema_2.id,
@@ -99,7 +95,7 @@ class Edition::Workflow::GroupComponentTest < ViewComponent::TestCase
     end
 
     let(:address_subschema) do
-      stub("addresses", {
+      double("addresses", {
         id: "addresses",
         block_type: "addresses",
         name: "Addresses",
@@ -109,7 +105,7 @@ class Edition::Workflow::GroupComponentTest < ViewComponent::TestCase
     end
 
     let(:phone_subschema) do
-      stub("telephones", {
+      double("telephones", {
         id: "telephones",
         block_type: "telephones",
         name: "Telephones",
@@ -119,14 +115,14 @@ class Edition::Workflow::GroupComponentTest < ViewComponent::TestCase
     end
 
     let(:subschemas) { [address_subschema, phone_subschema] }
-    let(:schema) { stub(:schema) }
-    let(:document) { stub(:document, schema: schema) }
+    let(:schema) { double(:schema) }
+    let(:document) { double(:document, schema: schema) }
     let(:edition) { build(:edition, :pension, details: details, id: 1) }
 
     before do
-      schema.stubs(:subschema).with("addresses").returns(address_subschema)
-      schema.stubs(:subschema).with("telephones").returns(phone_subschema)
-      edition.stubs(:document).returns(document)
+      allow(schema).to receive(:subschema).with("addresses").and_return(address_subschema)
+      allow(schema).to receive(:subschema).with("telephones").and_return(phone_subschema)
+      allow(edition).to receive(:document).and_return(document)
     end
 
     describe "the headings" do
@@ -135,12 +131,11 @@ class Edition::Workflow::GroupComponentTest < ViewComponent::TestCase
 
         h2_tags_text = page.find_all("h2.govuk-summary-card__title").map { |e| e.text.strip }
 
-        assert_equal  ["Telephone details 1",
-                       "Telephone details 2",
-                       "Telephone details 3",
-                       "Address details 1",
-                       "Address details 2"],
-                      h2_tags_text
+        expect(h2_tags_text).to eq(["Telephone details 1",
+                                    "Telephone details 2",
+                                    "Telephone details 3",
+                                    "Address details 1",
+                                    "Address details 2"])
       end
 
       it "should be sequentially numbered within each block type" do
@@ -152,8 +147,8 @@ class Edition::Workflow::GroupComponentTest < ViewComponent::TestCase
         address_heading_numbers = page.find_all(".govuk-tabs__panel#addresses h2.govuk-summary-card__title")
                                     .map { |e| e.text.strip[-1].to_i }
 
-        assert_equal([1, 2, 3], telephone_heading_numbers)
-        assert_equal([1, 2], address_heading_numbers)
+        expect(telephone_heading_numbers).to eq([1, 2, 3])
+        expect(address_heading_numbers).to eq([1, 2])
       end
     end
   end
