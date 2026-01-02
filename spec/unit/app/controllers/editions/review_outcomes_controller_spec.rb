@@ -1,6 +1,6 @@
 RSpec.describe Editions::ReviewOutcomesController, type: :controller do
-  let(:document) { Document.new(id: 456) }
-  let(:edition) { Edition.new(id: 123, document: document) }
+  let(:document) { create(:document, :pension, id: 456) }
+  let(:edition) { create(:edition, :pension, id: 123, document: document) }
 
   before do
     allow(Edition).to receive(:find).and_return(edition)
@@ -23,7 +23,7 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
 
   describe "POST to :create" do
     let(:time_now) { Time.current }
-    let(:current_user) { instance_double(User, id: 987) }
+    let(:current_user) { instance_double(User, id: 1) }
 
     before do
       allow(Time).to receive(:current).and_return(time_now)
@@ -33,6 +33,7 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
 
     context "when the form returned is valid" do
       before do
+        allow(edition).to receive(:create_review_outcome!)
         allow(edition).to receive(:update).and_return(true)
       end
 
@@ -46,10 +47,9 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
           end
 
           it "saves the Review outcome details" do
-            expect(edition).to have_received(:update).with(
-              "review_skipped" => true,
-              "review_outcome_recorded_at" => time_now,
-              "review_outcome_recorded_by" => 987,
+            expect(edition).to have_received(:create_review_outcome!).with(
+              "skipped" => true,
+              "creator" => current_user,
             )
           end
         end
@@ -63,10 +63,9 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
           end
 
           it "saves the Review outcome details" do
-            expect(edition).to have_received(:update).with(
-              "review_skipped" => false,
-              "review_outcome_recorded_at" => time_now,
-              "review_outcome_recorded_by" => 987,
+            expect(edition).to have_received(:create_review_outcome!).with(
+              "skipped" => false,
+              "creator" => current_user,
             )
           end
 

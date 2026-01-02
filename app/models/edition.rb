@@ -12,6 +12,9 @@ class Edition < ApplicationRecord
   include HasLeadOrganisation
   include Workflow
 
+  has_one :review_outcome, dependent: :destroy
+  has_one :factcheck_outcome, dependent: :destroy
+
   scope :current_versions, lambda {
     published
   }
