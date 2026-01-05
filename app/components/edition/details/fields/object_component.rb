@@ -15,15 +15,9 @@ class Edition::Details::Fields::ObjectComponent < Edition::Details::Fields::Base
     {
       edition:,
       field:,
-      value: value_for_field(field),
+      value: helpers.value_for_field(details: value, field:, populate_with_defaults:),
       schema:,
+      populate_with_defaults:,
     }
-  end
-
-  def value_for_field(field)
-    field_value = value&.fetch(field.name, nil)
-    return field.default_value if edition.document.is_new_block? && field_value.nil?
-
-    field_value
   end
 end
