@@ -8,6 +8,7 @@ end
 
 Given("the draft workflow has been completed") do
   draft.update_column(:workflow_completed_at, 1.minute.ago)
+  draft.update_column(:state, "draft_complete")
 end
 
 When("I choose to add a contact link") do

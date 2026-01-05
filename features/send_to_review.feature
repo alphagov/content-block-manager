@@ -29,7 +29,7 @@ Feature: Editor sends edition to Review
     Given the draft workflow has been completed
     When I visit the Content Block Manager home page
     And I click to view the document
-    Then I see that the edition is in draft state
+    Then I see that the edition is in draft_complete state
     And I see a principal call to action of 'Send to 2i'
     And I see a secondary call to action edit the existing draft
 
@@ -43,7 +43,7 @@ Feature: Editor sends edition to Review
     Given the draft workflow has been completed
     And I visit the Content Block Manager home page
     And I click to view the document
-    Then I see that the edition is in draft state
+    Then I see that the edition is in draft_complete state
     And I see a principal call to action of 'Send to 2i'
 
     Given the document has been put into the awaiting_review state by another process
