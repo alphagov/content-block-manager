@@ -54,7 +54,7 @@ Rails.application.routes.draw do
       # record Factcheck outcomes
       get "factcheck_outcomes/new", to: "editions/factcheck_outcomes#new", as: :new_factcheck_outcome
       post "factcheck_outcomes", to: "editions/factcheck_outcomes#create", as: :create_factcheck_outcome
-      get "factcheck_outcomes/identify_reviewer", to: "editions/factcheck_outcomes#identify_reviewer", as: :identify_reviewer_factcheck_outcome
+      get "factcheck_outcomes/identify_performer", to: "editions/factcheck_outcomes#identify_performer", as: :identify_performer_factcheck_outcome
       put "factcheck_outcomes", to: "editions/factcheck_outcomes#update", as: :update_factcheck_outcome
 
       # State transitions

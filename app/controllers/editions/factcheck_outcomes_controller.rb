@@ -1,5 +1,5 @@
 class Editions::FactcheckOutcomesController < BaseController
-  before_action :set_edition_and_title, only: %i[new identify_reviewer]
+  before_action :set_edition_and_title, only: %i[new identify_performer]
 
   def new
     render :new
@@ -13,20 +13,20 @@ class Editions::FactcheckOutcomesController < BaseController
 
     return finalise_edition if factcheck_skipped?
 
-    redirect_to identify_reviewer_factcheck_outcome_edition_path(@edition)
+    redirect_to identify_performer_factcheck_outcome_edition_path(@edition)
   end
 
-  def identify_reviewer
-    render :identify_reviewer
+  def identify_performer
+    render :identify_performer
   end
 
   def update
     @edition = Edition.find(params[:id])
 
     begin
-      update_factcheck_reviewer
+      update_factcheck_performer
     rescue ActionController::ParameterMissing => e
-      return handle_missing_factcheck_reviewer(e)
+      return handle_missing_factcheck_performer(e)
     end
 
     finalise_edition
@@ -46,18 +46,18 @@ private
     handle_other_transition_error(e)
   end
 
-  def update_factcheck_reviewer
-    @edition.update(
-      "factcheck_outcome_reviewer" => factcheck_reviewer,
+  def update_factcheck_performer
+    @edition.factcheck_outcome.update!(
+      "performer" => factcheck_performer,
     )
   end
 
-  def factcheck_reviewer
-    if outcome_params["factcheck_reviewer"].blank?
+  def factcheck_performer
+    if outcome_params["factcheck_performer"].blank?
       raise ActionController::ParameterMissing, "Provide the email or name of the subject matter expert who performed the factcheck"
     end
 
-    outcome_params["factcheck_reviewer"]
+    outcome_params["factcheck_performer"]
   end
 
   def form_validation_error
@@ -110,8 +110,8 @@ private
     redirect_to document_path(@edition.document)
   end
 
-  def handle_missing_factcheck_reviewer(error)
+  def handle_missing_factcheck_performer(error)
     flash.alert = error.message.to_s
-    redirect_to identify_reviewer_factcheck_outcome_edition_path(@edition)
+    redirect_to identify_performer_factcheck_outcome_edition_path(@edition)
   end
 end

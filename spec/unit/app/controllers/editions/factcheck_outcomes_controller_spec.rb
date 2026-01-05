@@ -104,8 +104,8 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
           }
         end
 
-        it "should redirect the user to the identify_reviewer step of the factcheck process" do
-          expect(response).to redirect_to("/editions/123/factcheck_outcomes/identify_reviewer")
+        it "should redirect the user to the identify_performer step of the factcheck process" do
+          expect(response).to redirect_to("/editions/123/factcheck_outcomes/identify_performer")
         end
       end
     end
@@ -128,9 +128,9 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
     end
   end
 
-  describe "GET to :identify_reviewer" do
+  describe "GET to :identify_performer" do
     before do
-      get :identify_reviewer, params: { id: 123 }
+      get :identify_performer, params: { id: 123 }
     end
 
     it "sets the @edition variable to the given edition" do
@@ -154,8 +154,8 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
     end
 
-    it "renders the editions/factcheck_outcomes/identify_reviewer template" do
-      expect(response).to have_rendered("editions/factcheck_outcomes/identify_reviewer")
+    it "renders the editions/factcheck_outcomes/identify_performer template" do
+      expect(response).to have_rendered("editions/factcheck_outcomes/identify_performer")
     end
   end
 
@@ -175,12 +175,12 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       before do
         put :update, params: {
           id: 123,
-          "factcheck_outcome" => { "factcheck_reviewer" => "Alice" },
+          "factcheck_outcome" => { "factcheck_performer" => "Alice" },
         }
       end
 
       it "should update the edition with the Subject Matter Expert" do
-        expect(edition).to have_received(:update).with({ "factcheck_outcome_reviewer" => "Alice" })
+        expect(edition.factcheck_outcome).to have_received(:update!).with({ "performer" => "Alice" })
       end
     end
 
@@ -193,7 +193,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
 
       it "redirects to the documents_path to display the most recent edition" do
-        expect(response).to redirect_to("/editions/123/factcheck_outcomes/identify_reviewer")
+        expect(response).to redirect_to("/editions/123/factcheck_outcomes/identify_performer")
       end
 
       it "shows an error message" do
@@ -207,7 +207,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       before do
         put :update, params: {
           id: 123,
-          "factcheck_outcome" => { "factcheck_reviewer" => "Alice" },
+          "factcheck_outcome" => { "factcheck_performer" => "Alice" },
         }
       end
       it "transitions the edition using the 'schedule!' transition" do
@@ -230,7 +230,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       before do
         put :update, params: {
           id: 123,
-          "factcheck_outcome" => { "factcheck_reviewer" => "Alice" },
+          "factcheck_outcome" => { "factcheck_performer" => "Alice" },
         }
       end
 
@@ -263,7 +263,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
 
           put :update, params: {
             id: 123,
-            "factcheck_outcome" => { "factcheck_reviewer" => "Alice" },
+            "factcheck_outcome" => { "factcheck_performer" => "Alice" },
           }
         end
 
