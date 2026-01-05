@@ -17,6 +17,7 @@ class Edition
           field:,
           value: helpers.value_for_field(details: edition.details, field:, populate_with_defaults:),
           schema:,
+          populate_with_defaults:,
         }
       end
 

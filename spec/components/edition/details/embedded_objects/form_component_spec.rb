@@ -67,6 +67,7 @@ RSpec.describe Edition::Details::EmbeddedObjects::FormComponent, type: :componen
       field: foo_field,
       subschema:,
       schema:,
+      populate_with_defaults:,
     )
 
     expect(Edition::Details::Fields::StringComponent).to have_received(:new).with(
@@ -74,18 +75,20 @@ RSpec.describe Edition::Details::EmbeddedObjects::FormComponent, type: :componen
       field: bar_field,
       subschema:,
       schema:,
+      populate_with_defaults:,
     )
 
     expect(Edition::Details::Fields::EnumComponent).to have_received(:new).with(
       edition:,
       field: enum_field,
       subschema:,
-      value: "some value",
       schema:,
+      populate_with_defaults:,
     )
 
     expect(Edition::Details::Fields::TextareaComponent).to have_received(:new).with(
       edition:,
+      populate_with_defaults:,
       field: textarea_field,
       subschema:,
       schema:,
@@ -93,6 +96,7 @@ RSpec.describe Edition::Details::EmbeddedObjects::FormComponent, type: :componen
 
     expect(Edition::Details::Fields::BooleanComponent).to have_received(:new).with(
       edition:,
+      populate_with_defaults:,
       field: boolean_field,
       subschema:,
       schema:,
@@ -103,18 +107,6 @@ RSpec.describe Edition::Details::EmbeddedObjects::FormComponent, type: :componen
     expect(component).to have_received(:render).with(enum_stub)
     expect(component).to have_received(:render).with(textarea_stub)
     expect(component).to have_received(:render).with(boolean_stub)
-  end
-
-  describe "when params are present" do
-    let(:params) { { "foo" => "something" } }
-
-    it "sends the value of a field if present in the params argument" do
-      render_inline(component)
-
-      expect(Edition::Details::Fields::StringComponent).to have_received(:new).with(
-        a_hash_including(field: foo_field, value: "something"),
-      )
-    end
   end
 
   describe "when `object_title` is provided" do
@@ -142,82 +134,6 @@ RSpec.describe Edition::Details::EmbeddedObjects::FormComponent, type: :componen
       expect(Edition::Details::Fields::BooleanComponent).to have_received(:new).with(
         a_hash_including(field: boolean_field, object_title:),
       )
-    end
-  end
-
-  describe "value" do
-    before do
-      allow(foo_field).to receive(:default_value).and_return(default_value)
-    end
-
-    describe "when a default value is available for a field" do
-      let(:default_value) { "default value" }
-
-      describe "and no value is present in the params" do
-        let(:params) { {} }
-
-        describe "and populate_with_defaults is true" do
-          let(:populate_with_defaults) { true }
-
-          it "sends the default value" do
-            render_inline(component)
-
-            expect(Edition::Details::Fields::StringComponent).to have_received(:new).with(
-              a_hash_including(field: foo_field, value: default_value),
-            )
-          end
-        end
-
-        describe "and populate_with_defaults is false" do
-          let(:populate_with_defaults) { false }
-
-          it "does not send the default value" do
-            render_inline(component)
-
-            expect(Edition::Details::Fields::StringComponent).to have_received(:new).with(
-              a_hash_including(field: foo_field),
-            ) do |args|
-              expect(args).not_to have_key(:value)
-            end
-          end
-        end
-      end
-    end
-
-    describe "when a default value is not available for a field" do
-      let(:default_value) { nil }
-
-      describe "and no value is present in the params" do
-        let(:params) { {} }
-
-        describe "and populate_with_defaults is true" do
-          let(:populate_with_defaults) { true }
-
-          it "does not send a value" do
-            render_inline(component)
-
-            expect(Edition::Details::Fields::StringComponent).to have_received(:new).with(
-              a_hash_including(field: foo_field),
-            ) do |args|
-              expect(args).not_to have_key(:value)
-            end
-          end
-        end
-
-        describe "and populate_with_defaults is false" do
-          let(:populate_with_defaults) { false }
-
-          it "does not send a value" do
-            render_inline(component)
-
-            expect(Edition::Details::Fields::StringComponent).to have_received(:new).with(
-              a_hash_including(field: foo_field),
-            ) do |args|
-              expect(args).not_to have_key(:value)
-            end
-          end
-        end
-      end
     end
   end
 end
