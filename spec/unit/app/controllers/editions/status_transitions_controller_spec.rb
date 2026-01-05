@@ -59,6 +59,21 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
       end
     end
 
+    context "when the transition is not supported by this controller" do
+      %i[complete_draft schedule].each do |transition|
+        context "when attempting the '#{transition}' transition" do
+          it "raises an UnsupportedTransitionError" do
+            expect {
+              post :create, params: { id: 123, transition: transition }
+            }.to raise_error(
+              Editions::StatusTransitionsController::UnsupportedTransitionError,
+              "Transition event '#{transition}' is not supported by this controller",
+            )
+          end
+        end
+      end
+    end
+
     context "when the transition is invalid" do
       let(:edition_invalid_for_transition) do
         document = create(:document, id: 456)
