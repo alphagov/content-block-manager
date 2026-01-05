@@ -1,5 +1,3 @@
-:verbose: true
-:log_level: :info
 :concurrency: 8
 :queues:
   - content_block_publishing
