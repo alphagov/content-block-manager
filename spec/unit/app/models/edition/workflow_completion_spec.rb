@@ -12,6 +12,7 @@ RSpec.describe Edition::WorkflowCompletion do
     create(:edition,
            id: 456,
            document: document,
+           workflow_completed_at: 2.weeks.ago,
            state: "published",
            lead_organisation_id: organisation.id)
   end

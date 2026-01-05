@@ -17,7 +17,7 @@ class Edition::WorkflowCompletion
 
   def call
     validate_action
-    record_workflow_completion unless @edition.completed?
+    complete_workflow unless @edition.completed?
 
     send(sanitised_save_action)
   end
@@ -34,7 +34,8 @@ private
     VALID_SAVE_ACTIONS.fetch(@save_action)
   end
 
-  def record_workflow_completion
+  def complete_workflow
+    @edition.complete_draft!
     @edition.update_column(:workflow_completed_at, Time.current)
   end
 
@@ -53,14 +54,11 @@ private
   end
 
   def save_as_draft
-    @edition.complete_draft!
-
     { path: document_path(@edition.document),
       flash: { notice: I18n.t("edition.confirmation_page.drafted.banner") } }
   end
 
   def send_to_review
-    @edition.complete_draft!
     @edition.ready_for_review!
 
     { path: document_path(@edition.document),
