@@ -126,6 +126,14 @@ RSpec.describe Edition::WorkflowCompletion do
     end
 
     describe "when the save_action is 'save_as_draft'" do
+      it "attempts to transition the edition with Edition#complete_draft!" do
+        allow(edition).to receive(:complete_draft!).and_return(true)
+
+        described_class.new(edition, "save_as_draft").call
+
+        expect(edition).to have_received(:complete_draft!)
+      end
+
       it "should return the document's view page path to redirect to" do
         described_class.new(edition, "save_as_draft").call => { path: }
         expect(path).to eq("/567")

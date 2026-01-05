@@ -53,7 +53,8 @@ private
   end
 
   def save_as_draft
-    # No action needed here as we don't publish drafts to the Publishing API. Just redirect.
+    @edition.complete_draft!
+
     { path: document_path(@edition.document),
       flash: { notice: I18n.t("edition.confirmation_page.drafted.banner") } }
   end
