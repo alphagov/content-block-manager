@@ -8,7 +8,7 @@
     </li>
   <% end %>
 
-  <% if !finalised_state? %>
+  <% if !helpers.finalised_state?(edition) %>
     <li class="govuk-!-static-margin-bottom-3">
       <%= render "govuk_publishing_components/components/button", {
         text: completed? ? "Edit draft" : "Complete draft",
@@ -39,11 +39,15 @@
     </li>
   <% end %>
 
-  <% if finalised_state? %>
+  <% if helpers.finalised_state?(edition) %>
     <li>
       <%= render "govuk_publishing_components/components/button", {
-        text: has_more_recent_draft? ? "Edit latest edition" : "Edit #{document.block_type.humanize.downcase}",
-        href: has_more_recent_draft? ? workflow_path(edition, step: :review) : new_document_edition_path(document),
+        text: helpers.has_more_recent_draft?(document, edition) ?
+	  "Edit latest edition" :
+	  "Edit #{document.block_type.humanize.downcase}",
+        href: helpers.has_more_recent_draft?(document, edition) ?
+	  workflow_path(edition, step: :review) :
+	  new_document_edition_path(document),
         secondary_solid: true,
         inline_layout: false,
       } %>
@@ -56,7 +60,7 @@
     </li>
   <% end %>
 
-  <% if state == "published" && has_more_recent_draft? %>
+  <% if state == "published" && has_more_recent_draft?(document, edition) %>
     <li class="govuk-!-static-margin-top-3">
       <%= link_to("Return to latest edition", document_path(document), class: "govuk-link") %>
     </li>

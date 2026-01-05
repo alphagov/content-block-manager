@@ -36,6 +36,14 @@ module EditionHelper
     raise ArgumentError, "No status label found for #{edition.state}"
   end
 
+  def has_more_recent_draft?(document, edition)
+    document.most_recent_edition&.id != edition.id
+  end
+
+  def finalised_state?(edition)
+    !edition.in_progress?
+  end
+
 private
 
   def label_for_state(edition)

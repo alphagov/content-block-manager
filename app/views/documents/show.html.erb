@@ -33,7 +33,9 @@
         <li>
           <%= render "govuk_publishing_components/components/button", {
             text: "Edit #{@document.block_type.humanize.downcase}",
-            href: @edition.draft? ? workflow_path(id: @edition.id, step: :edit_draft) : new_document_edition_path(@document),
+            href: finalised_state?(@edition) && !has_more_recent_draft?(@document, @edition) ?
+	      workflow_path(id: @edition.id, step: :review) :
+	      new_document_edition_path(@document),
           } %>
         </li>
         <% if @edition.state != "published" && @document.has_published_edition? %>

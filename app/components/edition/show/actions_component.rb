@@ -8,12 +8,4 @@ class Edition::Show::ActionsComponent < ViewComponent::Base
   attr_reader :edition, :state, :document
 
   delegate :completed?, to: :edition
-
-  def finalised_state?
-    state.to_sym.in?(Edition.finalised_states)
-  end
-
-  def has_more_recent_draft?
-    document.most_recent_edition&.id != edition.id
-  end
 end
