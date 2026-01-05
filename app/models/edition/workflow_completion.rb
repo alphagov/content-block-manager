@@ -35,8 +35,8 @@ private
   end
 
   def complete_workflow
-    @edition.complete_draft!
     @edition.update_column(:workflow_completed_at, Time.current)
+    @edition.complete_draft!
   end
 
   def publish

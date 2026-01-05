@@ -50,10 +50,10 @@ module Edition::Workflow
         transitions from: %i[scheduled], to: :superseded
       end
       event :complete_draft do
-        transitions from: %i[draft], to: :draft_complete
+        transitions from: %i[draft], to: :draft_complete, guard: [:workflow_completed?]
       end
       event :ready_for_review do
-        transitions from: %i[draft draft_complete], to: :awaiting_review, guard: [:workflow_completed?]
+        transitions from: %i[draft draft_complete], to: :awaiting_review
       end
       event :ready_for_factcheck do
         transitions from: %i[awaiting_review], to: :awaiting_factcheck, guard: [:has_review_outcome_recorded?]
