@@ -161,6 +161,15 @@ RSpec.describe Edition::WorkflowCompletion do
   end
 
   describe "when the save_action is 'send_to_review'" do
+    it "attempts to transition the edition with Edition#complete_draft!" do
+      allow(edition).to receive(:complete_draft!).and_return(true)
+      allow(edition).to receive(:ready_for_review!).and_return(true)
+
+      described_class.new(edition, "send_to_review").call
+
+      expect(edition).to have_received(:complete_draft!)
+    end
+
     it "attempts to transition the edition with Edition#ready_for_review!" do
       allow(edition).to receive(:ready_for_review!).and_return(true)
 

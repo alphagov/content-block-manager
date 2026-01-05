@@ -60,6 +60,7 @@ private
   end
 
   def send_to_review
+    @edition.complete_draft!
     @edition.ready_for_review!
 
     { path: document_path(@edition.document),
