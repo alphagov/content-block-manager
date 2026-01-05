@@ -43,7 +43,7 @@ Then(/I see the transition to the ([^"]*) state in the timeline/) do |state|
 end
 
 Then("I see the details of the review outcome in the timeline") do
-  skipped_or_performed = edition.reload.review_skipped ? "skipped" : "performed"
+  skipped_or_performed = edition.reload.review_outcome.skipped ? "skipped" : "performed"
   within ".timeline__item:first" do
     expect(page).to have_content("2i review #{skipped_or_performed}")
   end
