@@ -1,0 +1,2 @@
+class ReviewOutcome < Outcome
+end
