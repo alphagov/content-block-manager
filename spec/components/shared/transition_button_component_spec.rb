@@ -38,6 +38,8 @@ RSpec.describe Shared::TransitionButtonComponent, type: :component do
 
   context "when the given transition is 'ready_for_review'" do
     let(:transition) { "ready_for_review" }
+    let(:edition) { build_stubbed :edition, :draft_complete, id: 123 }
+    let(:component) { described_class.new(edition: edition, transition: transition) }
 
     it "shows the 'Send to 2i' call to action" do
       render_inline component

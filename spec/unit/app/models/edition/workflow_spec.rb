@@ -104,8 +104,8 @@ RSpec.describe Edition::Workflow, type: :model do
     end
 
     describe "transitions into the awaiting_review state with #ready_for_review!" do
-      context "when in the 'draft' state" do
-        let(:edition) { create(:edition, :pension, state: :draft) }
+      context "when in the 'draft_complete' state" do
+        let(:edition) { create(:edition, :pension, :draft_complete) }
 
         it "allows the transition" do
           expect(edition.ready_for_review!).to be true
@@ -124,7 +124,7 @@ RSpec.describe Edition::Workflow, type: :model do
         end
       end
 
-      (Edition.available_states - %i[draft draft_complete scheduled]).each do |state|
+      (Edition.available_states - %i[draft_complete scheduled]).each do |state|
         context "when in the '#{state}' state" do
           let(:edition) { create(:edition, :pension, state: state) }
 

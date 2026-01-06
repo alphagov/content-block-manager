@@ -298,8 +298,9 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
 
     context "when the edition is NOT in an awaiting_factcheck state" do
       (Edition.available_states - %i[awaiting_factcheck]).each do |state|
+        let(:edition) { build(:edition, :contact, state, id: 123) }
+
         before do
-          edition.state = state
           component = described_class.new(edition: edition)
           render_inline component
         end
