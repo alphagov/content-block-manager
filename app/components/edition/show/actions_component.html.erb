@@ -43,7 +43,7 @@
     <li>
       <%= render "govuk_publishing_components/components/button", {
         text: has_more_recent_draft? ? "Edit latest edition" : "Edit #{document.block_type.humanize.downcase}",
-        href: has_more_recent_draft? ? workflow_path(edition, step: :review) : new_document_edition_path(document),
+        href: has_more_recent_draft? ? workflow_path(id: document.most_recent_edition.id, step: :review) : new_document_edition_path(document),
         secondary_solid: true,
         inline_layout: false,
       } %>

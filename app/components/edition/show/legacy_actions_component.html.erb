@@ -6,8 +6,8 @@
           "Edit latest edition" :
           "Edit #{@document.block_type.humanize.downcase}",
         href: has_more_recent_draft? ?
-        workflow_path(id: @edition.id, step: :review) :
-        new_document_edition_path(@document),
+          workflow_path(id: document.most_recent_edition.id, step: :review) :
+          new_document_edition_path(@document),
       } %>
     <% else %>
       <%= render "govuk_publishing_components/components/button", {
