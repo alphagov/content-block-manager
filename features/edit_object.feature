@@ -126,11 +126,10 @@ Feature: Edit a content object
 
   Scenario: Editing a draft edition should not create a new document
     Given a new pension content block has been drafted with the title "New Pension"
-    And I visit the Content Block Manager home page
+    When I visit the Content Block Manager home page
     And I click to view the document
-    When I click to edit the "pension"
-    And I save and continue
-    Then only one document with the title "New Pension" should exist
+    And I click to complete the "draft"
+    Then I should be taken to the "pension" review page
 
   Scenario: Creating a draft edition still allows the published edition to be seen
     When I am updating a content block

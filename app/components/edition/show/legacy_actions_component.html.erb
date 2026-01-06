@@ -1,0 +1,33 @@
+<ul class="actions govuk-list govuk-!-text-align-centre">
+  <li>
+    <% if finalised_state? %>
+      <%= render "govuk_publishing_components/components/button", {
+        text: has_more_recent_draft? ?
+          "Edit latest edition" :
+          "Edit #{@document.block_type.humanize.downcase}",
+        href: has_more_recent_draft? ?
+        workflow_path(id: @edition.id, step: :review) :
+        new_document_edition_path(@document),
+      } %>
+    <% else %>
+      <%= render "govuk_publishing_components/components/button", {
+        text: @edition.completed? ? "Edit draft" : "Complete draft",
+        href: workflow_path(id: @edition.id, step: :review),
+        secondary_solid: @edition.completed? ? true : false,
+        inline_layout: false,
+      } %>
+    <% end %>
+  </li>
+
+  <% if state != "published" && @document.has_published_edition? %>
+    <li class="govuk-!-static-margin-top-3">
+      <%= link_to("Go to published edition", published_edition_document_path(@document), class: "govuk-link") %>
+    </li>
+  <% end %>
+
+  <% if state == "published" && has_more_recent_draft? %>
+    <li class="govuk-!-static-margin-top-3">
+      <%= link_to("Return to latest edition", document_path(document), class: "govuk-link") %>
+    </li>
+  <% end %>
+</ul>
