@@ -1,4 +1,14 @@
-class Edition::Details::Fields::EnumComponent < Edition::Details::Fields::BaseComponent
+class Edition::Details::Fields::EnumComponent < ViewComponent::Base
+  def initialize(context)
+    @context = context
+  end
+
+private
+
+  attr_reader :context
+
+  delegate :field, :label, :name, :id, :value, :error_items, :hint_text, to: :context
+
   def options
     options = [
       {
@@ -18,8 +28,6 @@ class Edition::Details::Fields::EnumComponent < Edition::Details::Fields::BaseCo
 
     options
   end
-
-private
 
   def enum
     field.enum_values
