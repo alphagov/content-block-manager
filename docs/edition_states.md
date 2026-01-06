@@ -13,10 +13,13 @@ stateDiagram-v2
 
     InProgress:In Progress
     state InProgress {
-        draft --> awaiting_review: ready_for_review
-        note left of awaiting_review
+        draft --> draft_complete: complete_draft
+
+        draft_complete --> awaiting_review: ready_for_review
+        note left of draft_complete
             Requires draft workflow<br>to be completed
         end note
+
         awaiting_review --> awaiting_factcheck: ready_for_factcheck
         note left of awaiting_factcheck
             Requires outcome<br>of the Review process
