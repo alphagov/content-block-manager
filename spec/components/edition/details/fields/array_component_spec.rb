@@ -3,20 +3,27 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
 
   let(:edition) { build(:edition, :pension) }
   let(:default_value) { nil }
-  let(:field) { build("field", name: "items", array_items:, is_required?: true, default_value:, label: "Items") }
   let(:schema) { double(:schema, block_type: "schema") }
-  let(:array_items) { { "type" => "string" } }
+  let(:nested_fields) do
+    [
+      build("field", name: "label", enum_values: nil, default_value: nil, label: "Label"),
+      build("field", name: "telephone_number", enum_values: nil, default_value: nil, label: "Telephone number"),
+    ]
+  end
+  let(:field) { build("field", name: "items", is_required?: true, default_value:, label: "Items", nested_fields:) }
   let(:field_value) { nil }
   let(:object_title) { nil }
 
+  let(:context) do
+    Edition::Details::Fields::Context.new(edition:, field:, schema:, object_title:)
+  end
+
   let(:component) do
-    described_class.new(
-      edition:,
-      field:,
-      schema:,
-      value: field_value,
-      object_title:,
-    )
+    described_class.new(context)
+  end
+
+  before do
+    allow(context).to receive(:value).and_return(field_value)
   end
 
   describe "when there are no items present" do
@@ -28,18 +35,29 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
         expect(component).to have_css ".js-add-another__empty", count: 1
 
         expect(component).to have_css ".js-add-another__fieldset", text: /Item 1/ do |fieldset|
-          expect_form_fields(fieldset, 0)
+          expect_form_fields(fieldset:, index: 0, fields: nested_fields)
         end
 
         expect(component).to have_css ".js-add-another__empty", text: /Item 2/ do |fieldset|
-          expect_form_fields(fieldset, 1)
+          expect_form_fields(fieldset:, index: 1, fields: nested_fields)
         end
       end
     end
   end
 
   describe "when there are items present" do
-    let(:field_value) { %w[foo bar] }
+    let(:field_value) do
+      [
+        {
+          "label" => "Foo",
+          "telephone_number" => "01234567890",
+        },
+        {
+          "label" => "Bar",
+          "telephone_number" => "09876543210",
+        },
+      ]
+    end
 
     it "renders a fieldset for each item and a template" do
       render_inline component
@@ -49,15 +67,15 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
         expect(component).to have_css ".js-add-another__empty", count: 1
 
         expect(component).to have_css ".js-add-another__fieldset", text: /Item 1/ do |fieldset|
-          expect_form_fields(fieldset, 0, "foo", 2)
+          expect_form_fields(fieldset:, index: 0, fields: nested_fields, values: field_value[0])
         end
 
         expect(component).to have_css ".js-add-another__fieldset", text: /Item 2/ do |fieldset|
-          expect_form_fields(fieldset, 1, "bar", 2)
+          expect_form_fields(fieldset:, index: 1, fields: nested_fields, values: field_value[1])
         end
 
         expect(component).to have_css ".js-add-another__empty", text: /Item 3/ do |fieldset|
-          expect_form_fields(fieldset, 2)
+          expect_form_fields(fieldset:, index: 2, fields: nested_fields)
         end
       end
     end
@@ -76,8 +94,19 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
   end
 
   describe "when an object title is provided" do
-    let(:field_value) { %w[foo bar] }
     let(:object_title) { "field" }
+    let(:field_value) do
+      [
+        {
+          "label" => "Foo",
+          "telephone_number" => "01234567890",
+        },
+        {
+          "label" => "Bar",
+          "telephone_number" => "09876543210",
+        },
+      ]
+    end
 
     let(:latest_published_edition) { build(:edition, :contact, details:) }
 
@@ -113,7 +142,7 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
       let(:details) do
         {
           object_title => {
-            field.name => %w[foo],
+            field.name => [field_value[0]],
           },
         }
       end
@@ -136,10 +165,15 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
 
 private
 
-  def expect_form_fields(fieldset, index, value = nil, form_group_count = 1)
+  def expect_form_fields(fieldset:, index:, fields:, values: {})
     expect(fieldset).to have_css ".govuk-fieldset__legend", text: "Item #{index + 1}"
-    expect(fieldset).to have_css ".govuk-form-group", count: form_group_count
-    expect(fieldset).to have_css "input[value='#{value}']" unless value.nil?
-    expect(fieldset).to have_css ".govuk-label", text: "Item"
+
+    fields.each do |field|
+      expect(fieldset).to have_css ".govuk-label", text: field.label
+
+      input = fieldset.find("input[name='#{field.name_attribute}']")
+      expect(input).to_not be_nil
+      expect(input.value).to eq(values[field.name])
+    end
   end
 end

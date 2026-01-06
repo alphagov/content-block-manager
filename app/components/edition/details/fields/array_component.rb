@@ -1,17 +1,24 @@
-class Edition::Details::Fields::ArrayComponent < Edition::Details::Fields::BaseComponent
-  def initialize(object_title: nil, **args)
-    @object_title = object_title
-    super(**args)
+class Edition::Details::Fields::ArrayComponent < ViewComponent::Base
+  def initialize(context)
+    @context = context
   end
 
 private
 
+  attr_reader :context
+
+  delegate :field, :name, :id, :error_items, :hint_text, :edition, :schema, :subschema, :object_title, to: :context
+
+  def subschema_block_type
+    @subschema_block_type ||= subschema&.block_type
+  end
+
   def label
-    super.singularize
+    context.label.singularize
   end
 
   def value
-    super || []
+    context.value || []
   end
 
   def items
@@ -59,7 +66,7 @@ private
   def immutability_checker
     @immutability_checker ||= EmbeddedObjectImmutabilityCheck.new(
       edition: edition.document.latest_published_edition,
-      field_reference: [subschema_block_type, @object_title, field.name].compact,
+      field_reference: [subschema_block_type, object_title, field.name].compact,
     )
   end
 end
