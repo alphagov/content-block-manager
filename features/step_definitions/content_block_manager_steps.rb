@@ -131,6 +131,10 @@ Then("I should be taken back to the document page") do
                                     ))
 end
 
+Then("I should be taken to the {string} review page") do |block_type|
+  expect(page).to have_content("Review #{block_type}")
+end
+
 Then("I am taken back to Content Block Manager home page") do
   assert_equal current_path, root_path
 end
@@ -207,6 +211,11 @@ end
 When("I click to edit the {string}") do |block_type|
   @action = "update"
   click_link "Edit #{block_type}", match: :first
+end
+
+When("I click to complete the {string}") do |block_type|
+  @action = "update"
+  click_link "Complete #{block_type}", match: :first
 end
 
 When("I fill out the form") do
