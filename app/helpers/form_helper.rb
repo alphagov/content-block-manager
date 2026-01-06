@@ -24,7 +24,7 @@ module FormHelper
     details&.dig(field.name) || default_value
   end
 
-  def component_for_field(field, args)
-    field.component_class.new(**args.compact)
+  def component_for_field(field, context)
+    field.component_class.new(context)
   end
 end
