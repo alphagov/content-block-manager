@@ -44,15 +44,15 @@ RSpec.describe Edition::Details::FormComponent, type: :component do
     allow(schema).to receive(:fields).and_return([foo_field, bar_field, baz_field])
 
     allow(Edition::Details::Fields::StringComponent).to receive(:new).with(
-      a_hash_including(field: foo_field),
+      have_attributes(field: foo_field),
     ).and_return(foo_stub)
 
     allow(Edition::Details::Fields::StringComponent).to receive(:new).with(
-      a_hash_including(field: bar_field),
+      have_attributes(field: bar_field),
     ).and_return(bar_stub)
 
     allow(Edition::Details::Fields::EnumComponent).to receive(:new).with(
-      a_hash_including(field: baz_field),
+      have_attributes(field: baz_field),
     ).and_return(baz_stub)
 
     allow(component).to receive(:render).with(foo_stub).and_return("foo_stub")
@@ -64,24 +64,30 @@ RSpec.describe Edition::Details::FormComponent, type: :component do
     render_inline(component)
 
     expect(Edition::Details::Fields::StringComponent).to have_received(:new).with(
-      edition:,
-      field: foo_field,
-      schema:,
-      populate_with_defaults:,
+      have_attributes(
+        edition:,
+        field: foo_field,
+        schema:,
+        populate_with_defaults:,
+      ),
     )
 
     expect(Edition::Details::Fields::StringComponent).to have_received(:new).with(
-      edition:,
-      field: bar_field,
-      schema:,
-      populate_with_defaults:,
+      have_attributes(
+        edition:,
+        field: bar_field,
+        schema:,
+        populate_with_defaults:,
+      ),
     )
 
     expect(Edition::Details::Fields::EnumComponent).to have_received(:new).with(
-      edition:,
-      field: baz_field,
-      schema:,
-      populate_with_defaults:,
+      have_attributes(
+        edition:,
+        field: baz_field,
+        schema:,
+        populate_with_defaults:,
+      ),
     )
   end
 
@@ -92,24 +98,24 @@ RSpec.describe Edition::Details::FormComponent, type: :component do
       render_inline(component)
 
       expect(Edition::Details::Fields::StringComponent).to have_received(:new).with(
-        edition:,
-        field: foo_field,
-        schema:,
-        populate_with_defaults: false,
+        have_attributes(
+          field: foo_field,
+          populate_with_defaults: false,
+        ),
       )
 
       expect(Edition::Details::Fields::StringComponent).to have_received(:new).with(
-        edition:,
-        field: bar_field,
-        schema:,
-        populate_with_defaults: false,
+        have_attributes(
+          field: bar_field,
+          populate_with_defaults: false,
+        ),
       )
 
       expect(Edition::Details::Fields::EnumComponent).to have_received(:new).with(
-        edition:,
-        field: baz_field,
-        schema:,
-        populate_with_defaults: false,
+        have_attributes(
+          field: baz_field,
+          populate_with_defaults: false,
+        ),
       )
     end
   end
