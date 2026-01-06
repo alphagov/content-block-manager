@@ -5,21 +5,22 @@ RSpec.describe Edition::Details::Fields::BooleanComponent, type: :component do
   let(:field) { build(:field, name: "email_address", is_required?: true, label: "Email address") }
   let(:schema) { double(:schema, block_type: "schema") }
 
+  let(:context) do
+    Edition::Details::Fields::Context.new(edition:, field:, schema:)
+  end
+
+  let(:component) { described_class.new(context) }
+
   before do
-    render_inline(
-      described_class.new(
-        edition:,
-        field:,
-        schema:,
-        value: field_value,
-      ),
-    )
+    allow(context).to receive(:value).and_return(field_value)
   end
 
   describe "when no value is given" do
     let(:field_value) { nil }
 
     it "should not check the checkbox" do
+      render_inline component
+
       expect(page).to have_css "input[type=\"checkbox\"][value=\"true\"]"
       expect(page).to_not have_css "input[type=\"checkbox\"][value=\"true\"][checked=\"checked\"]"
     end
@@ -29,6 +30,8 @@ RSpec.describe Edition::Details::Fields::BooleanComponent, type: :component do
     let(:field_value) { "true" }
 
     it "should check the checkbox" do
+      render_inline component
+
       expect(page).to have_css "input[type=\"checkbox\"][value=\"true\"][checked=\"checked\"]"
     end
   end
@@ -37,6 +40,8 @@ RSpec.describe Edition::Details::Fields::BooleanComponent, type: :component do
     let(:field_value) { "false" }
 
     it "should check the checkbox" do
+      render_inline component
+
       expect(page).to_not have_css "input[type=\"checkbox\"][value=\"true\"][checked=\"checked\"]"
     end
   end

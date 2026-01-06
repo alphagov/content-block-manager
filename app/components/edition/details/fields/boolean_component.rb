@@ -1,5 +1,13 @@
-class Edition::Details::Fields::BooleanComponent < Edition::Details::Fields::BaseComponent
+class Edition::Details::Fields::BooleanComponent < ViewComponent::Base
+  def initialize(context)
+    @context = context
+  end
+
 private
+
+  attr_reader :context
+
+  delegate :label, :name, :id, :value, :error_items, :hint_text, to: :context
 
   def items
     [
