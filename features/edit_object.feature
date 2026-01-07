@@ -130,6 +130,13 @@ Feature: Edit a content object
     And I opt to resume editing the draft
     Then I should be able to complete all the steps in the workflow for a further edition
 
+  Scenario: Editor resumes drafting a further edition (in future 2i/factcheck flow)
+    Given I have the "pre_release_features" permission
+    And a pension content block has been drafted
+    And I am viewing the draft edition
+    And I opt to resume editing the draft
+    Then I should be able to complete all the steps in the workflow for a further edition
+
   Scenario: Creating a draft edition still allows the published edition to be seen
     When I am updating a content block
     And I visit the Content Block Manager home page

@@ -31,6 +31,12 @@ Then("I should see a notice that the completed drafted has been saved") do
   end
 end
 
+When("I complete the initial step of the workflow") do
+  # initial step
+  expect(current_path).to eq(workflow_path(edition, step: :edit_draft))
+  click_button "Save and continue"
+end
+
 Then("I should be able to complete all the steps in the workflow for a further edition") do
   # initial step
   expect(current_path).to eq(workflow_path(edition, step: :edit_draft))

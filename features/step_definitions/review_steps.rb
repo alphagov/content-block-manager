@@ -14,7 +14,7 @@ end
 
 Then("I see a secondary call to action edit the existing draft") do
   expect(page).to have_css(
-    "a.govuk-button--secondary[href='#{workflow_path(edition, step: :review)}']",
+    "a.govuk-button--secondary[href='#{workflow_path(edition, step: :edit_draft)}']",
     text: "Edit draft",
   )
 end

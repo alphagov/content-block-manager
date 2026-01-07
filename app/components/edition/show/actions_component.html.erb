@@ -12,7 +12,7 @@
     <li class="govuk-!-static-margin-bottom-3">
       <%= render "govuk_publishing_components/components/button", {
         text: completed? ? "Edit draft" : "Complete draft",
-        href: workflow_path(edition, step: :review),
+        href: workflow_path(edition, step: :edit_draft),
         secondary_solid: completed? ? true : false,
         inline_layout: false,
       } %>
@@ -43,7 +43,7 @@
     <li>
       <%= render "govuk_publishing_components/components/button", {
         text: has_more_recent_draft? ? "Edit latest edition" : "Edit #{document.block_type.humanize.downcase}",
-        href: has_more_recent_draft? ? workflow_path(id: document.most_recent_edition.id, step: :review) : new_document_edition_path(document),
+        href: has_more_recent_draft? ? workflow_path(id: document.most_recent_edition.id, step: :edit_draft) : new_document_edition_path(document),
         secondary_solid: true,
         inline_layout: false,
       } %>
