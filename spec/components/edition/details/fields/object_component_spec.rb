@@ -17,6 +17,7 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
   let(:email_address_stub) { double("string_component") }
 
   let(:form_value) { nil }
+  let(:populate_with_defaults) { true }
 
   let(:component) do
     described_class.new(
@@ -24,6 +25,7 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
       field:,
       schema:,
       value: form_value,
+      populate_with_defaults:,
     )
   end
 
@@ -71,15 +73,24 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
       ]
     end
 
-    # Ensure this edition belongs to a document with exactly one edition so defaults are applied
-    let(:edition) { create(:edition, :pension) }
-
     it "renders the field with the default values" do
       render_inline(component)
 
-      expect(page).to have_css "input[name=\"#{nested_fields[0].name_attribute}\"][value=\"LABEL DEFAULT\"]"
-      expect(page).to have_css "input[name=\"#{nested_fields[1].name_attribute}\"][value=\"TYPE DEFAULT\"]"
-      expect(page).to have_css "input[name=\"#{nested_fields[2].name_attribute}\"][value=\"EMAIL DEFAULT\"]"
+      expect(page.find("input[name=\"#{nested_fields[0].name_attribute}\"]").value).to eq("LABEL DEFAULT")
+      expect(page.find("input[name=\"#{nested_fields[1].name_attribute}\"]").value).to eq("TYPE DEFAULT")
+      expect(page.find("input[name=\"#{nested_fields[2].name_attribute}\"]").value).to eq("EMAIL DEFAULT")
+    end
+
+    describe "but populate_with_defaults is false" do
+      let(:populate_with_defaults) { false }
+
+      it "leaves the fields empty" do
+        render_inline(component)
+
+        expect(page.find("input[name=\"#{nested_fields[0].name_attribute}\"]").value).to be_nil
+        expect(page.find("input[name=\"#{nested_fields[1].name_attribute}\"]").value).to be_nil
+        expect(page.find("input[name=\"#{nested_fields[2].name_attribute}\"]").value).to be_nil
+      end
     end
 
     describe "but real values are also present" do
@@ -94,10 +105,9 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
       it "renders the real values instead of defaults" do
         render_inline(component)
 
-        expect(page).to have_css "input[name=\"#{nested_fields[0].name_attribute}\"][value=\"Real Label\"]"
-        expect(page).to have_css "input[name=\"#{nested_fields[1].name_attribute}\"][value=\"Real Type\"]"
-        # Email address has no real value, so it should use the default
-        expect(page).to have_css "input[name=\"#{nested_fields[2].name_attribute}\"][value=\"Real Email Address\"]"
+        expect(page.find("input[name=\"#{nested_fields[0].name_attribute}\"]").value).to eq("Real Label")
+        expect(page.find("input[name=\"#{nested_fields[1].name_attribute}\"]").value).to eq("Real Type")
+        expect(page.find("input[name=\"#{nested_fields[2].name_attribute}\"]").value).to eq("Real Email Address")
       end
     end
   end

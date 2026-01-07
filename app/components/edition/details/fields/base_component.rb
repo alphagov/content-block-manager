@@ -4,18 +4,19 @@ class Edition::Details::Fields::BaseComponent < ViewComponent::Base
 
   PARENT_CLASS = "edition".freeze
 
-  def initialize(edition:, field:, schema:, value: nil, subschema: nil, index: nil, **_args)
+  def initialize(edition:, field:, schema:, value: nil, subschema: nil, index: nil, populate_with_defaults: nil, **_args)
     @edition = edition
     @field = field
     @schema = schema
     @value = value
     @subschema = subschema
     @index = index
+    @populate_with_defaults = populate_with_defaults
   end
 
 private
 
-  attr_reader :edition, :field, :schema, :subschema, :value, :index
+  attr_reader :edition, :field, :schema, :subschema, :value, :index, :populate_with_defaults
 
   def subschema_block_type
     @subschema_block_type ||= subschema&.block_type

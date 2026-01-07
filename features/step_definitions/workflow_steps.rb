@@ -34,3 +34,11 @@ end
 def draft
   Edition.draft.last
 end
+
+Then("the {string} field should be checked") do |field|
+  expect(find("##{field}-0")["checked"]).to be_truthy
+end
+
+Then("the {string} field should be set to {string}") do |field, value|
+  expect(find("##{field}")["value"]).to eq(value)
+end

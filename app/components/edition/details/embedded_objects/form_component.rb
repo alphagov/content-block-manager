@@ -22,8 +22,8 @@ private
       field: field,
       schema:,
       subschema:,
-      value: helpers.value_for_field(details: params, field:, populate_with_defaults:),
       object_title:,
+      populate_with_defaults:,
     }.compact
   end
 end

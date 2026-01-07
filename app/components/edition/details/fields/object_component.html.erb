@@ -17,7 +17,7 @@
       {
         label: show_field.label,
         value: "true",
-        checked: value_for_field(show_field) == true,
+        checked: helpers.value_for_field(details: value, field: show_field, populate_with_defaults:) == true,
         conditional: embedded_fields,
         hint: show_field.hint,
       },
