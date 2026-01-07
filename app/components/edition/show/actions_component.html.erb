@@ -11,9 +11,9 @@
   <% if !finalised_state? %>
     <li class="govuk-!-static-margin-bottom-3">
       <%= render "govuk_publishing_components/components/button", {
-        text: completed? ? "Edit draft" : "Complete draft",
+        text: draft? ? "Complete draft" : "Edit draft",
         href: workflow_path(edition, step: :edit_draft),
-        secondary_solid: completed? ? true : false,
+        secondary_solid: draft? ? false : true,
         inline_layout: false,
       } %>
     </li>

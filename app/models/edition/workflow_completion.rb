@@ -17,7 +17,7 @@ class Edition::WorkflowCompletion
 
   def call
     validate_action
-    complete_workflow unless @edition.completed?
+    complete_workflow if @edition.draft?
 
     send(sanitised_save_action)
   end

@@ -7,7 +7,7 @@ class Edition::Show::ActionsComponent < ViewComponent::Base
 
   attr_reader :edition, :state, :document
 
-  delegate :completed?, to: :edition
+  delegate :draft?, to: :edition
 
   def finalised_state?
     state.to_sym.in?(Edition.finalised_states)

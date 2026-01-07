@@ -87,7 +87,7 @@ RSpec.describe Edition::WorkflowCompletion do
         end
 
         it "should NOT mark the edition as 'completed' for a second time" do
-          allow(published_edition).to receive(:completed?).and_return(true)
+          allow(published_edition).to receive(:draft?).and_return(false)
 
           described_class.new(published_edition, "publish").call
 

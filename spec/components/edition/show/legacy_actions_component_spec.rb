@@ -70,10 +70,8 @@ RSpec.describe Edition::Show::LegacyActionsComponent, type: :component do
   end
 
   describe "link to 'Edit draft'" do
-    before { allow(edition).to receive(:completed?).and_return(true) }
-
-    context "for 'in-progress' states" do
-      Edition.in_progress_states.each do |state|
+    context "for 'in-progress' states other than draft" do
+      (Edition.in_progress_states - [:draft]).each do |state|
         context "when the edition is in the '#{state}' state" do
           before do
             edition.state = state
@@ -91,9 +89,8 @@ RSpec.describe Edition::Show::LegacyActionsComponent, type: :component do
       end
     end
 
-    context "when the edition is in the 'draft' state but not completed" do
+    context "when the edition is in the 'draft' state" do
       before do
-        allow(edition).to receive(:completed?).and_return(false)
         edition.state = "draft"
         component = described_class.new(edition: edition)
         render_inline component
