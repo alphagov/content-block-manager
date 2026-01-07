@@ -50,7 +50,7 @@ module Edition::Workflow
         transitions from: %i[scheduled], to: :superseded
       end
       event :complete_draft do
-        transitions from: %i[draft], to: :draft_complete, guard: [:workflow_completed?]
+        transitions from: %i[draft], to: :draft_complete
       end
       event :ready_for_review do
         transitions from: %i[draft_complete], to: :awaiting_review
@@ -71,13 +71,6 @@ module Edition::Workflow
       error_message = "Edition #{id} does not have a 2i Review outcome recorded and so " \
         "can't transition into the 'awaiting_factcheck' state"
       raise ReviewOutcomeMissingError, error_message
-    end
-
-    def workflow_completed?
-      return true if completed?
-
-      error_message = "Edition #{id}'s workflow has not been completed"
-      raise WorkflowCompletionError, error_message
     end
 
     def in_progress?

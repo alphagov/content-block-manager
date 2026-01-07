@@ -9,25 +9,10 @@ RSpec.describe Edition::Workflow, type: :model do
       let(:edition) { create(:edition, :pension, :draft) }
 
       context "when in the 'draft' state" do
-        context "and the workflow has been completed" do
-          before { edition.workflow_completed_at = 1.minute.ago }
+        it "is permitted" do
+          edition.complete_draft!
 
-          it "is permitted" do
-            edition.complete_draft!
-
-            expect(edition.draft_complete?).to be true
-          end
-        end
-
-        context "and the workflow NOT been completed" do
-          before { edition.workflow_completed_at = nil }
-
-          it "is NOT permitted" do
-            expect { edition.complete_draft! }.to raise_error(
-              Edition::Workflow::WorkflowCompletionError,
-              "Edition #{edition.id}'s workflow has not been completed",
-            )
-          end
+          expect(edition.draft_complete?).to be true
         end
       end
 
