@@ -40,7 +40,6 @@ FactoryBot.define do
 
     trait :draft_complete do
       state { :draft_complete }
-      workflow_completed_at { Time.current }
     end
 
     trait :published do

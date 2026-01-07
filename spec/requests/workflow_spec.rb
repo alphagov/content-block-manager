@@ -83,13 +83,12 @@ RSpec.describe "Workflow", type: :request do
           end
         end
 
-        it "causes the #workflow_completed_at timestamp to be set" do
+        it "transitions the edition's state to 'draft_complete'" do
           service = double("PublishEditionService", call: double("Edition", id: 123))
           allow(PublishEditionService).to receive(:new).and_return(service)
-
           put workflow_path(id: edition.id, step:, has_checked_content: true, save_action: "publish")
 
-          expect(edition.reload.workflow_completed_at).not_to be_nil
+          expect(edition.reload.state).to eq("draft_complete")
         end
       end
     end
@@ -104,10 +103,10 @@ RSpec.describe "Workflow", type: :request do
           expect(response).to render_template("editions/workflow/review")
         end
 
-        it "does NOT cause the the #workflow_completed_at timestamp to be set" do
+        it "does NOT cause the state transition to 'draft_complete'" do
           put workflow_path(id: edition.id, step:)
 
-          expect(edition.reload.workflow_completed_at).to be_nil
+          expect(edition.reload.state).to eq("draft")
         end
       end
     end

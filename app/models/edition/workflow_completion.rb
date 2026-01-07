@@ -17,7 +17,7 @@ class Edition::WorkflowCompletion
 
   def call
     validate_action
-    complete_workflow if @edition.draft?
+    @edition.complete_draft! if @edition.draft?
 
     send(sanitised_save_action)
   end
@@ -32,11 +32,6 @@ private
 
   def sanitised_save_action
     VALID_SAVE_ACTIONS.fetch(@save_action)
-  end
-
-  def complete_workflow
-    @edition.update_column(:workflow_completed_at, Time.current)
-    @edition.complete_draft!
   end
 
   def publish
