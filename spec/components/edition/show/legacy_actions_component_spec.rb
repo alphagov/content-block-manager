@@ -113,10 +113,9 @@ RSpec.describe Edition::Show::LegacyActionsComponent, type: :component do
             render_inline component
           end
 
-          it "does NOT offer an 'Edit draft' link to edit a current draft" do
+          it "does NOT offer any link to edit a current draft" do
             expect(page).to have_no_css(
               ".actions a.govuk-button[href='/editions/123/workflow/edit_draft']",
-              text: "Edit draft",
             )
           end
         end

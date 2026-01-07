@@ -177,10 +177,9 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
             render_inline component
           end
 
-          it "does NOT offer an 'Edit draft' link to edit a current draft" do
+          it "does NOT offer any link to edit a current draft" do
             expect(page).to have_no_css(
               ".actions a.govuk-button[href='/editions/123/workflow/edit_draft']",
-              text: "Edit draft",
             )
           end
         end
@@ -296,7 +295,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
 
     context "when the edition is NOT in an awaiting_factcheck state" do
       (Edition.available_states - %i[awaiting_factcheck]).each do |state|
-        let(:edition) { build(:edition, :contact, state, id: 123) }
+        let(:edition) { build(:edition, :contact, state, id: 123, document: document) }
 
         before do
           component = described_class.new(edition: edition)
