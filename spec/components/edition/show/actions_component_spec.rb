@@ -2,6 +2,13 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
   let(:document) { FactoryBot.build(:document, :pension, id: 456) }
   let(:edition) { FactoryBot.build(:edition, :pension, document: document, id: 123) }
 
+  let(:latest_edition_id) { 123 }
+  let(:newer_draft_edition_id) { 789 }
+
+  before do
+    allow(document).to receive(:most_recent_edition).and_return(double(:edition, id: newer_draft_edition_id))
+  end
+
   describe "Button to transition to 'awaiting_review' state" do
     context "when the edition is in the 'draft' state" do
       before do
@@ -103,9 +110,6 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
     end
 
     context "for 'finalised' states" do
-      let(:latest_edition_id) { 123 }
-      let(:newer_draft_edition_id) { 124 }
-
       Edition.finalised_states.each do |state|
         context "when the edition is in the '#{state}' state" do
           before do
@@ -114,14 +118,13 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
 
           context "when the edition being viewed is not the latest edition" do
             before do
-              allow(document).to receive(:most_recent_edition).and_return(double(:edition, id: newer_draft_edition_id))
               component = described_class.new(edition: edition)
               render_inline component
             end
 
             it "offers an 'Edit latest edition' link to return to editing the draft edition" do
               expect(page).to have_css(
-                ".actions a.govuk-button[href='/editions/123/workflow/review']",
+                ".actions a.govuk-button[href='/editions/789/workflow/review']",
                 text: "Edit latest edition",
               )
             end
@@ -338,7 +341,6 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
 
       context "and the edition being viewed is not the latest edition" do
         before do
-          allow(document).to receive(:most_recent_edition).and_return(double(:edition, id: newer_draft_edition_id))
           component = described_class.new(edition: edition)
           render_inline component
         end
