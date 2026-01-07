@@ -28,6 +28,10 @@ Then("I see a principal call to action to complete the draft") do
   )
 end
 
+Given("I opt to resume editing the draft") do
+  click_link("Complete draft")
+end
+
 def should_see_the_draft_edition_in_full
   should_see_status_for(state: :draft)
   shows_list_of_locations
