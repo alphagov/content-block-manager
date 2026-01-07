@@ -30,11 +30,20 @@ private
     end
   end
 
-  def review_outcome
-    return unless version.state == "awaiting_factcheck"
+  def outcome
+    case version.state
+    when "awaiting_factcheck"
+      version.item.review_outcome
+    when "published"
+      version.item.factcheck_outcome
+    end
+  end
 
-    skipped_or_performed = version.item.review_outcome&.skipped ? "skipped" : "performed"
-    "2i review #{skipped_or_performed}"
+  def outcome_resolution
+    review_type = version.state == "awaiting_factcheck" ? "2i review" : "Factcheck"
+
+    skipped_or_performed = outcome&.skipped ? "skipped" : "performed"
+    "#{review_type} #{skipped_or_performed}"
   end
 
   def updated_subschema_id

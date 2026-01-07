@@ -6,7 +6,15 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
   let(:user) { create(:user) }
   let(:schema) { double(:schema, subschemas: []) }
 
-  let(:edition) { build(:edition, :pension, change_note: nil, internal_change_note: nil, review_outcome: ReviewOutcome.new) }
+  let(:edition) do
+    build(:edition,
+          :pension,
+          change_note: nil,
+          internal_change_note: nil,
+          review_outcome: ReviewOutcome.new,
+          factcheck_outcome: FactcheckOutcome.new)
+  end
+
   let(:version) do
     build(
       :content_block_version,
@@ -64,6 +72,34 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
 
     it "returns a created title" do
       expect(page).to have_css ".timeline__title", text: "Pension created"
+    end
+
+    context "and its edition indicates that the review was performed" do
+      before do
+        edition.factcheck_outcome.skipped = false
+      end
+
+      it "shows the review outcome" do
+        render_inline component
+
+        expect(page).to have_css(".timeline__review-outcome") do
+          expect(page).to have_content("Factcheck performed")
+        end
+      end
+    end
+
+    context "and its edition indicates that the review was skipped" do
+      before do
+        edition.factcheck_outcome.skipped = true
+      end
+
+      it "shows the review outcome" do
+        render_inline component
+
+        expect(page).to have_css(".timeline__review-outcome") do
+          expect(page).to have_content("Factcheck skipped")
+        end
+      end
     end
   end
 
