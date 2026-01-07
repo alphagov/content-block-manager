@@ -1,6 +1,4 @@
 RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
-  let(:described_class) { Edition::Details::Fields::ObjectComponent }
-
   let(:edition) { build(:edition, :pension) }
   let(:nested_fields) do
     [
@@ -15,19 +13,12 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
   let(:label_stub) { double("string_component") }
   let(:type_stub) { double("enum_component") }
   let(:email_address_stub) { double("string_component") }
-
-  let(:form_value) { nil }
-  let(:populate_with_defaults) { true }
-
-  let(:component) do
-    described_class.new(
-      edition:,
-      field:,
-      schema:,
-      value: form_value,
-      populate_with_defaults:,
-    )
+  let(:context) do
+    Edition::Details::Fields::Context.new(edition:, field:, schema:)
   end
+
+  let(:described_class) { Edition::Details::Fields::ObjectComponent }
+  let(:component) { described_class.new(context) }
 
   it "renders fields for each property" do
     render_inline(component)
@@ -51,64 +42,17 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
   end
 
   describe "when values are present for the object" do
-    let(:form_value) do
-      {
-        "label" => "something",
-      }
+    let(:nested_value) { "value" }
+    let(:value) { { nested_fields[0].name => nested_value } }
+
+    before do
+      allow(context).to receive(:value).and_return(value)
     end
 
     it "renders the field with the value" do
       render_inline(component)
 
-      expect(page).to have_css "input[name=\"#{nested_fields[0].name_attribute}\"][value=\"something\"]"
-    end
-  end
-
-  describe "when default values are present for the object" do
-    let(:nested_fields) do
-      [
-        build(:field, name: "label", enum_values: nil, default_value: "LABEL DEFAULT"),
-        build(:field, name: "type", enum_values: %w[enum_1 enum_2 enum_3], default_value: "TYPE DEFAULT"),
-        build(:field, name: "email_address", enum_values: nil, default_value: "EMAIL DEFAULT"),
-      ]
-    end
-
-    it "renders the field with the default values" do
-      render_inline(component)
-
-      expect(page.find("input[name=\"#{nested_fields[0].name_attribute}\"]").value).to eq("LABEL DEFAULT")
-      expect(page.find("input[name=\"#{nested_fields[1].name_attribute}\"]").value).to eq("TYPE DEFAULT")
-      expect(page.find("input[name=\"#{nested_fields[2].name_attribute}\"]").value).to eq("EMAIL DEFAULT")
-    end
-
-    describe "but populate_with_defaults is false" do
-      let(:populate_with_defaults) { false }
-
-      it "leaves the fields empty" do
-        render_inline(component)
-
-        expect(page.find("input[name=\"#{nested_fields[0].name_attribute}\"]").value).to be_nil
-        expect(page.find("input[name=\"#{nested_fields[1].name_attribute}\"]").value).to be_nil
-        expect(page.find("input[name=\"#{nested_fields[2].name_attribute}\"]").value).to be_nil
-      end
-    end
-
-    describe "but real values are also present" do
-      let(:form_value) do
-        {
-          "label" => "Real Label",
-          "type" => "Real Type",
-          "email_address" => "Real Email Address",
-        }
-      end
-
-      it "renders the real values instead of defaults" do
-        render_inline(component)
-
-        expect(page.find("input[name=\"#{nested_fields[0].name_attribute}\"]").value).to eq("Real Label")
-        expect(page.find("input[name=\"#{nested_fields[1].name_attribute}\"]").value).to eq("Real Type")
-        expect(page.find("input[name=\"#{nested_fields[2].name_attribute}\"]").value).to eq("Real Email Address")
-      end
+      expect(page).to have_css "input[name=\"#{nested_fields[0].name_attribute}\"][value=\"#{nested_value}\"]"
     end
   end
 
@@ -141,9 +85,10 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
 
   context "when a show_field is present" do
     let(:hint) { nil }
+    let(:show_field) { build("field", name: "show", label: "Show", hint:) }
     let(:nested_fields) do
       [
-        build("field", name: "show", label: "Show", hint:),
+        show_field,
         build("field", name: "label", label: "Label"),
         build("field", name: "email_address", label: "Email address"),
       ]
@@ -176,16 +121,16 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
     end
 
     context "when the checkbox is checked" do
-      let(:form_value) do
-        {
-          "show" => true,
-        }
+      let(:value) { { show_field.name => true } }
+
+      before do
+        allow(context).to receive(:value).and_return(value)
       end
 
       it "checks the checkbox" do
         render_inline(component)
 
-        expect(page).to have_css "input[name=\"#{nested_fields[0].name_attribute}\"][checked='checked']"
+        expect(page).to have_css "input[name=\"#{show_field.name_attribute}\"][checked='checked']"
       end
     end
 

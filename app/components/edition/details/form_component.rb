@@ -11,14 +11,13 @@ class Edition
 
       attr_reader :edition, :schema, :populate_with_defaults
 
-      def component_args(field)
-        {
+      def context(field)
+        Edition::Details::Fields::Context.new(
           edition:,
           field:,
-          value: helpers.value_for_field(details: edition.details, field:, populate_with_defaults:),
           schema:,
           populate_with_defaults:,
-        }
+        )
       end
 
       def fields

@@ -1,25 +1,25 @@
 <% embedded_fields = capture do %>
   <% nested_fields.each do |embedded_field| %>
-    <%= render helpers.component_for_field(embedded_field, component_args(embedded_field)) %>
+    <%= render helpers.component_for_field(embedded_field, context_for(embedded_field)) %>
   <% end %>
 <% end %>
 
 <% if conditionally_revealed? %>
   <%= render "govuk_publishing_components/components/checkboxes", {
-    name: show_field.name_attribute,
-    id: show_field.id_attribute,
-    text: show_field.label,
-    heading: show_field.label,
+    name: show_field_context.name,
+    id: show_field_context.id,
+    text: show_field_context.label,
+    heading: show_field_context.label,
     visually_hide_heading: true,
     no_hint_text: true,
     small: true,
     items: [
       {
-        label: show_field.label,
+        label: show_field_context.label,
         value: "true",
-        checked: helpers.value_for_field(details: value, field: show_field, populate_with_defaults:) == true,
+        checked: show_field_context.value == true,
         conditional: embedded_fields,
-        hint: show_field.hint,
+        hint: show_field_context.hint_text,
       },
     ],
   } %>

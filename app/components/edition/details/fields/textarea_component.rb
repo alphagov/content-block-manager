@@ -1,13 +1,19 @@
-class Edition::Details::Fields::TextareaComponent < Edition::Details::Fields::BaseComponent
-  def initialize(nested_object_key: nil, **args)
-    @nested_object_key = nested_object_key
-
-    super(**args)
+class Edition::Details::Fields::TextareaComponent < ViewComponent::Base
+  def initialize(context)
+    @context = context
   end
 
-  attr_reader :edition, :nested_object_key, :field, :schema, :subschema, :errors
+private
+
+  attr_reader :context
+
+  delegate :field, :label, :name, :id, :value, :error_items, :hint_text, to: :context
+
+  def govspeak_enabled?
+    field.govspeak_enabled?
+  end
 
   def aria_described_by
-    "#{field.id_attribute}-hint"
+    "#{id}-hint"
   end
 end

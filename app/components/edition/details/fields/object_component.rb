@@ -1,4 +1,14 @@
-class Edition::Details::Fields::ObjectComponent < Edition::Details::Fields::BaseComponent
+class Edition::Details::Fields::ObjectComponent < ViewComponent::Base
+  def initialize(context)
+    @context = context
+  end
+
+private
+
+  attr_reader :context
+
+  delegate :field, :value, :label, :edition, :schema, :populate_with_defaults, to: :context
+
   def show_field
     @show_field ||= field.show_field
   end
@@ -11,13 +21,17 @@ class Edition::Details::Fields::ObjectComponent < Edition::Details::Fields::Base
     conditionally_revealed? ? field.nested_fields.reject { |f| f.name == show_field.name } : field.nested_fields
   end
 
-  def component_args(field)
-    {
+  def show_field_context
+    @show_field_context ||= context_for(show_field)
+  end
+
+  def context_for(nested_field)
+    Edition::Details::Fields::Context.new(
       edition:,
-      field:,
-      value: helpers.value_for_field(details: value, field:, populate_with_defaults:),
+      field: nested_field,
       schema:,
       populate_with_defaults:,
-    }
+      details: value,
+    )
   end
 end

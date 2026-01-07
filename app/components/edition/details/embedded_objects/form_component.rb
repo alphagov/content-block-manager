@@ -16,14 +16,15 @@ private
     subschema.fields
   end
 
-  def component_args(field)
-    {
+  def context(field)
+    Edition::Details::Fields::Context.new(
       edition:,
       field: field,
       schema:,
       subschema:,
       object_title:,
       populate_with_defaults:,
-    }.compact
+      details: params,
+    )
   end
 end

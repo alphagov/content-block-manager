@@ -37,23 +37,23 @@ RSpec.describe Edition::Details::EmbeddedObjects::FormComponent, type: :componen
     allow(subschema).to receive(:fields).and_return([foo_field, bar_field, enum_field, textarea_field, boolean_field])
 
     allow(Edition::Details::Fields::StringComponent).to receive(:new).with(
-      a_hash_including(field: foo_field),
+      have_attributes(field: foo_field),
     ).and_return(foo_stub)
 
     allow(Edition::Details::Fields::StringComponent).to receive(:new).with(
-      a_hash_including(field: bar_field),
+      have_attributes(field: bar_field),
     ).and_return(bar_stub)
 
     allow(Edition::Details::Fields::EnumComponent).to receive(:new).with(
-      a_hash_including(field: enum_field),
+      have_attributes(field: enum_field),
     ).and_return(enum_stub)
 
     allow(Edition::Details::Fields::TextareaComponent).to receive(:new).with(
-      a_hash_including(field: textarea_field),
+      have_attributes(field: textarea_field),
     ).and_return(textarea_stub)
 
     allow(Edition::Details::Fields::BooleanComponent).to receive(:new).with(
-      a_hash_including(field: boolean_field),
+      have_attributes(field: boolean_field),
     ).and_return(boolean_stub)
 
     allow(component).to receive(:render).with(anything)
@@ -63,43 +63,53 @@ RSpec.describe Edition::Details::EmbeddedObjects::FormComponent, type: :componen
     render_inline(component)
 
     expect(Edition::Details::Fields::StringComponent).to have_received(:new).with(
-      edition:,
-      field: foo_field,
-      subschema:,
-      schema:,
-      populate_with_defaults:,
+      have_attributes(
+        edition:,
+        field: foo_field,
+        subschema:,
+        schema:,
+        populate_with_defaults:,
+      ),
     )
 
     expect(Edition::Details::Fields::StringComponent).to have_received(:new).with(
-      edition:,
-      field: bar_field,
-      subschema:,
-      schema:,
-      populate_with_defaults:,
+      have_attributes(
+        edition:,
+        field: bar_field,
+        subschema:,
+        schema:,
+        populate_with_defaults:,
+      ),
     )
 
     expect(Edition::Details::Fields::EnumComponent).to have_received(:new).with(
-      edition:,
-      field: enum_field,
-      subschema:,
-      schema:,
-      populate_with_defaults:,
+      have_attributes(
+        edition:,
+        field: enum_field,
+        subschema:,
+        schema:,
+        populate_with_defaults:,
+      ),
     )
 
     expect(Edition::Details::Fields::TextareaComponent).to have_received(:new).with(
-      edition:,
-      populate_with_defaults:,
-      field: textarea_field,
-      subschema:,
-      schema:,
+      have_attributes(
+        edition:,
+        field: textarea_field,
+        subschema:,
+        schema:,
+        populate_with_defaults:,
+      ),
     )
 
     expect(Edition::Details::Fields::BooleanComponent).to have_received(:new).with(
-      edition:,
-      populate_with_defaults:,
-      field: boolean_field,
-      subschema:,
-      schema:,
+      have_attributes(
+        edition:,
+        field: boolean_field,
+        subschema:,
+        schema:,
+        populate_with_defaults:,
+      ),
     )
 
     expect(component).to have_received(:render).with(foo_stub)
@@ -116,23 +126,51 @@ RSpec.describe Edition::Details::EmbeddedObjects::FormComponent, type: :componen
       render_inline(component)
 
       expect(Edition::Details::Fields::StringComponent).to have_received(:new).with(
-        a_hash_including(field: foo_field, object_title:),
+        have_attributes(field: foo_field, object_title:),
       )
 
       expect(Edition::Details::Fields::StringComponent).to have_received(:new).with(
-        a_hash_including(field: bar_field, object_title:),
+        have_attributes(field: bar_field, object_title:),
       )
 
       expect(Edition::Details::Fields::EnumComponent).to have_received(:new).with(
-        a_hash_including(field: enum_field, object_title:),
+        have_attributes(field: enum_field, object_title:),
       )
 
       expect(Edition::Details::Fields::TextareaComponent).to have_received(:new).with(
-        a_hash_including(field: textarea_field, object_title:),
+        have_attributes(field: textarea_field, object_title:),
       )
 
       expect(Edition::Details::Fields::BooleanComponent).to have_received(:new).with(
-        a_hash_including(field: boolean_field, object_title:),
+        have_attributes(field: boolean_field, object_title:),
+      )
+    end
+  end
+
+  describe "when `params` are provided" do
+    let(:params) { { foo: "bar" } }
+
+    it "sends the params as details" do
+      render_inline(component)
+
+      expect(Edition::Details::Fields::StringComponent).to have_received(:new).with(
+        have_attributes(field: foo_field, details: params),
+      )
+
+      expect(Edition::Details::Fields::StringComponent).to have_received(:new).with(
+        have_attributes(field: bar_field, details: params),
+      )
+
+      expect(Edition::Details::Fields::EnumComponent).to have_received(:new).with(
+        have_attributes(field: enum_field, details: params),
+      )
+
+      expect(Edition::Details::Fields::TextareaComponent).to have_received(:new).with(
+        have_attributes(field: textarea_field, details: params),
+      )
+
+      expect(Edition::Details::Fields::BooleanComponent).to have_received(:new).with(
+        have_attributes(field: boolean_field, details: params),
       )
     end
   end

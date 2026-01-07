@@ -26,25 +26,17 @@ private
     fields = field.nested_fields || [field]
 
     fields.map do |item|
-      helpers.component_for_field(item, component_args(item))
+      helpers.component_for_field(item, context(item))
     end
   end
 
-  def component_args(field)
-    {
+  def context(field)
+    Edition::Details::Fields::Context.new(
       edition:,
       field:,
-      value: fetch_value(field),
       schema:,
       index:,
-    }
-  end
-
-  def fetch_value(field)
-    if value.is_a?(Hash) || value.is_a?(ActionController::Parameters)
-      value.fetch(field.name, nil)
-    else
-      value
-    end
+      details: value,
+    )
   end
 end
