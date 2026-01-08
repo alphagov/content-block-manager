@@ -426,4 +426,91 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
       end
     end
   end
+
+  describe "when the version has an outcome" do
+    context "and the outcome has a performer" do
+      let(:user) { build(:user, name: "Dave", email: "dave@example.com") }
+      let(:review_outcome) { ReviewOutcome.new.tap { |o| o.performer = user } }
+      let(:factcheck_outcome) { FactcheckOutcome.new.tap { |o| o.performer = user.email } }
+      let(:edition) { build(:edition, review_outcome: review_outcome, factcheck_outcome: factcheck_outcome) }
+
+      context "and the version is in the 'awaiting_factcheck' state" do
+        before { version.state = "awaiting_factcheck" }
+
+        it "should show the Review outcome performer" do
+          render_inline component
+
+          expect(page).to have_css(".timeline__review-outcome .govuk-body") do |element|
+            expect(element).to have_content("2i review performed by Dave")
+          end
+        end
+      end
+
+      context "and the version is in the 'published' state" do
+        before { version.state = "published" }
+
+        it "should show the Factcheck outcome performer" do
+          render_inline component
+
+          expect(page).to have_css(".timeline__review-outcome .govuk-body") do |element|
+            expect(element).to have_content("Factcheck performed by dave@example.com", exact: true)
+          end
+        end
+      end
+    end
+
+    context "and the outcome **does not** have a performer" do
+      let(:review_outcome) { ReviewOutcome.new }
+      let(:factcheck_outcome) { FactcheckOutcome.new }
+      let(:edition) { build(:edition, review_outcome: review_outcome, factcheck_outcome: factcheck_outcome) }
+
+      context "and the version is in the 'awaiting_factcheck' state" do
+        before { version.state = "awaiting_factcheck" }
+
+        it "should show the Review outcome performer" do
+          render_inline component
+
+          expect(page).to have_css(".timeline__review-outcome .govuk-body") do |element|
+            expect(element).to have_content("2i review performed", exact: true)
+          end
+        end
+      end
+
+      context "and the version is in the 'published' state" do
+        before { version.state = "published" }
+
+        it "should not show the Factcheck outcome performer" do
+          render_inline component
+
+          expect(page).to have_css(".timeline__review-outcome .govuk-body") do |element|
+            expect(element).to have_text("Factcheck performed", exact: true)
+          end
+        end
+      end
+    end
+  end
+
+  describe "when the version **does not** have an outcome" do
+    let(:edition) { build(:edition, review_outcome: nil, factcheck_outcome: nil) }
+
+    context "and the version is in the 'awaiting_factcheck' state" do
+      before { version.state = "awaiting_factcheck" }
+
+      it "should not show any outcome" do
+        render_inline component
+
+        expect(page).not_to have_css(".timeline__review-outcome")
+      end
+    end
+
+    context "and the version is in the 'published' state" do
+      before { version.state = "published" }
+
+      it "should not show any outcome" do
+        render_inline component
+
+        expect(page).not_to have_css(".timeline__review-outcome")
+      end
+    end
+  end
 end

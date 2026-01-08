@@ -41,9 +41,10 @@ private
 
   def outcome_resolution
     review_type = version.state == "awaiting_factcheck" ? "2i review" : "Factcheck"
+    skipped_or_performed = outcome.skipped ? "skipped" : "performed"
+    performer = outcome.performer ? " by #{outcome.performer.try(:name) || outcome.performer}" : ""
 
-    skipped_or_performed = outcome&.skipped ? "skipped" : "performed"
-    "#{review_type} #{skipped_or_performed}"
+    "#{review_type} #{skipped_or_performed}#{performer}"
   end
 
   def updated_subschema_id
