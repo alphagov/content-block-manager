@@ -124,7 +124,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
 
             it "offers an 'Edit latest edition' link to return to editing the draft edition" do
               expect(page).to have_css(
-                ".actions a.govuk-button[href='/editions/789/workflow/review']",
+                ".actions a.govuk-button[href='/editions/789/workflow/edit_draft']",
                 text: "Edit latest edition",
               )
             end
@@ -163,7 +163,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
 
           it "offers a secondary 'Edit draft' link to edit the current draft" do
             expect(page).to have_css(
-              ".actions a.govuk-button--secondary[href='/editions/123/workflow/review']",
+              ".actions a.govuk-button--secondary[href='/editions/123/workflow/edit_draft']",
               text: "Edit draft",
             )
           end
@@ -181,7 +181,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
 
       it "offers a 'Complete draft' link to edit the current draft" do
         expect(page).to have_css(
-          ".actions a.govuk-button[href='/editions/123/workflow/review']",
+          ".actions a.govuk-button[href='/editions/123/workflow/edit_draft']",
           text: "Complete draft",
         )
       end
@@ -198,7 +198,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
 
           it "does NOT offer an 'Edit draft' link to edit a current draft" do
             expect(page).to have_no_css(
-              ".actions a.govuk-button[href='/editions/123/workflow/review']",
+              ".actions a.govuk-button[href='/editions/123/workflow/edit_draft']",
               text: "Edit draft",
             )
           end

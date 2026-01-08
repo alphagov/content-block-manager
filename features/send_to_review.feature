@@ -62,6 +62,7 @@ Feature: Editor sends edition to Review
     Then I see that the edition is in draft state
 
     When I follow the link to complete the draft
+    And I complete the initial step of the workflow
     Then I see that I can complete the workflow with 'Send to 2i'
 
     When I confirm I have checked the content

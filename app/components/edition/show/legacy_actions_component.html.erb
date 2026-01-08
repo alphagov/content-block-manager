@@ -6,13 +6,13 @@
           "Edit latest edition" :
           "Edit #{@document.block_type.humanize.downcase}",
         href: has_more_recent_draft? ?
-          workflow_path(id: document.most_recent_edition.id, step: :review) :
+          workflow_path(id: document.most_recent_edition.id, step: :edit_draft) :
           new_document_edition_path(@document),
       } %>
     <% else %>
       <%= render "govuk_publishing_components/components/button", {
         text: @edition.completed? ? "Edit draft" : "Complete draft",
-        href: workflow_path(id: @edition.id, step: :review),
+        href: workflow_path(id: @edition.id, step: :edit_draft),
         secondary_solid: @edition.completed? ? true : false,
         inline_layout: false,
       } %>

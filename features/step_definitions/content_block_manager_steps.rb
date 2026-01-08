@@ -131,10 +131,6 @@ Then("I should be taken back to the document page") do
                                     ))
 end
 
-Then("I should be taken to the {string} review page") do |block_type|
-  expect(page).to have_content("Review #{block_type}")
-end
-
 Then("I am taken back to Content Block Manager home page") do
   assert_equal current_path, root_path
 end

@@ -124,12 +124,18 @@ Feature: Edit a content object
     And I visit the Content Block Manager home page
     Then I should still see the draft edition on the homepage
 
-  Scenario: Editing a draft edition should not create a new document
-    Given a new pension content block has been drafted with the title "New Pension"
-    When I visit the Content Block Manager home page
-    And I click to view the document
-    And I click to complete the "draft"
-    Then I should be taken to the "pension" review page
+  Scenario: Editor resumes drafting a further edition
+    Given a pension content block has been drafted
+    And I am viewing the draft edition
+    And I opt to resume editing the draft
+    Then I should be able to complete all the steps in the workflow for a further edition
+
+  Scenario: Editor resumes drafting a further edition (in future 2i/factcheck flow)
+    Given I have the "pre_release_features" permission
+    And a pension content block has been drafted
+    And I am viewing the draft edition
+    And I opt to resume editing the draft
+    Then I should be able to complete all the steps in the workflow for a further edition
 
   Scenario: Creating a draft edition still allows the published edition to be seen
     When I am updating a content block
