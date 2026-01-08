@@ -5,6 +5,28 @@ RSpec.describe Edition::Workflow, type: :model do
       expect(edition).to be_draft
     end
 
+    describe "transition to 'draft_complete' state" do
+      let(:edition) { create(:edition, :pension, :draft) }
+
+      context "when in the 'draft' state" do
+        it "is permitted" do
+          edition.complete_draft!
+
+          expect(edition.draft_complete?).to be true
+        end
+      end
+
+      (Edition.available_states - [:draft]).each do |state|
+        context "when in non draft state '#{state}'" do
+          before { edition.state = state }
+
+          it "does NOT allow the #complete_draft! transition" do
+            expect { edition.complete_draft! }.to raise_error(Transitions::InvalidTransition)
+          end
+        end
+      end
+    end
+
     describe "transition to 'published' state" do
       let(:edition) { create(:edition, :pension) }
 
@@ -67,27 +89,11 @@ RSpec.describe Edition::Workflow, type: :model do
     end
 
     describe "transitions into the awaiting_review state with #ready_for_review!" do
-      context "when in the 'draft' state" do
-        let(:edition) { create(:edition, :pension, state: :draft) }
-        context "and the workflow has been completed" do
-          before { edition.workflow_completed_at = 1.minute.ago }
+      context "when in the 'draft_complete' state" do
+        let(:edition) { create(:edition, :pension, :draft_complete) }
 
-          it "is permitted" do
-            edition.ready_for_review!
-
-            expect(edition.awaiting_review?).to be true
-          end
-        end
-
-        context "and the workflow NOT been completed" do
-          before { edition.workflow_completed_at = nil }
-
-          it "is NOT permitted" do
-            expect { edition.ready_for_review }.to raise_error(
-              Edition::Workflow::WorkflowCompletionError,
-              "Edition #{edition.id}'s workflow has not been completed",
-            )
-          end
+        it "allows the transition" do
+          expect(edition.ready_for_review!).to be true
         end
       end
 
@@ -103,7 +109,7 @@ RSpec.describe Edition::Workflow, type: :model do
         end
       end
 
-      (Edition.available_states - %i[draft scheduled]).each do |state|
+      (Edition.available_states - %i[draft_complete scheduled]).each do |state|
         context "when in the '#{state}' state" do
           let(:edition) { create(:edition, :pension, state: state) }
 
@@ -210,7 +216,7 @@ RSpec.describe Edition::Workflow, type: :model do
       end
     end
 
-    (Edition.available_states - %i[draft awaiting_review awaiting_factcheck scheduled]).each do |state|
+    (Edition.available_states - %i[draft draft_complete awaiting_review awaiting_factcheck scheduled]).each do |state|
       context "when the edition is NOT in an in-progress state (#{state})" do
         it "returns true" do
           edition = build(:edition, state: state)

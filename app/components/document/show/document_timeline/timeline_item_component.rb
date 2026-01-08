@@ -21,6 +21,8 @@ private
       is_first_published_version ? "#{version.item.block_type.humanize} created" : version.state.capitalize
     elsif version.state == "scheduled"
       "Scheduled for publishing on #{version.item.scheduled_publication.to_fs(:long_ordinal_with_at)}"
+    elsif version.state == "draft_complete"
+      "Draft completed"
     elsif version.state == "awaiting_review"
       "Sent to review"
     elsif version.state == "awaiting_factcheck"

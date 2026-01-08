@@ -11,9 +11,9 @@
       } %>
     <% else %>
       <%= render "govuk_publishing_components/components/button", {
-        text: @edition.completed? ? "Edit draft" : "Complete draft",
-        href: workflow_path(id: @edition.id, step: :edit_draft),
-        secondary_solid: @edition.completed? ? true : false,
+        text: draft? ? "Complete draft" : "Edit draft",
+        href: workflow_path(edition, step: :edit_draft),
+        secondary_solid: draft? ? false : true,
         inline_layout: false,
       } %>
     <% end %>

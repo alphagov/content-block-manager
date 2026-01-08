@@ -32,6 +32,7 @@ module Edition::Workflow
 
     state_machine auto_scopes: true do
       state :draft
+      state :draft_complete
       state :published
       state :scheduled
       state :superseded
@@ -40,16 +41,19 @@ module Edition::Workflow
       state :deleted
 
       event :publish do
-        transitions from: %i[draft awaiting_review awaiting_factcheck scheduled], to: :published
+        transitions from: %i[draft draft_complete awaiting_review awaiting_factcheck scheduled], to: :published
       end
       event :schedule do
-        transitions from: %i[draft awaiting_factcheck], to: :scheduled
+        transitions from: %i[draft draft_complete awaiting_factcheck], to: :scheduled
       end
       event :supersede do
         transitions from: %i[scheduled], to: :superseded
       end
+      event :complete_draft do
+        transitions from: %i[draft], to: :draft_complete
+      end
       event :ready_for_review do
-        transitions from: %i[draft], to: :awaiting_review, guard: [:workflow_completed?]
+        transitions from: %i[draft_complete], to: :awaiting_review
       end
       event :ready_for_factcheck do
         transitions from: %i[awaiting_review], to: :awaiting_factcheck, guard: [:has_review_outcome_recorded?]
@@ -57,7 +61,7 @@ module Edition::Workflow
       event :delete, success: lambda { |edition|
         DeleteEditionService.new.call(edition)
       } do
-        transitions from: %i[draft awaiting_review awaiting_factcheck scheduled], to: :deleted
+        transitions from: %i[draft draft_complete awaiting_review awaiting_factcheck scheduled], to: :deleted
       end
     end
 
@@ -67,13 +71,6 @@ module Edition::Workflow
       error_message = "Edition #{id} does not have a 2i Review outcome recorded and so " \
         "can't transition into the 'awaiting_factcheck' state"
       raise ReviewOutcomeMissingError, error_message
-    end
-
-    def workflow_completed?
-      return true if completed?
-
-      error_message = "Edition #{id}'s workflow has not been completed"
-      raise WorkflowCompletionError, error_message
     end
 
     def in_progress?

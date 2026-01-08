@@ -21,8 +21,7 @@ RSpec.describe Edition::WorkflowCompletion do
     allow(Organisation).to receive(:all).and_return([organisation])
     allow(Services.publishing_api).to receive(:put_content)
     allow(Services.publishing_api).to receive(:publish)
-    allow(edition).to receive(:update_column)
-    allow(published_edition).to receive(:update_column)
+    allow(edition).to receive(:complete_draft!).and_return(true)
   end
 
   describe "#call" do
@@ -34,10 +33,10 @@ RSpec.describe Edition::WorkflowCompletion do
         end
       end
 
-      it "should NOT mark the edition as 'completed'" do
+      it "should NOT attempt the '#complete_draft!' transition" do
         described_class.new(edition, "foobar").call
       rescue Edition::WorkflowCompletion::UnhandledSaveActionError
-        expect(edition).not_to have_received(:update_column)
+        expect(edition).not_to have_received(:complete_draft!)
       end
     end
 
@@ -59,13 +58,10 @@ RSpec.describe Edition::WorkflowCompletion do
           expect(path).to eq("/editions/123/workflow/confirmation")
         end
 
-        it "should mark the edition as 'completed'" do
+        it "transitions the edition with '#complete_draft!'" do
           described_class.new(edition, "publish").call
 
-          expect(edition).to have_received(:update_column).with(
-            :workflow_completed_at,
-            Time.current,
-          )
+          expect(edition).to have_received(:complete_draft!)
         end
       end
     end
@@ -88,12 +84,10 @@ RSpec.describe Edition::WorkflowCompletion do
           expect(path).to eq("/editions/456/workflow/confirmation")
         end
 
-        it "should NOT mark the edition as 'completed' for a second time" do
-          allow(published_edition).to receive(:completed?).and_return(true)
-
+        it "should NOT attempt to transition the edition with '#complete_draft'" do
           described_class.new(published_edition, "publish").call
 
-          expect(published_edition).not_to have_received(:update_column)
+          expect(edition).not_to have_received(:complete_draft!)
         end
       end
     end
@@ -115,17 +109,20 @@ RSpec.describe Edition::WorkflowCompletion do
         expect(path).to eq("/editions/123/workflow/confirmation")
       end
 
-      it "should mark the edition as 'completed'" do
+      it "transitions the edition with '#complete_draft!'" do
         described_class.new(edition, "publish").call
 
-        expect(edition).to have_received(:update_column).with(
-          :workflow_completed_at,
-          Time.current,
-        )
+        expect(edition).to have_received(:complete_draft!)
       end
     end
 
     describe "when the save_action is 'save_as_draft'" do
+      it "attempts to transition the edition with Edition#complete_draft!" do
+        described_class.new(edition, "save_as_draft").call
+
+        expect(edition).to have_received(:complete_draft!)
+      end
+
       it "should return the document's view page path to redirect to" do
         described_class.new(edition, "save_as_draft").call => { path: }
         expect(path).to eq("/567")
@@ -140,34 +137,25 @@ RSpec.describe Edition::WorkflowCompletion do
           },
         )
       end
-
-      it "should mark the edition as 'completed'" do
-        described_class.new(edition, "publish").call
-
-        expect(edition).to have_received(:update_column).with(
-          :workflow_completed_at,
-          Time.current,
-        )
-      end
     end
   end
 
   describe "when the save_action is 'send_to_review'" do
+    it "attempts to transition the edition with Edition#complete_draft!" do
+      allow(edition).to receive(:complete_draft!).and_return(true)
+      allow(edition).to receive(:ready_for_review!).and_return(true)
+
+      described_class.new(edition, "send_to_review").call
+
+      expect(edition).to have_received(:complete_draft!)
+    end
+
     it "attempts to transition the edition with Edition#ready_for_review!" do
       allow(edition).to receive(:ready_for_review!).and_return(true)
 
       described_class.new(edition, "send_to_review").call
 
       expect(edition).to have_received(:ready_for_review!)
-    end
-
-    it "should mark the edition as 'completed'" do
-      described_class.new(edition, "publish").call
-
-      expect(edition).to have_received(:update_column).with(
-        :workflow_completed_at,
-        Time.current,
-      )
     end
 
     context "when the transition Edition#ready_for_review! is valid" do
@@ -200,15 +188,6 @@ RSpec.describe Edition::WorkflowCompletion do
         allow(edition).to receive(:ready_for_review!).and_raise(
           Transitions::InvalidTransition,
           error_message,
-        )
-      end
-
-      it "should mark the edition as 'completed'" do
-        described_class.new(edition, "publish").call
-
-        expect(edition).to have_received(:update_column).with(
-          :workflow_completed_at,
-          Time.current,
         )
       end
 

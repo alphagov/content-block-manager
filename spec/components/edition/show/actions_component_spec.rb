@@ -10,49 +10,33 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
   end
 
   describe "Button to transition to 'awaiting_review' state" do
-    context "when the edition is in the 'draft' state" do
+    context "when the edition is in the 'draft_complete' state" do
       before do
-        edition.state = :draft
+        edition.state = :draft_complete
+        component = described_class.new(edition: edition)
+        render_inline component
       end
 
-      context "and the draft workflow has been completed" do
-        before do
-          edition.workflow_completed_at = 1.minute.ago
-          component = described_class.new(edition: edition)
-          render_inline component
-        end
-
-        it "offers a button for the status transition" do
-          expect(page).to have_css(
-            ".actions form[action='/editions/123/edition_status_transitions'] button",
-            text: "Send to 2i",
-          )
-        end
-      end
-
-      context "and the draft workflow has NOT been completed" do
-        before do
-          edition.workflow_completed_at = nil
-          component = described_class.new(edition: edition)
-          render_inline component
-        end
-
-        it "does NOT offer a button for the status transition" do
-          expect(page).to have_no_button("Send to 2i")
-        end
+      it "offers a button for the status transition" do
+        expect(page).to have_css(
+          ".actions form[action='/editions/123/edition_status_transitions'] button",
+          text: "Send to 2i",
+        )
       end
     end
 
-    (Edition.available_states - [:draft]).each do |state|
-      context "when the edition is in the '#{state}' state" do
-        before do
-          edition.state = state
-          component = described_class.new(edition: edition)
-          render_inline component
-        end
+    context "when NOT in the 'draft_complete' state" do
+      (Edition.available_states - [:draft_complete]).each do |state|
+        context "when in the '#{state}' state" do
+          before do
+            edition.state = state
+            component = described_class.new(edition: edition)
+            render_inline component
+          end
 
-        it "does NOT offer a button for the status transition" do
-          expect(page).to have_no_button("Send to 2i")
+          it "does NOT offer a button for the status transition" do
+            expect(page).to have_no_button("Send to 2i")
+          end
         end
       end
     end
@@ -150,10 +134,8 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
   end
 
   describe "link to 'Edit draft'" do
-    before { allow(edition).to receive(:completed?).and_return(true) }
-
-    context "for 'in-progress' states" do
-      Edition.in_progress_states.each do |state|
+    context "for 'in-progress' states other than draft" do
+      (Edition.in_progress_states - [:draft]).each do |state|
         context "when the edition is in the '#{state}' state" do
           before do
             edition.state = state
@@ -171,9 +153,8 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
       end
     end
 
-    context "when the edition is in the 'draft' state but not completed" do
+    context "when the edition is in the 'draft' state" do
       before do
-        allow(edition).to receive(:completed?).and_return(false)
         edition.state = "draft"
         component = described_class.new(edition: edition)
         render_inline component
@@ -196,16 +177,16 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
             render_inline component
           end
 
-          it "does NOT offer an 'Edit draft' link to edit a current draft" do
+          it "does NOT offer any link to edit a current draft" do
             expect(page).to have_no_css(
               ".actions a.govuk-button[href='/editions/123/workflow/edit_draft']",
-              text: "Edit draft",
             )
           end
         end
       end
     end
   end
+
   describe "link to latest published edition" do
     context "when the edition is in the 'published' state" do
       before do
@@ -314,8 +295,9 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
 
     context "when the edition is NOT in an awaiting_factcheck state" do
       (Edition.available_states - %i[awaiting_factcheck]).each do |state|
+        let(:edition) { build(:edition, :contact, state, id: 123, document: document) }
+
         before do
-          edition.state = state
           component = described_class.new(edition: edition)
           render_inline component
         end

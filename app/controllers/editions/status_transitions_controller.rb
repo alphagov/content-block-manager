@@ -1,10 +1,11 @@
 class Editions::StatusTransitionsController < BaseController
   class UnknownTransitionError < RuntimeError; end
+  class UnsupportedTransitionError < RuntimeError; end
 
   def create
     @edition = Edition.find(params[:id])
     begin
-      attempt_transition!(transition: params.fetch(:transition))
+      attempt_transition!
       handle_success
     rescue Transitions::InvalidTransition, Edition::Workflow::WorkflowCompletionError => e
       handle_failure(e)
@@ -15,13 +16,31 @@ class Editions::StatusTransitionsController < BaseController
 
 private
 
-  def attempt_transition!(transition:)
-    transition_method = "#{transition}!"
-    if @edition.respond_to?(transition_method)
-      @edition.send(transition_method)
-    else
-      raise UnknownTransitionError, "Transition event '#{transition}' is not recognised"
-    end
+  def transition
+    params.fetch(:transition)
+  end
+
+  def attempt_transition!
+    raise_if_transition_invalid
+
+    @edition.send("#{transition}!")
+  end
+
+  def raise_if_transition_invalid
+    raise_transition_unknown_error unless @edition.respond_to?(transition)
+    raise_transition_unsupported_error if transition_unsupported?
+  end
+
+  def raise_transition_unknown_error
+    raise UnknownTransitionError, "Transition event '#{transition}' is not recognised"
+  end
+
+  def raise_transition_unsupported_error
+    raise UnsupportedTransitionError, "Transition event '#{transition}' is not supported by this controller"
+  end
+
+  def transition_unsupported?
+    transition.in?(%w[complete_draft schedule])
   end
 
   def handle_success

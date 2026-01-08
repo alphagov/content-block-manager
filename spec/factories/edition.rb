@@ -38,6 +38,10 @@ FactoryBot.define do
       state { :draft }
     end
 
+    trait :draft_complete do
+      state { :draft_complete }
+    end
+
     trait :published do
       state { :published }
     end

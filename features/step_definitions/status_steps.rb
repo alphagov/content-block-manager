@@ -69,7 +69,7 @@ Then(/the calls to action are suited to the ([^"]*) state/) do |state|
     end
   when :awaiting_factcheck
     within ".actions" do
-      expect(page).to have_link("Complete draft")
+      expect(page).to have_link("Edit draft")
       expect(page).to have_link("Delete draft")
     end
   when :published

@@ -349,6 +349,20 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
     end
   end
 
+  context "when version has the 'draft_complete' state" do
+    before do
+      version.state = "draft_complete"
+    end
+
+    it "sets the #title to be 'Draft completed'" do
+      render_inline component
+
+      expect(page).to have_css(".timeline__title") do
+        expect(page).to have_content("Draft completed")
+      end
+    end
+  end
+
   context "when version has the 'awaiting_factcheck' state" do
     before do
       version.state = "awaiting_factcheck"

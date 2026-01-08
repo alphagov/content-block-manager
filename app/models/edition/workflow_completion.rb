@@ -17,7 +17,7 @@ class Edition::WorkflowCompletion
 
   def call
     validate_action
-    record_workflow_completion unless @edition.completed?
+    @edition.complete_draft! if @edition.draft?
 
     send(sanitised_save_action)
   end
@@ -32,10 +32,6 @@ private
 
   def sanitised_save_action
     VALID_SAVE_ACTIONS.fetch(@save_action)
-  end
-
-  def record_workflow_completion
-    @edition.update_column(:workflow_completed_at, Time.current)
   end
 
   def publish
@@ -53,7 +49,6 @@ private
   end
 
   def save_as_draft
-    # No action needed here as we don't publish drafts to the Publishing API. Just redirect.
     { path: document_path(@edition.document),
       flash: { notice: I18n.t("edition.confirmation_page.drafted.banner") } }
   end

@@ -149,6 +149,7 @@ en:
     states:
       label:
         draft: Draft
+        draft_complete: Draft complete
         awaiting_review: Awaiting 2i
         awaiting_factcheck: Awaiting factcheck
         scheduled: Scheduled
@@ -156,6 +157,7 @@ en:
         superseded: Superseded
         deleted: Deleted
       transition_message:
+        draft_complete: "This draft is now marked as complete"
         awaiting_review: "This edition is now ready to be reviewed by a second pair of eyes"
         awaiting_factcheck: "This edition is now ready to be fact-checked by a subject-matter expert"
         published: "This edition has now been published"
@@ -163,6 +165,7 @@ en:
         deleted: "The edition has been deleted"
       label_extended:
         draft: "Drafted on %{date} by %{user}"
+        draft_complete: "Draft completed on %{date} by %{user}"
         awaiting_review: "Sent for 2i review on %{date} by %{user}"
         awaiting_factcheck: "Sent for factcheck review on %{date} by %{user}"
         scheduled: "Scheduled for publication by %{user}"

@@ -309,7 +309,7 @@ end
 
 Then("the draft state of the object should be shown") do
   expect(page).to have_selector(".govuk-summary-list__key", text: "Status")
-  expect(page).to have_selector(".govuk-summary-list__value", text: "Drafted")
+  expect(page).to have_selector(".govuk-summary-list__value", text: "Draft completed")
 end
 
 Then("I should see the scheduled date on the object") do
