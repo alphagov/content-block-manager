@@ -463,3 +463,11 @@ Then("only one document with the title {string} should exist") do |title|
   documents_with_title = Document.all.select { |document| document.title == title }
   expect(documents_with_title.count).to eq(1)
 end
+
+Then("I see the warning that the pre-release features are enabled") do
+  expect(page).to have_content("PRE-RELEASE FEATURES ENABLED")
+end
+
+Then("I do not see the warning that the pre-release features are enabled") do
+  expect(page).to have_no_content("PRE-RELEASE FEATURES ENABLED")
+end

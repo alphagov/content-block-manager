@@ -1,5 +1,7 @@
 <% environment = GovukPublishingComponents::AppHelpers::Environment.current_acceptance_environment %>
 
+<%= render partial: "shared/pre_release_feature_enabled_banner" if pre_release_features? %>
+
 <%= render "govuk_publishing_components/components/layout_header", {
   product_name: ContentBlockManager.product_name,
   environment: environment,
