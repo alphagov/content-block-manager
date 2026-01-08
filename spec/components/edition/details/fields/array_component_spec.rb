@@ -10,7 +10,7 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
       build("field", name: "telephone_number", enum_values: nil, default_value: nil, label: "Telephone number"),
     ]
   end
-  let(:field) { build("field", name: "items", is_required?: true, default_value:, label: "Items", nested_fields:) }
+  let(:field) { build("field", name: "items", is_required?: true, default_value:, label: "Items", nested_fields:, format: "array") }
   let(:field_value) { nil }
   let(:object_title) { nil }
 
@@ -27,19 +27,36 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
   end
 
   describe "when there are no items present" do
-    it "renders with one empty item and a template" do
+    it "renders with one empty item" do
       render_inline component
 
-      expect(page).to have_css ".gem-c-add-another" do |component|
-        expect(component).to have_css ".js-add-another__fieldset", count: 1
-        expect(component).to have_css ".js-add-another__empty", count: 1
+      expect(page).to have_css ".app-c-content-block-manager-array-component" do |component|
+        expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", count: 1
 
-        expect(component).to have_css ".js-add-another__fieldset", text: /Item 1/ do |fieldset|
+        expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 1/ do |fieldset|
           expect_form_fields(fieldset:, index: 0, fields: nested_fields)
         end
+      end
+    end
 
-        expect(component).to have_css ".js-add-another__empty", text: /Item 2/ do |fieldset|
-          expect_form_fields(fieldset:, index: 1, fields: nested_fields)
+    context "when the add_another param is set" do
+      before do
+        vc_test_request.request_parameters = { add_another: field.name }
+      end
+
+      it "renders with an extra empty item" do
+        render_inline component
+
+        expect(page).to have_css ".app-c-content-block-manager-array-component" do |component|
+          expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", count: 2
+
+          expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 1/ do |fieldset|
+            expect_form_fields(fieldset:, index: 0, fields: nested_fields)
+          end
+
+          expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 2/ do |fieldset|
+            expect_form_fields(fieldset:, index: 1, fields: nested_fields)
+          end
         end
       end
     end
@@ -62,20 +79,15 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
     it "renders a fieldset for each item and a template" do
       render_inline component
 
-      expect(page).to have_css ".gem-c-add-another" do |component|
-        expect(component).to have_css ".js-add-another__fieldset", count: 2
-        expect(component).to have_css ".js-add-another__empty", count: 1
+      expect(page).to have_css ".app-c-content-block-manager-array-component" do |component|
+        expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", count: 2
 
-        expect(component).to have_css ".js-add-another__fieldset", text: /Item 1/ do |fieldset|
+        expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 1/ do |fieldset|
           expect_form_fields(fieldset:, index: 0, fields: nested_fields, values: field_value[0])
         end
 
-        expect(component).to have_css ".js-add-another__fieldset", text: /Item 2/ do |fieldset|
+        expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 2/ do |fieldset|
           expect_form_fields(fieldset:, index: 1, fields: nested_fields, values: field_value[1])
-        end
-
-        expect(component).to have_css ".js-add-another__empty", text: /Item 3/ do |fieldset|
-          expect_form_fields(fieldset:, index: 2, fields: nested_fields)
         end
       end
     end
@@ -83,12 +95,38 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
     it "renders the hidden delete checkbox for each item" do
       render_inline component
 
-      expect(page).to have_css ".js-add-another__fieldset", text: /Item 1/ do |fieldset|
+      expect(page).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 1/ do |fieldset|
         expect(fieldset).to have_css "input[type='checkbox'][name='edition[details][items][][_destroy]']"
       end
 
-      expect(page).to have_css ".js-add-another__fieldset", text: /Item 2/ do |fieldset|
+      expect(page).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 2/ do |fieldset|
         expect(fieldset).to have_css "input[type='checkbox'][name='edition[details][items][][_destroy]']"
+      end
+    end
+
+    context "when the add_another param is set" do
+      before do
+        vc_test_request.request_parameters = { add_another: field.name }
+      end
+
+      it "renders with an extra empty item" do
+        render_inline component
+
+        expect(page).to have_css ".app-c-content-block-manager-array-component" do |component|
+          expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", count: 3
+
+          expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 1/ do |fieldset|
+            expect_form_fields(fieldset:, index: 0, fields: nested_fields, values: field_value[0])
+          end
+
+          expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 2/ do |fieldset|
+            expect_form_fields(fieldset:, index: 1, fields: nested_fields, values: field_value[1])
+          end
+
+          expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 3/ do |fieldset|
+            expect_form_fields(fieldset:, index: 2, fields: nested_fields)
+          end
+        end
       end
     end
   end
@@ -126,12 +164,12 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
       it "does not render any deletion checkboxes" do
         render_inline component
 
-        expect(page).to have_css ".js-add-another__fieldset", text: /Item 1/ do |fieldset|
+        expect(page).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 1/ do |fieldset|
           expect(fieldset).to have_css "input[type='hidden'][name='edition[details][items][][_destroy]'][value='0']", visible: false
           expect(fieldset).to_not have_css "input[type='checkbox'][name='edition[details][items][][_destroy]']"
         end
 
-        expect(page).to have_css ".js-add-another__fieldset", text: /Item 2/ do |fieldset|
+        expect(page).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 2/ do |fieldset|
           expect(fieldset).to have_css "input[type='hidden'][name='edition[details][items][][_destroy]'][value='0']", visible: false
           expect(fieldset).to_not have_css "input[type='checkbox'][name='edition[details][items][][_destroy]']"
         end
@@ -150,12 +188,12 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
       it "renders a deletion checkbox for the unpublished item only" do
         render_inline component
 
-        expect(page).to have_css ".js-add-another__fieldset", text: /Item 1/ do |fieldset|
+        expect(page).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 1/ do |fieldset|
           expect(fieldset).to have_css "input[type='hidden'][name='edition[details][items][][_destroy]'][value='0']", visible: false
           expect(fieldset).to_not have_css "input[type='checkbox'][name='edition[details][items][][_destroy]']"
         end
 
-        expect(page).to have_css ".js-add-another__fieldset", text: /Item 2/ do |fieldset|
+        expect(page).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 2/ do |fieldset|
           expect(fieldset).to have_css "input[type='checkbox'][name='edition[details][items][][_destroy]']"
           expect(fieldset).to_not have_css "input[type='hidden'][name='edition[details][items][][_destroy]'][value='0']", visible: false
         end
@@ -173,7 +211,11 @@ private
 
       input = fieldset.find("input[name='#{field.name_attribute}']")
       expect(input).to_not be_nil
-      expect(input.value).to eq(values[field.name])
+      if values[field.name]
+        expect(input.value).to eq(values[field.name])
+      else
+        expect(input.value).to be_nil
+      end
     end
   end
 end

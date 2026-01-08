@@ -1,11 +1,22 @@
-<div class="app-c-content-block-manager-array-component" data-ga4-section="<%= label %>">
-  <%= render "govuk_publishing_components/components/add_another", {
-    fieldset_legend: label,
-    add_button_text: I18n.t("buttons.add_another", item: label.downcase),
-    items:,
-    empty:,
-    data_attributes: {
-      ga4_start_index: 0,
-    },
-  } %>
+<div class="app-c-content-block-manager-array-component" data-ga4-section="<%= label %>" data-module="array-component">
+  <%= helpers.turbo_frame_tag frame_id do %>
+    <% components.each do |component| %>
+      <%= render component %>
+    <% end %>
+
+    <% if params[:add_another] == field.name %>
+      <%= render empty_component %>
+    <% end %>
+
+    <%= render "govuk_publishing_components/components/button", {
+      text: I18n.t("buttons.add_another", item: label.downcase),
+      name: "add_another",
+      value: field.name,
+      type: "submit",
+      secondary_solid: true,
+      data_attributes: {
+        frame_id:,
+      },
+    } %>
+  <% end %>
 </div>

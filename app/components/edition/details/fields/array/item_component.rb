@@ -15,11 +15,8 @@ private
 
   attr_reader :field, :edition, :schema, :value, :index, :can_be_deleted, :hints
 
-  def wrapper_classes
-    [
-      "app-c-content-block-manager-array-item-component",
-      ("app-c-content-block-manager-array-item-component--immutable" unless can_be_deleted),
-    ].join(" ")
+  def label
+    "#{field.label.singularize} #{index + 1}"
   end
 
   def components
@@ -38,5 +35,18 @@ private
       index:,
       details: value,
     )
+  end
+
+  def destroy_checkbox
+    field_name = "#{field.name_attribute}[_destroy]"
+    if can_be_deleted
+      render("govuk_publishing_components/components/checkboxes", {
+        name: field_name,
+        items: [{ label: "Delete", value: "1" }],
+        classes: "js-array-item-destroy",
+      })
+    else
+      hidden_field_tag(field_name, 0)
+    end
   end
 end
