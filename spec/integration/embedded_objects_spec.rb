@@ -202,6 +202,25 @@ RSpec.describe EmbeddedObjects, type: :request do
         expect(flash.[](:notice)).to eq("Something added. You can add another some group or finish creating the schema block.")
       end
     end
+
+    context "when add_another is set" do
+      before do
+        allow(edition).to receive(:save!)
+        post create_embedded_object_edition_path(edition, object_type:), params: params.merge(add_another: "something")
+      end
+
+      it "assigns the work-in-progress values to the @edition variable and re-renders the form" do
+        expect(response).to(render_template(:new))
+
+        updated_edition = assigns(:edition)
+
+        expect(updated_edition.details).to eq(expected_details)
+      end
+
+      it "does not save the edition" do
+        expect(edition).not_to have_received(:save!)
+      end
+    end
   end
 
   describe "#edit" do
@@ -333,6 +352,23 @@ RSpec.describe EmbeddedObjects, type: :request do
       end
     end
 
+    context "when add_another is set" do
+      before do
+        allow(edition).to receive(:save!)
+        put embedded_object_edition_path(edition, object_type:, object_title:), params: params.merge(add_another: "something")
+      end
+
+      it "assigns the work-in-progress values to the @edition variable and re-renders the form" do
+        expect(response).to(render_template(:edit))
+
+        updated_edition = assigns(:edition)
+
+        expect(updated_edition.details).to eq({ "something" => { "embedded" => details[object_type] } })
+      end
+
+      it "does not save the edition" do
+        expect(edition).not_to have_received(:save!)
+      end
     end
   end
 end
