@@ -21,11 +21,9 @@
       <%= date %>
   </p>
 
-  <% if version.state == "awaiting_factcheck" %>
+  <% if outcome %>
     <div class="timeline__review-outcome">
-      <p class="govuk-body">
-        <%= review_outcome %>
-      </p>
+      <p class="govuk-body"><%= outcome_resolution %></p>
     </div>
   <% end %>
 
