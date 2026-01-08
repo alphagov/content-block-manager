@@ -366,8 +366,8 @@ GEM
       net-smtp
     marcel (1.1.0)
     matrix (0.4.3)
-    maxitest (6.2.0)
-      minitest (>= 5.20.0, < 5.28.0)
+    maxitest (7.1.0)
+      minitest (>= 6.0.0, < 6.1.0)
     memoist3 (1.0.0)
     method_source (1.1.0)
     mime-types (3.7.0)
@@ -375,7 +375,8 @@ GEM
       mime-types-data (~> 3.2025, >= 3.2025.0507)
     mime-types-data (3.2025.0924)
     mini_mime (1.1.5)
-    minitest (5.27.0)
+    minitest (6.0.1)
+      prism (~> 1.5)
     minitest-fail-fast (0.2.0)
       minitest (>= 5.0, < 7)
     minitest-stub-const (0.6)
@@ -1107,13 +1108,13 @@ CHECKSUMS
   mail (2.9.0) sha256=6fa6673ecd71c60c2d996260f9ee3dd387d4673b8169b502134659ece6d34941
   marcel (1.1.0) sha256=fdcfcfa33cc52e93c4308d40e4090a5d4ea279e160a7f6af988260fa970e0bee
   matrix (0.4.3) sha256=a0d5ab7ddcc1973ff690ab361b67f359acbb16958d1dc072b8b956a286564c5b
-  maxitest (6.2.0) sha256=bb66472dd3f6565e4db5246826a05ce9096958d9e26ba9a8fdcae20288be1f4f
+  maxitest (7.1.0) sha256=b0a0c0ef5e812b9e271d8e3557e060a975842e69f46a07e882e4ec223811cee7
   memoist3 (1.0.0) sha256=686e42402cf150a362050c23143dc57b0ef88f8c344943ff8b7845792b50d56f
   method_source (1.1.0) sha256=181301c9c45b731b4769bc81e8860e72f9161ad7d66dd99103c9ab84f560f5c5
   mime-types (3.7.0) sha256=dcebf61c246f08e15a4de34e386ebe8233791e868564a470c3fe77c00eed5e56
   mime-types-data (3.2025.0924) sha256=f276bca15e59f35767cbcf2bc10e023e9200b30bd6a572c1daf7f4cc24994728
   mini_mime (1.1.5) sha256=8681b7e2e4215f2a159f9400b5816d85e9d8c6c6b491e96a12797e798f8bccef
-  minitest (5.27.0) sha256=2d3b17f8a36fe7801c1adcffdbc38233b938eb0b4966e97a6739055a45fa77d5
+  minitest (6.0.1) sha256=7854c74f48e2e975969062833adc4013f249a4b212f5e7b9d5c040bf838d54bb
   minitest-fail-fast (0.2.0) sha256=1fc53de36335679d0ad7cb244f4a12cc5869408592c27a6f802cf7fb9542150b
   minitest-stub-const (0.6) sha256=b39f34dd6b8e7045fcc36820083aceaa68075318e4c4f365b12f11bd5f34b279
   mocha (3.0.1) sha256=74f82c5959e3df6cfa2757d60aa420dcb151ac7c5eb61dcebf1cd4e368ed7469
