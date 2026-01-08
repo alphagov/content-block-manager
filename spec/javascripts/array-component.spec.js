@@ -54,4 +54,71 @@ describe('GOVUK.Modules.ArrayComponent', function () {
       expect(form.dataset.turbo).toEqual('false')
     })
 
+    it('re-initializes the component when the turbo frame renders', function () {
+      spyOn(component, 'init').and.callThrough()
+
+      addButton.click()
+
+      // Simulate new content arriving (Turbo Frame Render)
+      const newItemHtml = `
+        <div class="app-c-content-block-manager-array-item-component" id="item-2">
+          <div class="checkbox-wrapper">
+            <input type="checkbox" name="item[2][_destroy]" class="js-array-item-destroy">
+          </div>
+        </div>`
+      frame.innerHTML += newItemHtml
+
+      const event = new window.Event('turbo:frame-render', { bubbles: true })
+      frame.dispatchEvent(event)
+
+      expect(component.init).toHaveBeenCalledTimes(1)
+
+      const newButton = frame.querySelector(
+        '#item-2 .js-array-item-delete-button'
+      )
+      expect(newButton).not.toBeNull()
+    })
+  })
+
+  describe('initialization', function () {
+    it('creates a "Remove" button for existing delete checkboxes', function () {
+      component.init()
+      const deleteButton = document.querySelector(
+        '.js-array-item-delete-button'
+      )
+      expect(deleteButton).not.toBeNull()
+      expect(deleteButton.innerHTML).toEqual('Remove')
+      expect(deleteButton.classList).toContain('govuk-button--warning')
+    })
+
+    it('hides the original delete checkbox', function () {
+      component.init()
+      const checkbox = document.querySelector('.js-array-item-destroy')
+      expect(checkbox.classList).toContain('govuk-visually-hidden')
+    })
+
+    it('does not create duplicate buttons if init is called twice', function () {
+      component.init()
+      component.init()
+      const buttons = document.querySelectorAll('.js-array-item-delete-button')
+      expect(buttons.length).toEqual(1)
+    })
+  })
+
+  describe('clicking the "Remove" button', function () {
+    it('removes the entire item component from the DOM', function () {
+      component.init()
+
+      const item = document.getElementById('item-1')
+      const deleteButton = document.querySelector(
+        '.js-array-item-delete-button'
+      )
+
+      expect(document.body.contains(item)).toBe(true)
+
+      deleteButton.click()
+
+      expect(document.body.contains(item)).toBe(false)
+    })
+  })
 })
