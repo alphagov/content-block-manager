@@ -1,5 +1,16 @@
-<%= content_tag :div, class: wrapper_classes do %>
-  <% components.each do |component| %>
-    <%= render component %>
+<%= content_tag :div, class: "app-c-content-block-manager-array-item-component" do %>
+  <% fields = capture do %>
+    <% components.each do |component| %>
+      <%= render component %>
+    <% end %>
+    <%= destroy_checkbox %>
+  <% end %>
+  <%= render "govuk_publishing_components/components/fieldset", {
+    legend_text: label,
+    heading_level: 3,
+    heading_size: "m",
+    classes: "app-c-content-block-manager-array-item-component__fieldset",
+  } do %>
+    <%= fields %>
   <% end %>
 <% end %>

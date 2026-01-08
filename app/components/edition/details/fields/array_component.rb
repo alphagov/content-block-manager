@@ -14,28 +14,29 @@ private
   end
 
   def label
-    context.label.singularize
+    field.label.singularize
   end
 
   def value
     context.value || []
   end
 
-  def items
-    if value.count.positive?
-      Array.new(value.count) do |index|
-        {
-          fields: render(component(index)),
-          destroy_checkbox: destroy_checkbox(index),
-        }
-      end
-    else
-      [{ fields: render(component(0)) }]
+  def number_of_items
+    value.count.positive? ? value.count : 1
+  end
+
+  def components
+    number_of_items.times.map do |index|
+      component(index)
     end
   end
 
-  def empty
-    render component(value.count.positive? ? value.count : 1)
+  def empty_component
+    component(number_of_items)
+  end
+
+  def frame_id
+    "array-component-#{edition.id}-#{field.name}"
   end
 
   def component(index)
@@ -48,15 +49,6 @@ private
       can_be_deleted: can_be_deleted?(index),
       hints: hint_text,
     )
-  end
-
-  def destroy_checkbox(index)
-    field_name = "#{name}[][_destroy]"
-    if can_be_deleted?(index)
-      render("govuk_publishing_components/components/checkboxes", { name: field_name, items: [{ label: "Delete", value: "1" }] })
-    else
-      hidden_field_tag(field_name, 0)
-    end
   end
 
   def can_be_deleted?(index)

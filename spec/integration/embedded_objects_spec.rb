@@ -52,9 +52,9 @@ RSpec.describe EmbeddedObjects, type: :request do
           object_type,
         )
 
-        expect(edition).to eq(assigns(:edition))
-        expect(stub_schema).to eq(assigns(:schema))
-        expect(stub_subschema).to eq(assigns(:subschema))
+        expect(assigns(:edition)).to eq(edition)
+        expect(assigns(:schema)).to eq(stub_schema)
+        expect(assigns(:subschema)).to eq(stub_subschema)
 
         assert_template :new
       end
@@ -83,8 +83,8 @@ RSpec.describe EmbeddedObjects, type: :request do
               step: "group_#{group}",
             ),
           )
-          expect(new_embedded_objects_options_redirect_edition_path(edition)).to eq(assigns(:redirect_path))
-          expect(edition.title).to eq(assigns(:context))
+          expect(assigns(:redirect_path)).to eq(new_embedded_objects_options_redirect_edition_path(edition))
+          expect(assigns(:context)).to eq(edition.title)
 
           assert_template "shared/embedded_objects/select_subschema"
         end
@@ -99,7 +99,7 @@ RSpec.describe EmbeddedObjects, type: :request do
             group:,
           )
 
-          expect(404).to eq(response.status)
+          expect(response.status).to eq(404)
         end
       end
     end
@@ -149,20 +149,36 @@ RSpec.describe EmbeddedObjects, type: :request do
   end
 
   describe "#create" do
-    it "should create an embedded object for an edition" do
-      post create_embedded_object_edition_path(
-        edition,
-        object_type:,
-      ), params: {
-        "edition" => {
-          details: {
-            object_type => {
-              "title" => "New Thing",
-              "is" => "something",
-            },
+    let(:details) do
+      {
+        object_type => {
+          "title" => "New Thing",
+          "is" => "something",
+        },
+      }
+    end
+
+    let(:expected_details) do
+      {
+        "something" => {
+          "embedded" => {
+            "title" => "Embedded", "is" => "here"
+          },
+          "new-thing" => {
+            "title" => "New Thing", "is" => "something"
           },
         },
       }
+    end
+
+    let(:params) do
+      {
+        "edition" => { details: },
+      }
+    end
+
+    it "should create an embedded object for an edition" do
+      post create_embedded_object_edition_path(edition, object_type:), params: params
 
       expect(response).to redirect_to(
         workflow_path(edition, step: "#{Workflow::Step::SUBSCHEMA_PREFIX}#{object_type}"),
@@ -170,18 +186,7 @@ RSpec.describe EmbeddedObjects, type: :request do
 
       updated_edition = edition.reload
 
-      expect(updated_edition.details).to eq(
-        {
-          "something" => {
-            "embedded" => {
-              "title" => "Embedded", "is" => "here"
-            },
-            "new-thing" => {
-              "title" => "New Thing", "is" => "something"
-            },
-          },
-        },
-      )
+      expect(updated_edition.details).to eq(expected_details)
       expect(flash.[](:notice)).to eq("Something added. You can add another something or finish creating the schema block.")
     end
 
@@ -189,24 +194,31 @@ RSpec.describe EmbeddedObjects, type: :request do
       let(:group) { "some_group" }
 
       it "should redirect to the group step" do
-        post create_embedded_object_edition_path(
-          edition,
-          object_type:,
-        ), params: {
-          "edition" => {
-            details: {
-              object_type => {
-                "title" => "New Thing",
-                "is" => "something",
-              },
-            },
-          },
-        }
+        post create_embedded_object_edition_path(edition, object_type:), params: params
 
         expect(response).to redirect_to(
           workflow_path(edition, step: "#{Workflow::Step::GROUP_PREFIX}#{group}"),
         )
         expect(flash.[](:notice)).to eq("Something added. You can add another some group or finish creating the schema block.")
+      end
+    end
+
+    context "when add_another is set" do
+      before do
+        allow(edition).to receive(:save!)
+        post create_embedded_object_edition_path(edition, object_type:), params: params.merge(add_another: "something")
+      end
+
+      it "assigns the work-in-progress values to the @edition variable and re-renders the form" do
+        expect(response).to(render_template(:new))
+
+        updated_edition = assigns(:edition)
+
+        expect(updated_edition.details).to eq(expected_details)
+      end
+
+      it "does not save the edition" do
+        expect(edition).not_to have_received(:save!)
       end
     end
   end
@@ -219,11 +231,11 @@ RSpec.describe EmbeddedObjects, type: :request do
         object_title: "embedded",
       )
 
-      expect(edition).to eq(assigns(:edition))
-      expect(stub_schema).to eq(assigns(:schema))
-      expect(stub_subschema).to eq(assigns(:subschema))
-      expect("embedded").to eq(assigns(:object_title))
-      expect({ "is" => "here", "title" => "Embedded" }).to eq(assigns(:object))
+      expect(assigns(:edition)).to eq(edition)
+      expect(assigns(:schema)).to eq(stub_schema)
+      expect(assigns(:subschema)).to eq(stub_subschema)
+      expect(assigns(:object_title)).to eq("embedded")
+      expect(assigns(:object)).to eq({ "is" => "here", "title" => "Embedded" })
     end
 
     it "should assign the redirect_url if given" do
@@ -234,7 +246,7 @@ RSpec.describe EmbeddedObjects, type: :request do
         redirect_url: "https://example.com",
       )
 
-      expect("https://example.com").to eq(assigns(:redirect_url))
+      expect(assigns(:redirect_url)).to eq("https://example.com")
     end
 
     it "should 404 if the subschema does not exist" do
@@ -246,7 +258,7 @@ RSpec.describe EmbeddedObjects, type: :request do
         object_title: "embedded",
       )
 
-      expect(404).to eq(response.status)
+      expect(response.status).to eq(404)
     end
 
     it "should 404 if the object cannot be found" do
@@ -258,27 +270,33 @@ RSpec.describe EmbeddedObjects, type: :request do
         object_title: "something_else",
       )
 
-      expect(404).to eq(response.status)
+      expect(response.status).to eq(404)
     end
   end
 
   describe "#update" do
-    it "should redirect to the redirect_url" do
-      put embedded_object_edition_path(
-        edition,
-        object_type:,
-        object_title: "embedded",
-      ), params: {
-        redirect_url: documents_path,
-        "edition" => {
-          details: {
-            object_type => {
-              "title" => "Embedded",
-              "is" => "different",
-            },
-          },
+    let(:details) do
+      {
+        object_type => {
+          "title" => "Embedded",
+          "is" => "different",
         },
       }
+    end
+
+    let(:object_title) { "embedded" }
+
+    let(:params) do
+      {
+        redirect_url: documents_path,
+        "edition" => {
+          details:,
+        },
+      }
+    end
+
+    it "should redirect to the redirect_url" do
+      put embedded_object_edition_path(edition, object_type:, object_title:), params: params
 
       expect(response).to redirect_to(documents_path)
       expect(flash.[](:notice)).to eq("Something edited. You can add another something or finish creating the schema block.")
@@ -288,81 +306,69 @@ RSpec.describe EmbeddedObjects, type: :request do
       let(:group) { "some_group" }
 
       it "should redirect to the redirect_url" do
-        put embedded_object_edition_path(
-          edition,
-          object_type:,
-          object_title: "embedded",
-        ), params: {
-          redirect_url: documents_path,
-          "edition" => {
-            details: {
-              object_type => {
-                "title" => "Embedded",
-                "is" => "different",
-              },
-            },
-          },
-        }
+        put embedded_object_edition_path(edition, object_type:, object_title:), params: params
 
         expect(response).to redirect_to(documents_path)
         expect(flash.[](:notice)).to eq("Something edited. You can add another some group or finish creating the schema block.")
       end
     end
 
-    it "should not rename the object if a new title is given" do
-      put embedded_object_edition_path(
-        edition,
-        object_type:,
-        object_title: "embedded",
-      ), params: {
-        redirect_url: documents_path,
-        "edition" => {
-          details: {
-            object_type => {
-              "title" => "New Name",
-              "is" => "different",
-            },
+    context "if a new title is given" do
+      let(:details) do
+        {
+          object_type => {
+            "title" => "New Name",
+            "is" => "different",
           },
-        },
-      }
+        }
+      end
 
-      expect(response).to redirect_to(documents_path)
+      it "should not rename the object" do
+        put embedded_object_edition_path(edition, object_type:, object_title:), params: params
 
-      updated_edition = edition.reload
+        expect(response).to redirect_to(documents_path)
 
-      expect({ "something" => { "embedded" => { "title" => "New Name", "is" => "different" } } }).to eq(updated_edition.details)
+        updated_edition = edition.reload
+
+        expect(updated_edition.details).to eq({ "something" => { "embedded" => details[object_type] } })
+      end
     end
 
-    it "should render errors if a validation error is thrown" do
-      allow_any_instance_of(Edition).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
+    context "if a validation error is thrown" do
+      before do
+        allow_any_instance_of(Edition).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
+      end
 
-      put embedded_object_edition_path(
-        edition,
-        object_type:,
-        object_title: "embedded",
-      ), params: {
-        "edition" => {
-          details: {
-            object_type => {
-              "title" => "New Name",
-              "is" => "different",
-            },
-          },
-        },
-      }
+      it "should render errors" do
+        put embedded_object_edition_path(edition, object_type:, object_title:), params: params
 
-      expect(edition).to eq(assigns(:edition))
-      expect(stub_schema).to eq(assigns(:schema))
-      expect(stub_subschema).to eq(assigns(:subschema))
-      expect("embedded").to eq(assigns(:object_title))
-      expect(assigns(:object).to_h).to eq(
-        {
-          "title" => "New Name",
-          "is" => "different",
-        },
-      )
+        expect(assigns(:edition)).to eq(edition)
+        expect(assigns(:schema)).to eq(stub_schema)
+        expect(assigns(:subschema)).to eq(stub_subschema)
+        expect(assigns(:object_title)).to eq("embedded")
+        expect(assigns(:object).to_h).to eq(details[object_type])
 
-      expect(response).to render_template(:edit)
+        expect(response).to render_template(:edit)
+      end
+    end
+
+    context "when add_another is set" do
+      before do
+        allow(edition).to receive(:save!)
+        put embedded_object_edition_path(edition, object_type:, object_title:), params: params.merge(add_another: "something")
+      end
+
+      it "assigns the work-in-progress values to the @edition variable and re-renders the form" do
+        expect(response).to(render_template(:edit))
+
+        updated_edition = assigns(:edition)
+
+        expect(updated_edition.details).to eq({ "something" => { "embedded" => details[object_type] } })
+      end
+
+      it "does not save the edition" do
+        expect(edition).not_to have_received(:save!)
+      end
     end
   end
 end

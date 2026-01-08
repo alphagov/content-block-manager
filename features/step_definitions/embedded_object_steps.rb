@@ -38,7 +38,7 @@ And("I add the following {string} to the form:") do |item_type, table|
     field_prefix = "edition[details][#{@object_type.pluralize}][#{item_type}][]"
 
     row.each do |key, value|
-      within all(".js-add-another__fieldset").last do
+      within all(".app-c-content-block-manager-array-item-component").last do
         field = page.all(:css, "[name='#{field_prefix}[#{key}]']").last
         if field.tag_name == "select"
           select value, from: field[:id]
@@ -50,6 +50,7 @@ And("I add the following {string} to the form:") do |item_type, table|
 
     page.driver.with_playwright_page do |page|
       page.get_by_text(I18n.t("buttons.add_another", item: item_type.humanize.singularize)).click unless row == fields.last
+      page.wait_for_load_state(state: "networkidle")
     end
   end
 end
@@ -182,8 +183,9 @@ And(/^I should see the rates for that block$/) do
   end
 end
 
-When(/^I click to edit the first rate$/) do
-  key = @content_block.details["rates"].keys.first
+When(/^I click to edit the first (.+)$/) do |type|
+  @content_block ||= Edition.all.last
+  key = @content_block.details[type.pluralize].keys.first
   within "div[data-test-id=embedded_#{key}]" do
     click_on "Edit"
   end

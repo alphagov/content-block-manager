@@ -33,19 +33,24 @@ class Editions::EmbeddedObjectsController < BaseController
     @schema, @subschema = get_schema_and_subschema(@edition.document.block_type, params[:object_type])
     @object = object_params(@subschema).dig(:details, @subschema.block_type)
     @edition.add_object_to_details(@subschema.block_type, @object)
-    @edition.save!
-
-    object_or_group = @subschema.group ? @subschema.group.humanize.singularize : @subschema.name.singularize
-
-    flash[:notice] = I18n.t(
-      "edition.create.embedded_objects.added_confirmation",
-      object_name: @subschema.name.singularize,
-      object_or_group: object_or_group.downcase,
-      schema_name: @schema.name.singularize.downcase,
-    )
-    redirect_to embedded_objects_path
-  rescue ActiveRecord::RecordInvalid
     @back_link = embedded_objects_path
+
+    if params[:add_another]
+      render :new
+    else
+      @edition.save!
+
+      object_or_group = @subschema.group ? @subschema.group.humanize.singularize : @subschema.name.singularize
+
+      flash[:notice] = I18n.t(
+        "edition.create.embedded_objects.added_confirmation",
+        object_name: @subschema.name.singularize,
+        object_or_group: object_or_group.downcase,
+        schema_name: @schema.name.singularize.downcase,
+      )
+      redirect_to embedded_objects_path
+    end
+  rescue ActiveRecord::RecordInvalid
     render :new, status: :unprocessable_content
   end
 
@@ -61,21 +66,27 @@ class Editions::EmbeddedObjectsController < BaseController
   def update
     @schema, @subschema = get_schema_and_subschema(@edition.document.block_type, params[:object_type])
     @object = object_params(@subschema).dig(:details, @subschema.block_type)
-    @edition.update_object_with_details(params[:object_type], params[:object_title], @object)
-    @edition.save!
-
-    object_or_group = @subschema.group ? @subschema.group.humanize.singularize : @subschema.name.singularize
-
-    flash[:notice] = I18n.t(
-      "edition.create.embedded_objects.edited_confirmation",
-      object_name: @subschema.name.singularize,
-      object_or_group: object_or_group.downcase,
-      schema_name: @schema.name.singularize.downcase,
-    )
-    redirect_to params[:redirect_url], allow_other_host: false
-  rescue ActiveRecord::RecordInvalid
     @redirect_url = params[:redirect_url]
     @object_title = params[:object_title]
+
+    @edition.update_object_with_details(params[:object_type], params[:object_title], @object)
+
+    if params[:add_another]
+      render :edit
+    else
+      @edition.save!
+
+      object_or_group = @subschema.group ? @subschema.group.humanize.singularize : @subschema.name.singularize
+      flash[:notice] = I18n.t(
+        "edition.create.embedded_objects.edited_confirmation",
+        object_name: @subschema.name.singularize,
+        object_or_group: object_or_group.downcase,
+        schema_name: @schema.name.singularize.downcase,
+      )
+
+      redirect_to params[:redirect_url], allow_other_host: false
+    end
+  rescue ActiveRecord::RecordInvalid
     render :edit
   end
 
