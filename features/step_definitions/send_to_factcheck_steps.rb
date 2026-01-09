@@ -1,6 +1,6 @@
 Then("I see a principal call to action of 'Send to factcheck'") do
   expect(page).to have_css(
-    "a.govuk-button[href='#{new_review_outcome_path(edition)}']",
+    "a.govuk-button[href='#{new_review_outcome_edition_path(edition)}']",
     text: "Send to factcheck",
   )
 end
