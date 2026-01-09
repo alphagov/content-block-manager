@@ -38,6 +38,12 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
     allow(schema).to receive(:body).and_return(body)
   end
 
+  it "renders inside a Turbo Frame with the correct ID" do
+    render_inline component
+
+    expect(page).to have_css "turbo-frame[id='array-component-#{edition.id}-#{context.id}']"
+  end
+
   describe "when there are no items present" do
     it "renders with one empty item" do
       render_inline component

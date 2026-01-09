@@ -36,7 +36,7 @@ private
   end
 
   def frame_id
-    "array-component-#{edition.id}-#{field.name}"
+    "array-component-#{edition.id}-#{context.id}"
   end
 
   def component(index)
