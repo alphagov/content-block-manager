@@ -307,6 +307,7 @@ RSpec.describe Schema::Field do
             "something" => {
               "type" => "array",
               "items" => {
+                "type" => "object",
                 "properties" => {
                   "foo" => { "type" => "string" },
                   "bar" => { "type" => "string", "enum" => %w[foo bar] },
@@ -318,28 +319,32 @@ RSpec.describe Schema::Field do
       end
 
       it "returns the array items" do
-        assert_equal field.array_items, {
-          "properties" => {
-            "foo" => { "type" => "string" },
-            "bar" => { "type" => "string", "enum" => %w[foo bar] },
-          },
-        }
+        properties = field.array_items["properties"]
+        expect(properties.keys).to eq(%w[foo bar])
+
+        expect(properties).to eq({
+          "foo" => { "type" => "string" },
+          "bar" => { "type" => "string", "enum" => %w[foo bar] },
+        })
       end
 
       describe "when an order is specified" do
         let(:config) do
           {
-            "field_order" => %w[bar foo],
+            "fields" => {
+              "something" => { "field_order" => %w[bar foo] },
+            },
           }
         end
 
         it "returns the array items with the specified order" do
-          assert_equal field.array_items, {
-            "properties" => {
-              "bar" => { "type" => "string", "enum" => %w[foo bar] },
-              "foo" => { "type" => "string" },
-            },
-          }
+          properties = field.array_items["properties"]
+          expect(properties.keys).to eq(%w[bar foo])
+
+          expect(properties).to eq({
+            "bar" => { "type" => "string", "enum" => %w[foo bar] },
+            "foo" => { "type" => "string" },
+          })
         end
       end
 
