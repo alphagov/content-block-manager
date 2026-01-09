@@ -78,6 +78,17 @@ describe('GOVUK.Modules.ArrayComponent', function () {
       )
       expect(newButton).not.toBeNull()
     })
+
+    it('reinitializes all GOV.UK components within the frame', function () {
+      spyOn(GOVUK.modules, 'start').and.callThrough()
+
+      addButton.click()
+
+      const event = new window.Event('turbo:frame-render', { bubbles: true })
+      frame.dispatchEvent(event)
+
+      expect(GOVUK.modules.start).toHaveBeenCalledWith(event.target)
+    })
   })
 
   describe('initialization', function () {
