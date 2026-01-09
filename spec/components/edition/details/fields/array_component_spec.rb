@@ -116,6 +116,24 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
       end
     end
 
+    describe "when there are errors present" do
+      before do
+        edition.errors.add(nested_fields[0].error_key([0]).to_sym, "Label is invalid")
+        edition.errors.add(nested_fields[1].error_key([0]).to_sym, "Telephone number is invalid")
+
+        edition.errors.add(nested_fields[0].error_key([1]).to_sym, "Label is invalid")
+        edition.errors.add(nested_fields[1].error_key([1]).to_sym, "Telephone number is invalid")
+      end
+
+      it "should render the error messages" do
+        render_inline component
+
+        expect(page).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 1/ do |fieldset|
+          expect(fieldset).to have_text "Label is invalid"
+        end
+      end
+    end
+
     context "when the add_another param is set" do
       before do
         vc_test_request.request_parameters = { add_another: field.name }
@@ -213,15 +231,34 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
     end
   end
 
+  describe "a field is deeply nested" do
+    let(:parent_indexes) { [1] }
+    let(:context) do
+      Edition::Details::Fields::Context.new(edition:, field:, schema:, object_title:, parent_indexes:)
+    end
+
+    it "renders with one empty item" do
+      render_inline component
+
+      expect(page).to have_css ".app-c-content-block-manager-array-component" do |component|
+        expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", count: 1
+
+        expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 1/ do |fieldset|
+          expect_form_fields(fieldset:, index: 0, parent_indexes:)
+        end
+      end
+    end
+  end
+
 private
 
-  def expect_form_fields(fieldset:, index:, values: {})
+  def expect_form_fields(fieldset:, index:, values: {}, parent_indexes: [])
     expect(fieldset).to have_css ".govuk-fieldset__legend", text: "Item #{index + 1}"
 
     nested_fields.each do |field|
       expect(fieldset).to have_css ".govuk-label", text: field.label
 
-      input = fieldset.find("input[name='#{field.name_attribute}'][id='#{field.id_attribute(index)}']")
+      input = fieldset.find("input[name='#{field.name_attribute}'][id='#{field.id_attribute([*parent_indexes, index])}']")
       expect(input).to_not be_nil
       if values[field.name]
         expect(input.value).to eq(values[field.name])
