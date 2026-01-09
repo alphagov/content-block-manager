@@ -479,7 +479,7 @@ RSpec.describe Schema::Field do
         end
 
         it "includes an index if present" do
-          expect(field.id_attribute(1)).to eq("edition_details_embedded_something_1")
+          expect(field.id_attribute([1])).to eq("edition_details_embedded_something_1")
         end
       end
 
@@ -489,13 +489,13 @@ RSpec.describe Schema::Field do
         end
 
         it "includes an index if present" do
-          expect(field.error_key(1)).to eq("details_embedded_something_1")
+          expect(field.error_key([1])).to eq("details_embedded_something_1")
         end
       end
 
       describe "#value_lookup_path" do
         it "returns an array with the field name, schema name and index" do
-          expect(field.value_lookup_path(1)).to eq(["embedded", "something", 1])
+          expect(field.value_lookup_path([1])).to eq(["embedded", "something", 1])
         end
       end
     end
@@ -549,7 +549,7 @@ RSpec.describe Schema::Field do
         end
 
         it "includes an index if present" do
-          expect(field.id_attribute(1)).to eq("edition_details_level_1_level_2_1_something")
+          expect(field.id_attribute([1])).to eq("edition_details_level_1_level_2_1_something")
         end
       end
 
@@ -559,7 +559,7 @@ RSpec.describe Schema::Field do
         end
 
         it "includes an index if present" do
-          expect(field.error_key(1)).to eq("details_level_1_level_2_1_something")
+          expect(field.error_key([1])).to eq("details_level_1_level_2_1_something")
         end
       end
 
@@ -644,6 +644,39 @@ RSpec.describe Schema::Field do
 
         expect(show_field).to_not be_nil
         expect(show_field.name).to eq("show_field")
+      end
+    end
+  end
+
+  describe "#id_attribute" do
+    before do
+      allow(field).to receive(:format).and_return("string")
+      allow(field).to receive(:parent_schemas).and_return(parents)
+    end
+
+    context "with a mix of object and array parents" do
+      let(:object_schema) { instance_double(Schema::EmbeddedSchema, is_array?: false) }
+      let(:array_schema) { instance_double(Schema::EmbeddedSchema, is_array?: true) }
+      let(:parents) { [object_schema, array_schema] }
+
+      it "only consumes indexes for parent schemas that are arrays" do
+        expect(object_schema).to receive(:html_id_part).with(nil).and_return("_object")
+        expect(array_schema).to receive(:html_id_part).with(2).and_return("_array_2")
+
+        expect(field.id_attribute([2])).to eq("edition_details_object_array_2_something")
+      end
+    end
+
+    context "with multiple nested arrays" do
+      let(:list_a) { instance_double(Schema::EmbeddedSchema, is_array?: true) }
+      let(:list_b) { instance_double(Schema::EmbeddedSchema, is_array?: true) }
+      let(:parents) { [list_a, list_b] }
+
+      it "consumes indexes sequentially" do
+        expect(list_a).to receive(:html_id_part).with(10).and_return("_list_a_10")
+        expect(list_b).to receive(:html_id_part).with(20).and_return("_list_b_20")
+
+        expect(field.id_attribute([10, 20])).to eq("edition_details_list_a_10_list_b_20_something")
       end
     end
   end

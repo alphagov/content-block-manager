@@ -107,10 +107,13 @@ class Schema
       name_part
     end
 
-    def id_attribute(index = nil)
+    def id_attribute(indexes = [])
       output = "edition_details"
-      parent_schemas.each { |parent_schema| output += parent_schema.html_id_part(index) }
-      output + id_attribute_part(index)
+      parent_schemas.each do |parent_schema|
+        index = parent_schema.is_array? ? indexes.shift : nil
+        output += parent_schema.html_id_part(index)
+      end
+      output + id_attribute_part(indexes.shift)
     end
 
     def id_attribute_part(index = nil)
@@ -119,8 +122,8 @@ class Schema
       id_part
     end
 
-    def error_key(index = nil)
-      id_attribute(index).delete_prefix("edition_")
+    def error_key(indexes = [])
+      id_attribute(indexes).delete_prefix("edition_")
     end
 
     def value_lookup_path(index = nil)
