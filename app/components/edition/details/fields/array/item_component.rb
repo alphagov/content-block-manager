@@ -1,7 +1,7 @@
 class Edition::Details::Fields::Array::ItemComponent < ViewComponent::Base
   include ErrorsHelper
 
-  def initialize(field:, edition:, schema:, value:, index:, can_be_deleted:, hints:)
+  def initialize(field:, edition:, schema:, value:, index:, can_be_deleted:, hints:, parent_indexes:)
     @field = field
     @edition = edition
     @schema = schema
@@ -9,11 +9,12 @@ class Edition::Details::Fields::Array::ItemComponent < ViewComponent::Base
     @index = index
     @can_be_deleted = can_be_deleted
     @hints = hints || {}
+    @parent_indexes = parent_indexes
   end
 
 private
 
-  attr_reader :field, :edition, :schema, :value, :index, :can_be_deleted, :hints
+  attr_reader :field, :edition, :schema, :value, :index, :can_be_deleted, :hints, :parent_indexes
 
   def label
     "#{field.label.singularize} #{index + 1}"
@@ -34,6 +35,7 @@ private
       schema:,
       index:,
       details: value,
+      parent_indexes:,
     )
   end
 

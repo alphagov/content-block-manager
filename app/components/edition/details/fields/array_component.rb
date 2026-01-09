@@ -7,7 +7,7 @@ private
 
   attr_reader :context
 
-  delegate :field, :name, :id, :error_items, :hint_text, :edition, :schema, :subschema, :object_title, to: :context
+  delegate :field, :name, :id, :error_items, :hint_text, :edition, :schema, :subschema, :object_title, :indexes, to: :context
 
   def subschema_block_type
     @subschema_block_type ||= subschema&.block_type
@@ -36,7 +36,7 @@ private
   end
 
   def frame_id
-    "array-component-#{edition.id}-#{field.name}"
+    "array-component-#{edition.id}-#{context.id}"
   end
 
   def component(index)
@@ -48,6 +48,7 @@ private
       index: index,
       can_be_deleted: can_be_deleted?(index),
       hints: hint_text,
+      parent_indexes: indexes,
     )
   end
 

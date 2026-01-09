@@ -15,6 +15,7 @@ RSpec.describe Edition::Details::Fields::Array::ItemComponent, type: :component 
       can_be_deleted:,
       hints:,
       index:,
+      parent_indexes: [],
     )
   end
 
@@ -40,19 +41,19 @@ RSpec.describe Edition::Details::Fields::Array::ItemComponent, type: :component 
 
     expect(page).to have_css ".govuk-form-group", text: /Fizz/ do |form_group|
       expect(form_group).to have_css "label", text: "Fizz"
-      expect(form_group).to have_css "input[type='text'][value='Field 1 value'][name='#{field_1.name_attribute}'][id='#{field_1.id_attribute(1)}']"
+      expect(form_group).to have_css "input[type='text'][value='Field 1 value'][name='#{field_1.name_attribute}'][id='#{field_1.id_attribute([1])}']"
     end
 
     expect(page).to have_css ".govuk-form-group", text: /Buzz/ do |form_group|
       expect(form_group).to have_css "label", text: "Buzz"
-      expect(form_group).to have_css "input[type='text'][value='Field 2 value'][name='#{field_2.name_attribute}'][id='#{field_2.id_attribute(1)}']"
+      expect(form_group).to have_css "input[type='text'][value='Field 2 value'][name='#{field_2.name_attribute}'][id='#{field_2.id_attribute([1])}']"
     end
   end
 
   describe "when error messages are present" do
     before do
-      edition.errors.add(field_1.error_key(1).to_sym, "Fizz cannot be blank")
-      edition.errors.add(field_2.error_key(1).to_sym, "Buzz cannot be blank")
+      edition.errors.add(field_1.error_key([1]).to_sym, "Fizz cannot be blank")
+      edition.errors.add(field_2.error_key([1]).to_sym, "Buzz cannot be blank")
     end
 
     it "renders errors" do

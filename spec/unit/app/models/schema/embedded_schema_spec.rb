@@ -221,7 +221,7 @@ RSpec.describe Schema::EmbeddedSchema do
 
   describe "#permitted_params" do
     it "returns permitted params" do
-      expect(%w[title amount description frequency]).to eq(schema.permitted_params)
+      expect(schema.permitted_params).to eq(%w[title amount description frequency])
     end
 
     describe "when some fields have nested fields" do
@@ -243,7 +243,7 @@ RSpec.describe Schema::EmbeddedSchema do
       end
 
       it "returns permitted params" do
-        expect(["title", { "foo" => %w[my_string] }, "bar"]).to eq(schema.permitted_params)
+        expect(schema.permitted_params).to eq(["title", { "foo" => %w[my_string] }, "bar"])
       end
     end
 
@@ -273,6 +273,40 @@ RSpec.describe Schema::EmbeddedSchema do
 
       it "returns permitted params" do
         expect(schema.permitted_params).to eq(["title", { "foo" => %w[_destroy] }, { "bar" => %w[my_string _destroy] }])
+      end
+    end
+
+    describe "when some fields have deeply nested fields" do
+      let(:properties) do
+        {
+          "title" => {
+            "type" => "string",
+          },
+          "foo" => {
+            "type" => "object",
+            "properties" => {
+              "my_object" => {
+                "type" => "object",
+                "properties" => {
+                  "my_string" => {
+                    "type" => "string",
+                  },
+                },
+              },
+            },
+          },
+          "bar" => {
+            "type" => "string",
+          },
+        }
+      end
+
+      it "returns permitted params" do
+        expect(schema.permitted_params).to eq([
+          "title",
+          { "foo" => [{ "my_object" => %w[my_string] }] },
+          "bar",
+        ])
       end
     end
   end

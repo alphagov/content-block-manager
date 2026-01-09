@@ -60,8 +60,9 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
 
     frame.addEventListener(
       'turbo:frame-render',
-      function () {
+      function (event) {
         this.init()
+        GOVUK.modules.start(event.target)
       }.bind(this)
     )
   }

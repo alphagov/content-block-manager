@@ -81,7 +81,7 @@ RSpec.describe Edition::Details::Fields::Context do
 
     it "returns the id of the field" do
       expect(context.id).to eq(expected_id)
-      expect(field).to have_received(:id_attribute).with(nil)
+      expect(field).to have_received(:id_attribute).with([])
     end
 
     context "when an index is provided" do
@@ -90,7 +90,18 @@ RSpec.describe Edition::Details::Fields::Context do
 
       it "sends the index to the id_attribute" do
         expect(context.id).to eq(expected_id)
-        expect(field).to have_received(:id_attribute).with(3)
+        expect(field).to have_received(:id_attribute).with([index])
+      end
+    end
+
+    context "when parent indexes are provided" do
+      let(:index) { 3 }
+      let(:parent_indexes) { [2] }
+      let(:context) { described_class.new(edition:, field:, schema:, index:, parent_indexes:) }
+
+      it "sends the index to the id_attribute" do
+        expect(context.id).to eq(expected_id)
+        expect(field).to have_received(:id_attribute).with([parent_indexes[0], index])
       end
     end
   end
@@ -106,7 +117,7 @@ RSpec.describe Edition::Details::Fields::Context do
 
     it "returns the errors for the field" do
       expect(context.error_items).to eq(errors)
-      expect(field).to have_received(:error_key).with(nil)
+      expect(field).to have_received(:error_key).with([])
       expect(context).to have_received(:errors_for).with(edition.errors, error_key.to_sym)
     end
 
@@ -116,7 +127,18 @@ RSpec.describe Edition::Details::Fields::Context do
 
       it "sends the index to the error_key" do
         expect(context.error_items).to eq(errors)
-        expect(field).to have_received(:error_key).with(index)
+        expect(field).to have_received(:error_key).with([index])
+      end
+    end
+
+    context "when parent indexes are provided" do
+      let(:index) { 3 }
+      let(:parent_indexes) { [2] }
+      let(:context) { described_class.new(edition:, field:, schema:, index:, parent_indexes:) }
+
+      it "sends the index to the id_attribute" do
+        expect(context.error_items).to eq(errors)
+        expect(field).to have_received(:error_key).with([parent_indexes[0], index])
       end
     end
   end
@@ -131,6 +153,16 @@ RSpec.describe Edition::Details::Fields::Context do
     it "returns the name of the field" do
       expect(context.hint_text).to eq(expected_hint)
       expect(field).to have_received(:hint)
+    end
+  end
+
+  describe "#indexes" do
+    let(:index) { 3 }
+    let(:parent_indexes) { [2, nil, 3] }
+    let(:context) { described_class.new(edition:, field:, schema:, index:, parent_indexes:) }
+
+    it "returns the index and parent indexes with any nils removed" do
+      expect(context.indexes).to eq([2, 3, 3])
     end
   end
 end
