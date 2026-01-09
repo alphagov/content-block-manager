@@ -52,6 +52,7 @@ Rails.application.routes.draw do
       get "review_outcomes/new", to: "editions/review_outcomes#new", as: :new_review_outcome
       post "review_outcomes", to: "editions/review_outcomes#create", as: :create_review_outcome
       get "review_outcomes/identify_performer", to: "editions/review_outcomes#identify_performer", as: :identify_performer_review_outcome
+      put "review_outcomes", to: "editions/review_outcomes#update", as: :update_review_outcome
 
       # record Factcheck outcomes
       get "factcheck_outcomes/new", to: "editions/factcheck_outcomes#new", as: :new_factcheck_outcome
