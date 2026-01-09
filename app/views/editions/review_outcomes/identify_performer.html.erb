@@ -1,0 +1,34 @@
+<% content_for :page_title, @title %>
+<% content_for :title, @title %>
+<% content_for :context, @edition.title %>
+
+<% content_for :back_link do %>
+  <%= render "govuk_publishing_components/components/back_link", {
+    href: new_review_outcome_edition_path(@edition),
+  } %>
+  <% end %>
+
+<%= form_tag(update_review_outcome_edition_path(@edition), method: :put) do %>
+
+  <%= render "govuk_publishing_components/components/input", {
+      name: "review_outcome[review_performer]",
+      label: { text: "2i reviewer" },
+      hint: "Enter the email address or name of the 2i reviewer",
+      error_message: flash.alert.present? ? "2i reviewer cannot be blank" : nil,
+  } %>
+
+  <div class="govuk-button-group govuk-!-margin-bottom-6">
+    <%= render "govuk_publishing_components/components/button", {
+      text: "Continue",
+      name: "continue",
+      value: "Continue",
+      type: "submit",
+    } %>
+    <%= render "govuk_publishing_components/components/button", {
+      text: "Cancel",
+      href: document_path(@edition.document),
+      secondary_solid: true,
+    } %>
+  </div>
+
+<% end %>

@@ -1,6 +1,7 @@
 class Editions::ReviewOutcomesController < BaseController
+  before_action :set_edition_and_title, only: %i[new identify_performer]
+
   def new
-    @edition = Edition.find(params[:id])
     render :new
   end
 
@@ -10,6 +11,12 @@ class Editions::ReviewOutcomesController < BaseController
 
     record_review_outcome
 
+    redirect_to identify_performer_review_outcome_edition_path(@edition)
+  end
+
+  def identify_performer
+    render :identify_performer
+  end
     begin
       transition_to_awaiting_factcheck_state
       redirect_to(document_path(@edition.document))
@@ -22,6 +29,10 @@ class Editions::ReviewOutcomesController < BaseController
 
 private
 
+  def set_edition_and_title
+    @edition = Edition.find(params[:id])
+    @title = "Send to Factcheck"
+  end
   def form_validation_error
     flash.now.alert = "Indicate whether the 2i Review process has been performed or not"
     render :new
