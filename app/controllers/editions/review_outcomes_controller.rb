@@ -1,5 +1,5 @@
 class Editions::ReviewOutcomesController < BaseController
-  before_action :set_edition_and_title, only: %i[new identify_performer]
+  before_action :set_edition_and_title, only: %i[new identify_performer update]
 
   def new
     render :new
@@ -17,14 +17,15 @@ class Editions::ReviewOutcomesController < BaseController
   def identify_performer
     render :identify_performer
   end
+
+  def update
     begin
-      transition_to_awaiting_factcheck_state
-      redirect_to(document_path(@edition.document))
-    rescue Edition::Workflow::ReviewOutcomeMissingError => e
-      handle_missing_review_outcome(e)
-    rescue Transitions::InvalidTransition => e
-      handle_other_transition_error(e)
+      update_review_performer
+    rescue ActionController::ParameterMissing => e
+      return handle_missing_review_performer(e)
     end
+
+    transition_edition_and_redirect
   end
 
 private
@@ -33,6 +34,28 @@ private
     @edition = Edition.find(params[:id])
     @title = "Send to Factcheck"
   end
+
+  def transition_edition_and_redirect
+    transition_to_awaiting_factcheck_state
+    redirect_to(document_path(@edition.document))
+  rescue Transitions::InvalidTransition => e
+    handle_other_transition_error(e)
+  end
+
+  def update_review_performer
+    @edition.review_outcome.update!(
+      "performer" => review_performer,
+    )
+  end
+
+  def review_performer
+    if outcome_params["review_performer"].blank?
+      raise ActionController::ParameterMissing, I18n.t("edition.outcomes.errors.factcheck.missing_performer")
+    end
+
+    outcome_params["review_performer"]
+  end
+
   def form_validation_error
     flash.now.alert = "Indicate whether the 2i Review process has been performed or not"
     render :new
@@ -66,9 +89,9 @@ private
     params.require("review_outcome")
   end
 
-  def handle_missing_review_outcome(error)
+  def handle_missing_review_performer(error)
     flash.alert = error.message
-    redirect_to new_review_outcome_path(@edition)
+    redirect_to identify_performer_review_outcome_edition_path(@edition)
   end
 
   def handle_other_transition_error(error)

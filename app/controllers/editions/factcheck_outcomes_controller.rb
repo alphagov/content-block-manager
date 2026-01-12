@@ -25,8 +25,8 @@ class Editions::FactcheckOutcomesController < BaseController
 
     begin
       update_factcheck_performer
-    rescue ActionController::ParameterMissing => e
-      return handle_missing_factcheck_performer(e)
+    rescue ActionController::ParameterMissing
+      return handle_missing_factcheck_performer
     end
 
     finalise_edition
@@ -54,7 +54,7 @@ private
 
   def factcheck_performer
     if outcome_params["factcheck_performer"].blank?
-      raise ActionController::ParameterMissing, "Provide the email or name of the subject matter expert who performed the factcheck"
+      raise ActionController::ParameterMissing, I18n.t("edition.outcomes.errors.factcheck.missing_performer")
     end
 
     outcome_params["factcheck_performer"]

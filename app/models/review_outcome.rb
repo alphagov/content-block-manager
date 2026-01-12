@@ -1,3 +1,9 @@
 class ReviewOutcome < Outcome
-  belongs_to :performer, class_name: "User", optional: true
+  def performer
+    performer_identifier
+  end
+
+  def performer=(performer)
+    self.performer_identifier = performer
+  end
 end
