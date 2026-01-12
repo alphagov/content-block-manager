@@ -17,7 +17,7 @@ RSpec.describe ProcessedParams do
 
     let(:fields) do
       [
-        double(:field, name: "foo", format: "string", show_field: nil),
+        double(:field, name: "foo", format: "string", show_field: nil, nested_fields: nil),
       ]
     end
 
@@ -72,6 +72,144 @@ RSpec.describe ProcessedParams do
         expect(processed_params.result).to eq({
           "block_type" => {
             "foo" => {},
+          },
+        })
+      end
+    end
+  end
+
+  context "when there is an object that has a show field nested within an object" do
+    let(:show_field) { double(:field, name: "show") }
+    let(:nested_fields) do
+      [
+        double(:nested_field, name: "nested", format: "object", show_field:),
+      ]
+    end
+    let(:fields) do
+      [
+        double(:field, name: "foo", format: "object", show_field: nil, schema:, nested_fields:),
+      ]
+    end
+
+    let(:params) do
+      {
+        "block_type" => {
+          "foo" => {
+            "nested" => {
+              "show" => "true",
+              "value" => "bar",
+            },
+          },
+        },
+      }
+    end
+
+    it "should cast the show field to a boolean" do
+      expect(processed_params.result).to eq({
+        "block_type" => {
+          "foo" => {
+            "nested" => {
+              "show" => true,
+              "value" => "bar",
+            },
+          },
+        },
+      })
+    end
+
+    context "if the value of the show field is empty" do
+      let(:params) do
+        {
+          "block_type" => {
+            "foo" => {
+              "nested" => {
+                "show" => "",
+                "value" => "bar",
+              },
+            },
+          },
+        }
+      end
+
+      it "should remove the object's fields" do
+        expect(processed_params.result).to eq({
+          "block_type" => {
+            "foo" => {
+              "nested" => {},
+            },
+          },
+        })
+      end
+    end
+  end
+
+  context "when there is an object that has a show field within an array" do
+    let(:show_field) { double(:field, name: "show") }
+    let(:nested_fields) do
+      [
+        double(:nested_field, name: "nested", format: "object", show_field:),
+      ]
+    end
+    let(:fields) do
+      [
+        double(:field, name: "foo", format: "array", show_field: nil, schema:, nested_fields:),
+      ]
+    end
+
+    let(:params) do
+      {
+        "block_type" => {
+          "foo" => [
+            {
+              "nested" => {
+                "show" => "true",
+                "value" => "bar",
+              },
+            },
+          ],
+        },
+      }
+    end
+
+    it "should cast the show field to a boolean" do
+      expect(processed_params.result).to eq({
+        "block_type" => {
+          "foo" => [
+            {
+              "nested" => {
+                "show" => true,
+                "value" => "bar",
+              },
+            },
+          ],
+        },
+      })
+    end
+
+    context "if the value of the show field is empty" do
+      let(:params) do
+        {
+          "block_type" => {
+            "foo" => [
+              {
+                "nested" => {
+                  "show" => "",
+                  "value" => "bar",
+                },
+              },
+            ],
+          },
+        }
+      end
+
+      it "should remove the object's fields" do
+        expect(processed_params.result).to eq({
+          "block_type" => {
+            "foo" => [
+              {
+                "nested" => {},
+              },
+            ],
           },
         })
       end

@@ -5,7 +5,8 @@ class ProcessedParams
   end
 
   def result
-    process_fields!
+    block_type = schema.block_type
+    params[block_type] = processed_fields(schema.fields, params[block_type])
     params
   end
 
@@ -13,33 +14,30 @@ private
 
   attr_reader :schema, :params
 
-  def process_fields!
-    schema.fields.each do |field|
-      update_conditional_object(field) if conditional_object_field?(field)
+  def processed_fields(fields, collection)
+    fields.each do |field|
+      if conditional_object_field?(field)
+        collection[field.name] = update_conditional_object(field, collection[field.name])
+      elsif field.nested_fields && field.format == "object"
+        collection[field.name] = processed_fields(field.nested_fields, collection[field.name])
+      elsif field.nested_fields && field.format == "array"
+        collection[field.name] = collection[field.name].map { |item| processed_fields(field.nested_fields, item) }
+      end
     end
+    collection
   end
 
   def conditional_object_field?(field)
     field.format == "object" && field.show_field
   end
 
-  def update_conditional_object(field)
-    block_type = field.schema.block_type
-
-    details_collection = params[block_type]
-    return unless details_collection
-
-    object_data = details_collection[field.name]
-    return unless object_data
-
+  def update_conditional_object(field, collection)
     toggle_field_name = field.show_field.name
 
-    is_visible = cast_to_boolean(object_data[toggle_field_name])
-    object_data[toggle_field_name] = is_visible
+    is_visible = cast_to_boolean(collection[toggle_field_name])
+    collection[toggle_field_name] = is_visible
 
-    unless is_visible
-      details_collection[field.name] = {}
-    end
+    is_visible ? collection : {}
   end
 
   def cast_to_boolean(value)
