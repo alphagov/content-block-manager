@@ -528,33 +528,6 @@ RSpec.describe Edition, type: :model do
     end
   end
 
-  describe "#has_entries_for_multiple_subschemas?" do
-    let(:subschemas) { [double(:subschema, id: "foo"), double(:subschema, id: "bar")] }
-    let(:schema) { double(:schema, subschemas: subschemas) }
-    let(:document) { build(:document, schema: schema) }
-    let(:edition) { build(:edition, document: document) }
-
-    it "returns true when an edition has entries for multiple subschemas" do
-      allow(edition).to receive(:has_entries_for_subschema_id?).with(subschemas[0].id).and_return(true)
-      allow(edition).to receive(:has_entries_for_subschema_id?).with(subschemas[1].id).and_return(true)
-
-      expect(edition.has_entries_for_multiple_subschemas?).to be true
-    end
-
-    it "returns false when an edition has entries for one subschema" do
-      allow(edition).to receive(:has_entries_for_subschema_id?).with(subschemas[0].id).and_return(false)
-      allow(edition).to receive(:has_entries_for_subschema_id?).with(subschemas[1].id).and_return(true)
-
-      expect(edition.has_entries_for_multiple_subschemas?).to be false
-    end
-
-    it "returns false when an edition has entries for no subschemas" do
-      allow(edition).to receive(:has_entries_for_subschema_id?).and_return(false)
-
-      expect(edition.has_entries_for_multiple_subschemas?).to be false
-    end
-  end
-
   describe "#default_order" do
     let(:details) do
       {

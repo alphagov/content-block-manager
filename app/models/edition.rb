@@ -71,12 +71,6 @@ class Edition < ApplicationRecord
     total_entries > 1
   end
 
-  def has_entries_for_multiple_subschemas?
-    schema = document.schema
-    subschemas = schema.subschemas
-    subschemas.select { |subschema| has_entries_for_subschema_id?(subschema.id) }.count > 1
-  end
-
   def default_order
     document.schema.subschemas.sort_by(&:group_order).map { |subschema|
       item_keys = details[subschema.block_type]&.keys || []
