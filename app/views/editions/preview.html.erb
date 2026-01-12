@@ -6,7 +6,7 @@
   } %>
 <% end %>
 
-<% if @edition.has_entries_for_multiple_subschemas? %>
+<% if @edition.has_multiple_subschema_entries? %>
   <% content_for :title_side do %>
     <%= render "shared/reorder_link", edition: @edition %>
   <% end %>

@@ -293,6 +293,21 @@ Feature: Create a contact object
     Then the contact methods should be in the new order
 
   @javascript
+  Scenario: Editor can reorder a Contact when all contact methods are of one type
+    When I click on the "email_addresses" subschema
+    And I complete the "email_address" form with the following fields:
+      | title           | label         | email_address    |
+      | Email The Team  | Send an email | foo@example.com  |
+    And I click to add another "contact_method"
+    And I click on the "email_addresses" subschema
+    And I complete the "email_address" form with the following fields:
+      | title           | label         | email_address        |
+      | Email Support   | Email Support | support@example.com  |
+    And I click on Preview and reorder
+    When I click on reorder
+    Then I should be on the reordering form
+
+  @javascript
   Scenario: GDS editor creates a Contact with an email address and a telephone
     And I click on the "email_addresses" subschema
     Then there should be no accessibility errors

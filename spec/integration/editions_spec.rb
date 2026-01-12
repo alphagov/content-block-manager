@@ -65,7 +65,7 @@ RSpec.describe Editions, type: :feature do
       allow(document).to receive(:embed_code).and_return(embed_code)
       allow(Edition).to receive(:find).with(edition.id.to_s).and_return(edition)
       allow(edition).to receive(:render).with(document.embed_code).and_return("RENDERED_BLOCK")
-      allow(edition).to receive(:has_entries_for_multiple_subschemas?).and_return(true)
+      allow(edition).to receive(:has_multiple_subschema_entries?).and_return(true)
     end
 
     scenario "renders a preview of the edition" do
@@ -74,15 +74,15 @@ RSpec.describe Editions, type: :feature do
       expect(page).to have_css ".app-views-editions-preview .govspeak", text: "RENDERED_BLOCK"
     end
 
-    scenario "shows a link to reorder if has_entries_for_multiple_subschemas? is true" do
-      allow(edition).to receive(:has_entries_for_multiple_subschemas?).and_return(true)
+    scenario "shows a link to reorder if has_multiple_subschema_entries? is true" do
+      allow(edition).to receive(:has_multiple_subschema_entries?).and_return(true)
       visit preview_edition_path(edition)
 
       expect(page).to have_css "a.govuk-button", text: "Reorder"
     end
 
-    scenario "shows a link to reorder if has_entries_for_multiple_subschemas? is false" do
-      allow(edition).to receive(:has_entries_for_multiple_subschemas?).and_return(false)
+    scenario "shows NO link to reorder if has_multiple_subschema_entries? is false" do
+      allow(edition).to receive(:has_multiple_subschema_entries?).and_return(false)
       visit preview_edition_path(edition)
 
       assert_no_selector "a.govuk-button", text: "Reorder"
