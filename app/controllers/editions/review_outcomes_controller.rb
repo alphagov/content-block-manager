@@ -11,6 +11,8 @@ class Editions::ReviewOutcomesController < BaseController
 
     record_review_outcome
 
+    return transition_edition_and_redirect if review_skipped?
+
     redirect_to identify_performer_review_outcome_edition_path(@edition)
   end
 

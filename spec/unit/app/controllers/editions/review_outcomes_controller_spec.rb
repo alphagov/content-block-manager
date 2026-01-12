@@ -50,6 +50,10 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
               "creator" => current_user,
             )
           end
+
+          it "redirects to the document path" do
+            expect(response).to redirect_to("/456")
+          end
         end
 
         context "when the editor has indicated that the Review was performed" do
