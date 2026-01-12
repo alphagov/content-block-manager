@@ -2,7 +2,7 @@ class Edition::Details::Fields::Context
   include FormHelper
   include ErrorsHelper
 
-  def initialize(edition:, field:, schema:, populate_with_defaults: false, subschema: nil, object_title: nil, index: nil, details: nil)
+  def initialize(edition:, field:, schema:, populate_with_defaults: false, subschema: nil, object_title: nil, index: nil, details: nil, parent_indexes: [])
     @edition = edition
     @field = field
     @schema = schema
@@ -11,9 +11,10 @@ class Edition::Details::Fields::Context
     @object_title = object_title
     @index = index
     @details = details || edition.details
+    @parent_indexes = parent_indexes
   end
 
-  attr_reader :edition, :field, :schema, :populate_with_defaults, :subschema, :object_title, :index, :details
+  attr_reader :edition, :field, :schema, :populate_with_defaults, :subschema, :object_title, :index, :details, :parent_indexes
 
   def value
     value_for_field(details:, field:, populate_with_defaults:)
@@ -34,14 +35,18 @@ class Edition::Details::Fields::Context
   end
 
   def id
-    field.id_attribute(index)
+    field.id_attribute(indexes)
   end
 
   def error_items
-    errors_for(edition.errors, field.error_key(index).to_sym)
+    errors_for(edition.errors, field.error_key(indexes).to_sym)
   end
 
   def hint_text
     field.hint
+  end
+
+  def indexes
+    [parent_indexes, index].flatten.compact
   end
 end

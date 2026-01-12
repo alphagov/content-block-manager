@@ -7,7 +7,7 @@ private
 
   attr_reader :context
 
-  delegate :field, :value, :label, :edition, :schema, :populate_with_defaults, to: :context
+  delegate :field, :value, :label, :edition, :schema, :populate_with_defaults, :indexes, to: :context
 
   def show_field
     @show_field ||= field.show_field
@@ -32,6 +32,7 @@ private
       schema:,
       populate_with_defaults:,
       details: value,
+      parent_indexes: indexes,
     )
   end
 end
