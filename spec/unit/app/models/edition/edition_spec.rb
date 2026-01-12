@@ -467,6 +467,67 @@ RSpec.describe Edition, type: :model do
     end
   end
 
+  describe "#has_multiple_subschema_entries?" do
+    before do
+      document = build(:document)
+      allow(document).to receive(:schema).and_return(double(subschemas: subschemas))
+      edition.document = document
+    end
+
+    let(:subschemas) do
+      [
+        double(:subschema, id: "email_addresses", block_type: "email_addresses"),
+        double(:subschema, id: "contact_links", block_type: "contact_links"),
+      ]
+    end
+
+    context "when there are multiple entries for a single subschema" do
+      before do
+        edition.details = {
+          "email_addresses" => {
+            "email" => { "email_address" => "roger@example.com" },
+            "email-1" => { "email_address" => "smith@example.com" },
+          },
+        }
+      end
+
+      it "returns true" do
+        expect(edition.has_multiple_subschema_entries?).to be true
+      end
+    end
+
+    context "when there is one entry for one subschema and another entry for 2nd subschema" do
+      before do
+        edition.details = {
+          "email_addresses" => {
+            "email" => { "email_address" => "roger@example.com" },
+          },
+          "contact_links" => {
+            "contact_link" => { "url" => "https://info.example.com" },
+          },
+        }
+      end
+
+      it "returns true" do
+        expect(edition.has_multiple_subschema_entries?).to be true
+      end
+    end
+
+    context "when there is only one entry in total" do
+      before do
+        edition.details = {
+          "email_addresses" => {
+            "email" => { "email_address" => "roger@example.com" },
+          },
+        }
+      end
+
+      it "returns false" do
+        expect(edition.has_multiple_subschema_entries?).to be false
+      end
+    end
+  end
+
   describe "#has_entries_for_multiple_subschemas?" do
     let(:subschemas) { [double(:subschema, id: "foo"), double(:subschema, id: "bar")] }
     let(:schema) { double(:schema, subschemas: subschemas) }
