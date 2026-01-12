@@ -444,7 +444,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
   describe "when the version has an outcome" do
     context "and the outcome has a performer" do
       let(:user) { build(:user, name: "Dave", email: "dave@example.com") }
-      let(:review_outcome) { ReviewOutcome.new.tap { |o| o.performer = user } }
+      let(:review_outcome) { ReviewOutcome.new.tap { |o| o.performer = user.name } }
       let(:factcheck_outcome) { FactcheckOutcome.new.tap { |o| o.performer = user.email } }
       let(:edition) { build(:edition, review_outcome: review_outcome, factcheck_outcome: factcheck_outcome) }
 

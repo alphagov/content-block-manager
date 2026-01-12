@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_19_135036) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_12_122751) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -68,14 +68,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_19_135036) do
     t.bigint "edition_id", null: false
     t.string "type"
     t.boolean "skipped"
-    t.string "performer_identifier"
-    t.bigint "performer_id"
+    t.string "performer"
     t.bigint "creator_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["creator_id"], name: "index_outcomes_on_creator_id"
     t.index ["edition_id"], name: "index_outcomes_on_edition_id"
-    t.index ["performer_id"], name: "index_outcomes_on_performer_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -110,5 +108,4 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_19_135036) do
 
   add_foreign_key "outcomes", "editions"
   add_foreign_key "outcomes", "users", column: "creator_id"
-  add_foreign_key "outcomes", "users", column: "performer_id"
 end
