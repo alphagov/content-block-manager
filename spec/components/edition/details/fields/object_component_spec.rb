@@ -1,24 +1,36 @@
 RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
-  let(:edition) { build(:edition, :pension) }
-  let(:nested_fields) do
-    [
-      build("field", name: "label", enum_values: nil, default_value: nil, label: "Label"),
-      build("field", name: "type", enum_values: %w[enum_1 enum_2 enum_3], default_value: nil, label: "Type"),
-      build("field", name: "email_address", enum_values: nil, default_value: nil, label: "Email address"),
-    ]
-  end
-  let(:schema) { double("schema", id: "root", block_type: "schema") }
-  let(:field) { build(:field, name: "nested", nested_fields:, schema:, is_required?: true, default_value: nil, show_field: nil, label: "Nested") }
+  let(:described_class) { Edition::Details::Fields::ArrayComponent }
 
-  let(:label_stub) { double("string_component") }
-  let(:type_stub) { double("enum_component") }
-  let(:email_address_stub) { double("string_component") }
+  let(:edition) { build(:edition, :pension) }
+  let(:schema) { build(:schema) }
+  let(:field) { Schema::Field.new("nested", schema) }
+  let(:nested_fields) { field.nested_fields }
+
+  let(:body) do
+    {
+      "properties" => {
+        "nested" => {
+          "type" => "object",
+          "properties" => {
+            "label" => { "type" => "string" },
+            "type" => { "type" => "string", "enum" => %w[enum_1 enum_2 enum_3] },
+            "email_address" => { "type" => "string" },
+          },
+        },
+      },
+    }
+  end
+
   let(:context) do
     Edition::Details::Fields::Context.new(edition:, field:, schema:)
   end
 
   let(:described_class) { Edition::Details::Fields::ObjectComponent }
   let(:component) { described_class.new(context) }
+
+  before do
+    allow(schema).to receive(:body).and_return(body)
+  end
 
   it "renders fields for each property" do
     render_inline(component)
@@ -27,32 +39,24 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
       expect(fieldset).to have_css ".govuk-fieldset__legend--m h3", text: "Nested"
       expect(fieldset).to have_css ".govuk-form-group", count: 3
 
-      expect(fieldset).to have_css ".govuk-form-group", text: /Label/ do |form_group|
-        expect(form_group).to have_css "input[name=\"#{nested_fields[0].name_attribute}\"]"
-      end
-
-      expect(fieldset).to have_css ".govuk-form-group", text: /Type/ do |form_group|
-        expect(form_group).to have_css "input[name=\"#{nested_fields[1].name_attribute}\"]"
-      end
-
-      expect(fieldset).to have_css ".govuk-form-group", text: /Email address/ do |form_group|
-        expect(form_group).to have_css "input[name=\"#{nested_fields[2].name_attribute}\"]"
-      end
+      expect_form_fields(fieldset: fieldset)
     end
   end
 
   describe "when values are present for the object" do
     let(:nested_value) { "value" }
-    let(:value) { { nested_fields[0].name => nested_value } }
+    let(:values) { { nested_fields[0].name => nested_value } }
 
     before do
-      allow(context).to receive(:value).and_return(value)
+      allow(context).to receive(:value).and_return(values)
     end
 
     it "renders the field with the value" do
       render_inline(component)
 
-      expect(page).to have_css "input[name=\"#{nested_fields[0].name_attribute}\"][value=\"#{nested_value}\"]"
+      expect(page).to have_css(".govuk-fieldset") do |fieldset|
+        expect_form_fields(fieldset: fieldset, values: values)
+      end
     end
   end
 
@@ -73,7 +77,7 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
 
       expect(page).to have_css ".govuk-form-group.govuk-form-group--error", text: /Type/ do |form_group|
         expect(form_group).to have_css ".govuk-error-message", text: "Type error"
-        expect(form_group).to have_css "input.govuk-input--error"
+        expect(form_group).to have_css "select.govuk-select--error"
       end
 
       expect(page).to have_css ".govuk-form-group.govuk-form-group--error", text: /Email address/ do |form_group|
@@ -84,16 +88,25 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
   end
 
   context "when a show_field is present" do
-    let(:hint) { nil }
-    let(:show_field) { build("field", name: "show", label: "Show", hint:) }
-    let(:nested_fields) do
-      [
-        show_field,
-        build("field", name: "label", label: "Label"),
-        build("field", name: "email_address", label: "Email address"),
-      ]
+    let(:body) do
+      {
+        "properties" => {
+          "nested" => {
+            "type" => "object",
+            "properties" => {
+              "show" => { "type" => "boolean" },
+              "label" => { "type" => "string" },
+              "email_address" => { "type" => "string" },
+            },
+          },
+        },
+      }
     end
-    let(:field) { build(:field, name: "nested", nested_fields:, schema:, is_required?: true, default_value: nil, show_field: nested_fields[0], label: "Nested") }
+    let(:show_field) { nested_fields[0] }
+
+    before do
+      allow(field).to receive(:show_field).and_return(show_field)
+    end
 
     it "shows a checkbox to toggle 'show' option" do
       render_inline(component)
@@ -137,10 +150,47 @@ RSpec.describe Edition::Details::Fields::ObjectComponent, type: :component do
     context "when the checkbox has an associated hint" do
       let(:hint) { "This is a hint" }
 
+      before do
+        allow(show_field).to receive(:hint).and_return(hint)
+      end
+
       it "renders the hint" do
         render_inline(component)
 
         expect(page).to have_css "##{nested_fields[0].id_attribute}-0-item-hint", text: hint
+      end
+    end
+  end
+
+  context "when the field is nested within an array" do
+    before do
+      allow(context).to receive(:indexes).and_return([1])
+    end
+
+    it "renders fields for each property" do
+      render_inline(component)
+
+      expect(page).to have_css(".govuk-fieldset") do |fieldset|
+        expect(fieldset).to have_css ".govuk-fieldset__legend--m h3", text: "Nested"
+        expect(fieldset).to have_css ".govuk-form-group", count: 3
+
+        expect_form_fields(fieldset: fieldset, indexes: [1])
+      end
+    end
+  end
+
+private
+
+  def expect_form_fields(fieldset:, values: {}, indexes: [])
+    nested_fields.each do |field|
+      expect(fieldset).to have_css ".govuk-form-group", text: field.label do |form_group|
+        input = form_group.find("[name='#{field.name_attribute}'][id='#{field.id_attribute(indexes)}']")
+        expect(input).to_not be_nil
+        if values[field.name]
+          expect(input.value).to eq(values[field.name])
+        else
+          expect(input.value).to be_blank
+        end
       end
     end
   end
