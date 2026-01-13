@@ -11,7 +11,7 @@
                        @form.schema.block_type %>
 
   <p class="govuk-body">
-    You can use these fields in GOV.UK content unless stated otherwise.
+    <%= I18n.t("edition.new.general_field_notice") %>
   </p>
 
   <%= render "govuk_publishing_components/components/input", {
@@ -37,15 +37,15 @@
     id: "#{parent_class}_lead_organisation_id",
     name: "edition[lead_organisation_id]",
     error_items: errors_for(@form.edition.errors, "lead_organisation_id".to_sym),
-    hint: I18n.t("edition.hints.lead_organisation", default: nil),
+    hint: I18n.t("edition.hints.not_displayed"),
     include_blank: true,
-    label: "Lead organisation",
+    label: I18n.t("edition.labels.lead_organisation"),
     options: taggable_organisations_container([@form.edition.lead_organisation_id]),
   } %>
 
   <%= render "govuk_publishing_components/components/textarea", {
     label: {
-      text: "Instructions to publishers (optional)",
+      text: I18n.t("edition.labels.instructions_to_publishers"),
     },
     name: "edition[instructions_to_publishers]",
     hint: t("edition.hints.instructions_to_publishers_html"),
@@ -56,13 +56,13 @@
 
   <div class="govuk-button-group govuk-!-margin-bottom-6">
     <%= render "govuk_publishing_components/components/button", {
-      text: "Save and continue",
+      text: I18n.t("buttons.save_and_continue"),
       name: "save_and_continue",
-      value: "Save and continue",
+      value: I18n.t("buttons.save_and_continue"),
       type: "submit",
     } %>
     <%= render "govuk_publishing_components/components/button", {
-      text: "Cancel",
+      text: I18n.t("buttons.cancel"),
       href: @form.back_path,
       secondary_solid: true,
     } %>

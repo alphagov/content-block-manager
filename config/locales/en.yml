@@ -48,6 +48,9 @@ en:
           range:
             invalid: "From date must be before to date"
   edition:
+    new:
+      general_field_notice:
+        You can use these fields in GOV.UK content unless stated otherwise.
     update:
       title: "Edit %{block_type}"
     create:
@@ -78,6 +81,7 @@ en:
         Add information that’s important for anyone using or editing this block to know. For example, who to contact about the block if you have questions. <br/>
         Not displayed on GOV.UK.
       lead_organisation: Not displayed on GOV.UK.
+      not_displayed: Not displayed on GOV.UK.
       contact:
         title: Explain the purpose of the contact, for example ‘Contact the Pension Service’, ‘Universal Credit helpline’
         description: For example, is there anything the user should know, prepare or include before using any contact method.
@@ -116,6 +120,9 @@ en:
           opening_hours: Opening hours
           call_charges: Call charges
     labels:
+      lead_organisation: Lead organisation
+      instructions_to_publishers:
+        Instructions to publishers (optional)
       contact:
         addresses:
           title: Address name
