@@ -3,7 +3,7 @@ When(/^I click on Preview and reorder$/) do
 end
 
 Then("I should not see a preview button") do
-  expect(page).to_not have_selector("a[title='Preview block']", text: "Preview and reorder")
+  expect(page).to_not have_selector("a[title='Preview block']", text: preview_button_text)
 end
 
 Then(/^I should see a preview of my contact$/) do
@@ -21,9 +21,14 @@ Then(/^I should see the add contact methods screen$/) do
 end
 
 def preview_block_button
-  find("a[title='Preview block']", text: "Preview and reorder")
+  find("a[title='Preview block']", text: preview_button_text)
 end
 
 Then(/^I should see the review contact screen$/) do
   assert_text "I confirm that the details I’ve put into the content block have been checked and are factually correct."
+end
+
+def preview_button_text
+  edition = Edition.last
+  edition.has_multiple_subschema_entries? ? "Preview and reorder" : "Preview"
 end

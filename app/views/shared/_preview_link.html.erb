@@ -1,6 +1,6 @@
 <div id="preview_link_<%= edition.id %>">
   <%= render("govuk_publishing_components/components/button", {
-    text: "Preview and reorder",
+    text: edition.has_multiple_subschema_entries? ? "Preview and reorder" : "Preview",
     secondary_quiet: true,
     title: "Preview block",
     href: preview_edition_path(edition),
