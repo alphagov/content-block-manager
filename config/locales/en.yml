@@ -1,6 +1,7 @@
 en:
   activerecord:
     errors:
+      title: There is a problem
       models:
         document:
           attributes:

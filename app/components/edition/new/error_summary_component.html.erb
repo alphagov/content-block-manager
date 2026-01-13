@@ -1,6 +1,6 @@
 <% if error_message %>
   <%= render "govuk_publishing_components/components/error_summary", {
-    title: "There is a problem",
+    title: I18n.t("activerecord.errors.title"),
     items: [
       {
         text: error_message,
