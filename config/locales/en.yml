@@ -206,6 +206,8 @@ en:
     latest: Latest
     details_of_changes:
       title: Details of changes
+      previous_version: Previous version
+      this_version: This version
     internal_note:
       title: Internal note
     change_note:
