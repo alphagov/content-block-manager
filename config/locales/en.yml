@@ -39,6 +39,8 @@ en:
           default: Title
           contact: Contact name
   document:
+    new:
+      title: Select a content block
     index:
       filter_options:
         heading: Search by keyword

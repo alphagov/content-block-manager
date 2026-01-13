@@ -13,7 +13,7 @@
     } %>
   <% end %>
 
-  <% content_for :title, "Select a content block" %>
+  <% content_for :title, I18n.t("document.new.title") %>
   <% content_for :title_margin_bottom, 3 %>
 
   <%= render Edition::New::SelectSchemaComponent.new(
