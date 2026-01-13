@@ -11,7 +11,7 @@
     heading: "Ready for factcheck",
     heading_caption: @edition.title,
     heading_level: 1,
-    error_message: flash.alert.present? ? "Describe the outcome of the 2i process" : nil,
+    error_message: flash.alert.presence,
     items: [
       {
         value: "true",

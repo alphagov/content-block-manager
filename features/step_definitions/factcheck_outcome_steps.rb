@@ -51,7 +51,7 @@ end
 Then("I see that I need to indicate whether the factcheck process was performed or skipped") do
   expect(page).to have_content("Indicate whether the Factcheck process has been performed or not")
   within ".govuk-form-group--error" do
-    expect(page).to have_content("Describe the outcome of the Factcheck process")
+    expect(page).to have_content("Indicate whether the Factcheck process has been performed or not")
   end
 end
 

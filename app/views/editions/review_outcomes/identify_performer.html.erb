@@ -14,7 +14,7 @@
       name: "review_outcome[review_performer]",
       label: { text: "2i reviewer" },
       hint: "Enter the email address or name of the 2i reviewer",
-      error_message: flash.alert.present? ? "2i reviewer cannot be blank" : nil,
+      error_message: flash.alert.presence,
   } %>
 
   <div class="govuk-button-group govuk-!-margin-bottom-6">

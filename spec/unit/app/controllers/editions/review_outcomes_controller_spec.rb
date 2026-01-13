@@ -160,7 +160,7 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
       end
 
       it "shows an error message" do
-        expected_message = "param is missing or the value is empty or invalid: review_outcome"
+        expected_message = "Provide the email or name of the 2i reviewer who performed the review"
         expect(flash.alert).to eq(expected_message)
       end
 

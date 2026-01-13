@@ -23,8 +23,8 @@ class Editions::ReviewOutcomesController < BaseController
   def update
     begin
       update_review_performer
-    rescue ActionController::ParameterMissing => e
-      return handle_missing_review_performer(e)
+    rescue ActionController::ParameterMissing
+      return handle_missing_review_performer
     end
 
     transition_edition_and_redirect
@@ -59,7 +59,7 @@ private
   end
 
   def form_validation_error
-    flash.now.alert = "Indicate whether the 2i Review process has been performed or not"
+    flash.now.alert = I18n.t("edition.outcomes.errors.review.missing_outcome")
     render :new
   end
 
@@ -91,8 +91,8 @@ private
     params.require("review_outcome")
   end
 
-  def handle_missing_review_performer(error)
-    flash.alert = error.message
+  def handle_missing_review_performer
+    flash.alert = I18n.t("edition.outcomes.errors.review.missing_performer")
     redirect_to identify_performer_review_outcome_edition_path(@edition)
   end
 

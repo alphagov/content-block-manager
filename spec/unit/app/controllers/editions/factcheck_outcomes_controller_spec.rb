@@ -199,7 +199,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
 
       it "shows an error message" do
-        expected_message = "param is missing or the value is empty or invalid: factcheck_outcome"
+        expected_message = "Provide the email or name of the subject matter expert who performed the factcheck"
         expect(flash.alert).to eq(expected_message)
       end
 

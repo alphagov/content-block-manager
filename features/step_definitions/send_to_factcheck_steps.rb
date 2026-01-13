@@ -34,7 +34,7 @@ end
 Then("I see that I need to indicate whether the review process was performed or skipped") do
   expect(page).to have_content("Indicate whether the 2i Review process has been performed or not")
   within ".govuk-form-group--error" do
-    expect(page).to have_content("Describe the outcome of the 2i process")
+    expect(page).to have_content("Indicate whether the 2i Review process has been performed or not")
   end
 end
 
