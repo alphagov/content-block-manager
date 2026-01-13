@@ -60,10 +60,15 @@ class Edition < ApplicationRecord
     details[subschema_id].present?
   end
 
-  def has_entries_for_multiple_subschemas?
+  def has_multiple_subschema_entries?
     schema = document.schema
     subschemas = schema.subschemas
-    subschemas.select { |subschema| has_entries_for_subschema_id?(subschema.id) }.count > 1
+
+    total_entries = subschemas.inject(0) do |counter, subschema|
+      counter + (details[subschema.id].try(:count) || 0)
+    end
+
+    total_entries > 1
   end
 
   def default_order

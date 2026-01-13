@@ -3,7 +3,7 @@
 <% end %>
 
 <%= turbo_stream.replace "preview_link_#{@edition.id}" do %>
-  <% if @edition.has_entries_for_multiple_subschemas? %>
+  <% if @edition.has_multiple_subschema_entries? %>
     <%= render "shared/reorder_link", edition: @edition %>
   <% end %>
 

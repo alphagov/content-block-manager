@@ -2,6 +2,10 @@ And(/^I click on reorder$/) do
   click_on "Reorder"
 end
 
+Then("I should be on the reordering form") do
+  expect(current_path).to eq(order_edit_edition_path(Edition.last))
+end
+
 And(/^I change the order of the contact methods$/) do
   find("a[data-testid='email_addresses.email-the-team-move-up-button']").click
 end

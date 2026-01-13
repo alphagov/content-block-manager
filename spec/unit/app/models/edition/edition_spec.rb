@@ -467,30 +467,64 @@ RSpec.describe Edition, type: :model do
     end
   end
 
-  describe "#has_entries_for_multiple_subschemas?" do
-    let(:subschemas) { [double(:subschema, id: "foo"), double(:subschema, id: "bar")] }
-    let(:schema) { double(:schema, subschemas: subschemas) }
-    let(:document) { build(:document, schema: schema) }
-    let(:edition) { build(:edition, document: document) }
-
-    it "returns true when an edition has entries for multiple subschemas" do
-      allow(edition).to receive(:has_entries_for_subschema_id?).with(subschemas[0].id).and_return(true)
-      allow(edition).to receive(:has_entries_for_subschema_id?).with(subschemas[1].id).and_return(true)
-
-      expect(edition.has_entries_for_multiple_subschemas?).to be true
+  describe "#has_multiple_subschema_entries?" do
+    before do
+      document = build(:document)
+      allow(document).to receive(:schema).and_return(double(subschemas: subschemas))
+      edition.document = document
     end
 
-    it "returns false when an edition has entries for one subschema" do
-      allow(edition).to receive(:has_entries_for_subschema_id?).with(subschemas[0].id).and_return(false)
-      allow(edition).to receive(:has_entries_for_subschema_id?).with(subschemas[1].id).and_return(true)
-
-      expect(edition.has_entries_for_multiple_subschemas?).to be false
+    let(:subschemas) do
+      [
+        double(:subschema, id: "email_addresses", block_type: "email_addresses"),
+        double(:subschema, id: "contact_links", block_type: "contact_links"),
+      ]
     end
 
-    it "returns false when an edition has entries for no subschemas" do
-      allow(edition).to receive(:has_entries_for_subschema_id?).and_return(false)
+    context "when there are multiple entries for a single subschema" do
+      before do
+        edition.details = {
+          "email_addresses" => {
+            "email" => { "email_address" => "roger@example.com" },
+            "email-1" => { "email_address" => "smith@example.com" },
+          },
+        }
+      end
 
-      expect(edition.has_entries_for_multiple_subschemas?).to be false
+      it "returns true" do
+        expect(edition.has_multiple_subschema_entries?).to be true
+      end
+    end
+
+    context "when there is one entry for one subschema and another entry for 2nd subschema" do
+      before do
+        edition.details = {
+          "email_addresses" => {
+            "email" => { "email_address" => "roger@example.com" },
+          },
+          "contact_links" => {
+            "contact_link" => { "url" => "https://info.example.com" },
+          },
+        }
+      end
+
+      it "returns true" do
+        expect(edition.has_multiple_subschema_entries?).to be true
+      end
+    end
+
+    context "when there is only one entry in total" do
+      before do
+        edition.details = {
+          "email_addresses" => {
+            "email" => { "email_address" => "roger@example.com" },
+          },
+        }
+      end
+
+      it "returns false" do
+        expect(edition.has_multiple_subschema_entries?).to be false
+      end
     end
   end
 
