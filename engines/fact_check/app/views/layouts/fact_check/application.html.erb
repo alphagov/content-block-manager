@@ -41,9 +41,7 @@
       ga4_document_type: "#{action_name}-#{controller_name}",
     },
     ) do %>
-    <%= render "shared/phase_banner", {
-      show_feedback_banner: t("admin.feedback.show_banner"),
-    } %>
+    <%= render "shared/phase_banner" %>
 
     <%= yield(:back_link) %>
     <%= yield(:breadcrumbs) %>
