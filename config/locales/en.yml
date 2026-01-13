@@ -207,6 +207,7 @@ en:
     add_another: "Add another %{item}"
     save_and_continue: "Save and continue"
     cancel: "Cancel"
+    delete_draft: "Delete draft"
     reorder:
       save: "Save order"
       up: "Up"
