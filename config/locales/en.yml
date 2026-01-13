@@ -62,6 +62,14 @@ en:
         rates: "Enter %{block_type} details. You can do this now or later."
         added_confirmation: "%{object_name} added. You can add another %{object_or_group} or finish creating the %{schema_name} block."
         edited_confirmation: "%{object_name} edited. You can add another %{object_or_group} or finish creating the %{schema_name} block."
+    schedule:
+      now:
+        cta: Publish the edit now
+        hint: The edit will be made when you select publish and users will see it immediately.
+      later:
+        cta: Schedule the edit for the future
+        hint: The edit will be published on a date and time you choose.
+
     confirmation_page:
       scheduled:
         banner: "%{block_type} scheduled to publish on %{date}"
