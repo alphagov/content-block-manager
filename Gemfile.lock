@@ -373,7 +373,8 @@ GEM
       mime-types-data (~> 3.2025, >= 3.2025.0507)
     mime-types-data (3.2025.0924)
     mini_mime (1.1.5)
-    minitest (5.27.0)
+    minitest (6.0.1)
+      prism (~> 1.5)
     mocha (3.0.1)
       ruby2_keywords (>= 0.0.5)
     msgpack (1.8.0)
@@ -875,9 +876,9 @@ GEM
     uri (1.1.1)
     useragent (0.16.11)
     version_gem (1.1.8)
-    view_component (4.1.1)
-      actionview (>= 7.1.0, < 8.2)
-      activesupport (>= 7.1.0, < 8.2)
+    view_component (4.2.0)
+      actionview (>= 7.1.0)
+      activesupport (>= 7.1.0)
       concurrent-ruby (~> 1)
     warden (1.2.9)
       rack (>= 2.0.9)
@@ -1101,7 +1102,7 @@ CHECKSUMS
   mime-types (3.7.0) sha256=dcebf61c246f08e15a4de34e386ebe8233791e868564a470c3fe77c00eed5e56
   mime-types-data (3.2025.0924) sha256=f276bca15e59f35767cbcf2bc10e023e9200b30bd6a572c1daf7f4cc24994728
   mini_mime (1.1.5) sha256=8681b7e2e4215f2a159f9400b5816d85e9d8c6c6b491e96a12797e798f8bccef
-  minitest (5.27.0) sha256=2d3b17f8a36fe7801c1adcffdbc38233b938eb0b4966e97a6739055a45fa77d5
+  minitest (6.0.1) sha256=7854c74f48e2e975969062833adc4013f249a4b212f5e7b9d5c040bf838d54bb
   mocha (3.0.1) sha256=74f82c5959e3df6cfa2757d60aa420dcb151ac7c5eb61dcebf1cd4e368ed7469
   msgpack (1.8.0) sha256=e64ce0212000d016809f5048b48eb3a65ffb169db22238fb4b72472fecb2d732
   multi_test (1.1.0) sha256=e9e550cdd863fb72becfe344aefdcd4cbd26ebf307847f4a6c039a4082324d10
@@ -1291,7 +1292,7 @@ CHECKSUMS
   uri (1.1.1) sha256=379fa58d27ffb1387eaada68c749d1426738bd0f654d812fcc07e7568f5c57c6
   useragent (0.16.11) sha256=700e6413ad4bb954bb63547fa098dddf7b0ebe75b40cc6f93b8d54255b173844
   version_gem (1.1.8) sha256=a964767ecbe36551b9ff2e59099548c27569f2f7f94bdb09f609d76393a8e008
-  view_component (4.1.1) sha256=179f63b0db1d1a8f6af635dd684456b2bcdf6b6f4da2ef276bbe0579c17b377e
+  view_component (4.2.0) sha256=f250a3397a794336354f73c229b3b7549af0b24906551b99a03492b54cb5233d
   warden (1.2.9) sha256=46684f885d35a69dbb883deabf85a222c8e427a957804719e143005df7a1efd0
   warden-oauth2 (0.0.1) sha256=9f8dfd89d23ef8936734ca897acd7dde86802c8139d6299774d6e6bf292921fd
   webmock (3.26.1) sha256=4f696fb57c90a827c20aadb2d4f9058bbff10f7f043bd0d4c3f58791143b1cd7
