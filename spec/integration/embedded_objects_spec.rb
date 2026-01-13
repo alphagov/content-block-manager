@@ -67,6 +67,7 @@ RSpec.describe EmbeddedObjects, type: :request do
           subschemas = [stub_subschema]
 
           allow(stub_schema).to receive(:subschemas_for_group).with(group).and_return(subschemas)
+          allow(stub_schema).to receive(:subschemas).and_return(subschemas)
 
           get new_embedded_object_edition_path(
             edition,

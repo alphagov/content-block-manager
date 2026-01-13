@@ -307,6 +307,13 @@ Feature: Create a contact object
     When I click on reorder
     Then I should be on the reordering form
 
+  Scenario: Editor is not offered 'reorder' when only one contact method exists
+    When I click on the "email_addresses" subschema
+    And I complete the "email_address" form with the following fields:
+      | title           | label         | email_address    |
+      | Email The Team  | Send an email | foo@example.com  |
+    Then I should be offered the preview facility without mention of reordering
+
   @javascript
   Scenario: GDS editor creates a Contact with an email address and a telephone
     And I click on the "email_addresses" subschema
