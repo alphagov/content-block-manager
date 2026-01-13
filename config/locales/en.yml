@@ -157,6 +157,7 @@ en:
         superseded: Superseded
         deleted: Deleted
       transition_message:
+        draft: "This edition is now in the draft state"
         draft_complete: "This draft is now marked as complete"
         awaiting_review: "This edition is now ready to be reviewed by a second pair of eyes"
         awaiting_factcheck: "This edition is now ready to be fact-checked by a subject-matter expert"
@@ -173,6 +174,8 @@ en:
         superseded: "Superseded on %{date}"
         deleted: "Deleted on %{date} by %{user}"
     transitions:
+      draft: Return to draft
+      complete_draft: Complete draft
       ready_for_review: Send to 2i
       schedule: Schedule
       publish: Publish
