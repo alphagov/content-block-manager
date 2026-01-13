@@ -10,7 +10,7 @@
                 rows: 5,
     } %>
     <p class="govuk-body guidance govspeak-supported govuk-hint">
-      Govspeak supported
+     <%= I18n.t("edition.hints.govspeak_enabled") %>
     </p>
   <% else %>
     <%= render "govuk_publishing_components/components/textarea", {

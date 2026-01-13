@@ -110,6 +110,7 @@ en:
             show: Only select this option if your organisation has subscribed to an interpreter service.
           bsl_guidance:
             show: Only select this option if your organisation has subscribed to an interpreter service.
+      govspeak_enabled: Govspeak enabled
       pension:
         rates:
           amount: "Enter an exact amount, with the currency symbol - for example: £122.50"
