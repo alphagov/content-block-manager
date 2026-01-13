@@ -2,7 +2,7 @@
   <% if pre_release_features? && state == "draft" %>
     <div>
       <%= render "govuk_publishing_components/components/button", {
-          text: "Send to 2i",
+          text: I18n.t("review_actions.send_to_review"),
           name: "save_action",
           value: "send_to_review",
           type: "submit",
@@ -32,7 +32,7 @@
   <% if pre_release_features? %>
     <div>
       <%= render "govuk_publishing_components/components/button", {
-        text: state == "draft" ? "Save as draft" : "Save draft",
+        text: state == "draft" ? I18n.t("review_actions.save_as_draft") : I18n.t("review_actions.save_draft"),
         name: "save_action",
         value: "save_as_draft",
         type: "submit",

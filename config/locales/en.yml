@@ -207,6 +207,12 @@ en:
     add_another: "Add another %{item}"
     save_and_continue: "Save and continue"
     cancel: "Cancel"
+  review_actions:
+    send_to_review: Send to 2i
+    save_as_draft: Save as draft
+    save_draft: Save draft
+    create: Create
+    publish: Publish
   timeline_item:
     latest: Latest
     details_of_changes:
