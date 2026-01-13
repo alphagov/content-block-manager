@@ -1,26 +1,27 @@
 class Shared::EmbeddedObjects::SummaryCard::NestedItemComponent < ViewComponent::Base
   include ContentBlockTools::Govspeak
+  include SummaryListHelper
 
   delegate :translated_value, to: :helpers
 
-  with_collection_parameter :nested_items
+  with_collection_parameter :items
 
-  def initialize(nested_items:, field:, nested_items_counter: nil)
-    @nested_items = nested_items
+  def initialize(items:, field:, items_counter: nil)
+    @items = items
     @field = field
-    @nested_items_counter = nested_items_counter
+    @items_counter = items_counter
   end
 
 private
 
-  attr_reader :nested_items, :field, :nested_items_counter
+  attr_reader :items, :field, :items_counter
 
   def title
-    nested_items_counter ? "#{field.title.singularize} #{nested_items_counter + 1}" : field.title
+    items_counter ? "#{field.title.singularize} #{items_counter + 1}" : field.title
   end
 
   def rows
-    nested_items.map do |field_name, value|
+    first_class_items(items).map do |field_name, value|
       nested_field = field.nested_field(field_name)
       {
         key: nested_field.label,

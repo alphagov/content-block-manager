@@ -260,13 +260,13 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
           expect(page).to have_css ".govuk-summary-list__value", text: "My Embedded Object"
         end
 
-        expect(page).to have_css ".app-c-content-block-manager-nested-item-component", text: /Field 1/ do |_nested_block|
+        expect(page).to have_css ".app-c-embedded-object-summary-card-component--nested", text: /Field 1/ do |_nested_block|
           expect(page).to have_css ".govuk-summary-card__title", text: "Field 1"
           expect(page).to have_css ".govuk-summary-list__key", text: "Item"
           expect(page).to have_css ".govuk-summary-list__value", text: "Foo"
         end
 
-        expect(page).to have_css ".app-c-content-block-manager-nested-item-component", text: /Field 2/ do |_nested_block|
+        expect(page).to have_css ".app-c-embedded-object-summary-card-component--nested", text: /Field 2/ do |_nested_block|
           expect(page).to have_css ".govuk-summary-card__title", text: "Field 2"
           expect(page).to have_css ".govuk-summary-list__key", text: "Item"
           expect(page).to have_css ".govuk-summary-list__value", text: "Bar"
@@ -318,7 +318,7 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
           expect(page).to have_css ".govuk-summary-list__value", text: "My Embedded Object"
         end
 
-        expect(page).to have_css ".app-c-content-block-manager-nested-item-component", text: /Field/ do |_nested_block|
+        expect(page).to have_css ".app-c-embedded-object-summary-card-component--nested", text: /Field/ do |_nested_block|
           expect(page).to have_css ".govuk-summary-card__title", text: "Field"
           expect(page).to have_css ".govuk-summary-list__key", text: "Item"
           expect(page).to have_css ".govuk-summary-list__value", text: "Foo"

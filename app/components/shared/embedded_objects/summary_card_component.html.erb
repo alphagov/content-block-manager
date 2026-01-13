@@ -8,7 +8,7 @@
           ) %>
       <% else %>
         <%= render Shared::EmbeddedObjects::SummaryCard::NestedItemComponent.new(
-          nested_items: items,
+          items:,
           field:,
           ) %>
       <% end %>
