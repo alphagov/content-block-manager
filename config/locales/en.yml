@@ -202,6 +202,14 @@ en:
     add_another: "Add another %{item}"
     save_and_continue: "Save and continue"
     cancel: "Cancel"
+  timeline_item:
+    latest: Latest
+    details_of_changes:
+      title: Details of changes
+    internal_note:
+      title: Internal note
+    change_note:
+      title: Public note
   rollup:
     locations:
       title: Locations
