@@ -192,6 +192,9 @@ en:
       publish: Publish
       delete: Delete
       supersede: Supersede
+  embed_codes:
+    all_attributes: "These are all the %{object_name} attributes that make up the %{object_name}."
+    description: You can use any available embed code for each attribute separately in your content if required.
   date:
     formats:
       default: "%d %B %Y"
