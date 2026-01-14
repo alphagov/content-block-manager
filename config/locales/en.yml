@@ -170,7 +170,7 @@ en:
         draft: Draft
         draft_complete: Draft
         awaiting_review: In 2i
-        awaiting_factcheck: Awaiting factcheck
+        awaiting_factcheck: In factcheck
         scheduled: Scheduled
         published: Published
         superseded: Superseded
