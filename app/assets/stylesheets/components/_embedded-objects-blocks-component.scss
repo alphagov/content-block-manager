@@ -25,6 +25,10 @@
     }
   }
 
+  &--nested {
+    margin-top: govuk-spacing(6);
+  }
+
   &__details-text {
     border-left: $govuk-border-width solid $govuk-border-colour;
     padding-top: govuk-spacing(3);

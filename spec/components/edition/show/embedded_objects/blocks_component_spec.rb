@@ -120,8 +120,8 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
       end
 
       let(:field) { build(:field, hidden?: false, title: "Thing") }
-      let(:title_field) { build(:field, hidden?: false, label: "Title") }
-      let(:value_field) { build(:field, hidden?: false, label: "Value") }
+      let(:title_field) { build(:field, hidden?: false, label: "Title", name: "title") }
+      let(:value_field) { build(:field, hidden?: false, label: "Value", name: "value") }
 
       before do
         allow(subschema).to receive(:field).with("things").and_return(field)
@@ -135,13 +135,13 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         expect(page).to have_css ".app-c-embedded-objects-blocks-component .govuk-summary-list__row", count: 4
 
         expect(page).to have_css ".gem-c-summary-card[title='Thing 1']" do |summary_card|
-          expect_summary_list_row(test_id: "else_things/0/title", key: "Title", value: "Title 1", embed_code_suffix: "things/0/title", parent_container: summary_card)
-          expect_summary_list_row(test_id: "else_things/0/value", key: "Value", value: "Value 1", embed_code_suffix: "things/0/value", parent_container: summary_card)
+          expect_summary_list_row(test_id: "something/else/things/0/title", key: "Title", value: "Title 1", embed_code_suffix: "things/0/title", parent_container: summary_card)
+          expect_summary_list_row(test_id: "something/else/things/0/value", key: "Value", value: "Value 1", embed_code_suffix: "things/0/value", parent_container: summary_card)
         end
 
         expect(page).to have_css ".gem-c-summary-card[title='Thing 2']" do |summary_card|
-          expect_summary_list_row(test_id: "else_things/1/title", key: "Title", value: "Title 2", embed_code_suffix: "things/1/title", parent_container: summary_card)
-          expect_summary_list_row(test_id: "else_things/1/value", key: "Value", value: "Value 2", embed_code_suffix: "things/1/value", parent_container: summary_card)
+          expect_summary_list_row(test_id: "something/else/things/1/title", key: "Title", value: "Title 2", embed_code_suffix: "things/1/title", parent_container: summary_card)
+          expect_summary_list_row(test_id: "something/else/things/1/value", key: "Value", value: "Value 2", embed_code_suffix: "things/1/value", parent_container: summary_card)
         end
       end
 
@@ -154,11 +154,11 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
           expect(page).to have_css ".app-c-embedded-objects-blocks-component .govuk-summary-list__row", count: 2
 
           expect(page).to have_css ".gem-c-summary-card[title='Thing 1']" do
-            expect(page).to_not have_css "[data-testid='else_things/0/value}']"
+            expect(page).to_not have_css "[data-testid='something/else/things/0/value}']"
           end
 
           expect(page).to have_css ".gem-c-summary-card[title='Thing 2']" do
-            expect(page).to_not have_css "[data-testid='else_things/1/value}']"
+            expect(page).to_not have_css "[data-testid='something/else/things/1/value}']"
           end
         end
       end
@@ -169,7 +169,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
     let(:embeddable_as_block) { true }
 
     before do
-      expect(edition).to receive(:render).with(
+      allow(edition).to receive(:render).with(
         document.embed_code_for_field("#{object_type}/#{object_title}"),
       ).and_return("BLOCK_RESPONSE")
     end
@@ -293,9 +293,9 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         }
       end
 
-      let(:field) { build(:field, hidden?: false, title: "Thing") }
-      let(:title_field) { build(:field, hidden?: false, label: "Title") }
-      let(:value_field) { build(:field, hidden?: false, label: "Value") }
+      let(:field) { build(:field, hidden?: false, title: "Thing", name: "thing") }
+      let(:title_field) { build(:field, hidden?: false, label: "Title", name: "title") }
+      let(:value_field) { build(:field, hidden?: false, label: "Value", name: "value") }
 
       before do
         allow(subschema).to receive(:field).with("things").and_return(field)
@@ -309,7 +309,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         expect(page).to have_css ".app-c-embedded-objects-blocks-component__details-summary-list", visible: false do |summary_list|
           expect(summary_list).to have_css ".gem-c-summary-card[title='Thing 1']", visible: false do |summary_card|
             expect_summary_list_row(
-              test_id: "else_things/0/title",
+              test_id: "something/else/things/0/title",
               key: "Title",
               value: "Title 1",
               embed_code_suffix: "things/0/title",
@@ -318,7 +318,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
             )
 
             expect_summary_list_row(
-              test_id: "else_things/0/value",
+              test_id: "something/else/things/0/value",
               key: "Value",
               value: "Value 1",
               embed_code_suffix: "things/0/value",
@@ -329,7 +329,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
 
           expect(summary_list).to have_css ".gem-c-summary-card[title='Thing 2']", visible: false do |summary_card|
             expect_summary_list_row(
-              test_id: "else_things/1/title",
+              test_id: "something/else/things/1/title",
               key: "Title",
               value: "Title 2",
               embed_code_suffix: "things/1/title",
@@ -338,7 +338,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
             )
 
             expect_summary_list_row(
-              test_id: "else_things/1/value",
+              test_id: "something/else/things/1/value",
               key: "Value",
               value: "Value 2",
               embed_code_suffix: "things/1/value",
