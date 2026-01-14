@@ -19,7 +19,7 @@
 
   <div class="govuk-button-group govuk-!-margin-bottom-6">
     <%= render "govuk_publishing_components/components/button", {
-      text: "Continue",
+      text: I18n.t("edition.transitions.#{@transition}"),
       name: "continue",
       value: "Continue",
       type: "submit",

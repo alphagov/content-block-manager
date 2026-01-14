@@ -41,7 +41,7 @@ end
 
 When("I provide the subject matter expert") do
   fill_in "Factcheck Subject Matter Expert", with: "Jane Doe"
-  click_button("Continue")
+  click_button("Publish")
 end
 
 When("I attempt to proceed without supplying the outcome of the factcheck process") do

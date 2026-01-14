@@ -17,6 +17,8 @@ class Editions::FactcheckOutcomesController < BaseController
   end
 
   def identify_performer
+    @transition = block_will_be_scheduled? ? "schedule" : "publish"
+
     render :identify_performer
   end
 
