@@ -12,7 +12,8 @@ RSpec.describe Shared::DocumentFullStatusComponent, type: :component do
 
   context "when rendering the component" do
     it "should contain a tag with the Edition's status" do
-      expect(page).to have_css(".govuk-tag[title='Status: Awaiting 2i']")
+      state_label = I18n.t("edition.states.label.#{edition.state}")
+      expect(page).to have_css(".govuk-tag[title='Status: #{state_label}']")
     end
 
     it "should contain a status line with the correct status text" do

@@ -1,4 +1,15 @@
 RSpec.describe Shared::DocumentStatusTagComponent, type: :component do
+  expected_colours = {
+    draft: "yellow",
+    draft_complete: "yellow",
+    awaiting_review: "light-blue",
+    awaiting_factcheck: "pink",
+    scheduled: "turquoise",
+    published: "green",
+    superseded: "orange",
+    deleted: "red",
+  }
+
   let(:edition) { instance_double(Edition, state: :draft) }
 
   let(:component) { described_class.new(edition: edition) }
@@ -23,17 +34,6 @@ RSpec.describe Shared::DocumentStatusTagComponent, type: :component do
   end
 
   describe "#colour" do
-    expected_colours = {
-      draft: "yellow",
-      draft_complete: "blue",
-      awaiting_review: "turquoise",
-      awaiting_factcheck: "pink",
-      scheduled: "light-blue",
-      published: "green",
-      superseded: "orange",
-      deleted: "red",
-    }
-
     Edition.new.available_states.each do |state|
       it "returns '#{expected_colours.fetch(state)}' for state '#{state}'" do
         allow(edition).to receive(:state).and_return(state)
@@ -55,17 +55,6 @@ RSpec.describe Shared::DocumentStatusTagComponent, type: :component do
   end
 
   describe "applies Design System colour styling successfully to govuk-tag" do
-    expected_colours = {
-      draft: "yellow",
-      draft_complete: "blue",
-      awaiting_review: "turquoise",
-      awaiting_factcheck: "pink",
-      scheduled: "light-blue",
-      published: "green",
-      superseded: "orange",
-      deleted: "red",
-    }
-
     Edition.new.available_states.each do |state|
       it "sets the tag--{colour} '#{expected_colours.fetch(state)}' for state '#{state}'" do
         allow(edition).to receive(:state).and_return(state)
