@@ -228,7 +228,6 @@ en:
     publish: Publish
   show_action:
     complete_draft: Complete draft
-    edit_draft: Edit draft
     edit_latest_edition: Edit latest edition
     go_to_published_edition: Go to published edition
     return_to_latest_edition: Return to latest edition
