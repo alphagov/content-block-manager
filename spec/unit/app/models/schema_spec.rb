@@ -143,11 +143,8 @@ RSpec.describe Schema do
   end
 
   describe ".valid_schemas" do
-    it "returns the contents of the VALID_SCHEMA constant" do
-      assert_equal Schema.valid_schemas, %w[
-        pension
-        contact
-      ]
+    it "returns all of the schemas" do
+      expect(Schema.valid_schemas).to eq(%w[tax contact pension])
     end
 
     describe "when the show_all_content_block_types feature flag is turned off" do
@@ -155,8 +152,8 @@ RSpec.describe Schema do
         allow(Flipflop).to receive(:show_all_content_block_types?).and_return(false)
       end
 
-      it "only returns pensions" do
-        expect(%w[pension]).to eq(Schema.valid_schemas)
+      it "only returns the live schemas" do
+        expect(Schema.valid_schemas).to eq(%w[contact pension])
       end
     end
   end
