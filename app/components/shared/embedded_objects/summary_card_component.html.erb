@@ -1,32 +1,26 @@
-<%= content_tag(:div, wrapper_attributes) do %>
-  <div class="govuk-summary-card__title-wrapper">
-    <h2 class="govuk-summary-card__title">
-      <%= title %> <span class="govuk-visually-hidden"><%= @counter %></span>
-    </h2>
-    <ul class="govuk-summary-card__actions">
-      <% summary_card_actions.each do |action| %>
-        <li class="govuk-summary-card__action">
-          <a class="govuk-link" href="<%= action[:href] %>"><%= action[:label] %></a>
-        </li>
-      <% end %>
-    </ul>
-  </div>
-  <div class="govuk-summary-card__content">
-    <%= render "govuk_publishing_components/components/summary_list", {
-      items: rows,
-    } %>
+<div class="app-c-embedded-object-summary-card-component">
+  <% content = capture do %>
     <% nested_items(items).each do |field, items| %>
       <% if items.is_a?(Array) %>
         <%= render Shared::EmbeddedObjects::SummaryCard::NestedItemComponent.with_collection(
           items,
           field:,
-        ) %>
+          ) %>
       <% else %>
         <%= render Shared::EmbeddedObjects::SummaryCard::NestedItemComponent.new(
           nested_items: items,
           field:,
-        ) %>
+          ) %>
       <% end %>
     <% end %>
-  </div>
-<% end %>
+  <% end %>
+
+  <%= render "govuk_publishing_components/components/summary_card", {
+    title:,
+    rows:,
+    summary_card_actions:,
+    data_attributes:,
+  } do %>
+    <%= content %>
+  <% end %>
+</div>

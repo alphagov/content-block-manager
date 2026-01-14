@@ -79,7 +79,7 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
 
     render_inline component
 
-    expect(page).to have_css ".govuk-summary-card[data-test-id='prefix_my-embedded-object']"
+    expect(page).to have_css ".gem-c-summary-card[data-test-id='prefix_my-embedded-object']"
   end
 
   it "renders a summary list with a collection" do
