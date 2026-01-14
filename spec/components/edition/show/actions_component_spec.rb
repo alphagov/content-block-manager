@@ -20,7 +20,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
       it "offers a button for the status transition" do
         expect(page).to have_css(
           ".actions form[action='/editions/123/edition_status_transitions'] button",
-          text: "Send to 2i",
+          text: "Ready for 2i",
         )
       end
     end
@@ -35,7 +35,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
           end
 
           it "does NOT offer a button for the status transition" do
-            expect(page).to have_no_button("Send to 2i")
+            expect(page).to have_no_button("Ready for 2i")
           end
         end
       end
@@ -53,7 +53,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
       it "offers a button to record the Review outcome" do
         expect(page).to have_css(
           ".actions a[href='/editions/123/review_outcomes/new']",
-          text: "Send to factcheck",
+          text: "Ready for factcheck",
         )
       end
     end
@@ -67,7 +67,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
         end
 
         it "does NOT offer a button to record the Review outcome" do
-          expect(page).to have_no_link("Send to Factcheck")
+          expect(page).to have_no_link("Ready for Factcheck")
         end
       end
     end

@@ -30,7 +30,7 @@ Feature: Editor sends edition to Review
     When I visit the Content Block Manager home page
     And I click to view the document
     Then I see that the edition is in draft_complete state
-    And I see a principal call to action of 'Send to 2i'
+    And I see a principal call to action of 'Ready for 2i'
     And I see a secondary call to action edit the existing draft
 
     And I opt to send the edition to Review
@@ -44,7 +44,7 @@ Feature: Editor sends edition to Review
     And I visit the Content Block Manager home page
     And I click to view the document
     Then I see that the edition is in draft_complete state
-    And I see a principal call to action of 'Send to 2i'
+    And I see a principal call to action of 'Ready for 2i'
 
     Given the document has been put into the awaiting_review state by another process
     And I opt to send the edition to Review
@@ -53,17 +53,17 @@ Feature: Editor sends edition to Review
   Scenario: No option to 'Send to review' when draft is unchecked
     Given the draft workflow has not been completed
     And I am viewing the draft edition
-    Then I do not see a call to action of 'Send to 2i'
+    Then I do not see a call to action of 'Ready for 2i'
     And I see a principal call to action to complete the draft
 
-  Scenario: Send to 2i Review from review step in workflow
+  Scenario: Ready for 2i Review from review step in workflow
     When I visit the Content Block Manager home page
     And I click to view the document
     Then I see that the edition is in draft state
 
     When I follow the link to complete the draft
     And I complete the initial step of the workflow
-    Then I see that I can complete the workflow with 'Send to 2i'
+    Then I see that I can complete the workflow with 'Ready for 2i'
 
     When I confirm I have checked the content
     And I opt to send the edition to Review

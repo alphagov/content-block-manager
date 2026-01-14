@@ -18,7 +18,7 @@ RSpec.describe Edition::Workflow::ReviewActionsComponent, type: :component do
 
             expect(page).to have_css(
               "button.govuk-button[name='save_action'][value='send_to_review']",
-              text: "Send to 2i",
+              text: "Ready for 2i",
             )
           end
         end
