@@ -168,7 +168,7 @@ en:
     states:
       label:
         draft: Draft
-        draft_complete: Draft complete
+        draft_complete: Draft
         awaiting_review: Awaiting 2i
         awaiting_factcheck: Awaiting factcheck
         scheduled: Scheduled
