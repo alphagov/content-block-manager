@@ -7,7 +7,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent, typ
   end
   let(:field) { double("field", title: "Nested Field", name: "nested_field") }
   let(:document) { build(:document, :pension) }
-  let(:edition) { build(:edition, document: document) }
+  let(:edition) { build(:edition, :published, document: document) }
   let(:embed_code_prefix) { "prefix" }
   let(:items_counter) { nil }
 
