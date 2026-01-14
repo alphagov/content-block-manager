@@ -14,7 +14,7 @@ private
   end
 
   def label
-    field.label.singularize
+    field.title.singularize
   end
 
   def value
