@@ -69,14 +69,14 @@ private
         render Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent.with_collection(
           items,
           field: schema.field(key),
-          document:,
+          edition:,
           embed_code_prefix: embed_code_identifier(object_type, object_title, key),
         )
       else
         render Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent.new(
           items:,
           field: schema.field(key),
-          document:,
+          edition:,
           embed_code_prefix: embed_code_identifier(object_type, object_title, key),
         )
       end
