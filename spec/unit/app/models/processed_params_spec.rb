@@ -186,6 +186,20 @@ RSpec.describe ProcessedParams do
       })
     end
 
+    context "when the params are not provided" do
+      let(:params) do
+        {
+          "block_type" => {},
+        }
+      end
+
+      it "should not error" do
+        expect(processed_params.result).to eq({
+          "block_type" => {},
+        })
+      end
+    end
+
     context "if the value of the show field is empty" do
       let(:params) do
         {

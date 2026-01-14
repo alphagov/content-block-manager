@@ -16,6 +16,8 @@ private
 
   def processed_fields(fields, collection)
     fields.each do |field|
+      next unless collection[field.name]
+
       if conditional_object_field?(field)
         collection[field.name] = update_conditional_object(field, collection[field.name])
       elsif field.nested_fields && field.format == "object"

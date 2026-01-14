@@ -17,7 +17,7 @@ private
   attr_reader :field, :edition, :schema, :value, :index, :can_be_deleted, :hints, :parent_indexes
 
   def label
-    "#{field.label.singularize} #{index + 1}"
+    "#{field.title.singularize} #{index + 1}"
   end
 
   def components

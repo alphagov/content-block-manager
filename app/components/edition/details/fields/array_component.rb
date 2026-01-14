@@ -14,7 +14,7 @@ private
   end
 
   def label
-    field.label.singularize
+    field.title.singularize
   end
 
   def value
@@ -22,7 +22,11 @@ private
   end
 
   def number_of_items
-    value.count.positive? ? value.count : 1
+    if value.count.positive?
+      value.count
+    else
+      field.is_required? ? 1 : 0
+    end
   end
 
   def components
@@ -39,6 +43,18 @@ private
     "array-component-#{edition.id}-#{context.id}"
   end
 
+  def adding_another?
+    params[:add_another] == field.name
+  end
+
+  def button_text
+    if number_of_items.positive? || adding_another?
+      I18n.t("buttons.add_another", item: label.downcase)
+    else
+      I18n.t("buttons.add", item: label.downcase)
+    end
+  end
+
   def component(index)
     Edition::Details::Fields::Array::ItemComponent.new(
       field:,
@@ -53,7 +69,11 @@ private
   end
 
   def can_be_deleted?(index)
-    immutability_checker&.can_be_deleted?(index)
+    if index.zero? && field.is_required?
+      false
+    else
+      immutability_checker&.can_be_deleted?(index)
+    end
   end
 
   def immutability_checker

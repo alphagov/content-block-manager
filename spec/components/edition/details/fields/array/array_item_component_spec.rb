@@ -1,6 +1,6 @@
 RSpec.describe Edition::Details::Fields::Array::ItemComponent, type: :component do
   let(:field_name) { "foo" }
-  let(:field) { build(:field, name: field_name, enum_values: nil, default_value: nil, nested_fields:, label: "Foo") }
+  let(:field) { build(:field, name: field_name, enum_values: nil, default_value: nil, nested_fields:, title: "Foo") }
   let(:edition) { build(:edition) }
   let(:schema) { build(:schema) }
   let(:can_be_deleted) { true }

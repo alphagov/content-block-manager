@@ -156,8 +156,11 @@ And("I click to add a new {string}") do |object_type|
   click_on I18n.t("buttons.add", item: add_indefinite_article(object_type.humanize.downcase))
 end
 
+And("I click to add a(n) {string}") do |object_type|
+  click_on I18n.t("buttons.add", item: object_type.humanize.downcase)
+end
+
 And("I click to add another {string}") do |object_type|
-  @object_type = object_type
   click_on I18n.t("buttons.add_another", item: object_type.humanize.downcase)
 end
 

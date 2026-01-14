@@ -45,36 +45,105 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
   end
 
   describe "when there are no items present" do
-    it "renders with one empty item" do
-      render_inline component
-
-      expect(page).to have_css ".app-c-content-block-manager-array-component" do |component|
-        expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", count: 1
-
-        expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 1/ do |fieldset|
-          expect_form_fields(fieldset:, index: 0)
-        end
-      end
-    end
-
-    context "when the add_another param is set" do
+    context "and the field is required" do
       before do
-        vc_test_request.request_parameters = { add_another: field.name }
+        allow(field).to receive(:is_required?).and_return(true)
       end
 
-      it "renders with an extra empty item" do
+      it "renders with one empty item" do
         render_inline component
 
         expect(page).to have_css ".app-c-content-block-manager-array-component" do |component|
-          expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", count: 2
+          expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", count: 1
 
           expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 1/ do |fieldset|
             expect_form_fields(fieldset:, index: 0)
           end
+        end
+      end
 
-          expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 2/ do |fieldset|
-            expect_form_fields(fieldset:, index: 1)
+      it "prompts the user to add another item" do
+        render_inline component
+
+        expect(page).to have_css ".govuk-button", text: I18n.t("buttons.add_another", item: field.label.singularize.downcase)
+      end
+
+      it "does not render a deletion checkbox" do
+        render_inline component
+
+        expect(page).to have_css "input[type='hidden'][name='#{field.name_attribute}[_destroy]'][value='0']", visible: false
+        expect(page).to_not have_css "input[type='checkbox'][name='#{field.name_attribute}[_destroy]']"
+      end
+
+      context "when the add_another param is set" do
+        before do
+          vc_test_request.request_parameters = { add_another: field.name }
+        end
+
+        it "renders with an extra empty item" do
+          render_inline component
+
+          expect(page).to have_css ".app-c-content-block-manager-array-component" do |component|
+            expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", count: 2
+
+            expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 1/ do |fieldset|
+              expect_form_fields(fieldset:, index: 0)
+            end
+
+            expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 2/ do |fieldset|
+              expect_form_fields(fieldset:, index: 1)
+            end
           end
+        end
+
+        it "prompts the user to add another item" do
+          render_inline component
+
+          expect(page).to have_css ".govuk-button", text: I18n.t("buttons.add_another", item: field.label.singularize.downcase)
+        end
+      end
+    end
+
+    context "and the field is not required" do
+      before do
+        allow(field).to receive(:is_required?).and_return(false)
+      end
+
+      it "renders with no empty items" do
+        render_inline component
+
+        expect(page).to have_css ".app-c-content-block-manager-array-component" do |component|
+          expect(component).to_not have_css ".app-c-content-block-manager-array-item-component__fieldset"
+        end
+      end
+
+      it "prompts the user to add an item" do
+        render_inline component
+
+        expect(page).to have_css ".govuk-button", text: I18n.t("buttons.add", item: field.label.singularize.downcase)
+      end
+
+      context "when the add_another param is set" do
+        before do
+          vc_test_request.request_parameters = { add_another: field.name }
+        end
+
+        it "renders with one empty item" do
+          render_inline component
+
+          expect(page).to have_css ".app-c-content-block-manager-array-component" do |component|
+            expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", count: 1
+
+            expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 1/ do |fieldset|
+              expect_form_fields(fieldset:, index: 0)
+            end
+          end
+        end
+
+        it "prompts the user to add another item" do
+          render_inline component
+
+          expect(page).to have_css ".govuk-button", text: I18n.t("buttons.add_another", item: field.label.singularize.downcase)
         end
       end
     end
@@ -243,14 +312,34 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
       Edition::Details::Fields::Context.new(edition:, field:, schema:, object_title:, parent_indexes:)
     end
 
-    it "renders with one empty item" do
-      render_inline component
+    context "and the field is required" do
+      before do
+        allow(field).to receive(:is_required?).and_return(true)
+      end
 
-      expect(page).to have_css ".app-c-content-block-manager-array-component" do |component|
-        expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", count: 1
+      it "renders with one empty item" do
+        render_inline component
 
-        expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 1/ do |fieldset|
-          expect_form_fields(fieldset:, index: 0, parent_indexes:)
+        expect(page).to have_css ".app-c-content-block-manager-array-component" do |component|
+          expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", count: 1
+
+          expect(component).to have_css ".app-c-content-block-manager-array-item-component__fieldset", text: /Item 1/ do |fieldset|
+            expect_form_fields(fieldset:, index: 0, parent_indexes:)
+          end
+        end
+      end
+    end
+
+    context "and the field is not required" do
+      before do
+        allow(field).to receive(:is_required?).and_return(false)
+      end
+
+      it "renders with no items" do
+        render_inline component
+
+        expect(page).to have_css ".app-c-content-block-manager-array-component" do |component|
+          expect(component).to_not have_css ".app-c-content-block-manager-array-item-component__fieldset", count: 1
         end
       end
     end
