@@ -51,5 +51,5 @@ Feature: Drafting a content block
   Scenario: Editor can not send an incomplete draft to review
     Given I am viewing the draft edition
     And the draft workflow has not been completed
-    Then I do not see a call to action of 'Send to 2i'
+    Then I do not see a call to action of 'Ready for 2i'
     And I see a principal call to action to complete the draft

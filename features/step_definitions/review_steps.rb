@@ -2,20 +2,20 @@ When("I follow the link to complete the draft") do
   click_link("Complete draft")
 end
 
-Then("I see a principal call to action of 'Send to 2i'") do
+Then("I see a principal call to action of 'Ready for 2i'") do
   within("form[action='#{edition_status_transitions_path(Edition.last)}']") do
-    expect(page).to have_button("Send to 2i")
+    expect(page).to have_button("Ready for 2i")
   end
 end
 
-Then("I do not see a call to action of 'Send to 2i'") do
-  expect(page).to have_no_button("Send to 2i")
+Then("I do not see a call to action of 'Ready for 2i'") do
+  expect(page).to have_no_button("Ready for 2i")
 end
 
 Then("I see a secondary call to action edit the existing draft") do
   expect(page).to have_css(
     "a.govuk-button--secondary[href='#{workflow_path(edition, step: :edit_draft)}']",
-    text: "Edit draft",
+    text: "Edit pension",
   )
 end
 
@@ -25,12 +25,12 @@ Given("the document has been put into the awaiting_review state by another proce
 end
 
 When("I opt to send the edition to Review") do
-  click_button "Send to 2i"
+  click_button "Ready for 2i"
 end
 
 Given("I try to send the draft to review without confirming that I have checked the contents") do
   uncheck "has_checked_content"
-  click_button "Send to 2i"
+  click_button "Ready for 2i"
 end
 
 def complete_note_step

@@ -19,9 +19,9 @@ Then("I should be returned to the view of grouped contact methods") do
   expect(current_path).to eq(workflow_path(edition, step: :group_contact_methods))
 end
 
-Then("I see that I can complete the workflow with 'Send to 2i'") do
+Then("I see that I can complete the workflow with 'Ready for 2i'") do
   expect(page).to have_css(
-    "button[form='review']", text: "Send to 2i"
+    "button[form='review']", text: "Ready for 2i"
   )
 end
 

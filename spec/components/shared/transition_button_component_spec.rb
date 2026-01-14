@@ -41,9 +41,9 @@ RSpec.describe Shared::TransitionButtonComponent, type: :component do
     let(:edition) { build_stubbed :edition, :draft_complete, id: 123 }
     let(:component) { described_class.new(edition: edition, transition: transition) }
 
-    it "shows the 'Send to 2i' call to action" do
+    it "shows the 'Ready for 2i' call to action" do
       render_inline component
-      expect(page).to have_css("form button[type='submit']", text: "Send to 2i")
+      expect(page).to have_css("form button[type='submit']", text: "Ready for 2i")
     end
   end
 

@@ -1,12 +1,12 @@
-Then("I see a principal call to action of 'Send to factcheck'") do
+Then("I see a principal call to action of 'Ready for factcheck'") do
   expect(page).to have_css(
     "a.govuk-button[href='#{new_review_outcome_edition_path(edition)}']",
-    text: "Send to factcheck",
+    text: "Ready for factcheck",
   )
 end
 
 When("I opt to send the edition to factcheck") do
-  click_link("Send to factcheck")
+  click_link("Ready for factcheck")
 end
 
 Then("I am required to provide the outcome of the review process") do

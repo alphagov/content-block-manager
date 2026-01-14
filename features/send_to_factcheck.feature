@@ -25,9 +25,9 @@ Feature: Editor sends edition to factcheck, recording Review outcome
     """
     And a pension content block in the awaiting_review state exists
 
-  Scenario: Send to factcheck, supplying Review outcome
+  Scenario: Ready for factcheck, supplying Review outcome
     Given I am viewing the edition awaiting review
-    Then I see a principal call to action of 'Send to factcheck'
+    Then I see a principal call to action of 'Ready for factcheck'
 
     When I opt to send the edition to factcheck
     Then I am required to provide the outcome of the review process
@@ -42,7 +42,7 @@ Feature: Editor sends edition to factcheck, recording Review outcome
 
   Scenario: Attempt to send to factcheck without supplying review outcome
     Given I am viewing the edition awaiting review
-    Then I see a principal call to action of 'Send to factcheck'
+    Then I see a principal call to action of 'Ready for factcheck'
 
     When I opt to send the edition to factcheck
     And I attempt to proceed without supplying the outcome of the review process
@@ -50,7 +50,7 @@ Feature: Editor sends edition to factcheck, recording Review outcome
 
   Scenario: Attempt to make an invalid transition to 'ready_for_factcheck'
     Given I am viewing the edition awaiting review
-    And I see a principal call to action of 'Send to factcheck'
+    And I see a principal call to action of 'Ready for factcheck'
 
     Given the edition has been put into the awaiting_factcheck state by another process
     And I opt to send the edition to factcheck
