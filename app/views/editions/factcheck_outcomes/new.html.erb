@@ -13,7 +13,7 @@
     heading: @title,
     heading_caption: @edition.title,
     heading_level: 1,
-    error_message: flash.alert.present? ? "Describe the outcome of the Factcheck process" : nil,
+    error_message: flash.alert.presence,
     items: [
       {
         value: "true",

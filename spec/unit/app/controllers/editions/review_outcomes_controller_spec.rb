@@ -28,16 +28,14 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
     before do
       allow(Time).to receive(:current).and_return(time_now)
       allow(Current).to receive(:user).and_return(current_user)
-      allow(edition).to receive(:ready_for_factcheck!)
     end
 
     context "when the form returned is valid" do
       before do
         allow(edition).to receive(:create_review_outcome!)
-        allow(edition).to receive(:update).and_return(true)
       end
 
-      describe "saving othe Review outcome details" do
+      describe "saving the Review outcome details" do
         context "when the editor has indicated that the Review was skipped" do
           before do
             post :create, params: {
@@ -51,6 +49,10 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
               "skipped" => true,
               "creator" => current_user,
             )
+          end
+
+          it "redirects to the document path" do
+            expect(response).to redirect_to("/456")
           end
         end
 
@@ -68,72 +70,19 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
               "creator" => current_user,
             )
           end
-
-          it "transitions the edition using 'ready_for_factcheck!' state" do
-            expect(edition).to have_received(:ready_for_factcheck!)
-          end
-
-          it "redirects to the documents_path to display the most recent edition" do
-            expect(response).to redirect_to("/456")
-          end
-
-          it "shows a success message" do
-            expected_success_message = I18n.t("edition.states.transition_message.awaiting_factcheck")
-            expect(flash.notice).to eq(expected_success_message)
-          end
         end
       end
 
-      context "when the transition fails" do
-        context "and the Review outcome was missing" do
-          before do
-            allow(edition).to receive(:ready_for_factcheck!).and_raise(
-              Edition::Workflow::ReviewOutcomeMissingError,
-              "Informative error message",
-            )
-
-            post :create, params: {
-              id: 123,
-              "review_outcome" => { "review_performed" => true },
-            }
-          end
-
-          it "handles the error and redirects to the 'new review_outcome' form" do
-            expect(response).to redirect_to("/editions/123/review_outcomes/new")
-          end
-
-          it "includes an error message saying that the Review outcome is required" do
-            expect(flash.alert).to eq("Informative error message")
-          end
+      describe "redirecting to the appropriate next step" do
+        before do
+          post :create, params: {
+            id: 123,
+            "review_outcome" => { "review_performed" => true },
+          }
         end
 
-        context "and the error was something else (e.g. unexpected state)" do
-          let(:error_message) do
-            "Can't fire event `ready_for_factcheck` in current state `draft` " \
-              "for `Edition` with ID 123  (Transitions::InvalidTransition)"
-          end
-
-          before do
-            allow(edition).to receive(:ready_for_factcheck!).and_raise(
-              Transitions::InvalidTransition,
-              error_message,
-            )
-
-            post :create, params: {
-              id: 123,
-              "review_outcome" => { "review_performed" => true },
-            }
-          end
-
-          it "redirects to the document path" do
-            expect(response).to redirect_to("/456")
-          end
-
-          it "includes an error message with the transition error details" do
-            expect(flash.alert).to eq(
-              "Error: we can not change the status of this edition. #{error_message}",
-            )
-          end
+        it "should redirect the user to the identify_performer step of the factcheck process" do
+          expect(response).to redirect_to("/editions/123/review_outcomes/identify_performer")
         end
       end
     end
@@ -152,6 +101,143 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
 
       it "sets an error message" do
         expect(flash.alert).to eq("Indicate whether the 2i Review process has been performed or not")
+      end
+    end
+  end
+
+  describe "GET to :identify_performer" do
+    before do
+      get :identify_performer, params: { id: 123 }
+    end
+
+    it "sets the @edition variable to the given edition" do
+      expect(Edition).to have_received(:find).with("123")
+      expect(assigns(:edition)).to eq(edition)
+    end
+
+    it "renders the editions/factcheck_outcomes/identify_performer template" do
+      expect(response).to have_rendered("editions/review_outcomes/identify_performer")
+    end
+  end
+
+  describe "PUT to :update" do
+    let(:time_now) { Time.current }
+    let(:current_user) { instance_double(User, id: 987) }
+    let(:review_outcome) { spy(ReviewOutcome) }
+
+    before do
+      allow(Time).to receive(:current).and_return(time_now)
+      allow(Current).to receive(:user).and_return(current_user)
+      allow(edition).to receive(:update)
+      allow(edition).to receive(:ready_for_factcheck!)
+      allow(edition).to receive(:review_outcome).and_return(review_outcome)
+    end
+
+    context "when the request is valid" do
+      before do
+        put :update, params: {
+          id: 123,
+          "review_outcome" => { "review_performer" => "Alice" },
+        }
+      end
+
+      it "should update the edition with the 2i reviewer" do
+        expect(edition.review_outcome).to have_received(:update!).with({ "performer" => "Alice" })
+      end
+    end
+
+    context "when the performer field is missing" do
+      before do
+        put :update, params: {
+          id: 123,
+          "review_outcome" => {},
+        }
+        allow(edition).to receive(:ready_for_factcheck!)
+      end
+
+      it "redirects to the same page to prevent the user progressing" do
+        expect(response).to redirect_to("/editions/123/review_outcomes/identify_performer")
+      end
+
+      it "shows an error message" do
+        expected_message = "Provide the email or name of the 2i reviewer who performed the review"
+        expect(flash.alert).to eq(expected_message)
+      end
+
+      it "should not transition to the next state" do
+        expect(edition).not_to have_received(:ready_for_factcheck!)
+      end
+    end
+
+    context "when the performer field is blank" do
+      before do
+        put :update, params: {
+          id: 123,
+          "review_outcome" => { "review_performer" => "" },
+        }
+        allow(edition).to receive(:ready_for_factcheck!)
+      end
+
+      it "redirects to the same page to prevent the user progressing" do
+        expect(response).to redirect_to("/editions/123/review_outcomes/identify_performer")
+      end
+
+      it "shows an error message" do
+        expected_message = "Provide the email or name of the 2i reviewer who performed the review"
+        expect(flash.alert).to eq(expected_message)
+      end
+
+      it "should not transition to the next state" do
+        expect(edition).not_to have_received(:ready_for_factcheck!)
+      end
+    end
+
+    context "when updating the outcome with the performer" do
+      let(:edition) { Edition.new(id: 123, document: document) }
+      before do
+        put :update, params: {
+          id: 123,
+          "review_outcome" => { "review_performer" => "Alice" },
+        }
+      end
+
+      it "transitions the edition using the 'ready_for_factcheck!' transition" do
+        expect(edition).to have_received(:ready_for_factcheck!)
+      end
+
+      it "redirects to the documents_path to display the most recent edition" do
+        expect(response).to redirect_to("/456")
+      end
+
+      it "shows a success message" do
+        expected_success_message = "This edition is now ready to be fact-checked by a subject-matter expert"
+        expect(flash.notice).to eq(expected_success_message)
+      end
+    end
+
+    describe "when the transition fails" do
+      let(:error_message) do
+        "Something bad has happened!"
+      end
+
+      before do
+        allow(edition).to receive(:ready_for_factcheck!).and_raise(
+          Transitions::InvalidTransition,
+          error_message,
+        )
+
+        put :update, params: {
+          id: 123,
+          "review_outcome" => { "review_performer" => "Alice" },
+        }
+      end
+
+      it "redirects to the document path" do
+        expect(response).to redirect_to("/456")
+      end
+
+      it "includes an error message with the transition error details" do
+        expect(flash.alert).to eq("Error: we can not change the status of this edition. #{error_message}")
       end
     end
   end

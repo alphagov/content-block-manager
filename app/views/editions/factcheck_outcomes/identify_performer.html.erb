@@ -14,7 +14,7 @@
       name: "factcheck_outcome[factcheck_performer]",
       label: { text: "Factcheck Subject Matter Expert" },
       hint: "Enter the email address or name of the Subject Matter Expert",
-      error_message: flash.alert.present? ? "Factcheck Subject Matter Expert cannot be blank" : nil,
+      error_message: flash.alert.presence,
   } %>
 
   <div class="govuk-button-group govuk-!-margin-bottom-6">

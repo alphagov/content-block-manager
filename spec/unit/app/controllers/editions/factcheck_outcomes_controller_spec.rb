@@ -184,21 +184,53 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
     end
 
-    context "when the request is missing a parameter" do
+    context "when the performer field is missing" do
       before do
         put :update, params: {
           id: 123,
           "factcheck_outcome" => {},
         }
+        allow(edition).to receive(:schedule!)
+        allow(edition).to receive(:publish!)
       end
 
-      it "redirects to the documents_path to display the most recent edition" do
+      it "redirects to the same page to prevent the user progressing" do
         expect(response).to redirect_to("/editions/123/factcheck_outcomes/identify_performer")
       end
 
       it "shows an error message" do
-        expected_message = "param is missing or the value is empty or invalid: factcheck_outcome"
+        expected_message = "Provide the email or name of the subject matter expert who performed the factcheck"
         expect(flash.alert).to eq(expected_message)
+      end
+
+      it "should not transition to the next state" do
+        expect(edition).not_to have_received(:schedule!)
+        expect(edition).not_to have_received(:publish!)
+      end
+    end
+
+    context "when the performer field is blank" do
+      before do
+        put :update, params: {
+          id: 123,
+          "factcheck_outcome" => { "factcheck_performer" => "" },
+        }
+        allow(edition).to receive(:schedule!)
+        allow(edition).to receive(:publish!)
+      end
+
+      it "redirects to the same page to prevent the user progressing" do
+        expect(response).to redirect_to("/editions/123/factcheck_outcomes/identify_performer")
+      end
+
+      it "shows an error message" do
+        expected_message = "Provide the email or name of the subject matter expert who performed the factcheck"
+        expect(flash.alert).to eq(expected_message)
+      end
+
+      it "should not transition to the next state" do
+        expect(edition).not_to have_received(:schedule!)
+        expect(edition).not_to have_received(:publish!)
       end
     end
 

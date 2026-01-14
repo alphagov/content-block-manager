@@ -1,27 +1,20 @@
+<% content_for :page_title, @title %>
+<% content_for :title, @title %>
+<% content_for :context, @edition.title %>
+
 <% content_for :back_link do %>
   <%= render "govuk_publishing_components/components/back_link", {
-    href: document_path(@edition.document),
+    href: new_review_outcome_edition_path(@edition),
   } %>
-<% end %>
+  <% end %>
 
-<%= form_tag(create_review_outcome_edition_path(@edition)) do %>
+<%= form_tag(update_review_outcome_edition_path(@edition), method: :put) do %>
 
-  <%= render "govuk_publishing_components/components/radio", {
-    name: "review_outcome[review_performed]",
-    heading: "Ready for factcheck",
-    heading_caption: @edition.title,
-    heading_level: 1,
-    error_message: flash.alert.presence,
-    items: [
-      {
-        value: "true",
-        text: "Completed 2i review",
-      },
-      {
-        value: "false",
-        text: "Skip 2i review",
-      },
-    ],
+  <%= render "govuk_publishing_components/components/input", {
+      name: "review_outcome[review_performer]",
+      label: { text: "2i reviewer" },
+      hint: "Enter the email address or name of the 2i reviewer",
+      error_message: flash.alert.presence,
   } %>
 
   <div class="govuk-button-group govuk-!-margin-bottom-6">
