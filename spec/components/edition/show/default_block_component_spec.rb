@@ -11,7 +11,7 @@ RSpec.describe Edition::Show::DefaultBlockComponent, type: :component do
     allow(edition).to receive(:render).with(embed_code).and_return(default_block_output)
   end
 
-  it "renders the default block" do
+  it "includes the default block output in a govspeak enabled element" do
     render_inline(
       Edition::Show::DefaultBlockComponent.new(edition: edition),
     )
@@ -19,6 +19,12 @@ RSpec.describe Edition::Show::DefaultBlockComponent, type: :component do
     expect(page).to have_css(
       ".govuk-summary-list__row[data-module=\"copy-embed-code\"][data-embed-code=\"#{embed_code}\"] .govuk-summary-list__value .govspeak",
       text: default_block_output,
+    )
+  end
+
+  it "includes the embed code in its own element" do
+    render_inline(
+      Edition::Show::DefaultBlockComponent.new(edition: edition),
     )
 
     expect(page).to have_css(
