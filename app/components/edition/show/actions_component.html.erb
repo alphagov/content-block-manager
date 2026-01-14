@@ -31,7 +31,7 @@
   <% if !finalised_state? %>
     <li class="govuk-!-static-margin-bottom-3">
       <%= render "govuk_publishing_components/components/button", {
-        text: draft? ? I18n.t("show_action.complete_draft") : I18n.t("show_action.edit_draft"),
+        text: draft? ? I18n.t("show_action.complete_draft") : I18n.t("show_action.edit_block_type", block_type: document.block_type),
         href: workflow_path(edition, step: :edit_draft),
         secondary_solid: draft? ? false : true,
         inline_layout: false,
