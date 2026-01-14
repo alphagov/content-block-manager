@@ -68,6 +68,13 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
         expect(page).to have_css ".govuk-button", text: I18n.t("buttons.add_another", item: field.label.singularize.downcase)
       end
 
+      it "does not render a deletion checkbox" do
+        render_inline component
+
+        expect(page).to have_css "input[type='hidden'][name='#{field.name_attribute}[_destroy]'][value='0']", visible: false
+        expect(page).to_not have_css "input[type='checkbox'][name='#{field.name_attribute}[_destroy]']"
+      end
+
       context "when the add_another param is set" do
         before do
           vc_test_request.request_parameters = { add_another: field.name }

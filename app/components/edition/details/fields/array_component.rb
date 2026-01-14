@@ -69,7 +69,11 @@ private
   end
 
   def can_be_deleted?(index)
-    immutability_checker&.can_be_deleted?(index)
+    if index.zero? && field.is_required?
+      false
+    else
+      immutability_checker&.can_be_deleted?(index)
+    end
   end
 
   def immutability_checker
