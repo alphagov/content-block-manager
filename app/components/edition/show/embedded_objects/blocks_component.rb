@@ -55,6 +55,14 @@ private
     schema.field(key).title
   end
 
+  def all_attributes_preamble
+    I18n.t("embedded_object.all_attributes", object_name: object_name)
+  end
+
+  def embed_code_usage
+    I18n.t("embedded_object.embed_code_usage")
+  end
+
   def nested_blocks
     nested_items(items).map { |key, items|
       if items.is_a?(Array)
