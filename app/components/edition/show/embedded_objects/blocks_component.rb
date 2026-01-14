@@ -57,44 +57,23 @@ private
   end
 
   def nested_blocks
-    blocks = []
-
-    nested_items(items).each do |key, items|
+    nested_items(items).map { |key, items|
       if items.is_a?(Array)
-        items.each_with_index do |nested_items, index|
-          blocks << {
-            title: "#{block_title(key).singularize} #{index + 1}",
-            rows: rows_for_nested_items(nested_items, key, index),
-          }
-        end
+        render Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent.with_collection(
+          items,
+          field: schema.field(key),
+          document:,
+          embed_code_prefix: embed_code_identifier(object_type, object_title, key),
+        )
       else
-        blocks << {
-          title: block_title(key),
-          rows: rows_for_nested_items(items, key, nil),
-        }
+        render Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent.new(
+          items:,
+          field: schema.field(key),
+          document:,
+          embed_code_prefix: embed_code_identifier(object_type, object_title, key),
+        )
       end
-    end
-
-    blocks
-  end
-
-  def rows_for_nested_items(items, nested_name, index)
-    visible_fields(items, nested_name).map do |key, value|
-      field = schema.field(nested_name).nested_field(key)
-      {
-        key: field.label,
-        value: content_for_row(embed_code_identifier(nested_name, index, key), translated_value(key, value)),
-        data: data_attributes_for_row(embed_code_identifier(nested_name, index, key)),
-      }
-    end
-  end
-
-  def visible_fields(fields, nested_name)
-    fields.reject do |field_name, _v|
-      parent_field = schema.field(nested_name)
-      field = parent_field.nested_field(field_name)
-      field.hidden?
-    end
+    }.join.html_safe
   end
 
   def object_name

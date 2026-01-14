@@ -18,10 +18,10 @@ class Shared::EmbeddedObjects::SummaryCardComponent < ViewComponent::Base
 
 private
 
-  attr_reader :edition, :object_type, :object_title, :redirect_url, :test_id_prefix
+  attr_reader :edition, :object_type, :object_title, :redirect_url, :test_id_prefix, :counter
 
   def title
-    "#{object_type.titleize.singularize.capitalize} details"
+    "#{object_type.titleize.singularize.capitalize} details <span class=\"govuk-visually-hidden\">#{counter}</span>".html_safe
   end
 
   def items
@@ -44,7 +44,7 @@ private
       label = is_list ? "#{field.label.singularize} #{index + 1}" : field.label
 
       {
-        field: label,
+        key: label,
         value: translated_value(field.name, item),
         data: { testid: testid_for(suffix) },
       }
@@ -93,6 +93,6 @@ private
   end
 
   def data_attributes
-    test_id_prefix.present? ? { "data-test-id" => [test_id_prefix, object_title].join("_") } : {}
+    test_id_prefix.present? ? { "test-id" => [test_id_prefix, object_title].join("_") } : {}
   end
 end

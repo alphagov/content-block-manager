@@ -1,0 +1,28 @@
+<div class="app-c-embedded-objects-blocks-component--nested">
+  <% content = capture do %>
+    <% nested_items(items).each do |nested_field, items| %>
+      <% if items.is_a?(Array) %>
+        <%= render Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent.with_collection(
+          items,
+          field: field.nested_field(nested_field),
+          document:,
+          embed_code_prefix: embed_code_identifier(embed_code_prefix, items_counter, nested_field),
+        ) %>
+      <% else %>
+        <%= render Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent.new(
+          items:,
+          field: field.nested_field(nested_field),
+          document:,
+          embed_code_prefix: embed_code_identifier(embed_code_prefix, items_counter, nested_field),
+        ) %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= render "govuk_publishing_components/components/summary_card", {
+    title:,
+    rows:,
+  } do %>
+    <%= content %>
+  <% end %>
+</div>

@@ -18,7 +18,7 @@ When("I should see that the video relay service info has been changed") do
 
     expect(page).to have_content("01777 123 1234")
     expect(page).to have_content("Custom label")
-    expect(page).to have_content("[Custom source](www.example.com)")
+    expect(page).to have_link("Custom source", href: "www.example.com")
   end
 end
 

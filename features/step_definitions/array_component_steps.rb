@@ -2,13 +2,7 @@ Then(/^I should see the details for each (.+)'s (.+)$/) do |embedded_object_name
   edition = Edition.last
   details = edition.details[embedded_object_name.pluralize]
   details.keys.each do |k|
-    details[k][nested_object_name.pluralize].each_with_index do |item, index|
-      within("div[title='#{nested_object_name.titleize} #{index + 1}']") do
-        item.keys.each do |key|
-          assert_text item[key]
-        end
-      end
-    end
+    assert_details_visible(nested_object_name, details[k][nested_object_name.pluralize])
   end
 end
 
@@ -26,4 +20,18 @@ end
 
 Then("I should not see {string} on the page") do |object_type|
   assert_no_text object_type
+end
+
+def assert_details_visible(nested_object_name, details)
+  details.each_with_index do |item, index|
+    within("div[title='#{nested_object_name.titleize} #{index + 1}']") do
+      item.keys.each do |key|
+        if item[key].is_a?(Array)
+          assert_details_visible(key.singularize, item[key])
+        else
+          assert_text item[key]
+        end
+      end
+    end
+  end
 end
