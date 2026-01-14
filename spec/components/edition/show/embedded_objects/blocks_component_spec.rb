@@ -9,7 +9,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
   let(:object_title) { "else" }
 
   let(:document) { build(:document, :pension) }
-  let(:edition) { build(:edition, :pension, document: document) }
+  let(:edition) { build(:edition, :pension, :published, document: document) }
 
   let(:schema) { double("schema", block_type: "schema") }
   let(:subschema) do

@@ -1,6 +1,6 @@
 RSpec.describe Edition::Show::DefaultBlockComponent, type: :component do
   let(:document) { build(:document, :pension) }
-  let(:edition) { build(:edition, :pension, document: document) }
+  let(:edition) { build(:edition, :pension, :published, document: document) }
 
   let(:embed_code) { "EMBED_CODE" }
   let(:embed_code_details) { "default block" }
