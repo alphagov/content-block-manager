@@ -1,6 +1,7 @@
 en:
   activerecord:
     errors:
+      title: There is a problem
       models:
         document:
           attributes:
@@ -39,6 +40,8 @@ en:
           default: Title
           contact: Contact name
   document:
+    new:
+      title: Select a content block
     index:
       filter_options:
         heading: Search by keyword
@@ -48,6 +51,9 @@ en:
           range:
             invalid: "From date must be before to date"
   edition:
+    new:
+      general_field_notice:
+        You can use these fields in GOV.UK content unless stated otherwise.
     update:
       title: "Edit %{block_type}"
     create:
@@ -56,6 +62,14 @@ en:
         rates: "Enter %{block_type} details. You can do this now or later."
         added_confirmation: "%{object_name} added. You can add another %{object_or_group} or finish creating the %{schema_name} block."
         edited_confirmation: "%{object_name} edited. You can add another %{object_or_group} or finish creating the %{schema_name} block."
+    schedule:
+      now:
+        cta: Publish the edit now
+        hint: The edit will be made when you select publish and users will see it immediately.
+      later:
+        cta: Schedule the edit for the future
+        hint: The edit will be published on a date and time you choose.
+
     confirmation_page:
       scheduled:
         banner: "%{block_type} scheduled to publish on %{date}"
@@ -78,6 +92,7 @@ en:
         Add information that’s important for anyone using or editing this block to know. For example, who to contact about the block if you have questions. <br/>
         Not displayed on GOV.UK.
       lead_organisation: Not displayed on GOV.UK.
+      not_displayed: Not displayed on GOV.UK.
       contact:
         title: Explain the purpose of the contact, for example ‘Contact the Pension Service’, ‘Universal Credit helpline’
         description: For example, is there anything the user should know, prepare or include before using any contact method.
@@ -104,6 +119,7 @@ en:
             show: Only select this option if your organisation has subscribed to an interpreter service.
           bsl_guidance:
             show: Only select this option if your organisation has subscribed to an interpreter service.
+      govspeak_enabled: Govspeak enabled
       pension:
         rates:
           amount: "Enter an exact amount, with the currency symbol - for example: £122.50"
@@ -116,6 +132,9 @@ en:
           opening_hours: Opening hours
           call_charges: Call charges
     labels:
+      lead_organisation: Lead organisation
+      instructions_to_publishers:
+        Instructions to publishers (optional)
       contact:
         addresses:
           title: Address name
@@ -157,6 +176,7 @@ en:
         superseded: Superseded
         deleted: Deleted
       transition_message:
+        draft: "This edition is now in the draft state"
         draft_complete: "This draft is now marked as complete"
         awaiting_review: "This edition is now ready to be reviewed by a second pair of eyes"
         awaiting_factcheck: "This edition is now ready to be fact-checked by a subject-matter expert"
@@ -173,11 +193,16 @@ en:
         superseded: "Superseded on %{date}"
         deleted: "Deleted on %{date} by %{user}"
     transitions:
+      draft: Return to draft
+      complete_draft: Complete draft
       ready_for_review: Send to 2i
       schedule: Schedule
       publish: Publish
       delete: Delete
       supersede: Supersede
+  embed_codes:
+    all_attributes: "These are all the %{object_name} attributes that make up the %{object_name}."
+    description: You can use any available embed code for each attribute separately in your content if required.
   date:
     formats:
       default: "%d %B %Y"
@@ -190,6 +215,37 @@ en:
     add_another: "Add another %{item}"
     save_and_continue: "Save and continue"
     cancel: "Cancel"
+    delete_draft: "Delete draft"
+    reorder:
+      save: "Save order"
+      up: "Up"
+      down: "Down"
+  review_actions:
+    send_to_review: Send to 2i
+    save_as_draft: Save as draft
+    save_draft: Save draft
+    create: Create
+    publish: Publish
+  show_action:
+    complete_draft: Complete draft
+    edit_draft: Edit draft
+    edit_latest_edition: Edit latest edition
+    go_to_published_edition: Go to published edition
+    return_to_latest_edition: Return to latest edition
+    edit_block_type: "Edit %{block_type}"
+    send_to_factcheck: Send to factcheck
+    schedule_block: Schedule block
+    publish_block: Publish block
+  timeline_item:
+    latest: Latest
+    details_of_changes:
+      title: Details of changes
+      previous_version: Previous version
+      this_version: This version
+    internal_note:
+      title: Internal note
+    change_note:
+      title: Public note
   rollup:
     locations:
       title: Locations

@@ -11,7 +11,7 @@
   <% if !finalised_state? %>
     <li class="govuk-!-static-margin-bottom-3">
       <%= render "govuk_publishing_components/components/button", {
-        text: draft? ? "Complete draft" : "Edit draft",
+        text: draft? ? I18n.t("show_action.complete_draft") : I18n.t("show_action.edit_draft"),
         href: workflow_path(edition, step: :edit_draft),
         secondary_solid: draft? ? false : true,
         inline_layout: false,
@@ -22,7 +22,7 @@
   <% if state == "awaiting_review" %>
     <li class="govuk-!-static-margin-bottom-3">
       <%= render "govuk_publishing_components/components/button", {
-        text: "Send to factcheck",
+        text: I18n.t("show_action.send_to_factcheck"),
         href: new_review_outcome_path(edition),
         inline_layout: false,
       } %>
@@ -32,7 +32,7 @@
   <% if state == "awaiting_factcheck" %>
     <li class="govuk-!-static-margin-bottom-3">
       <%= render "govuk_publishing_components/components/button", {
-        text: edition.is_scheduling? ? "Schedule block" : "Publish block",
+        text: edition.is_scheduling? ? I18n.t("show_action.schedule_block") : I18n.t("show_action.publish_block"),
         href: new_factcheck_outcome_edition_path(edition),
         inline_layout: false,
       } %>
@@ -42,7 +42,7 @@
   <% if finalised_state? %>
     <li>
       <%= render "govuk_publishing_components/components/button", {
-        text: has_more_recent_draft? ? "Edit latest edition" : "Edit #{document.block_type.humanize.downcase}",
+        text: has_more_recent_draft? ? I18n.t("show_action.edit_latest_edition") : I18n.t("show_action.edit_block_type", block_type: document.block_type.humanize.downcase),
         href: has_more_recent_draft? ? workflow_path(id: document.most_recent_edition.id, step: :edit_draft) : new_document_edition_path(document),
         secondary_solid: true,
         inline_layout: false,
@@ -52,19 +52,19 @@
 
   <% if state != "published" && document.has_published_edition? %>
     <li class="govuk-!-static-margin-top-3">
-      <%= link_to("Go to published edition", published_edition_document_path(document), class: "govuk-link") %>
+      <%= link_to(I18n.t("show_action.go_to_published_edition"), published_edition_document_path(document), class: "govuk-link") %>
     </li>
   <% end %>
 
   <% if state == "published" && has_more_recent_draft? %>
     <li class="govuk-!-static-margin-top-3">
-      <%= link_to("Return to latest edition", document_path(document), class: "govuk-link") %>
+      <%= link_to(I18n.t("show_action.return_to_latest_edition"), document_path(document), class: "govuk-link") %>
     </li>
   <% end %>
 
   <% if edition.is_deletable? %>
     <li class="govuk-!-static-margin-top-3">
-      <%= link_to "Delete draft", delete_edition_path(edition), class: "govuk-link govuk-link--no-visited-state gem-link--destructive" %>
+      <%= link_to I18n.t("buttons.delete_draft"), delete_edition_path(edition), class: "govuk-link govuk-link--no-visited-state gem-link--destructive" %>
     </li>
   <% end %>
 </ul>

@@ -26,7 +26,7 @@ RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
       expect(page).to have_css(COMPONENT_CLASS) do |component|
         expect(component).to have_css(
           ".guidance.govspeak-supported",
-          text: "Govspeak supported",
+          text: I18n.t("edition.hints.govspeak_enabled"),
         )
       end
     end
@@ -94,7 +94,7 @@ RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
       expect(page).to have_css(COMPONENT_CLASS) do |component|
         component.assert_no_selector(
           ".guidance",
-          text: "Govspeak supported",
+          text: I18n.t("edition.hints.govspeak_enabled"),
         )
       end
     end

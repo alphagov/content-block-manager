@@ -16,7 +16,7 @@
           <div class="app-c-content-block-manager-reorder-component__buttons">
             <% unless position == 0 %>
               <%= render "govuk_publishing_components/components/button", {
-                text: "Up",
+                text: I18n.t("buttons.reorder.up"),
                 href: move_path(position, item, :up),
                 secondary_solid: true,
                 data_attributes: {
@@ -28,7 +28,7 @@
 
             <% unless position == item_keys.length - 1 %>
               <%= render "govuk_publishing_components/components/button", {
-                text: "Down",
+                text: I18n.t("buttons.reorder.down"),
                 href: move_path(position, item, :down),
                 secondary_solid: true,
                 data_attributes: {
@@ -44,12 +44,12 @@
       <div class="govuk-button-group govuk-!-margin-bottom-6">
         <div>
           <%= render "govuk_publishing_components/components/button", {
-            text: "Save order",
+            text: I18n.t("buttons.reorder.save"),
           } %>
         </div>
         <div>
           <%= render "govuk_publishing_components/components/button", {
-            text: "Cancel",
+            text: I18n.t("buttons.cancel"),
             href: "#{redirect_path}?preview=true",
             secondary_solid: true,
           } %>

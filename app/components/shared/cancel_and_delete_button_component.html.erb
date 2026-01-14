@@ -1,6 +1,6 @@
 <%= form_with url: url, method: :delete do %>
   <%= render "govuk_publishing_components/components/button", {
-    text: "Cancel",
+    text: I18n.t("buttons.cancel"),
     type: "submit",
     secondary_solid: true,
   } %>
