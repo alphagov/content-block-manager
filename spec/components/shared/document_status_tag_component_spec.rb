@@ -26,7 +26,7 @@ RSpec.describe Shared::DocumentStatusTagComponent, type: :component do
     expected_colours = {
       draft: "yellow",
       draft_complete: "yellow",
-      awaiting_review: "turquoise",
+      awaiting_review: "light-blue",
       awaiting_factcheck: "pink",
       scheduled: "light-blue",
       published: "green",
@@ -58,7 +58,7 @@ RSpec.describe Shared::DocumentStatusTagComponent, type: :component do
     expected_colours = {
       draft: "yellow",
       draft_complete: "yellow",
-      awaiting_review: "turquoise",
+      awaiting_review: "light-blue",
       awaiting_factcheck: "pink",
       scheduled: "light-blue",
       published: "green",
