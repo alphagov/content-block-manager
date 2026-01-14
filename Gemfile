@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem "babosa"
 gem "bootsnap", require: false
-gem "connection_pool", "< 3" # Pin ConnectionPool to 2.x until we upgrade Sidekiq to 8.x
+gem "connection_pool", "< 4" # Pin ConnectionPool to 2.x until we upgrade Sidekiq to 8.x
 gem "content_block_tools"
 gem "dartsass-rails"
 gem "fact_check", path: "engines/fact_check"
