@@ -6,7 +6,7 @@ class Shared::DocumentStatusTagComponent < ViewComponent::Base
     draft_complete: "yellow",
     awaiting_review: "light-blue",
     awaiting_factcheck: "pink",
-    scheduled: "light-blue",
+    scheduled: "turquoise",
     published: "green",
     superseded: "orange",
     deleted: "red",
