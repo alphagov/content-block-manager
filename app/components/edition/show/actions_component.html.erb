@@ -8,17 +8,6 @@
     </li>
   <% end %>
 
-  <% if !finalised_state? %>
-    <li class="govuk-!-static-margin-bottom-3">
-      <%= render "govuk_publishing_components/components/button", {
-        text: draft? ? I18n.t("show_action.complete_draft") : I18n.t("show_action.edit_draft"),
-        href: workflow_path(edition, step: :edit_draft),
-        secondary_solid: draft? ? false : true,
-        inline_layout: false,
-      } %>
-    </li>
-  <% end %>
-
   <% if state == "awaiting_review" %>
     <li class="govuk-!-static-margin-bottom-3">
       <%= render "govuk_publishing_components/components/button", {
@@ -34,6 +23,17 @@
       <%= render "govuk_publishing_components/components/button", {
         text: edition.is_scheduling? ? I18n.t("show_action.schedule_block") : I18n.t("show_action.publish_block"),
         href: new_factcheck_outcome_edition_path(edition),
+        inline_layout: false,
+      } %>
+    </li>
+  <% end %>
+
+  <% if !finalised_state? %>
+    <li class="govuk-!-static-margin-bottom-3">
+      <%= render "govuk_publishing_components/components/button", {
+        text: draft? ? I18n.t("show_action.complete_draft") : I18n.t("show_action.edit_draft"),
+        href: workflow_path(edition, step: :edit_draft),
+        secondary_solid: draft? ? false : true,
         inline_layout: false,
       } %>
     </li>
