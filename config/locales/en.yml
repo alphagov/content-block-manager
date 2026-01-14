@@ -195,7 +195,7 @@ en:
     transitions:
       draft: Return to draft
       complete_draft: Complete draft
-      ready_for_review: Send to 2i
+      ready_for_review: Ready for 2i
       schedule: Schedule
       publish: Publish
       delete: Delete
@@ -221,7 +221,7 @@ en:
       up: "Up"
       down: "Down"
   review_actions:
-    send_to_review: Send to 2i
+    send_to_review: Ready for 2i
     save_as_draft: Save as draft
     save_draft: Save draft
     create: Create
@@ -233,7 +233,7 @@ en:
     go_to_published_edition: Go to published edition
     return_to_latest_edition: Return to latest edition
     edit_block_type: "Edit %{block_type}"
-    send_to_factcheck: Send to factcheck
+    send_to_factcheck: Ready for factcheck
     schedule_block: Schedule block
     publish_block: Publish block
   timeline_item:
