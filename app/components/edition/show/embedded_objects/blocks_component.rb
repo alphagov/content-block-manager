@@ -60,6 +60,8 @@ private
   end
 
   def embed_code_usage
+    return unless edition.published?
+
     I18n.t("embedded_object.embed_code_usage")
   end
 
