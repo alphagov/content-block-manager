@@ -6,17 +6,18 @@ class Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent < ViewCompone
 
   with_collection_parameter :items
 
-  def initialize(items:, field:, document:, embed_code_prefix:, items_counter: nil)
+  def initialize(items:, field:, edition:, embed_code_prefix:, items_counter: nil)
     @items = items
     @field = field
-    @document = document
+    @edition = edition
+    @document = edition.document
     @embed_code_prefix = embed_code_prefix
     @items_counter = items_counter
   end
 
 private
 
-  attr_reader :items, :field, :document, :embed_code_prefix, :items_counter
+  attr_reader :items, :field, :document, :edition, :embed_code_prefix, :items_counter
 
   def title
     items_counter ? "#{field.title.singularize} #{items_counter + 1}" : field.title

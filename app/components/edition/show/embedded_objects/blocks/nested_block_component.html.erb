@@ -5,14 +5,14 @@
         <%= render Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent.with_collection(
           items,
           field: field.nested_field(nested_field),
-          document:,
+          edition:,
           embed_code_prefix: embed_code_identifier(embed_code_prefix, items_counter, nested_field),
         ) %>
       <% else %>
         <%= render Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent.new(
           items:,
           field: field.nested_field(nested_field),
-          document:,
+          edition:,
           embed_code_prefix: embed_code_identifier(embed_code_prefix, items_counter, nested_field),
         ) %>
       <% end %>
