@@ -193,7 +193,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         expect(wrapper).to have_css ".govuk-details__summary-text", text: "All #{object_type} attributes"
         expect(wrapper).to have_css ".govuk-details__text", visible: false do |details|
           expect(details).to have_css ".app-c-embedded-objects-blocks-component__details-text",
-                                      text: "These are all the #{object_type} attributes that make up the #{object_type}. You can use any available embed code for each attribute separately in your content if required.",
+                                      text: "These are all the #{object_type} attributes that make up the #{object_type}.",
                                       visible: false
 
           expect(details).to have_css ".app-c-embedded-objects-blocks-component__details-summary-list", visible: false do |summary_list|
@@ -235,6 +235,42 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
       render_inline component
 
       expect(page).to have_css ".app-c-embedded-objects-blocks-component.app-c-embedded-objects-blocks-component--with-block"
+    end
+
+    context "when the edition is _published_" do
+      before { edition.state = :published }
+
+      it "includes guidance on the use of embed codes" do
+        render_inline component
+
+        expect(page).to have_css ".app-c-embedded-objects-blocks-component__details-wrapper" do |wrapper|
+          expect(wrapper).to have_css ".govuk-details__summary-text", text: "All #{object_type} attributes"
+          expect(wrapper).to have_css ".govuk-details__text", visible: false do |details|
+            expect(details).to have_css ".app-c-embedded-objects-blocks-component__details-text",
+                                        text: "You can use any available embed code for each attribute separately in your content if required.",
+                                        visible: false
+          end
+        end
+      end
+    end
+
+    (Edition.available_states - [:published]).each do |state|
+      context "when the edition is a non-published state (#{state})" do
+        before { edition.state = state }
+
+        it "does NOT include guidance on the use of embed codes" do
+          render_inline component
+
+          expect(page).to have_css ".app-c-embedded-objects-blocks-component__details-wrapper" do |wrapper|
+            expect(wrapper).to have_css ".govuk-details__summary-text", text: "All #{object_type} attributes"
+            expect(wrapper).to have_css ".govuk-details__text", visible: false do |details|
+              expect(details).to have_no_css ".app-c-embedded-objects-blocks-component__details-text",
+                                             text: "You can use any available embed code for each attribute separately in your content if required.",
+                                             visible: false
+            end
+          end
+        end
+      end
     end
 
     describe "when items contain an array" do
