@@ -22,7 +22,11 @@ private
   end
 
   def number_of_items
-    value.count.positive? ? value.count : 1
+    if value.count.positive?
+      value.count
+    else
+      field.is_required? ? 1 : 0
+    end
   end
 
   def components
@@ -37,6 +41,18 @@ private
 
   def frame_id
     "array-component-#{edition.id}-#{context.id}"
+  end
+
+  def adding_another?
+    params[:add_another] == field.name
+  end
+
+  def button_text
+    if number_of_items.positive? || adding_another?
+      I18n.t("buttons.add_another", item: label.downcase)
+    else
+      I18n.t("buttons.add", item: label.downcase)
+    end
   end
 
   def component(index)

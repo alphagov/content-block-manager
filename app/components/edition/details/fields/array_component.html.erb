@@ -4,18 +4,19 @@
       <%= render component %>
     <% end %>
 
-    <% if params[:add_another] == field.name %>
+    <% if adding_another? %>
       <%= render empty_component %>
     <% end %>
 
     <%= render "govuk_publishing_components/components/button", {
-      text: I18n.t("buttons.add_another", item: label.downcase),
+      text: button_text,
       name: "add_another",
       value: field.name,
       type: "submit",
       secondary_solid: true,
       data_attributes: {
         frame_id:,
+        add_another_text: I18n.t("buttons.add_another", item: label.downcase),
       },
     } %>
   <% end %>

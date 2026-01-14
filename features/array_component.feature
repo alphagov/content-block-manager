@@ -60,6 +60,7 @@ Feature: Use array component
 
       Scenario: Multiple items can be added when Javascript is disabled
         When I click to add a new "team"
+        And I click to add a "person"
         And I fill in the "teams" form with the following fields:
           | title  | people_0_name | people_0_email       |
           | Team 1 | Alice         | alice@example.com  |
@@ -73,6 +74,7 @@ Feature: Use array component
     @javascript
     Scenario: Multiple items can be added when Javascript is enabled
       When I click to add a new "team"
+      And I click to add a "person"
       And I fill in the "teams" form with the following fields:
         | title  | people_0_name | people_0_email       |
         | Team 1 | Alice         | alice@example.com  |
@@ -85,6 +87,7 @@ Feature: Use array component
 
     Scenario: Items can be deleted when Javascript is disabled
       When I click to add a new "team"
+      And I click to add a "person"
       And I fill in the "teams" form with the following fields:
         | title  | people_0_name | people_0_email       |
         | Team 1 | Alice         | alice@example.com  |
@@ -103,6 +106,7 @@ Feature: Use array component
     @javascript
     Scenario: Items can be deleted when Javascript is enabled
       When I click to add a new "team"
+      And I click to add a "person"
       And I fill in the "teams" form with the following fields:
         | title  | people_0_name | people_0_email       |
         | Team 1 | Alice         | alice@example.com  |
@@ -168,33 +172,51 @@ Feature: Use array component
 
       Scenario: Multiple nested items can be added when Javascript is disabled
         When I click to add a new "team"
+        And I click to add a "person"
         And I fill in the "teams" form with the following fields:
-          | title  | people_0_name | people_0_emails_0_email_address |
-          | Team 1 | Alice         | alice@example.com               |
+          | title  | people_0_name |
+          | Team 1 | Alice         |
+        And I click to add an "email"
+        And I fill in the "teams" form with the following fields:
+          | people_0_emails_0_email_address |
+          | alice@example.com               |
         And I click to add another "email"
         And I fill in the "teams" form with the following fields:
           | people_0_emails_1_email_address |
           | alice@example.org               |
         And I click to add another "person"
         And I fill in the "teams" form with the following fields:
-          | people_1_name | people_1_emails_0_email_address |
-          | Bob           | bob@example.com                 |
+          | people_1_name |
+          | Bob           |
+        And I click to add an "email"
+        And I fill in the "teams" form with the following fields:
+          | people_1_emails_0_email_address |
+          | bob@example.com                  |
         And I save and continue
         Then I should see the details for each team's person
 
       @javascript
       Scenario: Multiple nested items can be added when Javascript is enabled
         When I click to add a new "team"
+        And I click to add a "person"
         And I fill in the "teams" form with the following fields:
-          | title  | people_0_name | people_0_emails_0_email_address |
-          | Team 1 | Alice         | alice@example.com               |
+          | title  | people_0_name |
+          | Team 1 | Alice         |
+        And I click to add an "email"
+        And I fill in the "teams" form with the following fields:
+          | people_0_emails_0_email_address |
+          | alice@example.com               |
         And I click to add another "email"
         And I fill in the "teams" form with the following fields:
           | people_0_emails_1_email_address |
           | alice@example.org               |
         And I click to add another "person"
         And I fill in the "teams" form with the following fields:
-          | people_1_name | people_1_emails_0_email_address |
-          | Bob           | bob@example.com                 |
+          | people_1_name |
+          | Bob           |
+        And I click to add an "email"
+        And I fill in the "teams" form with the following fields:
+          | people_1_emails_0_email_address |
+          | bob@example.com                  |
         And I save and continue
         Then I should see the details for each team's person
