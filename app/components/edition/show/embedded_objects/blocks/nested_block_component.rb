@@ -41,7 +41,11 @@ private
                                 field:,
                                 value: translated_value(field.name, value),
                               ), class: "app-c-embedded-objects-blocks-component__content govspeak")
-    content << content_tag(:p, document.embed_code_for_field(embed_code_identifier(embed_code_prefix, items_counter, field.name)), class: "app-c-embedded-objects-blocks-component__embed-code")
+    if edition.published?
+      content << content_tag(:p,
+                             document.embed_code_for_field(embed_code_identifier(embed_code_prefix, items_counter, field.name)),
+                             class: "app-c-embedded-objects-blocks-component__embed-code")
+    end
     content
   end
 
