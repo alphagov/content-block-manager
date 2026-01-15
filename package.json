@@ -34,7 +34,7 @@
     "markdown-link-check": "^3.14.2",
     "markdownlint": "^0.40.0",
     "markdownlint-cli": "^0.47.0",
-    "prettier": "^3.7.4",
+    "prettier": "^3.8.0",
     "standard": "^17.1.2",
     "stylelint": "^16.26.1",
     "stylelint-config-gds": "^2.0.0"
