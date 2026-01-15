@@ -3,6 +3,12 @@ def should_show_summary_title_for_generic_content_block(document_title)
   expect(page).to have_selector(".govuk-summary-list__value", text: document_title)
 end
 
+def should_show_summary_card_for_tax_content_block(document_title, description, organisation, instructions_to_publishers = nil)
+  should_show_generic_content_block_details(document_title, "tax", organisation, instructions_to_publishers)
+  expect(page).to have_selector(".govuk-summary-list__key", text: "Description")
+  expect(page).to have_selector(".govuk-summary-list__value", text: description)
+end
+
 def should_show_summary_card_for_contact_content_block(document_title, email_address, organisation, instructions_to_publishers = nil)
   should_show_generic_content_block_details(document_title, "contact", organisation, instructions_to_publishers)
   expect(page).to have_selector(".govuk-summary-list__key", text: "Email address")
@@ -52,11 +58,17 @@ def visit_edit_page
 end
 
 def change_details(object_type: "pension")
-  fill_in "Title", with: "Changed title"
+  fill_in I18n.t(
+    "activerecord.attributes.edition/document.title.#{object_type}",
+    default: I18n.t("activerecord.attributes.edition/document.title.default"),
+  ), with: "Changed title"
 
   case object_type
   when "pension"
     fill_in "Description", with: "New description"
+  when "tax"
+    fill_in "Description", with: "New description"
+    select "Tax", from: "Tax type"
   else
     fill_in "Email address", with: "changed@example.com"
   end

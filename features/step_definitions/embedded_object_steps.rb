@@ -140,6 +140,14 @@ Then("I should see errors for the required nested {string} fields") do |nested_o
   end
 end
 
+And("I should see details of my {string}") do |object_type|
+  within "div[data-testid='#{object_type.pluralize}_listing']" do
+    @details.keys.each do |k|
+      assert_text @details[k]
+    end
+  end
+end
+
 And("I click to add a new {string}") do |object_type|
   @selected_subschemas ||= []
   @selected_subschemas << object_type.pluralize
