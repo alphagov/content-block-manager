@@ -1,6 +1,5 @@
 class Document::Show::SummaryListComponent < ViewComponent::Base
   include EditionHelper
-  include EmbedCodeHelper
 
   def initialize(edition:)
     @edition = edition
