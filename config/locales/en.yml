@@ -202,12 +202,12 @@ en:
       supersede: Supersede
     outcomes:
       errors:
-        review:
-          missing_performer: "Provide the email or name of the 2i reviewer who performed the review"
-          missing_outcome: "Indicate whether the 2i Review process has been performed or not"
-        factcheck:
-          missing_performer: "Provide the email or name of the subject matter expert who performed the factcheck"
-          missing_outcome: "Indicate whether the Factcheck process has been performed or not"
+        missing_performer:
+          review:    "Provide the email or name of the 2i reviewer who performed the review"
+          factcheck: "Provide the email or name of the subject matter expert who performed the factcheck"
+        missing_outcome:
+          review:    "Indicate whether the 2i Review process has been performed or not"
+          factcheck: "Indicate whether the Factcheck process has been performed or not"
   embed_codes:
     all_attributes: "These are all the %{object_name} attributes that make up the %{object_name}."
     description: You can use any available embed code for each attribute separately in your content if required.
