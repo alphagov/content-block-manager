@@ -134,10 +134,9 @@ Then("I should see errors for the required {string} fields") do |object_type|
 end
 
 Then("I should see errors for the required nested {string} fields") do |nested_object_name|
-  subschema = @subschemas[@object_type.pluralize]
-  required_fields = subschema.dig("properties", nested_object_name.pluralize, "items", "required")
-  required_fields.each do |required_field|
-    assert_text "#{Edition.human_attribute_name("details_#{required_field}")} cannot be blank", minimum: 2
+  subschema = @schema.subschema(@object_type.pluralize)
+  required_fields(subschema, nested_object_name).each do |required_field|
+    expect(page).to have_text("#{Edition.human_attribute_name("details_#{required_field}")} cannot be blank")
   end
 end
 

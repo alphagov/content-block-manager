@@ -17,7 +17,7 @@ end
 Then("I should see errors for the required fields") do
   assert_text "Title cannot be blank", minimum: 2
 
-  required_fields = @schema.body["required"]
+  required_fields = @schema.fields.select(&:is_required?).map(&:name)
   required_fields.each do |required_field|
     assert_text "#{Edition.human_attribute_name("details_#{required_field}")} cannot be blank", minimum: 2
   end

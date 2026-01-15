@@ -3,21 +3,7 @@ Feature: Editor can use a factcheck link to allow non-signon users to access a b
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And a schema "pension" exists:
-    """
-    {
-       "type":"object",
-       "required":[
-          "description"
-       ],
-       "additionalProperties":false,
-       "properties":{
-          "description": {
-            "type": "string"
-          }
-       }
-    }
-    """
+    And the schema "pension" exists
     And a pension content block is awaiting factcheck
 
   @javascript

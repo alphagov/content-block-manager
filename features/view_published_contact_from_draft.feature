@@ -7,57 +7,7 @@ Feature: View published contact from draft
     Given I am logged in
     And I have the "pre_release_features" permission
     And the organisation "Ministry of Example" exists
-    And a schema "contact" exists:
-    """
-    {
-       "type":"object",
-       "required":[
-          "description"
-       ],
-       "additionalProperties":false,
-       "properties":{
-          "description": {
-            "type": "string"
-          }
-       }
-    }
-    """
-    And the schema has a subschema "telephones":
-    """
-    {
-      "type":"object",
-      "required": [
-        "title",
-        "telephone_numbers"
-      ],
-      "properties": {
-        "telephone_numbers": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": [
-              "label",
-              "telephone_number"
-            ],
-            "properties": {
-              "label": {
-                "type": "string"
-              },
-              "telephone_number": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "title": {
-          "type": "string"
-        }
-      }
-    }
-    """
-
-    And the schema "contact" has a group "contact_methods" with the following subschemas:
-      | telephones |
+    And the schema "contact" exists
 
   Scenario: Editor can follow link to published edition
     Given a published contact edition exists

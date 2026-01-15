@@ -8,21 +8,7 @@ Feature: Editor sends edition to factcheck, recording Review outcome
     Given I am logged in
     And I have the "pre_release_features" permission
     And the organisation "Ministry of Example" exists
-    And a schema "pension" exists:
-    """
-    {
-       "type":"object",
-       "required":[
-          "description"
-       ],
-       "additionalProperties":false,
-       "properties":{
-          "description": {
-            "type": "string"
-          }
-       }
-    }
-    """
+    And the schema "pension" exists
     And a pension content block in the awaiting_review state exists
 
   Scenario: Ready for factcheck, supplying Review outcome

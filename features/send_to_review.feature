@@ -8,21 +8,7 @@ Feature: Editor sends edition to Review
     Given I am logged in
     And I have the "pre_release_features" permission
     And the organisation "Ministry of Example" exists
-    And a schema "pension" exists:
-    """
-    {
-       "type":"object",
-       "required":[
-          "description"
-       ],
-       "additionalProperties":false,
-       "properties":{
-          "description": {
-            "type": "string"
-          }
-       }
-    }
-    """
+    And the schema "pension" exists
     And a pension content block has been drafted
 
   Scenario: Send to '2i' Review from block show page
@@ -63,6 +49,7 @@ Feature: Editor sends edition to Review
 
     When I follow the link to complete the draft
     And I complete the initial step of the workflow
+    And I save and continue
     Then I see that I can complete the workflow with 'Ready for 2i'
 
     When I confirm I have checked the content

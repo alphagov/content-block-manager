@@ -8,8 +8,7 @@ end
 When("I click on the {string} subschema") do |schema_id|
   @selected_subschemas ||= []
   @selected_subschemas << schema_id
-  schema = @schemas.values.last
-  subschema = schema.subschema(schema_id)
+  subschema = @schema.subschema(schema_id.pluralize)
   choose subschema.name.singularize
   @object_type = schema_id
   click_save_and_continue

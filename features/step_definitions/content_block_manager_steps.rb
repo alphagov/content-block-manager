@@ -185,7 +185,6 @@ Then("I should not see the content block with title {string} returned") do |titl
 end
 
 When("I click to view the document") do
-  @schema = @schemas[@content_block.document.block_type]
   click_link href: document_path(@content_block.document)
 end
 

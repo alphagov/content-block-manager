@@ -5,21 +5,7 @@ Feature: Drafting a content block
     # temporary until we release this feature:
     And I have the "pre_release_features" permission
     And the organisation "Ministry of Example" exists
-    And a schema "pension" exists:
-    """
-    {
-       "type":"object",
-       "required":[
-          "description"
-       ],
-       "additionalProperties":false,
-       "properties":{
-          "description": {
-            "type": "string"
-          }
-       }
-    }
-    """
+    And the schema "pension" exists
     And I visit the Content Block Manager home page
     And I click to create an object
     And I click on the "pension" schema
@@ -39,7 +25,8 @@ Feature: Drafting a content block
     Then I should see the draft document
 
   Scenario: GDS editor saves their edition as a draft
-    When I confirm I have checked the content
+    When I save and continue
+    And I confirm I have checked the content
     And I save a draft
     Then I should be taken back to the document page
     And I should see a notice that the completed drafted has been saved
