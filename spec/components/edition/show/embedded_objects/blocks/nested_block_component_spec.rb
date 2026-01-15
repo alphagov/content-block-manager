@@ -156,6 +156,13 @@ RSpec.describe Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent, typ
 
         expect(page).to have_css("div#{data_attrs.join}")
       end
+
+      it "includes the embed code in its own element" do
+        expect(page).to have_css(
+          ".govuk-summary-list__value .app-c-embedded-objects-blocks-component__embed-code",
+          text: "{{embed:content_block_pension:/prefix/foo}}",
+        )
+      end
     end
 
     (Edition.available_states - [:published]).each do |state|
@@ -173,6 +180,22 @@ RSpec.describe Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent, typ
           ]
 
           expect(page).to have_no_css("div#{data_attrs.join}")
+        end
+
+        it "does NOT include the embed code in its own element" do
+          expect(page).not_to have_content("{{embed:content_block_pension:/prefix/foo}}")
+        end
+
+        it "continues to show the field values" do
+          aggregate_failures do
+            expect(page).to have_css(
+              ".govuk-summary-list__value .govspeak", text: "bar"
+            )
+
+            expect(page).to have_css(
+              ".govuk-summary-list__value .govspeak", text: "buzz"
+            )
+          end
         end
       end
     end
