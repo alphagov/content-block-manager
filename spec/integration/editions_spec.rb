@@ -72,6 +72,12 @@ RSpec.describe Editions, type: :feature do
 
         expect(page).to have_content("Create content block")
       end
+
+      it "should inform the user of the length limit on the title" do
+        visit new_edition_path(block_type: "block-type")
+
+        expect(page).to have_content("You can enter up to 65 characters")
+      end
     end
   end
 
