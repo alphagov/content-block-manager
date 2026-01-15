@@ -2,7 +2,7 @@ RSpec.describe Edition::Show::DefaultBlockComponent, type: :component do
   let(:document) { build(:document, :pension) }
   let(:edition) { build(:edition, :pension, :published, document: document) }
 
-  let(:embed_code) { "EMBED_CODE" }
+  let(:embed_code) { "{{embed:content_block_contact:test-block}}" }
   let(:embed_code_details) { "default block" }
   let(:default_block_output) { "DEFAULT_BLOCK_OUTPUT" }
 
@@ -27,14 +27,14 @@ RSpec.describe Edition::Show::DefaultBlockComponent, type: :component do
     it "includes the embed code in its own element" do
       expect(page).to have_css(
         ".govuk-summary-list__value .app-c-content-block-manager-default-block__embed_code",
-        text: embed_code,
+        text: "{{embed:content_block_contact:test-block}}",
       )
     end
 
     it "includes 'data' attributes to initialise the CopyEmbedCode JS module" do
       data_attrs = [
         "[data-module='copy-embed-code']",
-        "[data-embed-code='EMBED_CODE']",
+        "[data-embed-code='{{embed:content_block_contact:test-block}}']",
         "[data-embed-code-details='default block']",
       ]
 
@@ -63,7 +63,7 @@ RSpec.describe Edition::Show::DefaultBlockComponent, type: :component do
       it "does NOT include 'data' attributes to initialise the CopyEmbedCode JS module" do
         data_attrs = [
           "[data-module='copy-embed-code']",
-          "[data-embed-code='EMBED_CODE']",
+          "[data-embed-code='{{embed:content_block_contact:test-block}}']",
           "[data-embed-code-details='default block']",
         ]
 
