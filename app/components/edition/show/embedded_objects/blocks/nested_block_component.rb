@@ -60,6 +60,8 @@ private
   end
 
   def copy_embed_code_data_attributes(key, document)
+    return {} unless edition.published?
+
     {
       module: "copy-embed-code",
       "embed-code": document.embed_code_for_field(key),
