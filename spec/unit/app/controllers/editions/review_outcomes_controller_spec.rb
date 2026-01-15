@@ -100,7 +100,7 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
       end
 
       it "sets an error message" do
-        expect(flash.alert).to eq("Indicate whether the 2i Review process has been performed or not")
+        expect(flash.alert).to eq("Indicate whether the 2i review process has been performed or not")
       end
     end
   end

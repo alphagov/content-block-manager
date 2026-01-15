@@ -204,17 +204,17 @@ en:
       performer:
         label:
           review:    "2i reviewer"
-          factcheck: "Factcheck Subject Matter Expert"
+          factcheck: "Factcheck subject matter expert"
         hint:
           review:    "Enter the email address or name of the 2i reviewer"
-          factcheck: "Enter the email address or name of the Subject Matter Expert"
+          factcheck: "Enter the email address or name of the subject matter expert"
       errors:
         missing_performer:
           review:    "Provide the email or name of the 2i reviewer who performed the review"
           factcheck: "Provide the email or name of the subject matter expert who performed the factcheck"
         missing_outcome:
-          review:    "Indicate whether the 2i Review process has been performed or not"
-          factcheck: "Indicate whether the Factcheck process has been performed or not"
+          review:    "Indicate whether the 2i review process has been performed or not"
+          factcheck: "Indicate whether the factcheck process has been performed or not"
   embed_codes:
     all_attributes: "These are all the %{object_name} attributes that make up the %{object_name}."
     description: You can use any available embed code for each attribute separately in your content if required.

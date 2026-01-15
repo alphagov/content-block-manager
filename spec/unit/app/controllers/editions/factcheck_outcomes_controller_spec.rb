@@ -121,7 +121,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
 
       it "sets an error message" do
-        expect(flash.alert).to eq("Indicate whether the Factcheck process has been performed or not")
+        expect(flash.alert).to eq("Indicate whether the factcheck process has been performed or not")
       end
     end
   end
