@@ -6,7 +6,7 @@
 # which are executed across multiple GitHub Actions 'matrix' nodes.
 
 test_files = [
-  Dir["features/*.feature"],
+  Dir["features/**/*.feature"],
 ].flatten
 
 # Determine which CI node is running
