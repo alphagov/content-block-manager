@@ -103,7 +103,11 @@ private
 
   def content_for_row(key, value)
     content = content_tag(:p, value, class: "app-c-embedded-objects-blocks-component__content govspeak")
-    content << content_tag(:p, document.embed_code_for_field("#{object_type}/#{object_title}/#{key}"), class: "app-c-embedded-objects-blocks-component__embed-code")
+    if edition.published?
+      content << content_tag(:p,
+                             document.embed_code_for_field("#{object_type}/#{object_title}/#{key}"),
+                             class: "app-c-embedded-objects-blocks-component__embed-code")
+    end
     content
   end
 
@@ -118,7 +122,11 @@ private
     content = content_tag(:div,
                           edition.render(document.embed_code_for_field("#{object_type}/#{object_title}")),
                           class: "app-c-embedded-objects-blocks-component__content govspeak")
-    content << content_tag(:p, document.embed_code_for_field("#{object_type}/#{object_title}"), class: "app-c-embedded-objects-blocks-component__embed-code")
+    if edition.published?
+      content << content_tag(:p,
+                             document.embed_code_for_field("#{object_type}/#{object_title}"),
+                             class: "app-c-embedded-objects-blocks-component__embed-code")
+    end
     content
   end
 
@@ -130,6 +138,8 @@ private
   end
 
   def copy_embed_code_data_attributes(key, document)
+    return {} unless edition.published?
+
     {
       module: "copy-embed-code",
       "embed-code": document.embed_code_for_field(key),
