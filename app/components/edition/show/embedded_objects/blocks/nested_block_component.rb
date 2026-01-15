@@ -1,6 +1,5 @@
 class Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent < ViewComponent::Base
   include ContentBlockTools::Govspeak
-  include EmbedCodeHelper
   include SummaryListHelper
 
   delegate :translated_value, to: :helpers
@@ -56,6 +55,14 @@ private
     {
       testid: embed_code.underscore,
       **copy_embed_code_data_attributes(embed_code, document),
+    }
+  end
+
+  def copy_embed_code_data_attributes(key, document)
+    {
+      module: "copy-embed-code",
+      "embed-code": document.embed_code_for_field(key),
+      "embed-code-details": key,
     }
   end
 
