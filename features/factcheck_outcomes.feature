@@ -3,21 +3,7 @@ Feature: Editor records Factcheck outcome and publishes edition
     Given I am logged in
     And I have the "pre_release_features" permission
     And the organisation "Ministry of Example" exists
-    And a schema "pension" exists:
-    """
-    {
-       "type":"object",
-       "required":[
-          "description"
-       ],
-       "additionalProperties":false,
-       "properties":{
-          "description": {
-            "type": "string"
-          }
-       }
-    }
-    """
+    And the schema "pension" exists
     And a pension content block is awaiting factcheck
 
   Scenario: Complete factcheck, publishing the edition

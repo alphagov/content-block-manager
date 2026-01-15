@@ -8,8 +8,7 @@ end
 When("I click on the {string} subschema") do |schema_id|
   @selected_subschemas ||= []
   @selected_subschemas << schema_id
-  schema = @schemas.values.last
-  subschema = schema.subschema(schema_id)
+  subschema = @schema.subschema(schema_id.pluralize)
   choose subschema.name.singularize
   @object_type = schema_id
   click_save_and_continue
@@ -25,14 +24,12 @@ Then("I should see all the schemas listed") do
   end
 end
 
-And("the schema {string} has a group {string} with the following subschemas:") do |block_type, group, table|
-  subschemas = table.raw.first
-  schema = @schemas[block_type]
-
-  subschemas.each do |subschema_id|
-    subschema = schema.subschema(subschema_id)
-    subschema.stubs(:group).returns(group)
-  end
+And("the schema {string} exists") do |block_type|
+  @schemas ||= {}
+  body = GovukSchemas::Schema.find(publisher_schema: "content_block_#{block_type}")
+  @schema = build(:schema, block_type:, body: body["definitions"]["details"])
+  @schemas[block_type] = @schema
+  Schema.stubs(:all).returns(@schemas.values)
 end
 
 And("a schema {string} exists:") do |block_type, json|

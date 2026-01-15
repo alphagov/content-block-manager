@@ -14,13 +14,6 @@ Given("I should see the content for the published contact edition") do
   should_see_the_published_edition_in_full
 end
 
-Then("I see a principal call to action of 'Edit pension'") do
-  expect(page).to have_css(
-    "a.govuk-button",
-    text: "Edit pension",
-  )
-end
-
 Then("I see a principal call to action to complete the draft") do
   expect(page).to have_css(
     "a.govuk-button",

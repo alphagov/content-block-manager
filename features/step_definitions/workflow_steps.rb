@@ -10,11 +10,6 @@ Given("the draft workflow has been completed") do
   draft.update_column(:state, "draft_complete")
 end
 
-When("I choose to add a contact link") do
-  choose("Contact link")
-  click_button("Save and continue")
-end
-
 Then("I should be returned to the view of grouped contact methods") do
   expect(current_path).to eq(workflow_path(edition, step: :group_contact_methods))
 end

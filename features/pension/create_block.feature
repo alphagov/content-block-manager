@@ -1,49 +1,9 @@
-Feature: Create a content object
+Feature: Create a pension block
 
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And a schema "pension" exists:
-    """
-    {
-       "type":"object",
-       "required":[
-          "description"
-       ],
-       "additionalProperties":false,
-       "properties":{
-          "description": {
-            "type": "string"
-          }
-       }
-    }
-    """
-    And the schema has a subschema "rates":
-    """
-    {
-      "type":"object",
-      "required": ["title", "amount"],
-      "properties": {
-        "title": {
-          "type": "string"
-        },
-        "amount": {
-          "type": "string",
-          "pattern": "£[0-9]+\\.[0-9]+"
-        },
-        "frequency": {
-          "type": "string",
-          "enum": [
-            "a week",
-            "a month"
-          ]
-          },
-          "description": {
-            "type": "string"
-          }
-      }
-    }
-    """
+    And the schema "pension" exists
 
   Scenario: GDS editor creates a Pension without a rate
     When I visit the Content Block Manager home page
@@ -129,8 +89,8 @@ Feature: Create a content object
     Then I should be on the "add_embedded_rates" step
 
   Scenario: Block editor sees expected Govspeak-enabled fields
-      When I am creating a pension content block
-      Then I see that the block description is Govspeak-enabled
-      When I am creating a pension rate
-      Then I see that the pension rate description is Govspeak-enabled
+    When I am creating a pension content block
+    Then I see that the block description is Govspeak-enabled
+    When I am creating a pension rate
+    Then I see that the pension rate description is Govspeak-enabled
 

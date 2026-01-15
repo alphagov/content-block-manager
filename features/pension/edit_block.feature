@@ -1,22 +1,8 @@
-Feature: Edit a content object
+Feature: Edit a pension block
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And a schema "pension" exists:
-    """
-    {
-       "type":"object",
-       "required":[
-          "description"
-       ],
-       "additionalProperties":false,
-       "properties":{
-          "description": {
-            "type": "string"
-          }
-       }
-    }
-    """
+    And the schema "pension" exists
     And a pension content block has been created
     And dependent content exists for a content block
 

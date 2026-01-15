@@ -134,18 +134,9 @@ Then("I should see errors for the required {string} fields") do |object_type|
 end
 
 Then("I should see errors for the required nested {string} fields") do |nested_object_name|
-  subschema = @subschemas[@object_type.pluralize]
-  required_fields = subschema.dig("properties", nested_object_name.pluralize, "items", "required")
-  required_fields.each do |required_field|
-    assert_text "#{Edition.human_attribute_name("details_#{required_field}")} cannot be blank", minimum: 2
-  end
-end
-
-And("I should see details of my {string}") do |object_type|
-  within "div[data-testid='#{object_type.pluralize}_listing']" do
-    @details.keys.each do |k|
-      assert_text @details[k]
-    end
+  subschema = @schema.subschema(@object_type.pluralize)
+  required_fields(subschema, nested_object_name).each do |required_field|
+    expect(page).to have_text("#{Edition.human_attribute_name("details_#{required_field}")} cannot be blank")
   end
 end
 
@@ -176,16 +167,6 @@ And(/^that pension has a rate with the following fields:$/) do |table|
   @content_block.save!
 end
 
-And(/^I should see the rates for that block$/) do
-  @content_block.details["rates"].keys.each do |k|
-    within "div[data-test-id=embedded_#{k}]" do
-      @content_block.details["rates"][k].each do |_k, value|
-        assert_text value
-      end
-    end
-  end
-end
-
 When(/^I click to edit the first (.+)$/) do |type|
   @content_block ||= Edition.all.last
   key = @content_block.details[type.pluralize].keys.first
@@ -202,10 +183,6 @@ And(/^I should see the updated rates for that block$/) do
   @details.keys.each do |k|
     assert_text @details[k]
   end
-end
-
-And("I should not see a button to add a new {string}") do |object_type|
-  assert_no_text I18n.t("buttons.add", item: add_indefinite_article(object_type))
 end
 
 Then("I should see the created embedded object of type {string}") do |object_type|

@@ -60,7 +60,11 @@ You can use the [GOV.UK Docker environment](https://github.com/alphagov/govuk-do
 
 ### Running the test suite
 
-These commands assume you have the [GOV.UK Docker environment](https://github.com/alphagov/govuk-docker) running and its binaries in your PATH.
+These commands assume you have the [GOV.UK Docker environment](https://github.com/alphagov/govuk-docker) running and its binaries in your PATH. 
+
+> To enable the feature tests to load the schemas for content blocks , you must ensure you have Publishing API checked 
+out in the parent directory (i.e. `../publishing-api`). The easiest way to do this is by running `make publishing-api` 
+within the `./govuk-docker` directory.
 
 ```
 # run all the test suites

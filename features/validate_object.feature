@@ -3,21 +3,7 @@ Feature: Validating a content block
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And a schema "pension" exists:
-    """
-    {
-       "type":"object",
-       "required":[
-          "description"
-       ],
-       "additionalProperties":false,
-       "properties":{
-          "description": {
-            "type": "string"
-          }
-       }
-    }
-    """
+    And the schema "pension" exists
 
   Scenario: GDS editor sees validation errors when not selecting an object type
     When I visit the Content Block Manager home page
@@ -39,6 +25,7 @@ Feature: Validating a content block
     And I complete the form with the following fields:
       | title            | description   | organisation        | instructions_to_publishers |
       | my basic pension | this is basic | Ministry of Example | this is important  |
+    And I save and continue
     Then I am asked to review my answers for a "pension"
     When I submit without confirming my details
     Then I should see a message that I need to confirm the details are correct

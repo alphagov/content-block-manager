@@ -2,21 +2,7 @@ Feature: Schedule a content object
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And a schema "pension" exists:
-    """
-    {
-       "type":"object",
-       "required":[
-          "description"
-       ],
-       "additionalProperties":false,
-       "properties":{
-          "description": {
-            "type": "string"
-          }
-       }
-    }
-    """
+    And the schema "pension" exists
     And a pension content block has been created
 
   @enable-sidekiq-test-mode

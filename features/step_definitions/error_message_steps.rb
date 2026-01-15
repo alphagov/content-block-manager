@@ -2,10 +2,6 @@ Then("I should see a message that I need to confirm the details are correct") do
   assert_text I18n.t("edition.review_page.errors.confirm"), minimum: 2
 end
 
-Then("I should see a permissions error") do
-  assert_text "Permissions error"
-end
-
 Then(/^I should see an error prompting me to choose an object type$/) do
   assert_text "Select a content block"
 end
@@ -17,7 +13,7 @@ end
 Then("I should see errors for the required fields") do
   assert_text "Title cannot be blank", minimum: 2
 
-  required_fields = @schema.body["required"]
+  required_fields = @schema.fields.select(&:is_required?).map(&:name)
   required_fields.each do |required_field|
     assert_text "#{Edition.human_attribute_name("details_#{required_field}")} cannot be blank", minimum: 2
   end

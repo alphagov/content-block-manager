@@ -6,25 +6,13 @@ require_relative "../support/helpers"
 #   cfg.logger.level = ::Logger::WARN
 # end
 
-Given("I am in the staging or integration environment") do
-  ContentBlockManager.stubs(:integration_or_staging?).returns(true)
-end
-
 When("I click to create an object") do
   @action = "create"
   click_link "Create content block"
 end
 
-When("I click cancel") do
-  click_button "Cancel"
-end
-
 When("I choose to delete the in-progress draft") do
   click_button "Delete draft"
-end
-
-When("I click to save and come back later") do
-  click_link "Save for later"
 end
 
 When("I click the cancel link") do
@@ -185,7 +173,6 @@ Then("I should not see the content block with title {string} returned") do |titl
 end
 
 When("I click to view the document") do
-  @schema = @schemas[@content_block.document.block_type]
   click_link href: document_path(@content_block.document)
 end
 
@@ -207,11 +194,6 @@ end
 When("I click to edit the {string}") do |block_type|
   @action = "update"
   click_link "Edit #{block_type}", match: :first
-end
-
-When("I click to complete the {string}") do |block_type|
-  @action = "update"
-  click_link "Complete #{block_type}", match: :first
 end
 
 When("I fill out the form") do
@@ -351,14 +333,6 @@ And("I should see the object store's phase banner") do
   expect(page).to have_link("feedback-content-modelling@digital.cabinet-office.gov.uk", href: "mailto:feedback-content-modelling@digital.cabinet-office.gov.uk")
 end
 
-Then(/^I should still see the live edition on the homepage$/) do
-  within(".govuk-summary-card", text: @content_block.document.title) do
-    @content_block.details.keys.each do |key|
-      expect(page).to have_content(@content_block.details[key])
-    end
-  end
-end
-
 Then("I should still see the draft edition on the homepage") do
   within(".govuk-summary-card", text: @content_block.document.title) do
     Edition.draft.most_recent.details.values.each do |value|
@@ -367,37 +341,12 @@ Then("I should still see the draft edition on the homepage") do
   end
 end
 
-Then(/^I should not see the draft document$/) do
-  expect(page).not_to have_content(@title)
-end
-
 Then(/^I should see the draft document$/) do
   expect(page).to have_content(@title)
 end
 
-Then("I should see the content block manager home page") do
-  expect(page).to have_content("Content Block Manager")
-end
-
 When(/^I add an internal note$/) do
   add_internal_note
-end
-
-Then("there should be no draft editions remaining") do
-  expect(@content_block.document.reload.editions.select { |e| e.state == "draft" }.count).to eq(0)
-end
-
-When(/^I click on the link to continue editing$/) do
-  click_on "Continue editing"
-end
-
-And(/^I update the content block and publish$/) do
-  change_details
-  click_save_and_continue
-  add_internal_note
-  add_change_note
-  publish_now
-  review_and_confirm
 end
 
 And(/^I click the back link$/) do
@@ -406,19 +355,6 @@ end
 
 And(/^I return to the homepage$/) do
   visit root_path
-end
-
-Given(/^my pension content block has no rates$/) do
-  @content_block.details["rates"] = {}
-  @content_block.save!
-end
-
-When("I choose {string} from the type dropdown") do |type|
-  select type, from: "edition_details_telephones_telephone_numbers_0_type"
-end
-
-Then("the label should be set to {string}") do |label|
-  expect(find("#edition_details_telephones_telephone_numbers_0_label").value).to eq(label)
 end
 
 And(/^I click save$/) do
@@ -457,11 +393,6 @@ end
 
 When(/^I click the button to delete/) do
   click_button "Delete"
-end
-
-Then("only one document with the title {string} should exist") do |title|
-  documents_with_title = Document.all.select { |document| document.title == title }
-  expect(documents_with_title.count).to eq(1)
 end
 
 Then("I see the warning that the pre-release features are enabled") do

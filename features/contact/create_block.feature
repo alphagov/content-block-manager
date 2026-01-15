@@ -3,227 +3,7 @@ Feature: Create a contact object
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And a schema "contact" exists:
-    """
-    {
-       "type":"object",
-       "required":[
-          "description"
-       ],
-       "additionalProperties":false,
-       "properties":{
-          "description": {
-            "type": "string"
-          },
-          "order": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "pattern": "^addresses|contact_links|email_addresses|telephones.[a-z0-9]+(?:-[a-z0-9]+)*$"
-            }
-          }
-       }
-    }
-    """
-    And the schema has a subschema "email_addresses":
-    """
-    {
-      "type":"object",
-      "required": ["email_address"],
-      "properties": {
-        "title": {
-          "type": "string",
-          "default": "Email address"
-        },
-        "label": {
-          "type": "string"
-        },
-        "email_address": {
-          "type": "string"
-        },
-        "subject": {
-          "type": "string"
-        },
-        "body": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        }
-      }
-    }
-    """
-    And the schema has a subschema "telephones":
-    """
-    {
-      "type":"object",
-      "required": [
-        "title",
-        "telephone_numbers"
-      ],
-      "properties": {
-        "telephone_numbers": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": [
-              "label",
-              "telephone_number"
-            ],
-            "properties": {
-              "label": {
-                "type": "string"
-              },
-              "telephone_number": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "title": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "video_relay_service": {
-          "type": "object",
-          "properties": {
-            "show": {
-              "type": "boolean",
-              "default": false
-            },
-            "label": {
-              "type": "string",
-              "default": "Text relay: dial 18001 then:"
-            },
-            "telephone_number": {
-              "type": "string",
-              "default": "0800 123 4567"
-            },
-            "source": {
-              "type": "string",
-              "default": "Provider: [Relay UK](0800 1234 1234)"
-            }
-          }
-        },
-        "call_charges": {
-          "type": "object",
-          "properties": {
-            "label": {
-              "type": "string",
-              "default": "Find out about call charges"
-            },
-            "call_charges_info_url": {
-              "type": "string",
-              "default": "https://gov.uk/call-charges"
-            },
-            "show_call_charges_info_url": {
-              "type": "boolean",
-              "default": false
-            }
-          }
-        },
-        "bsl_guidance": {
-          "type": "object",
-          "properties": {
-            "show": {
-              "type": "boolean",
-              "default": false
-            },
-            "value": {
-              "type": "string",
-              "default": "British Sign Language (BSL) [video relay service](https://connect.interpreterslive.co.uk/vrs?ilc=DWP)> if you’re on a computer - find out how to [use the service on mobile or tablet](https://www.youtube.com/watch?v=oELNMfAvDxw)"
-            }
-          }
-        },
-        "opening_hours": {
-          "type": "object",
-          "properties": {
-            "opening_hours": {
-              "type": "string"
-            },
-            "show_opening_hours": {
-              "type": "boolean",
-              "default": false
-            }
-          },
-          "if": {
-            "properties": {
-              "show_opening_hours": {
-                "const": true
-              }
-            }
-          },
-          "then": {
-            "required": [
-              "opening_hours"
-            ]
-          },
-          "else": {
-            "required": []
-          }
-        }
-      }
-    }
-    """
-    And the schema has a subschema "contact_links":
-    """
-    {
-      "type":"object",
-      "required": ["url"],
-      "properties": {
-        "title": {
-          "type": "string"
-        },
-        "label": {
-          "type": "string"
-        },
-        "url": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        }
-      }
-    }
-    """
-    And the schema has a subschema "addresses":
-    """
-    {
-      "type":"object",
-      "properties": {
-        "country": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "postal_code": {
-          "type": "string"
-        },
-        "recipient": {
-          "type": "string"
-        },
-        "state_or_county": {
-          "type": "string"
-        },
-        "street_address": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string",
-          "default": "Address"
-        },
-        "town_or_city": {
-          "type": "string"
-        }
-      }
-    }
-    """
-
-    And the schema "contact" has a group "contact_methods" with the following subschemas:
-      | email_addresses | telephones | contact_links |
+    And the schema "contact" exists
     And I visit the Content Block Manager home page
     And I click to create an object
     And I click on the "contact" schema
@@ -239,8 +19,8 @@ Feature: Create a contact object
     When I click to close the preview
     And I click on the "email_addresses" subschema
     And I complete the "email_address" form with the following fields:
-      | title     | label         | email_address    | subject  | body             |
-      | Email us  | Send an email | foo@example.com  | Your ref | Name and address |
+      | title     | email_address    | subject  | body             |
+      | Email us  | foo@example.com  | Your ref | Name and address |
     When I click on Preview and reorder
     Then I should see a preview of my contact
     When I click to close the preview
@@ -254,8 +34,8 @@ Feature: Create a contact object
   Scenario: GDS editor can reorder a Contact
     When I click on the "email_addresses" subschema
     And I complete the "email_address" form with the following fields:
-      | title           | label         | email_address    | subject  | body             |
-      | Email The Team  | Send an email | foo@example.com  | Your ref | Name and address |
+      | title           | email_address    | subject  | body             |
+      | Email The Team  | foo@example.com  | Your ref | Name and address |
     And I click to add another "contact_method"
     And I click on the "contact_links" subschema
     And I complete the "contact_link" form with the following fields:
@@ -296,13 +76,13 @@ Feature: Create a contact object
   Scenario: Editor can reorder a Contact when all contact methods are of one type
     When I click on the "email_addresses" subschema
     And I complete the "email_address" form with the following fields:
-      | title           | label         | email_address    |
-      | Email The Team  | Send an email | foo@example.com  |
+      | title           | email_address    |
+      | Email The Team  | foo@example.com  |
     And I click to add another "contact_method"
     And I click on the "email_addresses" subschema
     And I complete the "email_address" form with the following fields:
-      | title           | label         | email_address        |
-      | Email Support   | Email Support | support@example.com  |
+      | title           | email_address        |
+      | Email Support   | support@example.com  |
     And I click on Preview and reorder
     When I click on reorder
     Then I should be on the reordering form
@@ -310,8 +90,8 @@ Feature: Create a contact object
   Scenario: Editor is not offered 'reorder' when only one contact method exists
     When I click on the "email_addresses" subschema
     And I complete the "email_address" form with the following fields:
-      | title           | label         | email_address    |
-      | Email The Team  | Send an email | foo@example.com  |
+      | title           | email_address    |
+      | Email The Team  | foo@example.com  |
     Then I should be offered the preview facility without mention of reordering
 
   @javascript
@@ -319,8 +99,8 @@ Feature: Create a contact object
     And I click on the "email_addresses" subschema
     Then there should be no accessibility errors
     When I complete the "email_address" form with the following fields:
-      | title     | label         | email_address    | subject  | body             |
-      | Email us  | Send an email | foo@example.com  | Your ref | Name and address |
+      | title     | email_address    | subject  | body             |
+      | Email us  | foo@example.com  | Your ref | Name and address |
     And I click to add another "contact_method"
     When I click on the "telephones" subschema
     Then there should be no accessibility errors
