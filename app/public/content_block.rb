@@ -11,7 +11,7 @@ class ContentBlock
     @edition = edition
   end
 
-  delegate :title, :auth_bypass_id, :content_id, to: :edition
+  delegate :title, :state, :auth_bypass_id, :content_id, to: :edition
 
   def block_type
     edition.document.schema.name
