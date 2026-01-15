@@ -140,14 +140,6 @@ Then("I should see errors for the required nested {string} fields") do |nested_o
   end
 end
 
-And("I should see details of my {string}") do |object_type|
-  within "div[data-testid='#{object_type.pluralize}_listing']" do
-    @details.keys.each do |k|
-      assert_text @details[k]
-    end
-  end
-end
-
 And("I click to add a new {string}") do |object_type|
   @selected_subschemas ||= []
   @selected_subschemas << object_type.pluralize
@@ -175,16 +167,6 @@ And(/^that pension has a rate with the following fields:$/) do |table|
   @content_block.save!
 end
 
-And(/^I should see the rates for that block$/) do
-  @content_block.details["rates"].keys.each do |k|
-    within "div[data-test-id=embedded_#{k}]" do
-      @content_block.details["rates"][k].each do |_k, value|
-        assert_text value
-      end
-    end
-  end
-end
-
 When(/^I click to edit the first (.+)$/) do |type|
   @content_block ||= Edition.all.last
   key = @content_block.details[type.pluralize].keys.first
@@ -201,10 +183,6 @@ And(/^I should see the updated rates for that block$/) do
   @details.keys.each do |k|
     assert_text @details[k]
   end
-end
-
-And("I should not see a button to add a new {string}") do |object_type|
-  assert_no_text I18n.t("buttons.add", item: add_indefinite_article(object_type))
 end
 
 Then("I should see the created embedded object of type {string}") do |object_type|

@@ -2,10 +2,6 @@ Then("I should see a message that I need to confirm the details are correct") do
   assert_text I18n.t("edition.review_page.errors.confirm"), minimum: 2
 end
 
-Then("I should see a permissions error") do
-  assert_text "Permissions error"
-end
-
 Then(/^I should see an error prompting me to choose an object type$/) do
   assert_text "Select a content block"
 end

@@ -24,16 +24,6 @@ Then("I should see all the schemas listed") do
   end
 end
 
-And("the schema {string} has a group {string} with the following subschemas:") do |block_type, group, table|
-  subschemas = table.raw.first
-  schema = @schemas[block_type]
-
-  subschemas.each do |subschema_id|
-    subschema = schema.subschema(subschema_id)
-    subschema.stubs(:group).returns(group)
-  end
-end
-
 And("the schema {string} exists") do |block_type|
   @schemas ||= {}
   body = GovukSchemas::Schema.find(publisher_schema: "content_block_#{block_type}")
