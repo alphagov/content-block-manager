@@ -13,7 +13,7 @@
   <%= render "govuk_publishing_components/components/input", {
       name: "factcheck_outcome[factcheck_performer]",
       label: { text: I18n.t("edition.outcomes.performer.label.factcheck") },
-      hint: "Enter the email address or name of the Subject Matter Expert",
+      hint: I18n.t("edition.outcomes.performer.hint.factcheck"),
       error_message: flash.alert.presence,
   } %>
 

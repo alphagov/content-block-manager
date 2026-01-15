@@ -205,6 +205,9 @@ en:
         label:
           review:    "2i reviewer"
           factcheck: "Factcheck Subject Matter Expert"
+        hint:
+          review:    "Enter the email address or name of the 2i reviewer"
+          factcheck: "Enter the email address or name of the Subject Matter Expert"
       errors:
         missing_performer:
           review:    "Provide the email or name of the 2i reviewer who performed the review"
