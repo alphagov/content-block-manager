@@ -35,6 +35,14 @@ And("the schema {string} has a group {string} with the following subschemas:") d
   end
 end
 
+And("the schema {string} exists") do |block_type|
+  @schemas ||= {}
+  body = GovukSchemas::Schema.find(publisher_schema: "content_block_#{block_type}")
+  @schema = build(:schema, block_type:, body: body["definitions"]["details"])
+  @schemas[block_type] = @schema
+  Schema.stubs(:all).returns(@schemas.values)
+end
+
 And("a schema {string} exists:") do |block_type, json|
   @schemas ||= {}
   body = JSON.parse(json)
