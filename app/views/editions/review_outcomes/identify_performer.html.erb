@@ -12,7 +12,7 @@
 
   <%= render "govuk_publishing_components/components/input", {
       name: "review_outcome[review_performer]",
-      label: { text: "2i reviewer" },
+      label: { text: I18n.t("edition.outcomes.performer.label.review") },
       hint: "Enter the email address or name of the 2i reviewer",
       error_message: flash.alert.presence,
   } %>
