@@ -1,5 +1,4 @@
 class Edition::Show::EmbeddedObjects::BlocksComponent < ViewComponent::Base
-  include EmbedCodeHelper
   include SummaryListHelper
 
   def initialize(items:, schema_name:, object_type:, object_title:, edition:)
@@ -117,6 +116,14 @@ private
     {
       testid: object_title.parameterize.underscore,
       **copy_embed_code_data_attributes("#{object_type}/#{object_title}", document),
+    }
+  end
+
+  def copy_embed_code_data_attributes(key, document)
+    {
+      module: "copy-embed-code",
+      "embed-code": document.embed_code_for_field(key),
+      "embed-code-details": key,
     }
   end
 
