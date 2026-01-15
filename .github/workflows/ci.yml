@@ -59,12 +59,8 @@ jobs:
     with:
       useWithRails: true
 
-  test-ruby:
-    name: Test Ruby
-    uses: ./.github/workflows/minitest.yml
-
   test-rspec:
-    name: Test Ruby (Rspec)
+    name: Test Ruby
     uses: ./.github/workflows/rspec.yml
 
   test-features:
@@ -74,7 +70,6 @@ jobs:
   coverage:
     name: Check coverage
     needs:
-      - test-ruby
       - test-rspec
       - test-features
     uses: ./.github/workflows/check-coverage.yml
