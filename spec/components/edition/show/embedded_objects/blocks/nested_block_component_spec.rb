@@ -140,6 +140,44 @@ RSpec.describe Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent, typ
     end
   end
 
+  describe "embed codes" do
+    context "when the edition is in the _published_ state" do
+      before do
+        edition.state = :published
+        render_inline component
+      end
+
+      it "includes 'data' attributes to initialise the CopyEmbedCode JS module" do
+        data_attrs = [
+          "[data-module='copy-embed-code']",
+          "[data-embed-code='{{embed:content_block_pension:/prefix/foo}}']",
+          "[data-embed-code-details='prefix/foo']",
+        ]
+
+        expect(page).to have_css("div#{data_attrs.join}")
+      end
+    end
+
+    (Edition.available_states - [:published]).each do |state|
+      context "when the edition is in a non-published state (#{state})" do
+        before do
+          edition.state = state
+          render_inline component
+        end
+
+        it "does NOT include 'data' attributes to initialise the CopyEmbedCode JS module" do
+          data_attrs = [
+            "[data-module='copy-embed-code']",
+            "[data-embed-code='{{embed:content_block_pension:/prefix/foo}}']",
+            "[data-embed-code-details='prefix/foo']",
+          ]
+
+          expect(page).to have_no_css("div#{data_attrs.join}")
+        end
+      end
+    end
+  end
+
 private
 
   def expect_summary_list_row(test_id:, key:, value:, embed_code_suffix:)
