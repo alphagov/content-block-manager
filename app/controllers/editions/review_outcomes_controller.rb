@@ -52,14 +52,14 @@ private
 
   def review_performer
     if outcome_params["review_performer"].blank?
-      raise ActionController::ParameterMissing, I18n.t("edition.outcomes.errors.factcheck.missing_performer")
+      raise ActionController::ParameterMissing, I18n.t("edition.outcomes.errors.missing_performer.review")
     end
 
     outcome_params["review_performer"]
   end
 
   def form_validation_error
-    flash.now.alert = I18n.t("edition.outcomes.errors.review.missing_outcome")
+    flash.now.alert = I18n.t("edition.outcomes.errors.missing_outcome.review")
     render :new
   end
 
@@ -92,7 +92,7 @@ private
   end
 
   def handle_missing_review_performer
-    flash.alert = I18n.t("edition.outcomes.errors.review.missing_performer")
+    flash.alert = I18n.t("edition.outcomes.errors.missing_performer.review")
     redirect_to identify_performer_review_outcome_edition_path(@edition)
   end
 

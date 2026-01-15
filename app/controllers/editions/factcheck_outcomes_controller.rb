@@ -17,6 +17,8 @@ class Editions::FactcheckOutcomesController < BaseController
   end
 
   def identify_performer
+    @transition = block_will_be_scheduled? ? "schedule" : "publish"
+
     render :identify_performer
   end
 
@@ -54,14 +56,14 @@ private
 
   def factcheck_performer
     if outcome_params["factcheck_performer"].blank?
-      raise ActionController::ParameterMissing, I18n.t("edition.outcomes.errors.factcheck.missing_performer")
+      raise ActionController::ParameterMissing, I18n.t("edition.outcomes.errors.missing_performer.factcheck")
     end
 
     outcome_params["factcheck_performer"]
   end
 
   def form_validation_error
-    alert = I18n.t("edition.outcomes.errors.factcheck.missing_outcome")
+    alert = I18n.t("edition.outcomes.errors.missing_outcome.factcheck")
     redirect_to new_factcheck_outcome_edition_path(@edition), alert:
   end
 
@@ -110,7 +112,7 @@ private
   end
 
   def handle_missing_factcheck_performer
-    flash.alert = I18n.t("edition.outcomes.errors.factcheck.missing_performer")
+    flash.alert = I18n.t("edition.outcomes.errors.missing_performer.factcheck")
     redirect_to identify_performer_factcheck_outcome_edition_path(@edition)
   end
 end

@@ -12,20 +12,20 @@
 
   <%= render "govuk_publishing_components/components/input", {
       name: "factcheck_outcome[factcheck_performer]",
-      label: { text: "Factcheck Subject Matter Expert" },
-      hint: "Enter the email address or name of the Subject Matter Expert",
+      label: { text: I18n.t("edition.outcomes.performer.label.factcheck") },
+      hint: I18n.t("edition.outcomes.performer.hint.factcheck"),
       error_message: flash.alert.presence,
   } %>
 
   <div class="govuk-button-group govuk-!-margin-bottom-6">
     <%= render "govuk_publishing_components/components/button", {
-      text: "Continue",
+      text: I18n.t("edition.transitions.#{@transition}"),
       name: "continue",
       value: "Continue",
       type: "submit",
     } %>
     <%= render "govuk_publishing_components/components/button", {
-      text: "Cancel",
+      text: I18n.t("buttons.cancel"),
       href: document_path(@edition.document),
       secondary_solid: true,
     } %>

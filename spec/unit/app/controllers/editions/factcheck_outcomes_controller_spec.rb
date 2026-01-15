@@ -121,7 +121,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
 
       it "sets an error message" do
-        expect(flash.alert).to eq("Indicate whether the Factcheck process has been performed or not")
+        expect(flash.alert).to eq("Indicate whether the factcheck process has been performed or not")
       end
     end
   end
@@ -142,6 +142,10 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       it "sets the page title to a 'schedule' call-to-action" do
         expect(assigns(:title)).to eq("Schedule block")
       end
+
+      it "sets the call to action to a 'schedule' call-to-action" do
+        expect(assigns(:transition)).to eq("schedule")
+      end
     end
 
     context "when the edition is going to be published" do
@@ -149,6 +153,10 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
 
       it "sets the page title to a 'publish' call-to-action" do
         expect(assigns(:title)).to eq("Publish block")
+      end
+
+      it "sets the call to action to a 'publish' call-to-action" do
+        expect(assigns(:transition)).to eq("publish")
       end
     end
 

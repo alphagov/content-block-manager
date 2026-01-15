@@ -12,20 +12,20 @@
 
   <%= render "govuk_publishing_components/components/input", {
       name: "review_outcome[review_performer]",
-      label: { text: "2i reviewer" },
-      hint: "Enter the email address or name of the 2i reviewer",
+      label: { text: I18n.t("edition.outcomes.performer.label.review") },
+      hint: I18n.t("edition.outcomes.performer.hint.review"),
       error_message: flash.alert.presence,
   } %>
 
   <div class="govuk-button-group govuk-!-margin-bottom-6">
     <%= render "govuk_publishing_components/components/button", {
-      text: "Continue",
+      text: I18n.t("buttons.continue"),
       name: "continue",
       value: "Continue",
       type: "submit",
     } %>
     <%= render "govuk_publishing_components/components/button", {
-      text: "Cancel",
+      text: I18n.t("buttons.cancel"),
       href: document_path(@edition.document),
       secondary_solid: true,
     } %>

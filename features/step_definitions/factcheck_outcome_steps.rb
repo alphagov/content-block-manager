@@ -36,12 +36,12 @@ Then("I am required to provide the subject matter expert") do
     expect(page).to have_content(edition.title)
   end
 
-  expect(page).to have_field("Factcheck Subject Matter Expert", type: :text)
+  expect(page).to have_field("Factcheck subject matter expert", type: :text)
 end
 
 When("I provide the subject matter expert") do
-  fill_in "Factcheck Subject Matter Expert", with: "Jane Doe"
-  click_button("Continue")
+  fill_in "Factcheck subject matter expert", with: "Jane Doe"
+  click_button("Publish")
 end
 
 When("I attempt to proceed without supplying the outcome of the factcheck process") do
@@ -49,9 +49,9 @@ When("I attempt to proceed without supplying the outcome of the factcheck proces
 end
 
 Then("I see that I need to indicate whether the factcheck process was performed or skipped") do
-  expect(page).to have_content("Indicate whether the Factcheck process has been performed or not")
+  expect(page).to have_content("Indicate whether the factcheck process has been performed or not")
   within ".govuk-form-group--error" do
-    expect(page).to have_content("Indicate whether the Factcheck process has been performed or not")
+    expect(page).to have_content("Indicate whether the factcheck process has been performed or not")
   end
 end
 
