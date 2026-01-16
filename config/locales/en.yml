@@ -39,6 +39,7 @@ en:
         title:
           default: Title
           contact: Contact name
+          tax: Tax name
   document:
     new:
       title: Select a content block
@@ -162,6 +163,19 @@ en:
             call_charges_info_url: "URL"
           contact_links:
             url: URL
+      tax:
+        things_taxed:
+          rates:
+            name: Rate name
+            value: Rate value
+            bands:
+              name: Band name
+              lower_threshold:
+                show: Lower threshold
+                value: Threshold value
+              upper_threshold:
+                show: Upper threshold
+                value: Threshold value
     values:
       true: "Yes"
       false: "No"

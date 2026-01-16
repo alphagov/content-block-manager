@@ -1,14 +1,17 @@
 class Schema
   SCHEMA_PREFIX = "content_block".freeze
 
-  VALID_SCHEMAS = %w[pension contact].freeze
+  VALID_SCHEMAS = {
+    alpha: %w[tax],
+    live: %w[contact pension],
+  }.freeze
   private_constant :VALID_SCHEMAS
 
   CONFIG_PATH = Rails.root.join("config/content_block_manager.yml").to_s
 
   class << self
     def valid_schemas
-      Flipflop.show_all_content_block_types? ? VALID_SCHEMAS : %w[pension]
+      Flipflop.show_all_content_block_types? ? VALID_SCHEMAS.values.flatten : VALID_SCHEMAS[:live]
     end
 
     def all

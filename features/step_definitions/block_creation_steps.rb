@@ -14,6 +14,10 @@ Given("a pension content block has been created") do
   create_published_pension_edition
 end
 
+Given("a tax content block has been created") do
+  create_published_tax_edition
+end
+
 Given("a published contact edition exists") do
   create_published_contact_edition
 end
@@ -101,6 +105,23 @@ def create_draft_contact_edition
   )
 end
 
+def create_published_tax_edition
+  @content_blocks ||= []
+  @content_block = create(
+    :edition,
+    :tax,
+    document: tax_document,
+    details: { description: "Some text" },
+    creator: @user,
+    lead_organisation_id: organisation_id,
+    title: "My tax",
+  )
+  Edition::HasAuditTrail.acting_as(@user) do
+    @content_block.publish!
+  end
+  @content_blocks.push(@content_block)
+end
+
 def create_published_pension_edition
   @content_blocks ||= []
   @content_block = create(
@@ -146,6 +167,10 @@ end
 
 def organisation_id
   Organisation.all.first.id
+end
+
+def tax_document
+  @tax_document ||= create(:document, :tax)
 end
 
 def pension_document

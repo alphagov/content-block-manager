@@ -2,7 +2,14 @@ Then(/^I should see the details for each (.+)'s (.+)$/) do |embedded_object_name
   edition = Edition.last
   details = edition.details[embedded_object_name.pluralize]
   details.keys.each do |k|
-    assert_details_visible(nested_object_name, details[k][nested_object_name.pluralize])
+    value = details[k][nested_object_name.pluralize]
+    if value.is_a?(Hash)
+      value.each do |nested_key, nested_value|
+        assert_details_visible(nested_key, nested_value)
+      end
+    else
+      assert_details_visible(nested_object_name, value)
+    end
   end
 end
 
@@ -28,6 +35,10 @@ def assert_details_visible(nested_object_name, details)
       item.keys.each do |key|
         if item[key].is_a?(Array)
           assert_details_visible(key.singularize, item[key])
+        elsif item[key].is_a?(Hash)
+          item[key].values.each do |value|
+            assert_text(value) unless value.in?([true, false]) # Ignore any boolean fields, as these are usually hidden
+          end
         else
           assert_text item[key]
         end
