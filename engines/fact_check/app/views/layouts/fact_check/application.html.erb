@@ -12,6 +12,8 @@
       window.GOVUK.analyticsGa4.showDebug = true
     </script>
   <% end %>
+  <%# Includes all stylesheet files in app/assets/stylesheets %>
+  <%= stylesheet_link_tag :application %>
 <% end %>
 
 <% sanitized_title = sanitize((yield(:page_title).presence || yield(:title))) %>
