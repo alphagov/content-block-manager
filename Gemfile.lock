@@ -123,11 +123,10 @@ GEM
     concurrent-ruby (1.3.6)
     connection_pool (2.5.5)
     constant_resolver (0.3.0)
-    content_block_tools (1.7.2)
-      actionview (>= 6, < 8.1.2)
-      gds-api-adapters (~> 101.0.0)
+    content_block_tools (1.5.1)
+      actionview (>= 6, < 8.0.4)
       govspeak (>= 10.6.3)
-      rails (>= 6, < 8.1.2)
+      rails (>= 6, < 8.0.4)
       view_component (~> 4)
     crack (1.0.1)
       bigdecimal
@@ -211,7 +210,7 @@ GEM
       terminal-table (>= 1.8)
     friendly_id (5.6.0)
       activerecord (>= 4.0.0)
-    gds-api-adapters (101.0.0)
+    gds-api-adapters (101.2.0)
       addressable
       link_header
       null_logger
@@ -1009,7 +1008,7 @@ CHECKSUMS
   concurrent-ruby (1.3.6) sha256=6b56837e1e7e5292f9864f34b69c5a2cbc75c0cf5338f1ce9903d10fa762d5ab
   connection_pool (2.5.5) sha256=e54ff92855753df1fd7c59fa04a398833355f27dd14c074f8c83a05f72a716ad
   constant_resolver (0.3.0) sha256=b94886294298fb8d5db3715bac65e65493fae7b12b8a6f867cbf898944e64e83
-  content_block_tools (1.7.2) sha256=88ffaa4e7f6da72d23d857c85e030d21cda30eac56ec6a66c2dff18c372848ac
+  content_block_tools (1.5.1) sha256=c272f292351a2e20ccff7f122ec7b0f9b9f72757b554bdc3678f0ff0451fa369
   crack (1.0.1) sha256=ff4a10390cd31d66440b7524eb1841874db86201d5b70032028553130b6d4c7e
   crass (1.0.6) sha256=dc516022a56e7b3b156099abc81b6d2b08ea1ed12676ac7a5657617f012bd45d
   cucumber (10.2.0) sha256=fdedbd31ecf40858b60f04853f2aa15c44f5c30bbac29c6a227fa1e7005a8158
@@ -1050,7 +1049,7 @@ CHECKSUMS
   ffi (1.17.2-x86_64-linux-musl) sha256=97c0eb3981414309285a64dc4d466bd149e981c279a56371ef811395d68cb95c
   flipflop (2.8.0) sha256=90ff7125918793aa3db2fd8479cc612106bd880c86552029119d915f668e9789
   friendly_id (5.6.0) sha256=28e221cd53fbd21586321164c1c6fd0c9ba8dde13969cb2363679f44726bb0c3
-  gds-api-adapters (101.0.0) sha256=3f08b0ad72b45cc138ee7f1ffb736c342e81150093f298b406e72f0d7833ddd8
+  gds-api-adapters (101.2.0) sha256=0ee982834a4d410a481479b45e2de3333698567afd6f9439df6bd78c25ef0030
   gds-sso (22.1.1) sha256=87da38284fe2eb98cca4f02d5f23bc01bbad7eeabe10a3c60d915628968d9122
   globalid (1.3.0) sha256=05c639ad6eb4594522a0b07983022f04aa7254626ab69445a0e493aa3786ff11
   google-protobuf (4.33.4) sha256=86921935b023ed0d872d6e84382e79016c91689be0520d614c74426778f13c16
