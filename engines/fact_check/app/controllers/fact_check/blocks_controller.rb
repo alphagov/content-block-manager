@@ -1,9 +1,15 @@
+require "nokodiff"
+
 class FactCheck::BlocksController < FactCheck::ApplicationController
   skip_before_action :authenticate_user!, if: :has_valid_jwt?
   before_action :set_jwt_cookie, if: :has_valid_jwt?
 
   def show
     @block = block
+    @document = Document.find(params[:id])
+    @current_edition = @document.most_recent_edition
+    @published_edition = @document.latest_published_edition
+    @schema = Schema.find_by_block_type(@document.block_type)
   end
 
 private
