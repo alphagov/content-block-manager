@@ -30,6 +30,7 @@ And("the schema {string} exists") do |block_type|
   @schema = build(:schema, block_type:, body: body["definitions"]["details"])
   @schemas[block_type] = @schema
   Schema.stubs(:all).returns(@schemas.values)
+  Schema.stubs(:find_by_block_type).with(block_type).returns(@schema)
 end
 
 And("a schema {string} exists:") do |block_type, json|
@@ -38,6 +39,7 @@ And("a schema {string} exists:") do |block_type, json|
   @schema = build(:schema, block_type:, body:)
   @schemas[block_type] = @schema
   Schema.stubs(:all).returns(@schemas.values)
+  Schema.stubs(:find_by_block_type).with(block_type).returns(@schema)
 end
 
 And("the schema has a subschema {string}:") do |subschema_name, json|

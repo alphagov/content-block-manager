@@ -7,6 +7,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent, typ
   end
   let(:field) { double("field", title: "Nested Field", name: "nested_field") }
   let(:document) { build(:document, :pension) }
+  let(:edition) { build(:edition, :published, document: document) }
   let(:embed_code_prefix) { "prefix" }
   let(:items_counter) { nil }
 
@@ -23,7 +24,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent, typ
     described_class.new(
       items:,
       field:,
-      document:,
+      edition:,
       embed_code_prefix:,
       items_counter:,
     )
@@ -136,6 +137,67 @@ RSpec.describe Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent, typ
 
       expect_summary_list_row(test_id: "prefix/things/0/name", key: "Name", value: "One", embed_code_suffix: "things/0/name")
       expect_summary_list_row(test_id: "prefix/things/1/name", key: "Name", value: "Two", embed_code_suffix: "things/1/name")
+    end
+  end
+
+  describe "embed codes" do
+    context "when the edition is in the _published_ state" do
+      before do
+        edition.state = :published
+        render_inline component
+      end
+
+      it "includes 'data' attributes to initialise the CopyEmbedCode JS module" do
+        data_attrs = [
+          "[data-module='copy-embed-code']",
+          "[data-embed-code='{{embed:content_block_pension:/prefix/foo}}']",
+          "[data-embed-code-details='prefix/foo']",
+        ]
+
+        expect(page).to have_css("div#{data_attrs.join}")
+      end
+
+      it "includes the embed code in its own element" do
+        expect(page).to have_css(
+          ".govuk-summary-list__value .app-c-embedded-objects-blocks-component__embed-code",
+          text: "{{embed:content_block_pension:/prefix/foo}}",
+        )
+      end
+    end
+
+    (Edition.available_states - [:published]).each do |state|
+      context "when the edition is in a non-published state (#{state})" do
+        before do
+          edition.state = state
+          render_inline component
+        end
+
+        it "does NOT include 'data' attributes to initialise the CopyEmbedCode JS module" do
+          data_attrs = [
+            "[data-module='copy-embed-code']",
+            "[data-embed-code='{{embed:content_block_pension:/prefix/foo}}']",
+            "[data-embed-code-details='prefix/foo']",
+          ]
+
+          expect(page).to have_no_css("div#{data_attrs.join}")
+        end
+
+        it "does NOT include the embed code in its own element" do
+          expect(page).not_to have_content("{{embed:content_block_pension:/prefix/foo}}")
+        end
+
+        it "continues to show the field values" do
+          aggregate_failures do
+            expect(page).to have_css(
+              ".govuk-summary-list__value .govspeak", text: "bar"
+            )
+
+            expect(page).to have_css(
+              ".govuk-summary-list__value .govspeak", text: "buzz"
+            )
+          end
+        end
+      end
     end
   end
 

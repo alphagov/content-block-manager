@@ -6,6 +6,7 @@ Feature: Drafting a content block
     And I have the "pre_release_features" permission
     And the organisation "Ministry of Example" exists
     And the schema "pension" exists
+    And the schema "contact" exists
     And I visit the Content Block Manager home page
     And I click to create an object
     And I click on the "pension" schema
@@ -25,7 +26,7 @@ Feature: Drafting a content block
     Then I should see the draft document
 
   Scenario: GDS editor saves their edition as a draft
-    When I save and continue
+    When I proceed without adding a rate
     And I confirm I have checked the content
     And I save a draft
     Then I should be taken back to the document page
@@ -40,3 +41,22 @@ Feature: Drafting a content block
     And the draft workflow has not been completed
     Then I do not see a call to action of 'Ready for 2i'
     And I see a principal call to action to complete the draft
+
+  @javascript
+  Scenario: Editor does not see embed code for default contact block when draft
+    Given a draft contact edition exists
+    And I am viewing the draft edition
+    Then I do not see the facility to copy the embed code
+    And I should not see the contact default block embed code displayed
+
+  @javascript
+  Scenario: Editor does not see embed code for a specific field when draft
+    Given the pension has a rate set
+    And I am viewing the draft edition
+    Then I do not see the facility to copy the embed code
+    And I should not see the pension rate embed code displayed
+
+  Scenario: Editor without javascript does not see embed code when draft
+    Given the pension has a rate set
+    And I am viewing the draft edition
+    Then I should not see the pension rate embed code displayed

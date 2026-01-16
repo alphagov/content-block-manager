@@ -1,23 +1,23 @@
 class Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent < ViewComponent::Base
   include ContentBlockTools::Govspeak
-  include EmbedCodeHelper
   include SummaryListHelper
 
   delegate :translated_value, to: :helpers
 
   with_collection_parameter :items
 
-  def initialize(items:, field:, document:, embed_code_prefix:, items_counter: nil)
+  def initialize(items:, field:, edition:, embed_code_prefix:, items_counter: nil)
     @items = items
     @field = field
-    @document = document
+    @edition = edition
+    @document = edition.document
     @embed_code_prefix = embed_code_prefix
     @items_counter = items_counter
   end
 
 private
 
-  attr_reader :items, :field, :document, :embed_code_prefix, :items_counter
+  attr_reader :items, :field, :document, :edition, :embed_code_prefix, :items_counter
 
   def title
     items_counter ? "#{field.title.singularize} #{items_counter + 1}" : field.title
@@ -41,7 +41,11 @@ private
                                 field:,
                                 value: translated_value(field.name, value),
                               ), class: "app-c-embedded-objects-blocks-component__content govspeak")
-    content << content_tag(:p, document.embed_code_for_field(embed_code_identifier(embed_code_prefix, items_counter, field.name)), class: "app-c-embedded-objects-blocks-component__embed-code")
+    if edition.published?
+      content << content_tag(:p,
+                             document.embed_code_for_field(embed_code_identifier(embed_code_prefix, items_counter, field.name)),
+                             class: "app-c-embedded-objects-blocks-component__embed-code")
+    end
     content
   end
 
@@ -56,6 +60,16 @@ private
     {
       testid: embed_code.underscore,
       **copy_embed_code_data_attributes(embed_code, document),
+    }
+  end
+
+  def copy_embed_code_data_attributes(key, document)
+    return {} unless edition.published?
+
+    {
+      module: "copy-embed-code",
+      "embed-code": document.embed_code_for_field(key),
+      "embed-code-details": key,
     }
   end
 
