@@ -229,9 +229,9 @@ en:
         missing_outcome:
           review:    "Indicate whether the 2i review process has been performed or not"
           factcheck: "Indicate whether the factcheck process has been performed or not"
-  embed_codes:
+  embedded_object:
     all_attributes: "These are all the %{object_name} attributes that make up the %{object_name}."
-    description: You can use any available embed code for each attribute separately in your content if required.
+    embed_code_usage: You can use any available embed code for each attribute separately in your content if required.
   date:
     formats:
       default: "%d %B %Y"

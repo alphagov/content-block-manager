@@ -38,6 +38,10 @@ Then(/I should see the ([^"]*) embed code flash up for an interval/) do |code_ty
   end
 end
 
+Then("I do not see the facility to copy the embed code") do
+  expect(page).to have_no_link("Copy code")
+end
+
 def click_copy_code_link
   find("a", text: "Copy code").click
 end

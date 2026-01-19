@@ -9,7 +9,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
   let(:object_title) { "else" }
 
   let(:document) { build(:document, :pension) }
-  let(:edition) { build(:edition, :pension, document: document) }
+  let(:edition) { build(:edition, :pension, :published, document: document) }
 
   let(:schema) { double("schema", block_type: "schema") }
   let(:subschema) do
@@ -193,7 +193,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         expect(wrapper).to have_css ".govuk-details__summary-text", text: "All #{object_type} attributes"
         expect(wrapper).to have_css ".govuk-details__text", visible: false do |details|
           expect(details).to have_css ".app-c-embedded-objects-blocks-component__details-text",
-                                      text: "These are all the #{object_type} attributes that make up the #{object_type}. You can use any available embed code for each attribute separately in your content if required.",
+                                      text: "These are all the #{object_type} attributes that make up the #{object_type}.",
                                       visible: false
 
           expect(details).to have_css ".app-c-embedded-objects-blocks-component__details-summary-list", visible: false do |summary_list|
@@ -235,6 +235,112 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
       render_inline component
 
       expect(page).to have_css ".app-c-embedded-objects-blocks-component.app-c-embedded-objects-blocks-component--with-block"
+    end
+
+    describe "embed code visibility" do
+      context "when the edition is _published_" do
+        before do
+          edition.state = :published
+          render_inline component
+        end
+
+        it "includes guidance on the use of embed codes" do
+          expect(page).to have_css ".app-c-embedded-objects-blocks-component__details-wrapper" do |wrapper|
+            expect(wrapper).to have_css ".govuk-details__summary-text", text: "All #{object_type} attributes"
+            expect(wrapper).to have_css ".govuk-details__text", visible: false do |details|
+              expect(details).to have_css ".app-c-embedded-objects-blocks-component__details-text",
+                                          text: "You can use any available embed code for each attribute separately in your content if required.",
+                                          visible: false
+            end
+          end
+        end
+
+        it "for each row, includes the embed code in its own element" do
+          expected_rows = [
+            OpenStruct.new(
+              embed_code: "{{embed:content_block_pension:/something/else}}",
+              visible: true,
+            ),
+            OpenStruct.new(
+              embed_code: "{{embed:content_block_pension:/something/else/foo}}",
+              visible: false,
+            ),
+            OpenStruct.new(
+              embed_code: "{{embed:content_block_pension:/something/else/fizz}}",
+              visible: false,
+            ),
+          ]
+          aggregate_failures do
+            expected_rows.each do |row|
+              expect(page).to have_css(
+                ".govuk-summary-list__value .app-c-embedded-objects-blocks-component__embed-code",
+                text: row.embed_code,
+                visible: row.visible,
+              )
+            end
+          end
+        end
+
+        it "for each row, includes 'data' attributes to initialise the CopyEmbedCode JS module" do
+          expected_rows = [
+            OpenStruct.new({
+              embed_code: "{{embed:content_block_pension:/something/else}}",
+              embed_code_details: "something/else",
+              visible: true,
+            }),
+            OpenStruct.new({
+              embed_code: "{{embed:content_block_pension:/something/else/foo}}",
+              embed_code_details: "something/else/foo",
+              visible: false,
+            }),
+            OpenStruct.new({
+              embed_code: "{{embed:content_block_pension:/something/else/fizz}}",
+              embed_code_details: "something/else/fizz",
+              visible: false,
+            }),
+          ]
+
+          aggregate_failures do
+            expected_rows.each do |row|
+              data_attrs = [
+                "[data-module='copy-embed-code']",
+                "[data-embed-code='#{row.embed_code}']",
+                "[data-embed-code-details='#{row.embed_code_details}']",
+              ]
+
+              expect(page).to have_css("div#{data_attrs.join('')}", visible: row.visible)
+            end
+          end
+        end
+      end
+
+      (Edition.available_states - [:published]).each do |state|
+        context "when the edition is a non-published state (#{state})" do
+          before do
+            edition.state = state
+            render_inline component
+          end
+
+          it "does NOT include guidance on the use of embed codes" do
+            expect(page).to have_css ".app-c-embedded-objects-blocks-component__details-wrapper" do |wrapper|
+              expect(wrapper).to have_css ".govuk-details__summary-text", text: "All #{object_type} attributes"
+              expect(wrapper).to have_css ".govuk-details__text", visible: false do |details|
+                expect(details).to have_no_css ".app-c-embedded-objects-blocks-component__details-text",
+                                               text: "You can use any available embed code for each attribute separately in your content if required.",
+                                               visible: false
+              end
+            end
+          end
+
+          it "does NOT include 'data' attributes to initialise the CopyEmbedCode JS module" do
+            expect(page).not_to have_css("div[data-module='copy-embed-code']")
+          end
+
+          it "does NOT include any embed-codes" do
+            expect(page).not_to have_css(".app-c-embedded-objects-blocks-component__embed-code")
+          end
+        end
+      end
     end
 
     describe "when items contain an array" do

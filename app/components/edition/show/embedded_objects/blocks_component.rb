@@ -1,5 +1,4 @@
 class Edition::Show::EmbeddedObjects::BlocksComponent < ViewComponent::Base
-  include EmbedCodeHelper
   include SummaryListHelper
 
   def initialize(items:, schema_name:, object_type:, object_title:, edition:)
@@ -56,20 +55,30 @@ private
     schema.field(key).title
   end
 
+  def all_attributes_preamble
+    I18n.t("embedded_object.all_attributes", object_name: object_name)
+  end
+
+  def embed_code_usage
+    return unless edition.published?
+
+    I18n.t("embedded_object.embed_code_usage")
+  end
+
   def nested_blocks
     nested_items(items).map { |key, items|
       if items.is_a?(Array)
         render Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent.with_collection(
           items,
           field: schema.field(key),
-          document:,
+          edition:,
           embed_code_prefix: embed_code_identifier(object_type, object_title, key),
         )
       else
         render Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent.new(
           items:,
           field: schema.field(key),
-          document:,
+          edition:,
           embed_code_prefix: embed_code_identifier(object_type, object_title, key),
         )
       end
@@ -94,7 +103,11 @@ private
 
   def content_for_row(key, value)
     content = content_tag(:p, value, class: "app-c-embedded-objects-blocks-component__content govspeak")
-    content << content_tag(:p, document.embed_code_for_field("#{object_type}/#{object_title}/#{key}"), class: "app-c-embedded-objects-blocks-component__embed-code")
+    if edition.published?
+      content << content_tag(:p,
+                             document.embed_code_for_field("#{object_type}/#{object_title}/#{key}"),
+                             class: "app-c-embedded-objects-blocks-component__embed-code")
+    end
     content
   end
 
@@ -109,7 +122,11 @@ private
     content = content_tag(:div,
                           edition.render(document.embed_code_for_field("#{object_type}/#{object_title}")),
                           class: "app-c-embedded-objects-blocks-component__content govspeak")
-    content << content_tag(:p, document.embed_code_for_field("#{object_type}/#{object_title}"), class: "app-c-embedded-objects-blocks-component__embed-code")
+    if edition.published?
+      content << content_tag(:p,
+                             document.embed_code_for_field("#{object_type}/#{object_title}"),
+                             class: "app-c-embedded-objects-blocks-component__embed-code")
+    end
     content
   end
 
@@ -117,6 +134,16 @@ private
     {
       testid: object_title.parameterize.underscore,
       **copy_embed_code_data_attributes("#{object_type}/#{object_title}", document),
+    }
+  end
+
+  def copy_embed_code_data_attributes(key, document)
+    return {} unless edition.published?
+
+    {
+      module: "copy-embed-code",
+      "embed-code": document.embed_code_for_field(key),
+      "embed-code-details": key,
     }
   end
 
