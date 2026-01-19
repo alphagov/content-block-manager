@@ -212,7 +212,7 @@ GEM
       terminal-table (>= 1.8)
     friendly_id (5.6.0)
       activerecord (>= 4.0.0)
-    gds-api-adapters (101.0.0)
+    gds-api-adapters (101.2.0)
       addressable
       link_header
       null_logger
@@ -1052,7 +1052,7 @@ CHECKSUMS
   ffi (1.17.2-x86_64-linux-musl) sha256=97c0eb3981414309285a64dc4d466bd149e981c279a56371ef811395d68cb95c
   flipflop (2.8.0) sha256=90ff7125918793aa3db2fd8479cc612106bd880c86552029119d915f668e9789
   friendly_id (5.6.0) sha256=28e221cd53fbd21586321164c1c6fd0c9ba8dde13969cb2363679f44726bb0c3
-  gds-api-adapters (101.0.0) sha256=3f08b0ad72b45cc138ee7f1ffb736c342e81150093f298b406e72f0d7833ddd8
+  gds-api-adapters (101.2.0) sha256=0ee982834a4d410a481479b45e2de3333698567afd6f9439df6bd78c25ef0030
   gds-sso (22.1.1) sha256=87da38284fe2eb98cca4f02d5f23bc01bbad7eeabe10a3c60d915628968d9122
   globalid (1.3.0) sha256=05c639ad6eb4594522a0b07983022f04aa7254626ab69445a0e493aa3786ff11
   google-protobuf (4.33.4) sha256=86921935b023ed0d872d6e84382e79016c91689be0520d614c74426778f13c16
