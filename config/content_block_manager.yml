@@ -4,6 +4,7 @@ schemas:
       description:
         component:
           textarea
+        character_limit: 165
         govspeak_enabled: true
     subschemas:
       rates:
@@ -30,6 +31,7 @@ schemas:
       description:
         component:
           textarea
+        character_limit: 165
         govspeak_enabled: true
 
     subschemas:
