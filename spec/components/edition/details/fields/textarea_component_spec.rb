@@ -20,14 +20,32 @@ RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
 
     it_behaves_like "a field component", field_type: "textarea"
 
-    it "displays guidance to indicate 'Govspeak supported'" do
-      render_inline component
+    context "and the field does not have a character limit" do
+      it "displays guidance to indicate 'Govspeak supported'" do
+        render_inline component
 
-      expect(page).to have_css(COMPONENT_CLASS) do |component|
-        expect(component).to have_css(
-          ".guidance.govspeak-supported",
-          text: I18n.t("edition.hints.govspeak_enabled"),
-        )
+        expect(page).to have_css(COMPONENT_CLASS) do |component|
+          expect(component).to have_css(
+            ".guidance.govspeak-supported",
+            text: I18n.t("edition.hints.govspeak_enabled"),
+          )
+        end
+      end
+    end
+
+    context "and the field has a character limit" do
+      before do
+        allow(field).to receive(:config).and_return({ "character_limit" => 500 })
+      end
+      it "does not display guidance to indicate 'Govspeak supported'" do
+        render_inline component
+
+        expect(page).to have_css(COMPONENT_CLASS) do |component|
+          expect(component).not_to have_css(
+            ".guidance.govspeak-supported",
+            text: I18n.t("edition.hints.govspeak_enabled"),
+          )
+        end
       end
     end
 

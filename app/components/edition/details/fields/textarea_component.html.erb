@@ -10,9 +10,11 @@
                 rows: 5,
                 character_limit:,
     } %>
-    <p class="govuk-body guidance govspeak-supported govuk-hint">
-     <%= I18n.t("edition.hints.govspeak_enabled") %>
-    </p>
+    <% if !character_limit %>
+      <p class="govuk-body guidance govspeak-supported govuk-hint">
+        <%= I18n.t("edition.hints.govspeak_enabled") %>
+      </p>
+    <% end %>
   <% else %>
     <%= render "govuk_publishing_components/components/textarea", {
                 label: { text: label },
