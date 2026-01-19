@@ -22,15 +22,15 @@ end
 Then(/I see a notification that the transition to ([^"]*) was successful/) do |state|
   message = case state
             when "Awaiting review"
-              I18n.t("edition.states.transition_message.awaiting_review")
+              Edition::StateTransitionMessage.new(state: :awaiting_review).to_s
             when "Awaiting factcheck"
-              I18n.t("edition.states.transition_message.awaiting_factcheck")
+              Edition::StateTransitionMessage.new(state: :awaiting_factcheck).to_s
             when "deleted"
-              I18n.t("edition.states.transition_message.deleted")
+              Edition::StateTransitionMessage.new(state: :deleted).to_s
             when "Published"
-              I18n.t("edition.states.transition_message.published")
+              Edition::StateTransitionMessage.new(state: :published).to_s
             when "Scheduled"
-              I18n.t("edition.states.transition_message.scheduled")
+              Edition::StateTransitionMessage.new(state: :scheduled).to_s
             else
               "Edition has been moved into state '#{state}'"
             end
