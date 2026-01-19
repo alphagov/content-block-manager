@@ -52,7 +52,10 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
           it "shows a success message" do
             post :create, params: { id: 123, transition: transition }
 
-            expected_success_message = Edition::StateTransitionMessage.new(state: edition.reload.state).to_s
+            expected_success_message = Edition::StateTransitionMessage.new(
+              edition: edition,
+              state: edition.reload.state,
+            ).to_s
             expect(flash.notice).to eq(expected_success_message)
           end
         end

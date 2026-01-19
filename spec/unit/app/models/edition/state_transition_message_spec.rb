@@ -2,18 +2,28 @@ RSpec.describe Edition::StateTransitionMessage do
   describe "#to_s" do
     let(:given_state) { "given_state" }
     let(:transition_message) { "translated state transition message" }
-    let(:message) { described_class.new(state: given_state) }
+    let(:document) { create(:document) }
+    let(:first_edition) { create(:edition, :published, document: document) }
 
     before { allow(I18n).to receive(:t).and_return(transition_message) }
 
-    it "asks I18n for the 'transition_message' translation for the given state" do
-      message.to_s
+    context "when given a *further* edition" do
+      let(:further_edition) do
+        first_edition
+        create(:edition, :draft, document: document)
+      end
 
-      expect(I18n).to have_received(:t).with("edition.states.transition_message.#{given_state}")
-    end
+      let(:message) { described_class.new(edition: further_edition, state: given_state) }
 
-    it "returns the translation provided by I18n" do
-      expect(message.to_s).to eq(transition_message)
+      it "asks I18n for the 'transition_message' for the given state of a further edition" do
+        message.to_s
+
+        expect(I18n).to have_received(:t).with("edition.states.transition_message.further.#{given_state}")
+      end
+
+      it "returns the translation provided by I18n" do
+        expect(message.to_s).to eq(transition_message)
+      end
     end
   end
 end

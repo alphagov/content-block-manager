@@ -50,14 +50,20 @@ private
 
   def save_as_draft
     { path: document_path(@edition.document),
-      flash: { notice: Edition::StateTransitionMessage.new(state: :draft_complete).to_s } }
+      flash: { notice: Edition::StateTransitionMessage.new(
+        edition: @edition,
+        state: :draft_complete,
+      ).to_s } }
   end
 
   def send_to_review
     @edition.ready_for_review!
 
     { path: document_path(@edition.document),
-      flash: { notice: Edition::StateTransitionMessage.new(state: :awaiting_review).to_s } }
+      flash: { notice: Edition::StateTransitionMessage.new(
+        edition: @edition,
+        state: :awaiting_review,
+      ).to_s } }
   rescue Transitions::InvalidTransition => e
     { path: document_path(@edition.document),
       flash: { error: e.message } }

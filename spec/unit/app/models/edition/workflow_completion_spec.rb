@@ -133,7 +133,10 @@ RSpec.describe Edition::WorkflowCompletion do
 
         expect(return_value.fetch(:flash)).to eq(
           {
-            notice: Edition::StateTransitionMessage.new(state: :draft_complete).to_s,
+            notice: Edition::StateTransitionMessage.new(
+              edition: edition,
+              state: :draft_complete,
+            ).to_s,
           },
         )
       end
@@ -172,7 +175,10 @@ RSpec.describe Edition::WorkflowCompletion do
 
         expect(return_value.fetch(:flash)).to eq(
           {
-            notice: Edition::StateTransitionMessage.new(state: :awaiting_review).to_s,
+            notice: Edition::StateTransitionMessage.new(
+              edition: edition,
+              state: :awaiting_review,
+            ).to_s,
           },
         )
       end

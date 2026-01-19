@@ -1,13 +1,18 @@
 class Edition::StateTransitionMessage
-  def initialize(state:)
+  def initialize(edition:, state:)
+    @edition = edition
     @state = state
   end
 
   def to_s
-    I18n.t("edition.states.transition_message.#{state}")
+    if edition.first_edition?
+      raise "Not implemented"
+    else
+      I18n.t("edition.states.transition_message.further.#{state}")
+    end
   end
 
 private
 
-  attr_reader :state
+  attr_reader :edition, :state
 end

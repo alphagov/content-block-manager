@@ -210,7 +210,10 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
       end
 
       it "shows a success message" do
-        expected_success_message = Edition::StateTransitionMessage.new(state: :awaiting_factcheck).to_s
+        expected_success_message = Edition::StateTransitionMessage.new(
+          edition: edition,
+          state: :awaiting_factcheck,
+        ).to_s
         expect(flash.notice).to eq(expected_success_message)
       end
     end
