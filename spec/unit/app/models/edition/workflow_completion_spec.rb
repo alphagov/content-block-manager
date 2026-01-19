@@ -133,7 +133,7 @@ RSpec.describe Edition::WorkflowCompletion do
 
         expect(return_value.fetch(:flash)).to eq(
           {
-            notice: I18n.t("edition.confirmation_page.drafted.banner"),
+            notice: I18n.t("edition.states.transition_message.draft_complete"),
           },
         )
       end

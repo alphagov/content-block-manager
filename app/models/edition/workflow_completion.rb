@@ -50,7 +50,7 @@ private
 
   def save_as_draft
     { path: document_path(@edition.document),
-      flash: { notice: I18n.t("edition.confirmation_page.drafted.banner") } }
+      flash: { notice: I18n.t("edition.states.transition_message.draft_complete") } }
   end
 
   def send_to_review

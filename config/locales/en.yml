@@ -81,8 +81,6 @@ en:
       updated:
         banner: "%{block_type} published"
         detail: You can now view the updated content block.
-      drafted:
-        banner: This edition has been saved as a finished draft
     delete:
       body: Are you sure you want to delete this draft?
     review_page:
