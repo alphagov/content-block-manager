@@ -30,18 +30,24 @@ end
 When("I complete the form with the following fields:") do |table|
   fields = table.hashes.first
   @title = fields.delete("title")
-  @organisation = fields.delete("organisation")
+  @organisation = Organisation.all.find { |org| org.name == fields.delete("organisation") }
   @instructions_to_publishers = fields.delete("instructions_to_publishers")
   @details = fields
 
   fill_in label_for_title(@schema.block_type), with: @title if @title.present?
 
-  select_organisation(@organisation) if @organisation.present?
+  select_organisation(@organisation.name) if @organisation.present?
 
   fill_in "Instructions to publishers", with: @instructions_to_publishers if @instructions_to_publishers.present?
 
   fields.keys.each do |k|
-    fill_in "edition_details_#{k}", with: @details[k]
+    selector = "#edition_details_#{k}"
+    field = find(selector)
+    if field.tag_name == "select"
+      select @details[k], from: field[:id]
+    else
+      fill_in field[:id], with: @details[k]
+    end
   end
 
   click_save_and_continue
@@ -182,9 +188,10 @@ When("I click to view the document with title {string}") do |title|
   click_link href: document_path(content_block.document)
 end
 
-Then("I should see the details for the contact content block") do
+Then(/I should see the details for the (.+) content block/) do |block_type|
+  @content_block ||= Edition.last
   expect(page).to have_selector("h1", text: @content_block.document.title)
-  should_show_generic_content_block_details(@content_block.document.title, "contact", @organisation)
+  should_show_generic_content_block_details(@content_block.document.title, block_type, @organisation)
 end
 
 When("I click the first edit link") do
@@ -213,6 +220,13 @@ Then("the edition should have been updated successfully") do
   case block_type
   when "pension"
     should_show_summary_card_for_pension_content_block(
+      "Changed title",
+      "New description",
+      @organisation,
+      "new context information",
+    )
+  when "tax"
+    should_show_summary_card_for_tax_content_block(
       "Changed title",
       "New description",
       @organisation,

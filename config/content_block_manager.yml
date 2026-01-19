@@ -174,4 +174,52 @@ schemas:
           - label
           - url
           - description
-
+  content_block_tax:
+    field_order:
+      - title
+      - abbreviation
+      - synonym
+      - tax_type
+      - note
+      - description
+    fields:
+      description:
+        component:
+          textarea
+        govspeak_enabled: true
+      note:
+        component:
+          textarea
+        govspeak_enabled: true
+    subschemas:
+      things_taxed:
+        block_display_fields:
+          - rates
+        field_order:
+          - title
+          - type
+          - rates
+        fields:
+          rates:
+            field_order:
+              - name
+              - value
+              - unit
+              - bands
+            fields:
+              bands:
+                field_order:
+                  - name
+                  - lower_threshold
+                  - upper_threshold
+                fields:
+                  lower_threshold:
+                    show_field_name: show
+                    fields:
+                      show:
+                        hidden_field: true
+                  upper_threshold:
+                    show_field_name: show
+                    fields:
+                      show:
+                        hidden_field: true
