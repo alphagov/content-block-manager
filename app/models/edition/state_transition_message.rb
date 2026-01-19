@@ -6,7 +6,7 @@ class Edition::StateTransitionMessage
 
   def to_s
     if edition.first_edition?
-      raise "Not implemented"
+      I18n.t("edition.states.transition_message.first.#{state}")
     else
       I18n.t("edition.states.transition_message.further.#{state}")
     end
