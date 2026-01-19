@@ -32,7 +32,7 @@ Then(/I see a notification that the transition to ([^"]*) was successful/) do |s
             when "Scheduled"
               Edition::StateTransitionMessage.new(state: :scheduled).to_s
             else
-              "Edition has been moved into state '#{state}'"
+              raise "Unexpected state: '#{state}'"
             end
 
   within(".govuk-notification-banner--success") do
