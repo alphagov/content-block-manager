@@ -18,12 +18,12 @@ Then("I am required to provide the outcome of the factcheck process") do
     expect(page).to have_content(edition.title)
   end
 
-  expect(page).to have_field("Completed factcheck", type: :radio)
-  expect(page).to have_field("Skip factcheck", type: :radio)
+  expect(page).to have_field(I18n.t("edition.outcomes.options.fact_check.performed"), type: :radio)
+  expect(page).to have_field(I18n.t("edition.outcomes.options.fact_check.skip"), type: :radio)
 end
 
 When("I provide the outcome of the factcheck process") do
-  choose("Completed factcheck")
+  choose(I18n.t("edition.outcomes.options.fact_check.performed"))
   click_button("Continue")
 end
 

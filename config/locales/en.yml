@@ -222,6 +222,13 @@ en:
       delete: Delete
       supersede: Supersede
     outcomes:
+      options:
+        review:
+          skip: "Skip 2i review"
+          performed: "Completed 2i review"
+        fact_check:
+          skip: "Skip factcheck"
+          performed: "Completed factcheck"
       performer:
         label:
           review:    "2i reviewer"
