@@ -14,4 +14,12 @@
             ),
           ) %>
   </div>
+
+  <% if @block.embeddable_as_block? %>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <%= render FactCheck::DefaultBlockComponent.new(block: @block) %>
+      </div>
+    </div>
+  <% end %>
 </div>
