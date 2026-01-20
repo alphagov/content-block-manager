@@ -71,7 +71,10 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
     end
 
     it "returns a created title" do
-      expect(page).to have_css ".timeline__title", text: "Pension created"
+      expect(page).to have_css(
+        ".timeline__title",
+        text: I18n.t("timeline_item.title.published", block_type: "Pension"),
+      )
     end
 
     context "and its edition indicates that the review was performed" do
@@ -380,7 +383,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
 
     it "sets the #title to be 'Sent to review" do
       expect(page).to have_css(".timeline__title") do
-        expect(page).to have_content("Sent to review")
+        expect(page).to have_content(I18n.t("timeline_item.title.awaiting_review"))
       end
     end
   end
@@ -394,7 +397,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
       render_inline component
 
       expect(page).to have_css(".timeline__title") do
-        expect(page).to have_content("Draft completed")
+        expect(page).to have_content(I18n.t("timeline_item.title.draft_complete"))
       end
     end
   end
@@ -408,7 +411,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
       render_inline component
 
       expect(page).to have_css(".timeline__title") do
-        expect(page).to have_content("Sent to factcheck")
+        expect(page).to have_content(I18n.t("timeline_item.title.awaiting_factcheck"))
       end
     end
 

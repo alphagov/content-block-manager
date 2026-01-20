@@ -30,9 +30,9 @@ end
 Then(/I see the transition to the ([^"]*) state in the timeline/) do |state|
   timeline_title = case state
                    when "awaiting_review"
-                     "Sent to review"
+                     I18n.t("timeline_item.title.awaiting_review")
                    when "awaiting_factcheck"
-                     "Sent to factcheck"
+                     I18n.t("timeline_item.title.awaiting_factcheck")
                    else
                      "Pension #{state}"
                    end
