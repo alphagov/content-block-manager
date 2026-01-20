@@ -273,6 +273,12 @@ en:
     schedule_block: Schedule block
     publish_block: Publish block
   timeline_item:
+    title:
+      published: "%{block_type} created"
+      scheduled: "Scheduled for publishing on %{datetime_string}"
+      draft_complete: "Draft completed"
+      awaiting_review: "Sent to review"
+      awaiting_factcheck: "Sent to factcheck"
     latest: Latest
     details_of_changes:
       title: Details of changes

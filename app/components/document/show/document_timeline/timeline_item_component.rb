@@ -18,15 +18,19 @@ private
     if version.is_embedded_update?
       "#{updated_subschema_id.humanize.singularize} added"
     elsif version.state == "published"
-      is_first_published_version ? "#{version.item.block_type.humanize} created" : version.state.capitalize
+      if is_first_published_version
+        I18n.t("timeline_item.title.published", block_type: version.item.block_type.humanize)
+      else
+        version.state.capitalize
+      end
     elsif version.state == "scheduled"
-      "Scheduled for publishing on #{version.item.scheduled_publication.to_fs(:long_ordinal_with_at)}"
+      I18n.t("timeline_item.title.scheduled", datetime_string: version.item.scheduled_publication.to_fs(:long_ordinal_with_at))
     elsif version.state == "draft_complete"
-      "Draft completed"
+      I18n.t("timeline_item.title.draft_complete")
     elsif version.state == "awaiting_review"
-      "Sent to review"
+      I18n.t("timeline_item.title.awaiting_review")
     elsif version.state == "awaiting_factcheck"
-      "Sent to factcheck"
+      I18n.t("timeline_item.title.awaiting_factcheck")
     else
       "#{version.item.block_type.humanize} #{version.state}"
     end
