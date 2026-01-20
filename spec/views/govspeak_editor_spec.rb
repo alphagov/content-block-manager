@@ -146,4 +146,34 @@ RSpec.describe "components/govspeak_editor", type: :view do
     expect(rendered).to have_css ".app-c-govspeak-editor[data-alternative-format-provider-id='123'][data-image-ids='[1,2,3]'][data-attachment-ids='[3,4,5]']"
     expect(rendered).to have_css ".govuk-textarea", text: "This is an attachment: !@1 This is an image: !!1"
   end
+
+  describe "when a character limit is set" do
+    it "should render a textarea with a character limit" do
+      render_component({
+        name: "my-name",
+        label: {
+          text: "my-label",
+        },
+        character_limit: 300,
+      })
+
+      expect(rendered).to have_css ".govuk-textarea"
+      expect(rendered).to have_content "You can enter up to 300 characters"
+    end
+  end
+
+  describe "when a character limit is not set" do
+    it "should render a textarea without a limit" do
+      render_component({
+        name: "my-name",
+        label: {
+          text: "my-label",
+        },
+        character_limit: nil,
+      })
+
+      expect(rendered).to have_css ".govuk-textarea"
+      expect(rendered).not_to have_content "You can enter up to"
+    end
+  end
 end

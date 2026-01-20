@@ -14,15 +14,19 @@
     <%= I18n.t("edition.new.general_field_notice") %>
   </p>
 
-  <%= render "govuk_publishing_components/components/input", {
-    label: {
-      text: label_for_title(@form.schema.block_type),
+  <%= render "govuk_publishing_components/components/character_count", {
+    textarea: {
+      label: {
+        text: label_for_title(@form.schema.block_type),
+      },
+      hint: I18n.t("edition.hints.#{@form.schema.block_type}.title", default: nil),
+      name: "edition[title]",
+      value: @form.edition&.title,
+      error_items: errors_for(@form.edition.errors, :title),
+      rows: 1,
     },
-    name: "edition[title]",
     id: "#{parent_class}_title",
-    value: @form.edition&.title,
-    error_items: errors_for(@form.edition.errors, "title".to_sym),
-    hint: I18n.t("edition.hints.#{@form.schema.block_type}.title", default: nil),
+    maxlength: 65,
   } %>
 
   <%=

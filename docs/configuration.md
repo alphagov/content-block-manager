@@ -41,6 +41,14 @@ fields:
 
 The [Boolean](https://github.com/alphagov/content-block-manager/blob/main/app/components/edition/details/fields/boolean_component.html.erb) component will be used.
 
+#### `schemas.<schema_name>.fields.<field_name>.character_limit`
+
+This defines the maximum number of characters a user will be allowed to enter into this field. Above this number, a
+warning is shown to the user informing them they are over the limit. This limit is not strictly enforced by the app in
+order to ensure that we don't impede anyone's usual workflow.
+
+This field is only available when using alongside the `textarea` component.
+
 #### `schemas.<schema_name>.fields.<field_name>.show_field_name`
 
 When a field is an object, this allows an attribute within that object to serve as a flag to specify if the rest of

@@ -13,6 +13,10 @@ private
     field.govspeak_enabled?
   end
 
+  def character_limit
+    field.config["character_limit"]
+  end
+
   def aria_described_by
     "#{id}-hint"
   end

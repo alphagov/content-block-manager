@@ -10,6 +10,7 @@
   error_items ||= nil
   rows ||= 12
   right_to_left ||= false
+  character_limit ||= nil
 
   data_attributes ||= {}
   data_attributes[:module] = "#{data_attributes[:module]} govspeak-editor"
@@ -64,7 +65,7 @@
     </div>
   </div>
   <div class="app-c-govspeak-editor__textarea">
-    <%= render "govuk_publishing_components/components/textarea", {
+    <% textarea_attributes = {
       name: name,
       textarea_id: id,
       rows: rows,
@@ -76,6 +77,15 @@
       right_to_left: right_to_left,
       right_to_left_help: false,
     } %>
+    <% if character_limit %>
+      <%= render "govuk_publishing_components/components/character_count", {
+        textarea: textarea_attributes,
+        id: id,
+        maxlength: character_limit,
+      } %>
+    <% else %>
+      <%= render "govuk_publishing_components/components/textarea", textarea_attributes %>
+    <% end %>
   </div>
 
   <%= tag.div class: "app-c-govspeak-editor__preview js-locale-switcher-custom", 'aria-live': "polite", id: preview_id, dir: dir do %>
