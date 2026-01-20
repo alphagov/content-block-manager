@@ -1,7 +1,3 @@
-And(/^I click to share the factcheck link$/) do
-  find("span", text: "Share factcheck link").click
-end
-
 Then(/^I should see a link to share the block for factcheck$/) do
   extend FactCheckHelper
   @fact_check_url = fact_check_url_with_token(@content_block)
