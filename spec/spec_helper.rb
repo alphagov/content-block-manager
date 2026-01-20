@@ -54,6 +54,13 @@ FactoryBot::SyntaxRunner.class_eval do
   include RSpec::Mocks::ExampleMethods
 end
 
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end
+
 def expect_model_to_be_valid(model:, context: nil)
   expect(model).to be_valid(context), "Expected #{model} in context(#{context}) to be valid."
 end

@@ -11,10 +11,16 @@ class ContentBlock
     @edition = edition
   end
 
-  delegate :title, :state, :auth_bypass_id, :content_id, to: :edition
+  delegate :title, :state, :details, :document, :auth_bypass_id, :content_id, :render, to: :edition
+  delegate :schema, to: :document
+  delegate :embeddable_as_block?, to: :schema
 
   def block_type
-    edition.document.schema.name
+    schema.name
+  end
+
+  def published_block
+    @published_block ||= ContentBlock.new(document.latest_published_edition)
   end
 
 private

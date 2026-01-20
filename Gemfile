@@ -58,6 +58,7 @@ group :test do
   gem "govuk_schemas"
   gem "mocha"
   gem "rails-controller-testing"
+  gem "shoulda-matchers"
   gem "simplecov"
   gem "timecop"
   gem "webmock", require: false
