@@ -528,6 +528,38 @@ RSpec.describe Edition, type: :model do
     end
   end
 
+  describe "#first_edition?" do
+    context "when the associated document has 0 published editions" do
+      let(:edition) do
+        create(:edition, :scheduled, document: create(:document))
+      end
+
+      it "returns true" do
+        expect(edition.first_edition?).to be true
+      end
+    end
+
+    context "when the document has 1 published edition and a further one scheduled" do
+      let(:first_published_edition) do
+        create(:edition, :published, document: create(:document))
+      end
+
+      let(:further_edition) { create(:edition, :scheduled, document: first_published_edition.document) }
+
+      context "and we are considering that first published edition" do
+        it "returns true" do
+          expect(first_published_edition.first_edition?).to be true
+        end
+      end
+
+      context "and we are considering a further edition" do
+        it "returns false" do
+          expect(further_edition.first_edition?).to be false
+        end
+      end
+    end
+  end
+
   describe "#default_order" do
     let(:details) do
       {

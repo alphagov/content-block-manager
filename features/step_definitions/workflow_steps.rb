@@ -22,7 +22,10 @@ end
 
 Then("I should see a notice that the completed drafted has been saved") do
   within(".govuk-notification-banner--success") do
-    expect(page).to have_content(I18n.t("edition.states.transition_message.draft_complete"))
+    expect(page).to have_content(Edition::StateTransitionMessage.new(
+      edition: edition,
+      state: :draft_complete,
+    ).to_s)
   end
 end
 

@@ -103,7 +103,10 @@ private
       destination_state = "published"
     end
 
-    flash.notice = I18n.t("edition.states.transition_message.#{destination_state}")
+    flash.notice = Edition::StateTransitionMessage.new(
+      edition: @edition,
+      state: destination_state,
+    ).to_s
   end
 
   def handle_other_transition_error(error)

@@ -22,17 +22,17 @@ end
 Then(/I see a notification that the transition to ([^"]*) was successful/) do |state|
   message = case state
             when "Awaiting review"
-              I18n.t("edition.states.transition_message.awaiting_review")
+              Edition::StateTransitionMessage.new(edition: Edition.last, state: :awaiting_review).to_s
             when "Awaiting factcheck"
-              I18n.t("edition.states.transition_message.awaiting_factcheck")
+              Edition::StateTransitionMessage.new(edition: Edition.last, state: :awaiting_factcheck).to_s
             when "deleted"
-              I18n.t("edition.states.transition_message.deleted")
+              Edition::StateTransitionMessage.new(edition: Edition.last, state: :deleted).to_s
             when "Published"
-              I18n.t("edition.states.transition_message.published")
+              Edition::StateTransitionMessage.new(edition: Edition.last, state: :published).to_s
             when "Scheduled"
-              I18n.t("edition.states.transition_message.scheduled")
+              Edition::StateTransitionMessage.new(edition: Edition.last, state: :scheduled).to_s
             else
-              "Edition has been moved into state '#{state}'"
+              raise "Unexpected state: '#{state}'"
             end
 
   within(".govuk-notification-banner--success") do

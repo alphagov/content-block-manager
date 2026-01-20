@@ -35,6 +35,11 @@ class Edition < ApplicationRecord
     most_recent_first.first
   end
 
+  def first_edition?
+    document.editions.published.count.zero? ||
+      published? && document.editions.published.count == 1
+  end
+
   def render(embed_code = document.embed_code)
     ContentBlockTools::ContentBlock.new(
       document_type: "content_block_#{block_type}",

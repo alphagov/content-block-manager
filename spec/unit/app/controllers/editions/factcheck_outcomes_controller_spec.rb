@@ -259,7 +259,10 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
 
       it "shows a success message" do
-        expected_success_message = I18n.t("edition.states.transition_message.scheduled")
+        expected_success_message = Edition::StateTransitionMessage.new(
+          edition: edition,
+          state: :scheduled,
+        ).to_s
         expect(flash.notice).to eq(expected_success_message)
       end
     end
@@ -283,7 +286,10 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
 
       it "shows a success message" do
-        expected_success_message = I18n.t("edition.states.transition_message.published")
+        expected_success_message = Edition::StateTransitionMessage.new(
+          edition: edition,
+          state: :published,
+        ).to_s
         expect(flash.notice).to eq(expected_success_message)
       end
     end

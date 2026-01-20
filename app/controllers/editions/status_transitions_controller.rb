@@ -44,7 +44,10 @@ private
   end
 
   def handle_success
-    flash.notice = I18n.t("edition.states.transition_message.#{@edition.state}")
+    flash.notice = Edition::StateTransitionMessage.new(
+      edition: @edition,
+      state: @edition.state,
+    ).to_s
   end
 
   def handle_failure(error)
