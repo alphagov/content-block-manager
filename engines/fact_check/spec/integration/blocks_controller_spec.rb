@@ -21,7 +21,7 @@ RSpec.describe FactCheck::BlocksController, type: :feature do
 
       expect(page).to have_css ".govuk-heading-xl", text: block.title
       expect(page).to have_css ".govuk-caption-xl", text: block.block_type
-      expect(page).to have_css ".govuk-tag--pink", text: "In factcheck"
+      expect(page).to have_css ".govuk-tag--pink", text: "In fact check"
     end
 
     context "when the block is not embeddable as a block" do

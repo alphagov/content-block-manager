@@ -121,7 +121,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
 
       it "sets an error message" do
-        expect(flash.alert).to eq("Indicate whether the factcheck process has been performed or not")
+        expect(flash.alert).to eq(I18n.t("edition.outcomes.errors.missing_outcome.factcheck"))
       end
     end
   end
@@ -207,7 +207,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
 
       it "shows an error message" do
-        expected_message = "Provide the email or name of the subject matter expert who performed the factcheck"
+        expected_message = I18n.t("edition.outcomes.errors.missing_performer.factcheck")
         expect(flash.alert).to eq(expected_message)
       end
 
@@ -232,7 +232,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
 
       it "shows an error message" do
-        expected_message = "Provide the email or name of the subject matter expert who performed the factcheck"
+        expected_message = I18n.t("edition.outcomes.errors.missing_performer.factcheck")
         expect(flash.alert).to eq(expected_message)
       end
 
