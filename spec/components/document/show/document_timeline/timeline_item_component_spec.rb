@@ -530,4 +530,21 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
       end
     end
   end
+
+  context "when the version is in the 'scheduled' state" do
+    before do
+      version.state = "scheduled"
+      edition.scheduled_publication = Time.zone.parse("2026-01-01 13:05")
+    end
+
+    it "sets the #title to be 'Scheduled for publishing on {string}'" do
+      render_inline component
+
+      expect(page).to have_css(".timeline__title") do
+        expect(page).to have_content(
+          I18n.t("timeline_item.title.scheduled", datetime_string: "1 January 2026 at 1:05pm"),
+        )
+      end
+    end
+  end
 end
