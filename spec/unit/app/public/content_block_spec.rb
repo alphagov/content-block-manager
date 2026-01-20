@@ -26,9 +26,25 @@ RSpec.describe ContentBlock do
     end
   end
 
-  describe "#schema" do
-    it "returns the schema from the edition's document" do
-      expect(content_block.schema).to eq(schema)
+  describe "#embeddable_as_block?" do
+    before do
+      allow(schema).to receive(:embeddable_as_block?).and_return(embeddable_as_block)
+    end
+
+    context "when the schema is embeddable_as_block" do
+      let(:embeddable_as_block) { true }
+
+      it "returns true" do
+        expect(content_block.embeddable_as_block?).to be(true)
+      end
+    end
+
+    context "when the schema is not embeddable_as_block" do
+      let(:embeddable_as_block) { false }
+
+      it "returns false" do
+        expect(content_block.embeddable_as_block?).to be(false)
+      end
     end
   end
 
