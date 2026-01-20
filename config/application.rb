@@ -48,6 +48,9 @@ module ContentBlockManager
       #{config.root}/lib
     ]
 
+    # Add all subdirectories of app/public as root paths (e.g. app/public/models -> root)
+    config.eager_load_paths += Dir[config.root.join("app/public/*")]
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end
