@@ -223,14 +223,14 @@ en:
       supersede: Supersede
     outcomes:
       heading:
-        review: Ready for factcheck
+        review: Ready for fact check
       options:
         review:
           skip: "Skip 2i review"
           performed: "Completed 2i review"
         fact_check:
           skip: "Skip fact check"
-          performed: "Completed factcheck"
+          performed: "Completed fact check"
       performer:
         label:
           review:    "2i reviewer"
