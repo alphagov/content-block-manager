@@ -278,7 +278,7 @@ en:
       scheduled: "Scheduled for publishing on %{datetime_string}"
       draft_complete: "Draft completed"
       awaiting_review: "Sent to review"
-      awaiting_factcheck: "Sent to factcheck"
+      awaiting_factcheck: "Sent to fact check"
     latest: Latest
     details_of_changes:
       title: Details of changes
