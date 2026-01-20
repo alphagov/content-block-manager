@@ -395,6 +395,13 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.5)
+    nokodiff (0.2.0)
+      actionview (>= 6, < 8.1.3)
+      diff-lcs
+      gds-api-adapters (>= 101.0, < 101.3)
+      govspeak (>= 10.6.3)
+      rails (>= 6, < 8.1.3)
+      view_component (~> 4)
     nokogiri (1.19.0-aarch64-linux-gnu)
       racc (~> 1.4)
     nokogiri (1.19.0-aarch64-linux-musl)
@@ -819,6 +826,8 @@ GEM
     sentry-sidekiq (6.3.0)
       sentry-ruby (~> 6.3.0)
       sidekiq (>= 5.0)
+    shoulda-matchers (7.0.1)
+      activesupport (>= 7.1)
     sidekiq (7.3.10)
       base64
       connection_pool (>= 2.3.0, < 3)
@@ -950,6 +959,7 @@ DEPENDENCIES
   kaminari
   launchy
   mocha
+  nokodiff
   packwerk
   packwerk-extensions
   parser
@@ -966,6 +976,7 @@ DEPENDENCIES
   rspec-rails
   rubocop-govuk
   sentry-sidekiq
+  shoulda-matchers
   simplecov
   sprockets-rails
   terser
@@ -1117,6 +1128,7 @@ CHECKSUMS
   net-smtp (0.5.1) sha256=ed96a0af63c524fceb4b29b0d352195c30d82dd916a42f03c62a3a70e5b70736
   netrc (0.11.0) sha256=de1ce33da8c99ab1d97871726cba75151113f117146becbe45aa85cb3dabee3f
   nio4r (2.7.5) sha256=6c90168e48fb5f8e768419c93abb94ba2b892a1d0602cb06eef16d8b7df1dca1
+  nokodiff (0.2.0) sha256=7e1d9ff7c12fd4fe412f4dd45690ad9b24cf7ed0eb7f76ef99e12c36c3763309
   nokogiri (1.19.0-aarch64-linux-gnu) sha256=11a97ecc3c0e7e5edcf395720b10860ef493b768f6aa80c539573530bc933767
   nokogiri (1.19.0-aarch64-linux-musl) sha256=eb70507f5e01bc23dad9b8dbec2b36ad0e61d227b42d292835020ff754fb7ba9
   nokogiri (1.19.0-arm-linux-gnu) sha256=572a259026b2c8b7c161fdb6469fa2d0edd2b61cd599db4bbda93289abefbfe5
@@ -1262,6 +1274,7 @@ CHECKSUMS
   sentry-rails (6.3.0) sha256=2ea15aba6d5b08621764b3dab7d87af34823a890813d5023e0e07ae3d17a3eef
   sentry-ruby (6.3.0) sha256=14b5806b25d5101002959e21ed1970cb48c038bda3ac0713c1b9a3f1b746f2a5
   sentry-sidekiq (6.3.0) sha256=f5aa846295a70c7f4852a4f5633cbc13816c3f41724da88653403ce6ad079360
+  shoulda-matchers (7.0.1) sha256=b4bfd8744c10e0a36c8ac1a687f921ee7e25ed529e50488d61b79a8688749c77
   sidekiq (7.3.10) sha256=781eb4f65ef36042534ad73d72f211283afb7fee82eec786ada4ed1972ef8e3c
   simplecov (0.22.0) sha256=fe2622c7834ff23b98066bb0a854284b2729a569ac659f82621fc22ef36213a5
   simplecov-html (0.13.2) sha256=bd0b8e54e7c2d7685927e8d6286466359b6f16b18cb0df47b508e8d73c777246

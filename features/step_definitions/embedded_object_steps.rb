@@ -175,6 +175,17 @@ And(/^that pension has a rate with the following fields:$/) do |table|
   @content_block.save!
 end
 
+And(/^that contact has an email address with the following fields:$/) do |table|
+  email = table.hashes.first
+  @content_block.details["email_addresses"] = {
+    email[:title].parameterize.to_s => {
+      "title" => email[:title],
+      "email_address" => email[:email_address],
+    },
+  }
+  @content_block.save!
+end
+
 When(/^I click to edit the first (.+)$/) do |type|
   @content_block ||= Edition.all.last
   key = @content_block.details[type.pluralize].keys.first

@@ -1,20 +1,64 @@
 RSpec.describe ContentBlock do
+  let(:document) { build(:document, schema: schema) }
+  let(:edition) { build(:edition, document: document) }
+  let(:schema) { build(:schema) }
+
+  let(:content_block) { ContentBlock.new(edition) }
+
+  subject { content_block }
+
+  it { should delegate_method(:title).to(:edition) }
+  it { should delegate_method(:state).to(:edition) }
+  it { should delegate_method(:details).to(:edition) }
+  it { should delegate_method(:document).to(:edition) }
+  it { should delegate_method(:auth_bypass_id).to(:edition) }
+  it { should delegate_method(:content_id).to(:edition) }
+  it { should delegate_method(:render).to(:edition) }
+  it { should delegate_method(:schema).to(:document) }
+
   describe ".from_content_id_alias" do
     it "returns a content block object" do
-      document = build(:document)
-      edition = build(:edition, document: document)
-      schema = build(:schema)
+      allow(Document).to receive(:find).with(document.content_id_alias).and_return(document)
+      allow(document).to receive(:most_recent_edition).and_return(edition)
+      allow(ContentBlock).to receive(:new).with(edition).and_return(content_block)
 
-      expect(Document).to receive(:find).with(document.content_id_alias).and_return(document)
-      expect(document).to receive(:most_recent_edition).and_return(edition)
-      expect(document).to receive(:schema).and_return(schema)
+      expect(ContentBlock.from_content_id_alias(document.content_id_alias)).to eq(content_block)
+    end
+  end
 
-      content_block = ContentBlock.from_content_id_alias(document.content_id_alias)
+  describe "#embeddable_as_block?" do
+    before do
+      allow(schema).to receive(:embeddable_as_block?).and_return(embeddable_as_block)
+    end
 
-      expect(content_block.title).to eq(edition.title)
-      expect(content_block.block_type).to eq(schema.name)
-      expect(content_block.content_id).to eq(edition.content_id)
-      expect(content_block.auth_bypass_id).to eq(edition.auth_bypass_id)
+    context "when the schema is embeddable_as_block" do
+      let(:embeddable_as_block) { true }
+
+      it "returns true" do
+        expect(content_block.embeddable_as_block?).to be(true)
+      end
+    end
+
+    context "when the schema is not embeddable_as_block" do
+      let(:embeddable_as_block) { false }
+
+      it "returns false" do
+        expect(content_block.embeddable_as_block?).to be(false)
+      end
+    end
+  end
+
+  describe "#published_block" do
+    let(:published_edition) { build(:edition, document: document) }
+    let(:published_content_block) { build(:content_block) }
+
+    it "returns the latest published edition from the edition's document" do
+      allow(ContentBlock).to receive(:new).and_call_original
+
+      allow(document).to receive(:latest_published_edition).and_return(published_edition)
+      allow(ContentBlock).to receive(:new).with(published_edition).and_return(published_content_block)
+
+      expect(content_block.published_block).to eq(published_content_block)
     end
   end
 end
