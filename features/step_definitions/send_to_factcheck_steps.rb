@@ -11,7 +11,7 @@ end
 
 Then("I am required to provide the outcome of the review process") do
   within "h1" do
-    expect(page).to have_content("Ready for factcheck")
+    expect(page).to have_content(I18n.t("edition.outcomes.heading.review"))
   end
 
   within ".govuk-caption-xl" do

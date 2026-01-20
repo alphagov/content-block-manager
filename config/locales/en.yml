@@ -222,6 +222,8 @@ en:
       delete: Delete
       supersede: Supersede
     outcomes:
+      heading:
+        review: Ready for factcheck
       options:
         review:
           skip: "Skip 2i review"
