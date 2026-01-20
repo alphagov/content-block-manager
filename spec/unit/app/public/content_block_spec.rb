@@ -27,6 +27,15 @@ RSpec.describe ContentBlock do
     end
   end
 
+  describe ".from_edition_id" do
+    it "returns a content block object" do
+      allow(Edition).to receive(:find).with(edition.id).and_return(edition)
+      allow(ContentBlock).to receive(:new).with(edition).and_return(content_block)
+
+      expect(ContentBlock.from_edition_id(edition.id)).to eq(content_block)
+    end
+  end
+
   describe "#embeddable_as_block?" do
     before do
       allow(schema).to receive(:embeddable_as_block?).and_return(embeddable_as_block)
