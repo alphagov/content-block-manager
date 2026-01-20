@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Document::Show::HostEditionsTableComponent < ViewComponent::Base
+class Shared::HostEditionsTableComponent < ViewComponent::Base
   TABLE_ID = "host_editions"
 
   def initialize(caption:, host_content_items:, edition:, current_page: nil, order: nil)
