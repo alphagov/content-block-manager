@@ -53,7 +53,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
       it "offers a button to record the Review outcome" do
         expect(page).to have_css(
           ".actions a[href='/editions/123/review_outcomes/new']",
-          text: I18n.t("show_action.send_to_factcheck"),
+          text: I18n.t("show_action.send_to_fact_check"),
         )
       end
     end

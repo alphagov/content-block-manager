@@ -56,14 +56,14 @@ private
 
   def factcheck_performer
     if outcome_params["factcheck_performer"].blank?
-      raise ActionController::ParameterMissing, I18n.t("edition.outcomes.errors.missing_performer.factcheck")
+      raise ActionController::ParameterMissing, I18n.t("edition.outcomes.errors.missing_performer.fact_check")
     end
 
     outcome_params["factcheck_performer"]
   end
 
   def form_validation_error
-    alert = I18n.t("edition.outcomes.errors.missing_outcome.factcheck")
+    alert = I18n.t("edition.outcomes.errors.missing_outcome.fact_check")
     redirect_to new_factcheck_outcome_edition_path(@edition), alert:
   end
 
@@ -115,7 +115,7 @@ private
   end
 
   def handle_missing_factcheck_performer
-    flash.alert = I18n.t("edition.outcomes.errors.missing_performer.factcheck")
+    flash.alert = I18n.t("edition.outcomes.errors.missing_performer.fact_check")
     redirect_to identify_performer_factcheck_outcome_edition_path(@edition)
   end
 end

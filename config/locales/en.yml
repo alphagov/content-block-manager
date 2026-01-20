@@ -225,17 +225,17 @@ en:
       performer:
         label:
           review:    "2i reviewer"
-          factcheck: "Fact check subject matter expert"
+          fact_check: "Fact check subject matter expert"
         hint:
           review:    "Enter the email address or name of the 2i reviewer"
-          factcheck: "Enter the email address or name of the subject matter expert"
+          fact_check: "Enter the email address or name of the subject matter expert"
       errors:
         missing_performer:
           review:    "Provide the email or name of the 2i reviewer who performed the review"
-          factcheck: "Provide the email or name of the subject matter expert who performed the fact check"
+          fact_check: "Provide the email or name of the subject matter expert who performed the fact check"
         missing_outcome:
           review:    "Indicate whether the 2i review process has been performed or not"
-          factcheck: "Indicate whether the fact check process has been performed or not"
+          fact_check: "Indicate whether the fact check process has been performed or not"
   embedded_object:
     all_attributes: "These are all the %{object_name} attributes that make up the %{object_name}."
     embed_code_usage: You can use any available embed code for each attribute separately in your content if required.
@@ -269,7 +269,7 @@ en:
     go_to_published_edition: Go to published edition
     return_to_latest_edition: Return to latest edition
     edit_block_type: "Edit %{block_type}"
-    send_to_factcheck: Ready for fact check
+    send_to_fact_check: Ready for fact check
     schedule_block: Schedule block
     publish_block: Publish block
   timeline_item:

@@ -121,7 +121,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
 
       it "sets an error message" do
-        expect(flash.alert).to eq(I18n.t("edition.outcomes.errors.missing_outcome.factcheck"))
+        expect(flash.alert).to eq(I18n.t("edition.outcomes.errors.missing_outcome.fact_check"))
       end
     end
   end
@@ -207,7 +207,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
 
       it "shows an error message" do
-        expected_message = I18n.t("edition.outcomes.errors.missing_performer.factcheck")
+        expected_message = I18n.t("edition.outcomes.errors.missing_performer.fact_check")
         expect(flash.alert).to eq(expected_message)
       end
 
@@ -232,7 +232,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
 
       it "shows an error message" do
-        expected_message = I18n.t("edition.outcomes.errors.missing_performer.factcheck")
+        expected_message = I18n.t("edition.outcomes.errors.missing_performer.fact_check")
         expect(flash.alert).to eq(expected_message)
       end
 
