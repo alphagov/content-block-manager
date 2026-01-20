@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
 gem "babosa"
+gem "block_preview", path: "engines/block_preview"
 gem "bootsnap", require: false
 gem "connection_pool", "< 3" # Pin ConnectionPool to 2.x until we upgrade Sidekiq to 8.x
 gem "content_block_tools"

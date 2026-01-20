@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get "/healthcheck/ready", to: GovukHealthcheck.rack_response
   mount Flipflop::Engine => "/flipflop"
   mount FactCheck::Engine => "/fact-check"
+  mount BlockPreview::Engine => "/preview"
 
   scope via: :all do
     match "/400", to: "errors#bad_request"
