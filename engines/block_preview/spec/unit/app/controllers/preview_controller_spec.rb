@@ -1,7 +1,7 @@
 RSpec.describe BlockPreview::PreviewController, type: :controller do
-  describe "GET #show" do
-    routes { BlockPreview::Engine.routes }
+  routes { BlockPreview::Engine.routes }
 
+  describe "GET #show" do
     let(:edition_id) { "123" }
     let(:host_content_id) { "content-id-abc" }
     let(:base_path) { "/government/base-path" }
@@ -45,6 +45,84 @@ RSpec.describe BlockPreview::PreviewController, type: :controller do
 
     it "assigns the @preview_content instance variable" do
       expect(assigns(:preview_content)).to eq(mock_preview_content)
+    end
+  end
+
+  describe "POST #form_handler" do
+    let(:edition_id) { "123" }
+    let(:host_content_id) { "content-id-abc" }
+    let(:url) { "https://example.gov.uk/form" }
+    let(:http_method) { "post" }
+    let(:body_params) { { "field_name" => "field_value" } }
+    let(:locale) { "en" }
+
+    let(:mock_block) { instance_double("ContentBlock", id: 456) }
+    let(:mock_submission) { instance_double(BlockPreview::FormSubmission) }
+    let(:redirect_path_result) { "/thank-you" }
+
+    let(:make_request!) do
+      post :form_handler, params: {
+        edition_id: edition_id,
+        host_content_id: host_content_id,
+        url: url,
+        method: http_method,
+        body: body_params,
+        locale: locale,
+      }
+    end
+
+    before do
+      allow(ContentBlock).to receive(:from_edition_id).with(edition_id).and_return(mock_block)
+      allow(BlockPreview::FormSubmission).to receive(:new).and_return(mock_submission)
+      allow(mock_submission).to receive(:redirect_path).and_return(redirect_path_result)
+    end
+
+    context "with valid parameters and successful submission" do
+      before do
+        make_request!
+      end
+
+      it "initializes FormSubmission with correct arguments" do
+        expect(BlockPreview::FormSubmission).to have_received(:new).with(
+          url: url,
+          body: body_params,
+          method: http_method,
+        )
+      end
+
+      it "redirects to the preview page with the new base path" do
+        expected_path = host_content_preview_path(
+          edition_id: mock_block.id,
+          host_content_id: host_content_id,
+          locale: locale,
+          base_path: redirect_path_result,
+        )
+
+        expect(response).to redirect_to(expected_path)
+      end
+    end
+
+    context "when the form submission fails" do
+      before do
+        allow(mock_submission).to receive(:redirect_path).and_raise(error)
+        make_request!
+      end
+
+      context "with UnexpectedResponseError" do
+        let(:error) { BlockPreview::FormSubmission::UnexpectedResponseError }
+
+        it "returns 400 Bad Request" do
+          expect(response).to have_http_status(:bad_request)
+        end
+      end
+
+      context "with UnexpectedUrlError" do
+        let(:error) { BlockPreview::FormSubmission::UnexpectedUrlError }
+
+        it "returns 400 Bad Request" do
+          expect(response).to have_http_status(:bad_request)
+        end
+      end
     end
   end
 end
