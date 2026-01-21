@@ -103,7 +103,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
         end
 
         it "should redirect the user to the identify_performer step of the fact check process" do
-          expect(response).to redirect_to("/editions/123/factcheck_outcomes/identify_performer")
+          expect(response).to redirect_to("/editions/123/fact_check_outcomes/identify_performer")
         end
       end
     end
@@ -117,7 +117,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
 
       it "re-renders the 'new' template to allow the errors to be corrected" do
-        expect(response).to redirect_to("/editions/123/factcheck_outcomes/new")
+        expect(response).to redirect_to("/editions/123/fact_check_outcomes/new")
       end
 
       it "sets an error message" do
@@ -203,7 +203,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
 
       it "redirects to the same page to prevent the user progressing" do
-        expect(response).to redirect_to("/editions/123/factcheck_outcomes/identify_performer")
+        expect(response).to redirect_to("/editions/123/fact_check_outcomes/identify_performer")
       end
 
       it "shows an error message" do
@@ -228,7 +228,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
 
       it "redirects to the same page to prevent the user progressing" do
-        expect(response).to redirect_to("/editions/123/factcheck_outcomes/identify_performer")
+        expect(response).to redirect_to("/editions/123/fact_check_outcomes/identify_performer")
       end
 
       it "shows an error message" do

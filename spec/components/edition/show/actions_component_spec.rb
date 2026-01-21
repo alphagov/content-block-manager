@@ -275,7 +275,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
 
         it "offers a button to publish the edition" do
           expect(page).to have_link("Publish block",
-                                    href: "/editions/123/factcheck_outcomes/new")
+                                    href: "/editions/123/fact_check_outcomes/new")
         end
       end
 
@@ -288,7 +288,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
 
         it "offers a button to schedule the edition" do
           expect(page).to have_link("Schedule block",
-                                    href: "/editions/123/factcheck_outcomes/new")
+                                    href: "/editions/123/fact_check_outcomes/new")
         end
       end
     end
