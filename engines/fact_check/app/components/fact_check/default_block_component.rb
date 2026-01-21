@@ -13,7 +13,7 @@ private
 
   def block_content
     content_tag(:div, class: "govspeak compare-editions") do
-      calculate_diff
+      block.published_block ? calculate_diff : block.render
     end
   end
 end
