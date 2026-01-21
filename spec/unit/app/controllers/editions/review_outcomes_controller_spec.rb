@@ -115,7 +115,7 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
       expect(assigns(:edition)).to eq(edition)
     end
 
-    it "renders the editions/factcheck_outcomes/identify_performer template" do
+    it "renders the editions/review_outcomes/identify_performer template" do
       expect(response).to have_rendered("editions/review_outcomes/identify_performer")
     end
   end

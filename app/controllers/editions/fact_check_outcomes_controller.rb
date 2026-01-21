@@ -1,4 +1,4 @@
-class Editions::FactcheckOutcomesController < BaseController
+class Editions::FactCheckOutcomesController < BaseController
   before_action :set_edition_and_title, only: %i[new identify_performer]
 
   def new
@@ -13,7 +13,7 @@ class Editions::FactcheckOutcomesController < BaseController
 
     return finalise_edition if factcheck_skipped?
 
-    redirect_to identify_performer_factcheck_outcome_edition_path(@edition)
+    redirect_to identify_performer_fact_check_outcome_edition_path(@edition)
   end
 
   def identify_performer
@@ -64,7 +64,7 @@ private
 
   def form_validation_error
     alert = I18n.t("edition.outcomes.errors.missing_outcome.fact_check")
-    redirect_to new_factcheck_outcome_edition_path(@edition), alert:
+    redirect_to new_fact_check_outcome_edition_path(@edition), alert:
   end
 
   def record_factcheck_outcome
@@ -116,6 +116,6 @@ private
 
   def handle_missing_factcheck_performer
     flash.alert = I18n.t("edition.outcomes.errors.missing_performer.fact_check")
-    redirect_to identify_performer_factcheck_outcome_edition_path(@edition)
+    redirect_to identify_performer_fact_check_outcome_edition_path(@edition)
   end
 end

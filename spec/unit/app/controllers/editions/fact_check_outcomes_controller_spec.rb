@@ -1,4 +1,4 @@
-RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
+RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
   let(:document) { create(:document, :pension, id: 456) }
   let(:edition) { create(:edition, :pension, id: 123, document: document) }
 
@@ -32,8 +32,8 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
     end
 
-    it "renders the editions/factcheck_outcomes/new template" do
-      expect(response).to have_rendered("editions/factcheck_outcomes/new")
+    it "renders the editions/fact_check_outcomes/new template" do
+      expect(response).to have_rendered("editions/fact_check_outcomes/new")
     end
   end
 
@@ -160,8 +160,8 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
     end
 
-    it "renders the editions/factcheck_outcomes/identify_performer template" do
-      expect(response).to have_rendered("editions/factcheck_outcomes/identify_performer")
+    it "renders the editions/fact_check_outcomes/identify_performer template" do
+      expect(response).to have_rendered("editions/fact_check_outcomes/identify_performer")
     end
   end
 

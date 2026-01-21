@@ -1,6 +1,6 @@
 Then("I see a principal call to action of 'Publish block'") do
   expect(page).to have_css(
-    "a.govuk-button[href='#{new_factcheck_outcome_edition_path(edition)}']",
+    "a.govuk-button[href='#{new_fact_check_outcome_edition_path(edition)}']",
     text: "Publish block",
   )
 end
