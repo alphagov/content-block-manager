@@ -1,21 +1,21 @@
-RSpec.describe FormRedirectExtractor do
+RSpec.describe BlockPreview::FormSubmission do
   let(:valid_url) { "https://example.gov.uk/form" }
-  let(:form_body) { { field: "value", another_field: "data" } }
+  let(:body) { { field: "value", another_field: "data" } }
   let(:method) { "post" }
 
   describe "#initialize" do
     context "with a valid gov.uk URL" do
       it "successfully creates an instance" do
-        service = described_class.new(url: valid_url, form_body: form_body, method:)
-        expect(service).to be_a(FormRedirectExtractor)
+        service = described_class.new(url: valid_url, body: body, method:)
+        expect(service).to be_a(BlockPreview::FormSubmission)
       end
     end
 
     context "with a subdomain of gov.uk" do
       it "accepts the URL" do
         url = "https://subdomain.example.gov.uk/path"
-        service = described_class.new(url: url, form_body: form_body, method:)
-        expect(service).to be_a(FormRedirectExtractor)
+        service = described_class.new(url: url, body: body, method:)
+        expect(service).to be_a(BlockPreview::FormSubmission)
       end
     end
 
@@ -23,15 +23,15 @@ RSpec.describe FormRedirectExtractor do
       it "raises UnexpectedUrlError for non-gov.uk domains" do
         invalid_url = "https://example.com/form"
         expect {
-          described_class.new(url: invalid_url, form_body: form_body, method:)
-        }.to raise_error(FormRedirectExtractor::UnexpectedUrlError)
+          described_class.new(url: invalid_url, body: body, method:)
+        }.to raise_error(BlockPreview::FormSubmission::UnexpectedUrlError)
       end
 
       it "raises UnexpectedUrlError for URLs that contain but don't end with gov.uk" do
         invalid_url = "https://gov.uk.fake.com/form"
         expect {
-          described_class.new(url: invalid_url, form_body: form_body, method:)
-        }.to raise_error(FormRedirectExtractor::UnexpectedUrlError)
+          described_class.new(url: invalid_url, body: body, method:)
+        }.to raise_error(BlockPreview::FormSubmission::UnexpectedUrlError)
       end
     end
 
@@ -39,21 +39,21 @@ RSpec.describe FormRedirectExtractor do
       it "raises UnexpectedUrlError domains" do
         invalid_url = "form"
         expect {
-          described_class.new(url: invalid_url, form_body: form_body, method:)
-        }.to raise_error(FormRedirectExtractor::UnexpectedUrlError)
+          described_class.new(url: invalid_url, body: body, method:)
+        }.to raise_error(BlockPreview::FormSubmission::UnexpectedUrlError)
       end
     end
   end
 
-  describe "#response_location_path" do
-    let(:service) { described_class.new(url: valid_url, form_body: form_body, method:) }
+  describe "#redirect_path" do
+    let(:service) { described_class.new(url: valid_url, body: body, method:) }
     let(:response) { double(code: response_code, headers: { "location" => redirect_location }) }
 
     let(:redirect_location) { "https://example.gov.uk/preview/123" }
 
     before do
       stub_request(:post, valid_url)
-        .with(body: form_body)
+        .with(body: body)
         .to_return(
           status: response_code,
           headers: {
@@ -66,14 +66,14 @@ RSpec.describe FormRedirectExtractor do
       let(:response_code) { 302 }
 
       it "returns the path of the redirect location" do
-        expect(service.response_location_path).to eq("/preview/123")
+        expect(service.redirect_path).to eq("/preview/123")
       end
 
       context "when the method is get" do
         let(:method) { "get" }
 
         before do
-          stub_request(:get, "#{valid_url}?#{form_body.to_query}")
+          stub_request(:get, "#{valid_url}?#{body.to_query}")
             .to_return(
               status: response_code,
               headers: {
@@ -83,7 +83,7 @@ RSpec.describe FormRedirectExtractor do
         end
 
         it "returns the path of the redirect location" do
-          expect(service.response_location_path).to eq("/preview/123")
+          expect(service.redirect_path).to eq("/preview/123")
         end
       end
     end
@@ -93,7 +93,7 @@ RSpec.describe FormRedirectExtractor do
       let(:response_code) { 302 }
 
       it "returns only the path without query parameters" do
-        expect(service.response_location_path).to eq("/preview/123?param=value")
+        expect(service.redirect_path).to eq("/preview/123?param=value")
       end
     end
 
@@ -103,8 +103,8 @@ RSpec.describe FormRedirectExtractor do
 
       it "raises UnexpectedResponseError" do
         expect {
-          service.response_location_path
-        }.to raise_error(FormRedirectExtractor::UnexpectedResponseError)
+          service.redirect_path
+        }.to raise_error(BlockPreview::FormSubmission::UnexpectedResponseError)
       end
     end
 
@@ -113,8 +113,8 @@ RSpec.describe FormRedirectExtractor do
 
       it "raises UnexpectedResponseError" do
         expect {
-          service.response_location_path
-        }.to raise_error(FormRedirectExtractor::UnexpectedResponseError)
+          service.redirect_path
+        }.to raise_error(BlockPreview::FormSubmission::UnexpectedResponseError)
       end
     end
 
@@ -123,8 +123,8 @@ RSpec.describe FormRedirectExtractor do
 
       it "raises UnexpectedResponseError" do
         expect {
-          service.response_location_path
-        }.to raise_error(FormRedirectExtractor::UnexpectedResponseError)
+          service.redirect_path
+        }.to raise_error(BlockPreview::FormSubmission::UnexpectedResponseError)
       end
     end
 
@@ -133,8 +133,8 @@ RSpec.describe FormRedirectExtractor do
 
       it "raises UnexpectedResponseError" do
         expect {
-          service.response_location_path
-        }.to raise_error(FormRedirectExtractor::UnexpectedResponseError)
+          service.redirect_path
+        }.to raise_error(BlockPreview::FormSubmission::UnexpectedResponseError)
       end
     end
   end
