@@ -27,7 +27,7 @@ Given("I am viewing the edition awaiting review") do
   visit document_path(edition.document)
 end
 
-Given("I am viewing the edition awaiting factcheck") do
+Given("I am viewing the edition awaiting fact check") do
   edition = Document.last.editions.where(state: :awaiting_factcheck).most_recent
   visit document_path(edition.document)
 end

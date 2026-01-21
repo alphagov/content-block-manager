@@ -116,7 +116,7 @@ Feature: Edit a pension block
     And I opt to resume editing the draft
     Then I should be able to complete all the steps in the workflow for a further edition
 
-  Scenario: Editor resumes drafting a further edition (in future 2i/factcheck flow)
+  Scenario: Editor resumes drafting a further edition (in future 2i/fact check flow)
     Given I have the "pre_release_features" permission
     And a pension content block has been drafted
     And I am viewing the draft edition

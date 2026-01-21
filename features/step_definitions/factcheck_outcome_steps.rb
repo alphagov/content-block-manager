@@ -5,11 +5,11 @@ Then("I see a principal call to action of 'Publish block'") do
   )
 end
 
-When("I opt to complete the factcheck process") do
+When("I opt to complete the fact check process") do
   click_link "Publish block"
 end
 
-Then("I am required to provide the outcome of the factcheck process") do
+Then("I am required to provide the outcome of the fact check process") do
   within "h1" do
     expect(page).to have_content("Publish block")
   end
@@ -22,7 +22,7 @@ Then("I am required to provide the outcome of the factcheck process") do
   expect(page).to have_field(I18n.t("edition.outcomes.options.fact_check.skip"), type: :radio)
 end
 
-When("I provide the outcome of the factcheck process") do
+When("I provide the outcome of the fact check process") do
   choose(I18n.t("edition.outcomes.options.fact_check.performed"))
   click_button("Continue")
 end
@@ -44,11 +44,11 @@ When("I provide the subject matter expert") do
   click_button("Publish")
 end
 
-When("I attempt to proceed without supplying the outcome of the factcheck process") do
+When("I attempt to proceed without supplying the outcome of the fact check process") do
   click_button("Continue")
 end
 
-Then("I see that I need to indicate whether the factcheck process was performed or skipped") do
+Then("I see that I need to indicate whether the fact check process was performed or skipped") do
   expect(page).to have_content(I18n.t("edition.outcomes.errors.missing_outcome.fact_check"))
   within ".govuk-form-group--error" do
     expect(page).to have_content(I18n.t("edition.outcomes.errors.missing_outcome.fact_check"))

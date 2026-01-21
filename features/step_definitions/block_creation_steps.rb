@@ -2,7 +2,7 @@ Given("a pension content block has been drafted") do
   create_pension_edition(state: :draft)
 end
 
-Given("a pension content block is awaiting factcheck") do
+Given("a pension content block is awaiting fact check") do
   create_pension_edition(state: :awaiting_factcheck)
 end
 
