@@ -34,7 +34,7 @@ private
 
   def set_edition_and_title
     @edition = Edition.find(params[:id])
-    @title = "Ready for Factcheck"
+    @title = I18n.t("edition.outcomes.heading.review")
   end
 
   def transition_edition_and_redirect
