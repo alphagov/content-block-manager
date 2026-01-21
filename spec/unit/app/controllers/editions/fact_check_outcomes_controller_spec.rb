@@ -183,7 +183,7 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
       before do
         put :update, params: {
           id: 123,
-          "fact_check_outcome" => { "factcheck_performer" => "Alice" },
+          "fact_check_outcome" => { "fact_check_performer" => "Alice" },
         }
       end
 
@@ -221,7 +221,7 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
       before do
         put :update, params: {
           id: 123,
-          "fact_check_outcome" => { "factcheck_performer" => "" },
+          "fact_check_outcome" => { "fact_check_performer" => "" },
         }
         allow(edition).to receive(:schedule!)
         allow(edition).to receive(:publish!)
@@ -247,7 +247,7 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
       before do
         put :update, params: {
           id: 123,
-          "fact_check_outcome" => { "factcheck_performer" => "Alice" },
+          "fact_check_outcome" => { "fact_check_performer" => "Alice" },
         }
       end
       it "transitions the edition using the 'schedule!' transition" do
@@ -273,7 +273,7 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
       before do
         put :update, params: {
           id: 123,
-          "fact_check_outcome" => { "factcheck_performer" => "Alice" },
+          "fact_check_outcome" => { "fact_check_performer" => "Alice" },
         }
       end
 
@@ -309,7 +309,7 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
 
           put :update, params: {
             id: 123,
-            "fact_check_outcome" => { "factcheck_performer" => "Alice" },
+            "fact_check_outcome" => { "fact_check_performer" => "Alice" },
           }
         end
 

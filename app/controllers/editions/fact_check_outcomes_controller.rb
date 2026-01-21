@@ -26,9 +26,9 @@ class Editions::FactCheckOutcomesController < BaseController
     @edition = Edition.find(params[:id])
 
     begin
-      update_factcheck_performer
+      update_fact_check_performer
     rescue ActionController::ParameterMissing
-      return handle_missing_factcheck_performer
+      return handle_missing_fact_check_performer
     end
 
     finalise_edition
@@ -48,18 +48,18 @@ private
     handle_other_transition_error(e)
   end
 
-  def update_factcheck_performer
+  def update_fact_check_performer
     @edition.fact_check_outcome.update!(
-      "performer" => factcheck_performer,
+      "performer" => fact_check_performer,
     )
   end
 
-  def factcheck_performer
-    if outcome_params["factcheck_performer"].blank?
+  def fact_check_performer
+    if outcome_params["fact_check_performer"].blank?
       raise ActionController::ParameterMissing, I18n.t("edition.outcomes.errors.missing_performer.fact_check")
     end
 
-    outcome_params["factcheck_performer"]
+    outcome_params["fact_check_performer"]
   end
 
   def form_validation_error
@@ -114,7 +114,7 @@ private
     redirect_to document_path(@edition.document)
   end
 
-  def handle_missing_factcheck_performer
+  def handle_missing_fact_check_performer
     flash.alert = I18n.t("edition.outcomes.errors.missing_performer.fact_check")
     redirect_to identify_performer_fact_check_outcome_edition_path(@edition)
   end
