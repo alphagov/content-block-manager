@@ -1,13 +1,15 @@
 {
   "srcDir": "public/assets/content-block-manager",
   "srcFiles": [
+    "host-content-iframe-*.js",
     "test-dependencies-*.js",
     "application-*.js",
     "all-*.js"
   ],
   "specDir": ".",
   "specFiles": [
-    "spec/javascripts/**/*[sS]pec.js"
+    "spec/javascripts/**/*[sS]pec.js",
+    "engines/**/spec/javascripts/**/*[sS]pec.js"
   ],
   "helpers": [
     "https://unpkg.com/jasmine-ajax@4.0.0/lib/mock-ajax.js",
