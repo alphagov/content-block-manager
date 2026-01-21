@@ -46,7 +46,7 @@ private
   end
 
   def outcome_resolution
-    review_type = version.state == "awaiting_factcheck" ? "2i review" : "Factcheck"
+    review_type = version.state == "awaiting_factcheck" ? "2i review" : "Fact check"
     skipped_or_performed = outcome.skipped ? "skipped" : "performed"
     performer = outcome.performer ? " by #{outcome.performer.try(:name) || outcome.performer}" : ""
 

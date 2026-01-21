@@ -86,7 +86,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
         render_inline component
 
         expect(page).to have_css(".timeline__review-outcome") do
-          expect(page).to have_content("Factcheck performed")
+          expect(page).to have_content("Fact check performed")
         end
       end
     end
@@ -100,7 +100,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
         render_inline component
 
         expect(page).to have_css(".timeline__review-outcome") do
-          expect(page).to have_content("Factcheck skipped")
+          expect(page).to have_content("Fact check skipped")
         end
       end
     end
@@ -470,7 +470,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
           render_inline component
 
           expect(page).to have_css(".timeline__review-outcome .govuk-body") do |element|
-            expect(element).to have_content("Factcheck performed by dave@example.com", exact: true)
+            expect(element).to have_content("Fact check performed by dave@example.com", exact: true)
           end
         end
       end
@@ -500,7 +500,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
           render_inline component
 
           expect(page).to have_css(".timeline__review-outcome .govuk-body") do |element|
-            expect(element).to have_text("Factcheck performed", exact: true)
+            expect(element).to have_text("Fact check performed", exact: true)
           end
         end
       end
