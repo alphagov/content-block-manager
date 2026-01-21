@@ -26,6 +26,7 @@ RSpec.describe FactCheck::BlocksController, type: :feature do
     before do
       expect(ContentBlock).to receive(:from_content_id_alias).with(content_id).and_return(block)
       allow(block).to receive(:state).and_return("awaiting_factcheck")
+      allow(block).to receive(:id).and_return(123)
       allow(HostContentItem).to receive(:for_document).and_return(host_content_items)
     end
 
