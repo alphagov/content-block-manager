@@ -4,6 +4,7 @@ class FactCheck::BlocksController < FactCheck::ApplicationController
 
   def show
     @block = block
+    @host_content_items = HostContentItem.for_document(@block.document)
   end
 
 private
