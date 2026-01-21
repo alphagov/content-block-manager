@@ -227,7 +227,7 @@ en:
           skip: "Skip 2i review"
           performed: "Completed 2i review"
         fact_check:
-          skip: "Skip factcheck"
+          skip: "Skip fact check"
           performed: "Completed factcheck"
       performer:
         label:
