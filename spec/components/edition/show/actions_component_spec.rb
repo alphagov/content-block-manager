@@ -67,7 +67,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
         end
 
         it "does NOT offer a button to record the Review outcome" do
-          expect(page).to have_no_link("Ready for Factcheck")
+          expect(page).to have_no_link("Ready for fact check")
         end
       end
     end
@@ -260,7 +260,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
     end
   end
 
-  describe "button to publish or schedule the edition via the factcheck outcome page" do
+  describe "button to publish or schedule the edition via the fact check outcome page" do
     context "when the edition is in an awaiting_factcheck state" do
       before do
         edition.state = :awaiting_factcheck

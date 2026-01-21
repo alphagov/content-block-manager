@@ -52,8 +52,8 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
         allow(edition).to receive(:publish!)
       end
 
-      describe "saving the Factcheck outcome details" do
-        context "when the editor has indicated that the Factcheck was skipped" do
+      describe "saving the Fact check outcome details" do
+        context "when the editor has indicated that the fact check was skipped" do
           before do
             post :create, params: {
               id: 123,
@@ -61,7 +61,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
             }
           end
 
-          it "saves the Factcheck outcome details" do
+          it "saves the fact check outcome details" do
             expect(edition).to have_received(:create_factcheck_outcome!).with(
               "skipped" => true,
               "creator" => current_user,
@@ -77,7 +77,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
           end
         end
 
-        context "when the editor has indicated that the Factcheck was performed" do
+        context "when the editor has indicated that the fact check was performed" do
           before do
             post :create, params: {
               id: 123,
@@ -85,7 +85,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
             }
           end
 
-          it "saves the Factcheck outcome details" do
+          it "saves the fact check outcome details" do
             expect(edition).to have_received(:create_factcheck_outcome!).with(
               "skipped" => false,
               "creator" => current_user,
@@ -102,7 +102,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
           }
         end
 
-        it "should redirect the user to the identify_performer step of the factcheck process" do
+        it "should redirect the user to the identify_performer step of the fact check process" do
           expect(response).to redirect_to("/editions/123/factcheck_outcomes/identify_performer")
         end
       end

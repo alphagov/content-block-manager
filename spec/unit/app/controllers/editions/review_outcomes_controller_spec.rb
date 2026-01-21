@@ -81,7 +81,7 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
           }
         end
 
-        it "should redirect the user to the identify_performer step of the factcheck process" do
+        it "should redirect the user to the identify_performer step of the fact check process" do
           expect(response).to redirect_to("/editions/123/review_outcomes/identify_performer")
         end
       end

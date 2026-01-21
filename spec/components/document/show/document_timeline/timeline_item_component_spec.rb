@@ -407,7 +407,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
       version.state = "awaiting_factcheck"
     end
 
-    it "sets the #title to be 'Sent to factcheck'" do
+    it "sets the #title to be 'Sent to fact check'" do
       render_inline component
 
       expect(page).to have_css(".timeline__title") do
@@ -466,7 +466,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
       context "and the version is in the 'published' state" do
         before { version.state = "published" }
 
-        it "should show the Factcheck outcome performer" do
+        it "should show the fact check outcome performer" do
           render_inline component
 
           expect(page).to have_css(".timeline__review-outcome .govuk-body") do |element|
@@ -496,7 +496,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
       context "and the version is in the 'published' state" do
         before { version.state = "published" }
 
-        it "should not show the Factcheck outcome performer" do
+        it "should not show the fact check outcome performer" do
           render_inline component
 
           expect(page).to have_css(".timeline__review-outcome .govuk-body") do |element|
