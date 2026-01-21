@@ -1,11 +1,12 @@
-RSpec.describe Edition::HostContent::PreviewDetailsComponent, type: :component do
+RSpec.describe BlockPreview::PreviewDetailsComponent, type: :component do
   let(:edition) { build(:edition, :pension, details: { "email_address": "example@example.com" }) }
-  let(:preview_content) { build(:preview_content, instances_count: 2) }
+  let(:block) { build(:content_block, edition:) }
+  let(:preview_content) { double(:preview_content, instances_count: 2) }
 
   it "returns a list of details for preview content" do
     render_inline(
       described_class.new(
-        edition:,
+        block:,
         preview_content:,
       ),
     )
@@ -23,14 +24,14 @@ RSpec.describe Edition::HostContent::PreviewDetailsComponent, type: :component d
           "rate1":
             { "title": "rate1", "amount": "£100.5", "frequency": "a week", "description": "" },
           "rate2":
-              { "title": "rate2", "amount": "£11.1", "frequency": "a month", "description": "1111" },
+            { "title": "rate2", "amount": "£11.1", "frequency": "a month", "description": "1111" },
         },
       })
     end
     it "returns a list of details for preview content" do
       render_inline(
         described_class.new(
-          edition:,
+          block:,
           preview_content:,
         ),
       )
