@@ -11,7 +11,7 @@
 <%= form_tag(update_fact_check_outcome_edition_path(@edition), method: :put) do %>
 
   <%= render "govuk_publishing_components/components/input", {
-      name: "factcheck_outcome[factcheck_performer]",
+      name: "fact_check_outcome[factcheck_performer]",
       label: { text: I18n.t("edition.outcomes.performer.label.fact_check") },
       hint: I18n.t("edition.outcomes.performer.hint.fact_check"),
       error_message: flash.alert.presence,

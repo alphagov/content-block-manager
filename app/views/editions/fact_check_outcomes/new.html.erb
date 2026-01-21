@@ -9,7 +9,7 @@
 <%= form_tag(create_fact_check_outcome_edition_path(@edition)) do %>
 
   <%= render "govuk_publishing_components/components/radio", {
-    name: "factcheck_outcome[factcheck_performed]",
+    name: "fact_check_outcome[factcheck_performed]",
     heading: @title,
     heading_caption: @edition.title,
     heading_level: 1,

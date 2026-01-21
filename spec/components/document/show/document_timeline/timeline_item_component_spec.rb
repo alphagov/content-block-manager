@@ -12,7 +12,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
           change_note: nil,
           internal_change_note: nil,
           review_outcome: ReviewOutcome.new,
-          factcheck_outcome: FactcheckOutcome.new)
+          fact_check_outcome: FactCheckOutcome.new)
   end
 
   let(:version) do
@@ -79,7 +79,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
 
     context "and its edition indicates that the review was performed" do
       before do
-        edition.factcheck_outcome.skipped = false
+        edition.fact_check_outcome.skipped = false
       end
 
       it "shows the review outcome" do
@@ -93,7 +93,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
 
     context "and its edition indicates that the review was skipped" do
       before do
-        edition.factcheck_outcome.skipped = true
+        edition.fact_check_outcome.skipped = true
       end
 
       it "shows the review outcome" do
@@ -448,8 +448,8 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
     context "and the outcome has a performer" do
       let(:user) { build(:user, name: "Dave", email: "dave@example.com") }
       let(:review_outcome) { ReviewOutcome.new.tap { |o| o.performer = user.name } }
-      let(:factcheck_outcome) { FactcheckOutcome.new.tap { |o| o.performer = user.email } }
-      let(:edition) { build(:edition, review_outcome: review_outcome, factcheck_outcome: factcheck_outcome) }
+      let(:fact_check_outcome) { FactCheckOutcome.new.tap { |o| o.performer = user.email } }
+      let(:edition) { build(:edition, review_outcome: review_outcome, fact_check_outcome: fact_check_outcome) }
 
       context "and the version is in the 'awaiting_factcheck' state" do
         before { version.state = "awaiting_factcheck" }
@@ -478,8 +478,8 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
 
     context "and the outcome **does not** have a performer" do
       let(:review_outcome) { ReviewOutcome.new }
-      let(:factcheck_outcome) { FactcheckOutcome.new }
-      let(:edition) { build(:edition, review_outcome: review_outcome, factcheck_outcome: factcheck_outcome) }
+      let(:fact_check_outcome) { FactCheckOutcome.new }
+      let(:edition) { build(:edition, review_outcome: review_outcome, fact_check_outcome: fact_check_outcome) }
 
       context "and the version is in the 'awaiting_factcheck' state" do
         before { version.state = "awaiting_factcheck" }
@@ -508,7 +508,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
   end
 
   describe "when the version **does not** have an outcome" do
-    let(:edition) { build(:edition, review_outcome: nil, factcheck_outcome: nil) }
+    let(:edition) { build(:edition, review_outcome: nil, fact_check_outcome: nil) }
 
     context "and the version is in the 'awaiting_factcheck' state" do
       before { version.state = "awaiting_factcheck" }

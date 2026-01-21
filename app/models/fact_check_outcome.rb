@@ -1,0 +1,2 @@
+class FactCheckOutcome < Outcome
+end

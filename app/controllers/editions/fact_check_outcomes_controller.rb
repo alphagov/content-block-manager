@@ -7,9 +7,9 @@ class Editions::FactCheckOutcomesController < BaseController
 
   def create
     @edition = Edition.find(params[:id])
-    return form_validation_error unless factcheck_outcome_supplied?
+    return form_validation_error unless fact_check_outcome_supplied?
 
-    record_factcheck_outcome
+    record_fact_check_outcome
 
     return finalise_edition if factcheck_skipped?
 
@@ -49,7 +49,7 @@ private
   end
 
   def update_factcheck_performer
-    @edition.factcheck_outcome.update!(
+    @edition.fact_check_outcome.update!(
       "performer" => factcheck_performer,
     )
   end
@@ -67,14 +67,14 @@ private
     redirect_to new_fact_check_outcome_edition_path(@edition), alert:
   end
 
-  def record_factcheck_outcome
-    @edition.create_factcheck_outcome!(
+  def record_fact_check_outcome
+    @edition.create_fact_check_outcome!(
       "skipped" => factcheck_skipped?,
       "creator" => Current.user,
     )
   end
 
-  def factcheck_outcome_supplied?
+  def fact_check_outcome_supplied?
     outcome_params["factcheck_performed"].present?
   rescue ActionController::ParameterMissing
     false
@@ -87,7 +87,7 @@ private
   end
 
   def outcome_params
-    params.require("factcheck_outcome")
+    params.require("fact_check_outcome")
   end
 
   def block_will_be_scheduled?

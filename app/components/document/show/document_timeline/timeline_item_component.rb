@@ -41,7 +41,7 @@ private
     when "awaiting_factcheck"
       version.item.review_outcome
     when "published"
-      version.item.factcheck_outcome
+      version.item.fact_check_outcome
     end
   end
 
