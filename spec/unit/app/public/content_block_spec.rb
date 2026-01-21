@@ -52,13 +52,23 @@ RSpec.describe ContentBlock do
     let(:published_edition) { build(:edition, document: document) }
     let(:published_content_block) { build(:content_block) }
 
-    it "returns the latest published edition from the edition's document" do
+    before do
       allow(ContentBlock).to receive(:new).and_call_original
 
       allow(document).to receive(:latest_published_edition).and_return(published_edition)
       allow(ContentBlock).to receive(:new).with(published_edition).and_return(published_content_block)
+    end
 
+    it "returns the latest published edition from the edition's document" do
       expect(content_block.published_block).to eq(published_content_block)
+    end
+
+    context "when a published_content_block does not exist" do
+      let(:published_content_block) { nil }
+
+      it "returns nil" do
+        expect(content_block.published_block).to be_nil
+      end
     end
   end
 end

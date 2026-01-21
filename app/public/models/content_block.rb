@@ -20,7 +20,7 @@ class ContentBlock
   end
 
   def published_block
-    @published_block ||= ContentBlock.new(document.latest_published_edition)
+    @published_block ||= document.latest_published_edition ? ContentBlock.new(document.latest_published_edition) : nil
   end
 
 private
