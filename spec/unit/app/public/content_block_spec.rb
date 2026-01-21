@@ -7,6 +7,7 @@ RSpec.describe ContentBlock do
 
   subject { content_block }
 
+  it { should delegate_method(:id).to(:edition) }
   it { should delegate_method(:title).to(:edition) }
   it { should delegate_method(:state).to(:edition) }
   it { should delegate_method(:details).to(:edition) }
