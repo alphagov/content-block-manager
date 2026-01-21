@@ -71,10 +71,6 @@ Rails.application.routes.draw do
       get "embedded-objects/:object_type/:object_title/edit", to: "editions/embedded_objects#edit", as: :edit_embedded_object
       put "embedded-objects/:object_type/:object_title", to: "editions/embedded_objects#update", as: :embedded_object
 
-      # Host content preview actions
-      get "host-content/:host_content_id/preview", to: "editions/host_content#preview", as: :host_content_preview
-      post "host-content/:host_content_id/form_handler", to: "editions/host_content#form_handler", as: :host_content_preview_form_handler
-
       # Reorder actions
       get :order, to: "editions/order#edit", as: :order_edit
       put :order, to: "editions/order#update", as: :order_update
