@@ -39,6 +39,18 @@ RSpec.describe ApplicationHelper, type: :helper do
         expect(helper.pre_release_features?).to be true
       end
     end
+
+    context "when user is nil" do
+      before do
+        def helper.current_user
+          nil
+        end
+      end
+
+      it "returns false" do
+        expect(helper.pre_release_features?).to be false
+      end
+    end
   end
 
   describe "#get_content_id" do

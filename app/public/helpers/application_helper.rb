@@ -7,7 +7,7 @@ module ApplicationHelper
     env = GovukPublishingComponents::AppHelpers::Environment.current_acceptance_environment
     return false if env == "production"
 
-    return true if current_user.has_permission?(User::Permissions::PRE_RELEASE_FEATURES_PERMISSION)
+    return true if current_user&.has_permission?(User::Permissions::PRE_RELEASE_FEATURES_PERMISSION)
     return true if params[:pre_release_features] == "true"
 
     false
