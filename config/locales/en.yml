@@ -288,6 +288,10 @@ en:
       draft_complete: "Draft completed"
       awaiting_review: "Sent to review"
       awaiting_factcheck: "Sent to fact check"
+    outcome:
+      name:
+        review: "2i review"
+        fact_check: "Fact check"
     latest: Latest
     details_of_changes:
       title: Details of changes

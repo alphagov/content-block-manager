@@ -46,7 +46,10 @@ private
   end
 
   def outcome_resolution
-    review_type = version.state == "awaiting_factcheck" ? "2i review" : "Fact check"
+    review_name = I18n.t("timeline_item.outcome.name.review")
+    fact_check_name = I18n.t("timeline_item.outcome.name.fact_check")
+
+    review_type = version.state == "awaiting_factcheck" ? review_name : fact_check_name
     skipped_or_performed = outcome.skipped ? "skipped" : "performed"
     performer = outcome.performer ? " by #{outcome.performer.try(:name) || outcome.performer}" : ""
 
