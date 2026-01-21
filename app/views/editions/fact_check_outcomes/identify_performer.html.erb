@@ -4,16 +4,16 @@
 
 <% content_for :back_link do %>
   <%= render "govuk_publishing_components/components/back_link", {
-    href: new_factcheck_outcome_edition_path(@edition),
+    href: new_fact_check_outcome_edition_path(@edition),
   } %>
   <% end %>
 
-<%= form_tag(update_factcheck_outcome_edition_path(@edition), method: :put) do %>
+<%= form_tag(update_fact_check_outcome_edition_path(@edition), method: :put) do %>
 
   <%= render "govuk_publishing_components/components/input", {
-      name: "factcheck_outcome[factcheck_performer]",
-      label: { text: I18n.t("edition.outcomes.performer.label.factcheck") },
-      hint: I18n.t("edition.outcomes.performer.hint.factcheck"),
+      name: "fact_check_outcome[fact_check_performer]",
+      label: { text: I18n.t("edition.outcomes.performer.label.fact_check") },
+      hint: I18n.t("edition.outcomes.performer.hint.fact_check"),
       error_message: flash.alert.presence,
   } %>
 

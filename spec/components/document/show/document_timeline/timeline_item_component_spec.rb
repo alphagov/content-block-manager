@@ -12,7 +12,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
           change_note: nil,
           internal_change_note: nil,
           review_outcome: ReviewOutcome.new,
-          factcheck_outcome: FactcheckOutcome.new)
+          fact_check_outcome: FactCheckOutcome.new)
   end
 
   let(:version) do
@@ -71,33 +71,36 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
     end
 
     it "returns a created title" do
-      expect(page).to have_css ".timeline__title", text: "Pension created"
+      expect(page).to have_css(
+        ".timeline__title",
+        text: I18n.t("timeline_item.title.published", block_type: "Pension"),
+      )
     end
 
     context "and its edition indicates that the review was performed" do
       before do
-        edition.factcheck_outcome.skipped = false
+        edition.fact_check_outcome.skipped = false
       end
 
       it "shows the review outcome" do
         render_inline component
 
         expect(page).to have_css(".timeline__review-outcome") do
-          expect(page).to have_content("Factcheck performed")
+          expect(page).to have_content("Fact check performed")
         end
       end
     end
 
     context "and its edition indicates that the review was skipped" do
       before do
-        edition.factcheck_outcome.skipped = true
+        edition.fact_check_outcome.skipped = true
       end
 
       it "shows the review outcome" do
         render_inline component
 
         expect(page).to have_css(".timeline__review-outcome") do
-          expect(page).to have_content("Factcheck skipped")
+          expect(page).to have_content("Fact check skipped")
         end
       end
     end
@@ -380,7 +383,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
 
     it "sets the #title to be 'Sent to review" do
       expect(page).to have_css(".timeline__title") do
-        expect(page).to have_content("Sent to review")
+        expect(page).to have_content(I18n.t("timeline_item.title.awaiting_review"))
       end
     end
   end
@@ -394,7 +397,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
       render_inline component
 
       expect(page).to have_css(".timeline__title") do
-        expect(page).to have_content("Draft completed")
+        expect(page).to have_content(I18n.t("timeline_item.title.draft_complete"))
       end
     end
   end
@@ -404,11 +407,11 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
       version.state = "awaiting_factcheck"
     end
 
-    it "sets the #title to be 'Sent to factcheck'" do
+    it "sets the #title to be 'Sent to fact check'" do
       render_inline component
 
       expect(page).to have_css(".timeline__title") do
-        expect(page).to have_content("Sent to factcheck")
+        expect(page).to have_content(I18n.t("timeline_item.title.awaiting_factcheck"))
       end
     end
 
@@ -445,8 +448,8 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
     context "and the outcome has a performer" do
       let(:user) { build(:user, name: "Dave", email: "dave@example.com") }
       let(:review_outcome) { ReviewOutcome.new.tap { |o| o.performer = user.name } }
-      let(:factcheck_outcome) { FactcheckOutcome.new.tap { |o| o.performer = user.email } }
-      let(:edition) { build(:edition, review_outcome: review_outcome, factcheck_outcome: factcheck_outcome) }
+      let(:fact_check_outcome) { FactCheckOutcome.new.tap { |o| o.performer = user.email } }
+      let(:edition) { build(:edition, review_outcome: review_outcome, fact_check_outcome: fact_check_outcome) }
 
       context "and the version is in the 'awaiting_factcheck' state" do
         before { version.state = "awaiting_factcheck" }
@@ -463,11 +466,11 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
       context "and the version is in the 'published' state" do
         before { version.state = "published" }
 
-        it "should show the Factcheck outcome performer" do
+        it "should show the fact check outcome performer" do
           render_inline component
 
           expect(page).to have_css(".timeline__review-outcome .govuk-body") do |element|
-            expect(element).to have_content("Factcheck performed by dave@example.com", exact: true)
+            expect(element).to have_content("Fact check performed by dave@example.com", exact: true)
           end
         end
       end
@@ -475,8 +478,8 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
 
     context "and the outcome **does not** have a performer" do
       let(:review_outcome) { ReviewOutcome.new }
-      let(:factcheck_outcome) { FactcheckOutcome.new }
-      let(:edition) { build(:edition, review_outcome: review_outcome, factcheck_outcome: factcheck_outcome) }
+      let(:fact_check_outcome) { FactCheckOutcome.new }
+      let(:edition) { build(:edition, review_outcome: review_outcome, fact_check_outcome: fact_check_outcome) }
 
       context "and the version is in the 'awaiting_factcheck' state" do
         before { version.state = "awaiting_factcheck" }
@@ -493,11 +496,11 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
       context "and the version is in the 'published' state" do
         before { version.state = "published" }
 
-        it "should not show the Factcheck outcome performer" do
+        it "should not show the fact check outcome performer" do
           render_inline component
 
           expect(page).to have_css(".timeline__review-outcome .govuk-body") do |element|
-            expect(element).to have_text("Factcheck performed", exact: true)
+            expect(element).to have_text("Fact check performed", exact: true)
           end
         end
       end
@@ -505,7 +508,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
   end
 
   describe "when the version **does not** have an outcome" do
-    let(:edition) { build(:edition, review_outcome: nil, factcheck_outcome: nil) }
+    let(:edition) { build(:edition, review_outcome: nil, fact_check_outcome: nil) }
 
     context "and the version is in the 'awaiting_factcheck' state" do
       before { version.state = "awaiting_factcheck" }
@@ -524,6 +527,23 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
         render_inline component
 
         expect(page).not_to have_css(".timeline__review-outcome")
+      end
+    end
+  end
+
+  context "when the version is in the 'scheduled' state" do
+    before do
+      version.state = "scheduled"
+      edition.scheduled_publication = Time.zone.parse("2026-01-01 13:05")
+    end
+
+    it "sets the #title to be 'Scheduled for publishing on {string}'" do
+      render_inline component
+
+      expect(page).to have_css(".timeline__title") do
+        expect(page).to have_content(
+          I18n.t("timeline_item.title.scheduled", datetime_string: "1 January 2026 at 1:05pm"),
+        )
       end
     end
   end

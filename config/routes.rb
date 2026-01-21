@@ -54,11 +54,11 @@ Rails.application.routes.draw do
       get "review_outcomes/identify_performer", to: "editions/review_outcomes#identify_performer", as: :identify_performer_review_outcome
       put "review_outcomes", to: "editions/review_outcomes#update", as: :update_review_outcome
 
-      # record Factcheck outcomes
-      get "factcheck_outcomes/new", to: "editions/factcheck_outcomes#new", as: :new_factcheck_outcome
-      post "factcheck_outcomes", to: "editions/factcheck_outcomes#create", as: :create_factcheck_outcome
-      get "factcheck_outcomes/identify_performer", to: "editions/factcheck_outcomes#identify_performer", as: :identify_performer_factcheck_outcome
-      put "factcheck_outcomes", to: "editions/factcheck_outcomes#update", as: :update_factcheck_outcome
+      # record fact check outcomes
+      get "fact_check_outcomes/new", to: "editions/fact_check_outcomes#new", as: :new_fact_check_outcome
+      post "fact_check_outcomes", to: "editions/fact_check_outcomes#create", as: :create_fact_check_outcome
+      get "fact_check_outcomes/identify_performer", to: "editions/fact_check_outcomes#identify_performer", as: :identify_performer_fact_check_outcome
+      put "fact_check_outcomes", to: "editions/fact_check_outcomes#update", as: :update_fact_check_outcome
 
       # State transitions
       resources :edition_status_transitions, only: [:create], controller: "editions/status_transitions"

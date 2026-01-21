@@ -53,7 +53,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
       it "offers a button to record the Review outcome" do
         expect(page).to have_css(
           ".actions a[href='/editions/123/review_outcomes/new']",
-          text: "Ready for factcheck",
+          text: I18n.t("show_action.send_to_fact_check"),
         )
       end
     end
@@ -67,7 +67,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
         end
 
         it "does NOT offer a button to record the Review outcome" do
-          expect(page).to have_no_link("Ready for Factcheck")
+          expect(page).to have_no_link("Ready for fact check")
         end
       end
     end
@@ -260,7 +260,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
     end
   end
 
-  describe "button to publish or schedule the edition via the factcheck outcome page" do
+  describe "button to publish or schedule the edition via the fact check outcome page" do
     context "when the edition is in an awaiting_factcheck state" do
       before do
         edition.state = :awaiting_factcheck
@@ -275,7 +275,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
 
         it "offers a button to publish the edition" do
           expect(page).to have_link("Publish block",
-                                    href: "/editions/123/factcheck_outcomes/new")
+                                    href: "/editions/123/fact_check_outcomes/new")
         end
       end
 
@@ -288,7 +288,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
 
         it "offers a button to schedule the edition" do
           expect(page).to have_link("Schedule block",
-                                    href: "/editions/123/factcheck_outcomes/new")
+                                    href: "/editions/123/fact_check_outcomes/new")
         end
       end
     end

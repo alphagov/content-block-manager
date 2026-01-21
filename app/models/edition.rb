@@ -13,7 +13,7 @@ class Edition < ApplicationRecord
   include Workflow
 
   has_one :review_outcome, dependent: :destroy
-  has_one :factcheck_outcome, dependent: :destroy
+  has_one :fact_check_outcome, dependent: :destroy
 
   scope :current_versions, lambda {
     published

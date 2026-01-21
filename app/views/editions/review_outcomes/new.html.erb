@@ -8,18 +8,18 @@
 
   <%= render "govuk_publishing_components/components/radio", {
     name: "review_outcome[review_performed]",
-    heading: "Ready for factcheck",
+    heading: I18n.t("edition.outcomes.heading.review"),
     heading_caption: @edition.title,
     heading_level: 1,
     error_message: flash.alert.presence,
     items: [
       {
         value: "true",
-        text: "Completed 2i review",
+        text: I18n.t("edition.outcomes.options.review.performed"),
       },
       {
         value: "false",
-        text: "Skip 2i review",
+        text: I18n.t("edition.outcomes.options.review.skip"),
       },
     ],
   } %>

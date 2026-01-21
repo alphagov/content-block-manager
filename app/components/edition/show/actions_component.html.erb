@@ -11,7 +11,7 @@
   <% if state == "awaiting_review" %>
     <li class="govuk-!-static-margin-bottom-3">
       <%= render "govuk_publishing_components/components/button", {
-        text: I18n.t("show_action.send_to_factcheck"),
+        text: I18n.t("show_action.send_to_fact_check"),
         href: new_review_outcome_edition_path(edition),
         inline_layout: false,
       } %>
@@ -22,7 +22,7 @@
     <li class="govuk-!-static-margin-bottom-3">
       <%= render "govuk_publishing_components/components/button", {
         text: edition.is_scheduling? ? I18n.t("show_action.schedule_block") : I18n.t("show_action.publish_block"),
-        href: new_factcheck_outcome_edition_path(edition),
+        href: new_fact_check_outcome_edition_path(edition),
         inline_layout: false,
       } %>
     </li>

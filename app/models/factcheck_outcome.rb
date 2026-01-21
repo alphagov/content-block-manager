@@ -1,2 +1,0 @@
-class FactcheckOutcome < Outcome
-end

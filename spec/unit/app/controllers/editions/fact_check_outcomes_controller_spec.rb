@@ -1,4 +1,4 @@
-RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
+RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
   let(:document) { create(:document, :pension, id: 456) }
   let(:edition) { create(:edition, :pension, id: 123, document: document) }
 
@@ -32,8 +32,8 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
     end
 
-    it "renders the editions/factcheck_outcomes/new template" do
-      expect(response).to have_rendered("editions/factcheck_outcomes/new")
+    it "renders the editions/fact_check_outcomes/new template" do
+      expect(response).to have_rendered("editions/fact_check_outcomes/new")
     end
   end
 
@@ -48,21 +48,21 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
 
     context "when the form returned is valid" do
       before do
-        allow(edition).to receive(:create_factcheck_outcome!)
+        allow(edition).to receive(:create_fact_check_outcome!)
         allow(edition).to receive(:publish!)
       end
 
-      describe "saving the Factcheck outcome details" do
-        context "when the editor has indicated that the Factcheck was skipped" do
+      describe "saving the Fact check outcome details" do
+        context "when the editor has indicated that the fact check was skipped" do
           before do
             post :create, params: {
               id: 123,
-              "factcheck_outcome" => { "factcheck_performed" => false },
+              "fact_check_outcome" => { "fact_check_performed" => false },
             }
           end
 
-          it "saves the Factcheck outcome details" do
-            expect(edition).to have_received(:create_factcheck_outcome!).with(
+          it "saves the fact check outcome details" do
+            expect(edition).to have_received(:create_fact_check_outcome!).with(
               "skipped" => true,
               "creator" => current_user,
             )
@@ -77,16 +77,16 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
           end
         end
 
-        context "when the editor has indicated that the Factcheck was performed" do
+        context "when the editor has indicated that the fact check was performed" do
           before do
             post :create, params: {
               id: 123,
-              "factcheck_outcome" => { "factcheck_performed" => true },
+              "fact_check_outcome" => { "fact_check_performed" => true },
             }
           end
 
-          it "saves the Factcheck outcome details" do
-            expect(edition).to have_received(:create_factcheck_outcome!).with(
+          it "saves the fact check outcome details" do
+            expect(edition).to have_received(:create_fact_check_outcome!).with(
               "skipped" => false,
               "creator" => current_user,
             )
@@ -98,12 +98,12 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
         before do
           post :create, params: {
             id: 123,
-            "factcheck_outcome" => { "factcheck_performed" => true },
+            "fact_check_outcome" => { "fact_check_performed" => true },
           }
         end
 
-        it "should redirect the user to the identify_performer step of the factcheck process" do
-          expect(response).to redirect_to("/editions/123/factcheck_outcomes/identify_performer")
+        it "should redirect the user to the identify_performer step of the fact check process" do
+          expect(response).to redirect_to("/editions/123/fact_check_outcomes/identify_performer")
         end
       end
     end
@@ -112,16 +112,16 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       before do
         post :create, params: {
           id: 123,
-          "factcheck_outcome" => {},
+          "fact_check_outcome" => {},
         }
       end
 
       it "re-renders the 'new' template to allow the errors to be corrected" do
-        expect(response).to redirect_to("/editions/123/factcheck_outcomes/new")
+        expect(response).to redirect_to("/editions/123/fact_check_outcomes/new")
       end
 
       it "sets an error message" do
-        expect(flash.alert).to eq("Indicate whether the factcheck process has been performed or not")
+        expect(flash.alert).to eq(I18n.t("edition.outcomes.errors.missing_outcome.fact_check"))
       end
     end
   end
@@ -160,15 +160,15 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       end
     end
 
-    it "renders the editions/factcheck_outcomes/identify_performer template" do
-      expect(response).to have_rendered("editions/factcheck_outcomes/identify_performer")
+    it "renders the editions/fact_check_outcomes/identify_performer template" do
+      expect(response).to have_rendered("editions/fact_check_outcomes/identify_performer")
     end
   end
 
   describe "PUT to :update" do
     let(:time_now) { Time.current }
     let(:current_user) { instance_double(User, id: 987) }
-    let(:factcheck_outcome) { spy(FactcheckOutcome) }
+    let(:fact_check_outcome) { spy(FactCheckOutcome) }
 
     before do
       allow(Time).to receive(:current).and_return(time_now)
@@ -176,19 +176,19 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       allow(edition).to receive(:update)
       allow(edition).to receive(:schedule!)
       allow(edition).to receive(:publish!)
-      allow(edition).to receive(:factcheck_outcome).and_return(factcheck_outcome)
+      allow(edition).to receive(:fact_check_outcome).and_return(fact_check_outcome)
     end
 
     context "when the request is valid" do
       before do
         put :update, params: {
           id: 123,
-          "factcheck_outcome" => { "factcheck_performer" => "Alice" },
+          "fact_check_outcome" => { "fact_check_performer" => "Alice" },
         }
       end
 
       it "should update the edition with the Subject Matter Expert" do
-        expect(edition.factcheck_outcome).to have_received(:update!).with({ "performer" => "Alice" })
+        expect(edition.fact_check_outcome).to have_received(:update!).with({ "performer" => "Alice" })
       end
     end
 
@@ -196,18 +196,18 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       before do
         put :update, params: {
           id: 123,
-          "factcheck_outcome" => {},
+          "fact_check_outcome" => {},
         }
         allow(edition).to receive(:schedule!)
         allow(edition).to receive(:publish!)
       end
 
       it "redirects to the same page to prevent the user progressing" do
-        expect(response).to redirect_to("/editions/123/factcheck_outcomes/identify_performer")
+        expect(response).to redirect_to("/editions/123/fact_check_outcomes/identify_performer")
       end
 
       it "shows an error message" do
-        expected_message = "Provide the email or name of the subject matter expert who performed the factcheck"
+        expected_message = I18n.t("edition.outcomes.errors.missing_performer.fact_check")
         expect(flash.alert).to eq(expected_message)
       end
 
@@ -221,18 +221,18 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       before do
         put :update, params: {
           id: 123,
-          "factcheck_outcome" => { "factcheck_performer" => "" },
+          "fact_check_outcome" => { "fact_check_performer" => "" },
         }
         allow(edition).to receive(:schedule!)
         allow(edition).to receive(:publish!)
       end
 
       it "redirects to the same page to prevent the user progressing" do
-        expect(response).to redirect_to("/editions/123/factcheck_outcomes/identify_performer")
+        expect(response).to redirect_to("/editions/123/fact_check_outcomes/identify_performer")
       end
 
       it "shows an error message" do
-        expected_message = "Provide the email or name of the subject matter expert who performed the factcheck"
+        expected_message = I18n.t("edition.outcomes.errors.missing_performer.fact_check")
         expect(flash.alert).to eq(expected_message)
       end
 
@@ -247,7 +247,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       before do
         put :update, params: {
           id: 123,
-          "factcheck_outcome" => { "factcheck_performer" => "Alice" },
+          "fact_check_outcome" => { "fact_check_performer" => "Alice" },
         }
       end
       it "transitions the edition using the 'schedule!' transition" do
@@ -273,7 +273,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
       before do
         put :update, params: {
           id: 123,
-          "factcheck_outcome" => { "factcheck_performer" => "Alice" },
+          "fact_check_outcome" => { "fact_check_performer" => "Alice" },
         }
       end
 
@@ -309,7 +309,7 @@ RSpec.describe Editions::FactcheckOutcomesController, type: :controller do
 
           put :update, params: {
             id: 123,
-            "factcheck_outcome" => { "factcheck_performer" => "Alice" },
+            "fact_check_outcome" => { "fact_check_performer" => "Alice" },
           }
         end
 

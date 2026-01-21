@@ -7,7 +7,7 @@ RSpec.describe Edition::Show::ShareFactCheckLinkComponent, type: :component do
 
     within(".govuk-details") do |details|
       details.within(".govuk-details__summary") do |summary|
-        expect(summary).to have_text("Share factcheck link")
+        expect(summary).to have_text("Share fact check link")
       end
 
       details.within(".govuk-details__text") do |text|
