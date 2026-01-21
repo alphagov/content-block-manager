@@ -57,7 +57,7 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
           before do
             post :create, params: {
               id: 123,
-              "fact_check_outcome" => { "factcheck_performed" => false },
+              "fact_check_outcome" => { "fact_check_performed" => false },
             }
           end
 
@@ -81,7 +81,7 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
           before do
             post :create, params: {
               id: 123,
-              "fact_check_outcome" => { "factcheck_performed" => true },
+              "fact_check_outcome" => { "fact_check_performed" => true },
             }
           end
 
@@ -98,7 +98,7 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
         before do
           post :create, params: {
             id: 123,
-            "fact_check_outcome" => { "factcheck_performed" => true },
+            "fact_check_outcome" => { "fact_check_performed" => true },
           }
         end
 

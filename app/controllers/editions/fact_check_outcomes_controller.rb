@@ -11,7 +11,7 @@ class Editions::FactCheckOutcomesController < BaseController
 
     record_fact_check_outcome
 
-    return finalise_edition if factcheck_skipped?
+    return finalise_edition if fact_check_skipped?
 
     redirect_to identify_performer_fact_check_outcome_edition_path(@edition)
   end
@@ -69,20 +69,20 @@ private
 
   def record_fact_check_outcome
     @edition.create_fact_check_outcome!(
-      "skipped" => factcheck_skipped?,
+      "skipped" => fact_check_skipped?,
       "creator" => Current.user,
     )
   end
 
   def fact_check_outcome_supplied?
-    outcome_params["factcheck_performed"].present?
+    outcome_params["fact_check_performed"].present?
   rescue ActionController::ParameterMissing
     false
   end
 
-  def factcheck_skipped?
+  def fact_check_skipped?
     ActiveModel::Type::Boolean.new.cast(
-      outcome_params["factcheck_performed"],
+      outcome_params["fact_check_performed"],
     ) == false
   end
 
