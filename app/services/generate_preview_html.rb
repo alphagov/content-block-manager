@@ -43,7 +43,7 @@ private
   # the base path that way.
   def development_base_path
     @development_base_path ||= begin
-      publishing_api_response = Services.publishing_api.get_content(content_id)
+      publishing_api_response = Public::Services.publishing_api.get_content(content_id)
       Plek.external_url_for(rendering_app(publishing_api_response))
     end
   end

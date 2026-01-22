@@ -13,7 +13,7 @@ if Organisation.all.count.zero?
                                               .content_item("/government/organisations")
 
   organisation_response["details"].values.flatten.each do |organisation|
-    Services.publishing_api.put_content(organisation["content_id"], {
+    Public::Services.publishing_api.put_content(organisation["content_id"], {
       "base_path" => organisation["href"],
       "details" => {
         "acronym" => organisation["acronym"],
@@ -33,7 +33,7 @@ if Organisation.all.count.zero?
         },
       ],
     })
-    Services.publishing_api.publish(organisation["content_id"], "major")
+    Public::Services.publishing_api.publish(organisation["content_id"], "major")
     print "."
   end
 end
@@ -45,7 +45,7 @@ if WorldLocation.countries.count.zero?
                                            .content_item("/world")
 
   countries_response["details"]["world_locations"].each do |country|
-    Services.publishing_api.put_content(country["content_id"], {
+    Public::Services.publishing_api.put_content(country["content_id"], {
       "details" => {
         "analytics_identifier" => country["analytics_identifier"],
       },
@@ -54,7 +54,7 @@ if WorldLocation.countries.count.zero?
       "schema_name" => "world_location",
       "title" => country["name"],
     })
-    Services.publishing_api.publish(country["content_id"], "major")
+    Public::Services.publishing_api.publish(country["content_id"], "major")
     print "."
   end
 end

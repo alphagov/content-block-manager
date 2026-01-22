@@ -1,8 +1,8 @@
 class PreviewContent < Data.define(:title, :html, :instances_count)
   class << self
     def for_content_id(content_id:, edition:, base_path: nil, locale: "en")
-      content_item = Services.publishing_api.get_content(content_id, { locale: }).parsed_content
-      metadata = Services.publishing_api.get_host_content_item_for_content_id(
+      content_item = Public::Services.publishing_api.get_content(content_id, { locale: }).parsed_content
+      metadata = Public::Services.publishing_api.get_host_content_item_for_content_id(
         edition.document.content_id,
         content_id,
         { locale: },

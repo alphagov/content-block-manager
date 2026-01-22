@@ -22,7 +22,7 @@ RSpec.describe Organisation do
     end
 
     it "fetches organisations" do
-      allow(Services.publishing_api).to receive(:get_content_items)
+      allow(Public::Services.publishing_api).to receive(:get_content_items)
               .with(document_type: "organisation",
                     fields: %w[title content_id],
                     per_page: "500")
@@ -40,7 +40,7 @@ RSpec.describe Organisation do
     end
 
     it "caches results" do
-      allow(Services.publishing_api).to receive(:get_content_items)
+      allow(Public::Services.publishing_api).to receive(:get_content_items)
               .with(document_type: "organisation",
                     fields: %w[title content_id],
                     per_page: "500")

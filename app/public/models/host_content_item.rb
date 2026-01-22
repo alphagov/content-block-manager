@@ -15,7 +15,7 @@ class HostContentItem < Data.define(
 
   class << self
     def for_document(document, page: nil, order: nil)
-      api_response = Services.publishing_api.get_host_content_for_content_id(
+      api_response = Public::Services.publishing_api.get_host_content_for_content_id(
         document.content_id,
         {
           page:,

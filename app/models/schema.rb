@@ -15,7 +15,7 @@ class Schema
     end
 
     def all
-      @all ||= Services.publishing_api.get_schemas.select { |k, _v|
+      @all ||= Public::Services.publishing_api.get_schemas.select { |k, _v|
         is_valid_schema?(k)
       }.map { |id, full_schema|
         full_schema.dig("definitions", "details")&.yield_self { |schema| new(id, schema) }

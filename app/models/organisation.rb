@@ -15,7 +15,7 @@ class Organisation < Data.define(:id, :name)
   private
 
     def api_response
-      Services.publishing_api.get_content_items(
+      Public::Services.publishing_api.get_content_items(
         document_type: "organisation",
         fields: %w[title content_id],
         per_page: "500",

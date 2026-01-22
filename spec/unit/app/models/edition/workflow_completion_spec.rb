@@ -19,8 +19,8 @@ RSpec.describe Edition::WorkflowCompletion do
   before do
     allow(Schema).to receive(:find_by_block_type).and_return(schema)
     allow(Organisation).to receive(:all).and_return([organisation])
-    allow(Services.publishing_api).to receive(:put_content)
-    allow(Services.publishing_api).to receive(:publish)
+    allow(Public::Services.publishing_api).to receive(:put_content)
+    allow(Public::Services.publishing_api).to receive(:publish)
     allow(edition).to receive(:complete_draft!).and_return(true)
   end
 

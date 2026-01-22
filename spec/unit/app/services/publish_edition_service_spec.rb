@@ -21,8 +21,8 @@ RSpec.describe PublishEditionService do
     before do
       allow(Schema).to receive(:find_by_block_type).and_return(schema)
       allow(Organisation).to receive(:all).and_return([organisation])
-      allow(Services.publishing_api).to receive(:put_content)
-      allow(Services.publishing_api).to receive(:publish)
+      allow(Public::Services.publishing_api).to receive(:put_content)
+      allow(Public::Services.publishing_api).to receive(:publish)
     end
 
     it "returns a ContentBlockEdition" do
@@ -51,9 +51,9 @@ RSpec.describe PublishEditionService do
                                                   .and_return(presenter_stub)
       expect(presenter_stub).to receive(:present).and_return(presented_hash)
 
-      expect(Services.publishing_api).to receive(:put_content).with(content_id, presented_hash)
+      expect(Public::Services.publishing_api).to receive(:put_content).with(content_id, presented_hash)
 
-      expect(Services.publishing_api).to receive(:publish).with(content_id)
+      expect(Public::Services.publishing_api).to receive(:publish).with(content_id)
 
       PublishEditionService.new.call(edition)
 
@@ -62,7 +62,7 @@ RSpec.describe PublishEditionService do
     end
 
     it "rolls back the ContentBlockEdition and ContentBlockDocument if the publishing API request fails" do
-      allow(Services.publishing_api).to receive(:publish)
+      allow(Public::Services.publishing_api).to receive(:publish)
                                     .and_raise(
                                       GdsApi::HTTPErrorResponse.new(
                                         422,
@@ -71,7 +71,7 @@ RSpec.describe PublishEditionService do
                                       ),
                                     )
 
-      expect(Services.publishing_api).to receive(:discard_draft).with(content_id)
+      expect(Public::Services.publishing_api).to receive(:discard_draft).with(content_id)
 
       expect(edition.state).to eq("draft")
       expect(document.latest_published_edition).to be_nil
@@ -85,8 +85,8 @@ RSpec.describe PublishEditionService do
     end
 
     it "discards the latest draft if the publish request fails" do
-      expect(Services.publishing_api).to receive(:put_content)
-      expect(Services.publishing_api).to receive(:publish).and_raise(
+      expect(Public::Services.publishing_api).to receive(:put_content)
+      expect(Public::Services.publishing_api).to receive(:publish).and_raise(
         GdsApi::HTTPErrorResponse.new(
           422,
           "An internal error message",
@@ -94,7 +94,7 @@ RSpec.describe PublishEditionService do
         ),
       )
 
-      expect(Services.publishing_api).to receive(:discard_draft).with(content_id)
+      expect(Public::Services.publishing_api).to receive(:discard_draft).with(content_id)
 
       expect { PublishEditionService.new.call(edition) }.to raise_error(
         PublishEditionService::PublishingFailureError, "Could not publish #{content_id} because: An internal error message"

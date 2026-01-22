@@ -7,6 +7,6 @@ class PublishIntentWorker < WorkerBase
     publish_timestamp = Time.zone.parse(publish_timestamp)
     publish_intent = PublishingApi::PublishIntentPresenter.new(base_path, publish_timestamp)
 
-    Services.publishing_api.put_intent(base_path, publish_intent.as_json)
+    Public::Services.publishing_api.put_intent(base_path, publish_intent.as_json)
   end
 end

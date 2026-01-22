@@ -78,7 +78,7 @@ outside of the publishing ecosystem.
 Pros:
 * Publishing API is already the source of truth, no extra backend work needed as we can keep existing publishing 
   pipelines.
-* We’d use existing endpoints initially e.g. calling `Services.publishing_api.get_content`
+* We’d use existing endpoints initially e.g. calling `Public::Services.publishing_api.get_content`
 * This potentially aligns with a future GraphQL-powered use of the Publishing API as a frontend-facing app.
 
 Cons:

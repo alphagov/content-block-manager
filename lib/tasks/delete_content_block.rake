@@ -9,7 +9,7 @@ task :delete_content_block, [:content_id] => :environment do |_t, args|
 
   abort("Content block `#{content_id}` cannot be deleted because it has host content. Try removing the dependencies and trying again") unless @host_content_items.items.count.zero?
 
-  Services.publishing_api.unpublish(
+  Public::Services.publishing_api.unpublish(
     content_id,
     type: "vanish",
     locale: "en",

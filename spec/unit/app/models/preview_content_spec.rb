@@ -30,7 +30,7 @@ RSpec.describe PreviewContent do
     describe "when a locale is not provided" do
       before do
         stub_publishing_api_has_item(content_id: host_content_id, title: host_title, base_path: host_base_path)
-        allow(Services.publishing_api).to receive(:get_host_content_item_for_content_id)
+        allow(Public::Services.publishing_api).to receive(:get_host_content_item_for_content_id)
                 .with(block_to_preview.document.content_id, host_content_id, { locale: "en" })
                 .and_return(metadata_response)
       end
@@ -74,7 +74,7 @@ RSpec.describe PreviewContent do
     describe "when a locale is provided" do
       before do
         stub_publishing_api_has_item(content_id: host_content_id, title: host_title, base_path: host_base_path, locale: "cy")
-        allow(Services.publishing_api).to receive(:get_host_content_item_for_content_id)
+        allow(Public::Services.publishing_api).to receive(:get_host_content_item_for_content_id)
                 .with(block_to_preview.document.content_id, host_content_id, { locale: "cy" })
                 .and_return(metadata_response)
       end

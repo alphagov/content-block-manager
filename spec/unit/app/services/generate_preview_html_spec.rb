@@ -208,7 +208,7 @@ RSpec.describe GeneratePreviewHtml do
 
     before do
       allow(Rails.env).to receive(:development?).and_return(true)
-      allow(Services.publishing_api).to receive(:get_content).with(host_content_id).and_return(publishing_api_response)
+      allow(Public::Services.publishing_api).to receive(:get_content).with(host_content_id).and_return(publishing_api_response)
     end
 
     it "makes a request to the rendering app as reported by the Publishing API" do
