@@ -85,21 +85,32 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
 
       before do
         allow(Edition).to receive(:find).and_return(edition_invalid_for_transition)
+        allow(GovukError).to receive(:notify)
+
+        post :create, params: { id: 123, transition: :ready_for_review }
       end
 
       it "redirects to the show page" do
-        post :create, params: { id: 123, transition: :ready_for_review }
-
         expect(response).to redirect_to(document_path(456))
       end
 
-      it "shows a failure message with the transition error" do
-        expected_failure_message = "Error: we can not change the status of this edition. " \
-          "Can't fire event `ready_for_review` in current state `awaiting_review` for `Edition` with ID 123 "
+      it "shows an error message " do
+        expected_error_message = I18n.t("edition.states.transition_error")
 
-        post :create, params: { id: 123, transition: :ready_for_review }
+        expect(flash.alert).to eq(expected_error_message)
+      end
 
-        expect(flash.alert).to eq(expected_failure_message)
+      it "records the error details using GovukError to facilitate remediation" do
+        expected_error_details = "Can't fire event `ready_for_review` in current state " \
+          "`awaiting_review` for `Edition` with ID 123 "
+
+        expect(GovukError).to have_received(:notify).with(
+          expected_error_details,
+          extra: {
+            edition_id: 123,
+            document_id: 456,
+          },
+        )
       end
     end
 
