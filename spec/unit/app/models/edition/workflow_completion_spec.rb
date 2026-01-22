@@ -190,12 +190,13 @@ RSpec.describe Edition::WorkflowCompletion do
           "for `Edition` with ID 123  (Transitions::InvalidTransition)"
       end
 
+      let(:error) { Transitions::InvalidTransition.new(error_details) }
+
+      let(:error_report) { instance_double(Edition::StateTransitionErrorReport, call: nil) }
+
       before do
-        allow(edition).to receive(:ready_for_review!).and_raise(
-          Transitions::InvalidTransition,
-          error_details,
-        )
-        allow(GovukError).to receive(:notify)
+        allow(edition).to receive(:ready_for_review!).and_raise(error)
+        allow(Edition::StateTransitionErrorReport).to receive(:new).and_return(error_report)
       end
 
       it "returns :path -> document" do
@@ -214,16 +215,14 @@ RSpec.describe Edition::WorkflowCompletion do
         )
       end
 
-      it "records the error details using GovukError to facilitate remediation" do
+      it "records the error details using StateTransitionErrorReport to facilitate remediation" do
         described_class.new(edition, "send_to_review").call
 
-        expect(GovukError).to have_received(:notify).with(
-          error_details,
-          extra: {
-            edition_id: 123,
-            document_id: 567,
-          },
+        expect(Edition::StateTransitionErrorReport).to have_received(:new).with(
+          error: error,
+          edition: edition,
         )
+        expect(error_report).to have_received(:call)
       end
     end
   end
