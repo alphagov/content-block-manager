@@ -222,14 +222,13 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
       let(:error_message) do
         "Something bad has happened!"
       end
+      let(:error_report) { instance_double(Edition::StateTransitionErrorReport, call: nil) }
+      let(:error) { Transitions::InvalidTransition.new(error_message) }
 
       before do
-        allow(edition).to receive(:ready_for_factcheck!).and_raise(
-          Transitions::InvalidTransition,
-          error_message,
-        )
+        allow(edition).to receive(:ready_for_factcheck!).and_raise(error)
 
-        allow(GovukError).to receive(:notify)
+        allow(Edition::StateTransitionErrorReport).to receive(:new).and_return(error_report)
 
         put :update, params: {
           id: 123,
@@ -247,14 +246,12 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
         )
       end
 
-      it "records the error details using GovukError to facilitate remediation" do
-        expect(GovukError).to have_received(:notify).with(
-          error_message,
-          extra: {
-            edition_id: 123,
-            document_id: 456,
-          },
+      it "records the error details using StateTransitionErrorReport to facilitate remediation" do
+        expect(Edition::StateTransitionErrorReport).to have_received(:new).with(
+          error: error,
+          edition: edition,
         )
+        expect(error_report).to have_received(:call)
       end
     end
   end
