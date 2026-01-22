@@ -121,9 +121,9 @@ private
   end
 
   def record_error(error)
-    GovukError.notify(
-      error.message,
-      extra: { edition_id: @edition.id, document_id: @edition.document.id },
-    )
+    Edition::StateTransitionErrorReport.new(
+      error: error,
+      edition: @edition,
+    ).call
   end
 end

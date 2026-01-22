@@ -301,13 +301,13 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
           "for `Edition` with ID 123  (Transitions::InvalidTransition)"
         end
 
-        before do
-          allow(edition).to receive(:publish!).and_raise(
-            Transitions::InvalidTransition,
-            error_message,
-          )
+        let(:error_report) { instance_double(Edition::StateTransitionErrorReport, call: nil) }
+        let(:error) { Transitions::InvalidTransition.new(error_message) }
 
-          allow(GovukError).to receive(:notify)
+        before do
+          allow(edition).to receive(:publish!).and_raise(error)
+
+          allow(Edition::StateTransitionErrorReport).to receive(:new).and_return(error_report)
 
           put :update, params: {
             id: 123,
@@ -325,14 +325,12 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
           )
         end
 
-        it "records the error details using GovukError to facilitate remediation" do
-          expect(GovukError).to have_received(:notify).with(
-            error_message,
-            extra: {
-              edition_id: 123,
-              document_id: 456,
-            },
+        it "records the error details using StateTransitionErrorReport to facilitate remediation" do
+          expect(Edition::StateTransitionErrorReport).to have_received(:new).with(
+            error: error,
+            edition: edition,
           )
+          expect(error_report).to have_received(:call)
         end
       end
     end
