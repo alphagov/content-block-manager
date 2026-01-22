@@ -65,7 +65,16 @@ private
         state: :awaiting_review,
       ).to_s } }
   rescue Transitions::InvalidTransition => e
+    record_error(e)
+
     { path: document_path(@edition.document),
-      flash: { error: e.message } }
+      flash: { error: I18n.t("edition.states.transition_error") } }
+  end
+
+  def record_error(error)
+    GovukError.notify(
+      error.message,
+      extra: { edition_id: @edition.id, document_id: @edition.document.id },
+    )
   end
 end

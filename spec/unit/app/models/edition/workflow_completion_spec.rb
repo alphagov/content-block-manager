@@ -185,7 +185,7 @@ RSpec.describe Edition::WorkflowCompletion do
     end
 
     context "when the transition Edition#ready_for_review! is NOT valid" do
-      let(:error_message) do
+      let(:error_details) do
         "Can't fire event `ready_for_review` in current state `published` " \
           "for `Edition` with ID 123  (Transitions::InvalidTransition)"
       end
@@ -193,8 +193,9 @@ RSpec.describe Edition::WorkflowCompletion do
       before do
         allow(edition).to receive(:ready_for_review!).and_raise(
           Transitions::InvalidTransition,
-          error_message,
+          error_details,
         )
+        allow(GovukError).to receive(:notify)
       end
 
       it "returns :path -> document" do
@@ -208,7 +209,19 @@ RSpec.describe Edition::WorkflowCompletion do
 
         expect(return_value.fetch(:flash)).to eq(
           {
-            error: error_message,
+            error: I18n.t("edition.states.transition_error"),
+          },
+        )
+      end
+
+      it "records the error details using GovukError to facilitate remediation" do
+        described_class.new(edition, "send_to_review").call
+
+        expect(GovukError).to have_received(:notify).with(
+          error_details,
+          extra: {
+            edition_id: 123,
+            document_id: 567,
           },
         )
       end
