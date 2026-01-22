@@ -1,8 +1,8 @@
-RSpec.describe PreviewContent do
+RSpec.describe BlockPreview::PreviewContent do
   let(:title) { "Ministry of Example" }
   let(:html) { "<p>Ministry of Example</p>" }
   let(:instances_count) { "2" }
-  let(:preview_content) { build(:preview_content, title:, instances_count:, html:) }
+  let(:preview_content) { double(:preview_content, title:, instances_count:, html:) }
 
   it "returns title, html and instances count" do
     expect(title).to eq(preview_content.title)
@@ -18,13 +18,16 @@ RSpec.describe PreviewContent do
     let(:document) do
       build(:document, :pension, content_id: preview_content_id)
     end
-    let(:block_to_preview) do
+    let(:edition) do
       build(:edition, :pension, document:, details: { "email_address" => "new@new.com" }, id: 1)
+    end
+    let(:block_to_preview) do
+      build(:content_block, edition:)
     end
     let(:metadata_response) do
       double(:response, parsed_content: { "instances" => 2 })
     end
-    let(:preview_response) { double(:preview_response, call: html) }
+    let(:preview_response) { double(:preview_response, to_s: html) }
     let(:html) { "SOME_HTML" }
 
     describe "when a locale is not provided" do
@@ -36,16 +39,16 @@ RSpec.describe PreviewContent do
       end
 
       it "returns the title of host document" do
-        expect(GeneratePreviewHtml).to receive(:new)
-                                                .with(content_id: host_content_id,
-                                                      edition: block_to_preview,
-                                                      base_path: host_base_path,
-                                                      locale: "en")
-                                                .and_return(preview_response)
+        expect(BlockPreview::PreviewHtml).to receive(:new)
+                                         .with(content_id: host_content_id,
+                                               block: block_to_preview,
+                                               base_path: host_base_path,
+                                               locale: "en")
+                                         .and_return(preview_response)
 
-        preview_content = PreviewContent.for_content_id(
+        preview_content = BlockPreview::PreviewContent.new(
           content_id: host_content_id,
-          edition: block_to_preview,
+          block: block_to_preview,
         )
 
         expect(preview_content.title).to eq(host_title)
@@ -56,18 +59,18 @@ RSpec.describe PreviewContent do
       it "allows a base_path to be provided" do
         base_path = "/something/different"
 
-        expect(GeneratePreviewHtml).to receive(:new)
-                                                .with(content_id: host_content_id,
-                                                      edition: block_to_preview,
-                                                      base_path:,
-                                                      locale: "en")
-                                                .and_return(preview_response)
+        expect(BlockPreview::PreviewHtml).to receive(:new)
+                                         .with(content_id: host_content_id,
+                                               block: block_to_preview,
+                                               base_path:,
+                                               locale: "en")
+                                         .and_return(preview_response)
 
-        PreviewContent.for_content_id(
+        BlockPreview::PreviewContent.new(
           content_id: host_content_id,
-          edition: block_to_preview,
+          block: block_to_preview,
           base_path:,
-        )
+        ).html
       end
     end
 
@@ -80,16 +83,16 @@ RSpec.describe PreviewContent do
       end
 
       it "returns the title of host document" do
-        expect(GeneratePreviewHtml).to receive(:new)
-                                                .with(content_id: host_content_id,
-                                                      edition: block_to_preview,
-                                                      base_path: host_base_path,
-                                                      locale: "cy")
-                                                .and_return(preview_response)
+        expect(BlockPreview::PreviewHtml).to receive(:new)
+                                         .with(content_id: host_content_id,
+                                               block: block_to_preview,
+                                               base_path: host_base_path,
+                                               locale: "cy")
+                                         .and_return(preview_response)
 
-        preview_content = PreviewContent.for_content_id(
+        preview_content = BlockPreview::PreviewContent.new(
           content_id: host_content_id,
-          edition: block_to_preview,
+          block: block_to_preview,
           base_path: nil,
           locale: "cy",
         )
