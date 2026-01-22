@@ -187,6 +187,7 @@ en:
         published: Published
         superseded: Superseded
         deleted: Deleted
+      transition_error: "Error: it was not possible to perform that action. The error has been logged."
       transition_message:
         first:
           draft: "This content block has been saved as a draft"

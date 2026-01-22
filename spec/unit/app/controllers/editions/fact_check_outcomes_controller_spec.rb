@@ -307,6 +307,8 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
             error_message,
           )
 
+          allow(GovukError).to receive(:notify)
+
           put :update, params: {
             id: 123,
             "fact_check_outcome" => { "fact_check_performer" => "Alice" },
@@ -317,9 +319,19 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
           expect(response).to redirect_to("/456")
         end
 
-        it "includes an error message with the transition error details" do
+        it "includes an error message" do
           expect(flash.alert).to eq(
-            "Error: we can not change the status of this edition. #{error_message}",
+            "Error: it was not possible to perform that action. The error has been logged.",
+          )
+        end
+
+        it "records the error details using GovukError to facilitate remediation" do
+          expect(GovukError).to have_received(:notify).with(
+            error_message,
+            extra: {
+              edition_id: 123,
+              document_id: 456,
+            },
           )
         end
       end

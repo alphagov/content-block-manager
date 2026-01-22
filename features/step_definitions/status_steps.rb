@@ -40,23 +40,9 @@ Then(/I see a notification that the transition to ([^"]*) was successful/) do |s
   end
 end
 
-Then(/I see an alert that the transition failed to transition to ([^"]*)/) do |state|
-  general_message = "Error: we can not change the status of this edition."
-
-  case state.to_sym
-  when :awaiting_review
-    error_details = "Can't fire event `ready_for_review` in current state `awaiting_review`"
-  when :awaiting_factcheck
-    error_details = "Can't fire event `ready_for_factcheck` in current state `awaiting_factcheck`"
-  when :published
-    error_details = "Can't fire event `publish` in current state `published`"
-  else
-    raise "Only the 'awaiting_review' and 'awaiting_factcheck' states are supported currently"
-  end
-
+Then(/I see an alert that the transition failed to transition to [^"]*/) do
   within(".gem-c-error-alert__message") do
-    expect(page).to have_content(general_message)
-    expect(page).to have_content(error_details)
+    expect(page).to have_content(I18n.t("edition.states.transition_error"))
   end
 end
 
