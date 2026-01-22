@@ -1,5 +1,5 @@
-RSpec.describe GeneratePreviewHtml do
-  include Rails.application.routes.url_helpers
+RSpec.describe BlockPreview::PreviewHtml do
+  include BlockPreview::Engine.routes.url_helpers
 
   let(:host_content_id) { SecureRandom.uuid }
   let(:preview_content_id) { SecureRandom.uuid }
@@ -42,7 +42,7 @@ RSpec.describe GeneratePreviewHtml do
   end
 
   let(:block_to_preview) do
-    build(:edition, :contact, document:, details: { "email_address" => "new@new.com" }, id: 1)
+    build(:content_block, edition: build_stubbed(:edition, document:))
   end
 
   before do
@@ -51,12 +51,12 @@ RSpec.describe GeneratePreviewHtml do
   end
 
   it "returns the preview html" do
-    actual_content = GeneratePreviewHtml.new(
+    actual_content = BlockPreview::PreviewHtml.new(
       content_id: host_content_id,
-      edition: block_to_preview,
+      block: block_to_preview,
       base_path: host_base_path,
       locale: "en",
-    ).call
+    ).to_s
 
     parsed_content = Nokogiri::HTML.parse(actual_content)
 
@@ -65,12 +65,12 @@ RSpec.describe GeneratePreviewHtml do
   end
 
   it "appends the base path to the CSS and JS references" do
-    actual_content = GeneratePreviewHtml.new(
+    actual_content = BlockPreview::PreviewHtml.new(
       content_id: host_content_id,
-      edition: block_to_preview,
+      block: block_to_preview,
       base_path: host_base_path,
       locale: "en",
-    ).call
+    ).to_s
 
     parsed_content = Nokogiri::HTML.parse(actual_content)
 
@@ -87,12 +87,12 @@ RSpec.describe GeneratePreviewHtml do
     it "shows an error template" do
       expected_content = Nokogiri::HTML.parse("<html><head></head><body class=\" gem-c-layout-for-public--draft\"><p>Preview not found</p></body></html>").to_s
 
-      actual_content = GeneratePreviewHtml.new(
+      actual_content = BlockPreview::PreviewHtml.new(
         content_id: host_content_id,
-        edition: block_to_preview,
+        block: block_to_preview,
         base_path: host_base_path,
         locale: "en",
-      ).call
+      ).to_s
 
       expect(actual_content).to eq(expected_content)
     end
@@ -108,14 +108,14 @@ RSpec.describe GeneratePreviewHtml do
     end
 
     it "updates any link paths" do
-      actual_content = GeneratePreviewHtml.new(
+      actual_content = BlockPreview::PreviewHtml.new(
         content_id: host_content_id,
-        edition: block_to_preview,
+        block: block_to_preview,
         base_path: host_base_path,
         locale: "en",
-      ).call
+      ).to_s
 
-      url = host_content_preview_edition_path(id: block_to_preview.id, host_content_id:)
+      url = host_content_preview_path(edition_id: block_to_preview.id, host_content_id:)
 
       parsed_content = Nokogiri::HTML.parse(actual_content)
 
@@ -145,20 +145,20 @@ RSpec.describe GeneratePreviewHtml do
     end
 
     it "updates the form and input attributes" do
-      actual_content = GeneratePreviewHtml.new(
+      actual_content = BlockPreview::PreviewHtml.new(
         content_id: host_content_id,
-        edition: block_to_preview,
+        block: block_to_preview,
         base_path: host_base_path,
         locale: "en",
-      ).call
+      ).to_s
 
       parsed_content = Nokogiri::HTML.parse(actual_content)
 
       form = parsed_content.css("main form")[0]
       inputs = form.css("input")
 
-      form_handler_path = host_content_preview_form_handler_edition_path(
-        id: block_to_preview.id,
+      form_handler_path = host_content_preview_form_handler_path(
+        edition_id: block_to_preview.id,
         host_content_id: host_content_id,
         locale: "en",
       )
@@ -183,12 +183,12 @@ RSpec.describe GeneratePreviewHtml do
     end
 
     it "returns the preview html" do
-      actual_content = GeneratePreviewHtml.new(
+      actual_content = BlockPreview::PreviewHtml.new(
         content_id: host_content_id,
-        edition: block_to_preview,
+        block: block_to_preview,
         base_path: host_base_path,
         locale: "en",
-      ).call
+      ).to_s
 
       parsed_content = Nokogiri::HTML.parse(actual_content)
 
@@ -214,12 +214,12 @@ RSpec.describe GeneratePreviewHtml do
     it "makes a request to the rendering app as reported by the Publishing API" do
       expect(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for(rendering_app)}#{host_base_path}")).and_return(fake_frontend_response)
 
-      GeneratePreviewHtml.new(
+      BlockPreview::PreviewHtml.new(
         content_id: host_content_id,
-        edition: block_to_preview,
+        block: block_to_preview,
         base_path: host_base_path,
         locale: "en",
-      ).call
+      ).to_s
     end
 
     describe "when the Publishing API does not report a rendering app" do
@@ -232,12 +232,12 @@ RSpec.describe GeneratePreviewHtml do
       it "defaults to frontend" do
         expect(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for('frontend')}#{host_base_path}")).and_return(fake_frontend_response)
 
-        GeneratePreviewHtml.new(
+        BlockPreview::PreviewHtml.new(
           content_id: host_content_id,
-          edition: block_to_preview,
+          block: block_to_preview,
           base_path: host_base_path,
           locale: "en",
-        ).call
+        ).to_s
       end
     end
 
@@ -247,12 +247,12 @@ RSpec.describe GeneratePreviewHtml do
       it "makes a request to smart-answers" do
         expect(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for('smart-answers')}#{host_base_path}")).and_return(fake_frontend_response)
 
-        GeneratePreviewHtml.new(
+        BlockPreview::PreviewHtml.new(
           content_id: host_content_id,
-          edition: block_to_preview,
+          block: block_to_preview,
           base_path: host_base_path,
           locale: "en",
-        ).call
+        ).to_s
       end
     end
   end
