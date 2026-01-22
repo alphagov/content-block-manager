@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get "/healthcheck/ready", to: GovukHealthcheck.rack_response
   mount Flipflop::Engine => "/flipflop"
   mount FactCheck::Engine => "/fact-check"
+  mount BlockPreview::Engine => "/preview"
 
   scope via: :all do
     match "/400", to: "errors#bad_request"
@@ -69,10 +70,6 @@ Rails.application.routes.draw do
       post "embedded-objects/:object_type", to: "editions/embedded_objects#create", as: :create_embedded_object
       get "embedded-objects/:object_type/:object_title/edit", to: "editions/embedded_objects#edit", as: :edit_embedded_object
       put "embedded-objects/:object_type/:object_title", to: "editions/embedded_objects#update", as: :embedded_object
-
-      # Host content preview actions
-      get "host-content/:host_content_id/preview", to: "editions/host_content#preview", as: :host_content_preview
-      post "host-content/:host_content_id/form_handler", to: "editions/host_content#form_handler", as: :host_content_preview_form_handler
 
       # Reorder actions
       get :order, to: "editions/order#edit", as: :order_edit

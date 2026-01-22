@@ -18,7 +18,7 @@ RSpec.describe WorldLocation do
     end
 
     it "fetches locations and orders them alphabetically" do
-      allow(Services.publishing_api).to receive(:get_content_items)
+      allow(Public::Services.publishing_api).to receive(:get_content_items)
               .with(document_type: "world_location",
                     fields: %w[title],
                     per_page: "500")
@@ -37,7 +37,7 @@ RSpec.describe WorldLocation do
     end
 
     it "caches results" do
-      allow(Services.publishing_api).to receive(:get_content_items)
+      allow(Public::Services.publishing_api).to receive(:get_content_items)
               .with(document_type: "world_location",
                     fields: %w[title],
                     per_page: "500")

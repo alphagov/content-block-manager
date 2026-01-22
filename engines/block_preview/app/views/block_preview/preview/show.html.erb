@@ -1,0 +1,24 @@
+<% content_for :page_title, "Preview content block in host document" %>
+<% content_for :context, "Preview #{@block.block_type.humanize.downcase}" %>
+<% content_for :title, @preview_content.title %>
+<% content_for :title_margin_bottom, 1 %>
+
+<% content_for :head do %>
+  <%= javascript_include_tag "host-content-iframe" %>
+<% end %>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-body govuk-!-margin-bottom-0">
+    <%= render(BlockPreview::PreviewDetailsComponent.new(
+          block: @block,
+          preview_content: @preview_content)) %>
+  </div>
+</div>
+<hr class="govuk-section-break govuk-!-margin-bottom-8 govuk-section-break--visible">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <%= turbo_frame_tag "preview_frame_#{@block.id}" do %>
+      <%= render partial: "iframe" %>
+    <% end %>
+  </div>
+</div>

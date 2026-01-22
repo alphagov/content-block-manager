@@ -30,7 +30,7 @@ RSpec.describe Rake::Task["delete_content_block"] do
       end
 
       it "destroys the content block" do
-        allow(Services.publishing_api).to receive(:unpublish).with(
+        allow(Public::Services.publishing_api).to receive(:unpublish).with(
           content_id,
           type: "vanish",
           locale: "en",

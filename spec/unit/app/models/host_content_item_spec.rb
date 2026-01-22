@@ -49,7 +49,7 @@ RSpec.describe HostContentItem do
     let(:document) { double("document", content_id: target_content_id) }
 
     before do
-      expect(Services).to receive(:publishing_api).and_return(publishing_api_mock)
+      expect(Public::Services).to receive(:publishing_api).and_return(publishing_api_mock)
       allow(SignonUser).to receive(:with_uuids).and_return([editor])
     end
 

@@ -6,7 +6,7 @@ RSpec.describe PublishIntentWorker do
     gds_publishing_api = double
 
     allow(PublishingApi::PublishIntentPresenter).to receive(:new).with(base_path, timestamp.to_time).once.and_return(publish_intent)
-    allow(Services).to receive(:publishing_api).and_return(gds_publishing_api)
+    allow(Public::Services).to receive(:publishing_api).and_return(gds_publishing_api)
 
     expect(gds_publishing_api).to receive(:put_intent).once.with(base_path, publish_intent.as_json)
 

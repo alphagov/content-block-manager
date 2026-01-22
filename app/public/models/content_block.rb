@@ -5,6 +5,11 @@ class ContentBlock
       edition = document.most_recent_edition
       ContentBlock.new(edition)
     end
+
+    def from_edition_id(edition_id)
+      edition = Edition.find(edition_id)
+      ContentBlock.new(edition)
+    end
   end
 
   def initialize(edition)

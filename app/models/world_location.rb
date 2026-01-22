@@ -11,7 +11,7 @@ class WorldLocation < Data.define(:name)
   private
 
     def api_response
-      Services.publishing_api.get_content_items(
+      Public::Services.publishing_api.get_content_items(
         document_type: "world_location",
         fields: %w[title],
         per_page: "500",

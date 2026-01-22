@@ -160,7 +160,7 @@ RSpec.describe Schema do
 
   describe ".all" do
     before(:each) do
-      allow(Services.publishing_api).to receive(:get_schemas).once.and_return({
+      allow(Public::Services.publishing_api).to receive(:get_schemas).once.and_return({
         "something" => {},
         "something_else" => {},
         "content_block_foo" => {
