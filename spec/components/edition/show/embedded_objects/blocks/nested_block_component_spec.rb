@@ -141,9 +141,9 @@ RSpec.describe Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent, typ
   end
 
   describe "embed codes" do
-    context "when the edition is in the _published_ state" do
+    context "when Edition#show_embed_codes? is _true_" do
       before do
-        edition.state = :published
+        allow(edition).to receive(:show_embed_codes?).and_return(true)
         render_inline component
       end
 
@@ -165,37 +165,35 @@ RSpec.describe Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent, typ
       end
     end
 
-    (Edition.available_states - [:published]).each do |state|
-      context "when the edition is in a non-published state (#{state})" do
-        before do
-          edition.state = state
-          render_inline component
-        end
+    context "when Edition#show_embed_codes? is _false_" do
+      before do
+        allow(edition).to receive(:show_embed_codes?).and_return(false)
+        render_inline component
+      end
 
-        it "does NOT include 'data' attributes to initialise the CopyEmbedCode JS module" do
-          data_attrs = [
-            "[data-module='copy-embed-code']",
-            "[data-embed-code='{{embed:content_block_pension:/prefix/foo}}']",
-            "[data-embed-code-details='prefix/foo']",
-          ]
+      it "does NOT include 'data' attributes to initialise the CopyEmbedCode JS module" do
+        data_attrs = [
+          "[data-module='copy-embed-code']",
+          "[data-embed-code='{{embed:content_block_pension:/prefix/foo}}']",
+          "[data-embed-code-details='prefix/foo']",
+        ]
 
-          expect(page).to have_no_css("div#{data_attrs.join}")
-        end
+        expect(page).to have_no_css("div#{data_attrs.join}")
+      end
 
-        it "does NOT include the embed code in its own element" do
-          expect(page).not_to have_content("{{embed:content_block_pension:/prefix/foo}}")
-        end
+      it "does NOT include the embed code in its own element" do
+        expect(page).not_to have_content("{{embed:content_block_pension:/prefix/foo}}")
+      end
 
-        it "continues to show the field values" do
-          aggregate_failures do
-            expect(page).to have_css(
-              ".govuk-summary-list__value .govspeak", text: "bar"
-            )
+      it "continues to show the field values" do
+        aggregate_failures do
+          expect(page).to have_css(
+            ".govuk-summary-list__value .govspeak", text: "bar"
+          )
 
-            expect(page).to have_css(
-              ".govuk-summary-list__value .govspeak", text: "buzz"
-            )
-          end
+          expect(page).to have_css(
+            ".govuk-summary-list__value .govspeak", text: "buzz"
+          )
         end
       end
     end

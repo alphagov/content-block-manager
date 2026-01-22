@@ -11,9 +11,9 @@ RSpec.describe Edition::Show::DefaultBlockComponent, type: :component do
     allow(edition).to receive(:render).with(embed_code).and_return(default_block_output)
   end
 
-  context "when the edition is in the 'published' state" do
+  context "when Edition#show_embed_codes? is _true_" do
     before do
-      edition.state = :published
+      allow(edition).to receive(:show_embed_codes?).and_return(true)
       render_inline(Edition::Show::DefaultBlockComponent.new(edition: edition))
     end
 
@@ -42,33 +42,31 @@ RSpec.describe Edition::Show::DefaultBlockComponent, type: :component do
     end
   end
 
-  (Edition.available_states - [:published]).each do |state|
-    context "when the edition is in a non-published state (#{state})" do
-      before do
-        edition.state = state
-        render_inline(Edition::Show::DefaultBlockComponent.new(edition: edition))
-      end
+  context "when Edition#show_embed_codes? is _false_" do
+    before do
+      allow(edition).to receive(:show_embed_codes?).and_return(false)
+      render_inline(Edition::Show::DefaultBlockComponent.new(edition: edition))
+    end
 
-      it "includes the default block output in a govspeak enabled element" do
-        expect(page).to have_css(
-          ".govspeak",
-          text: default_block_output,
-        )
-      end
+    it "includes the default block output in a govspeak enabled element" do
+      expect(page).to have_css(
+        ".govspeak",
+        text: default_block_output,
+      )
+    end
 
-      it "does NOT include the embed code in its own element" do
-        expect(page).not_to have_content(embed_code)
-      end
+    it "does NOT include the embed code in its own element" do
+      expect(page).not_to have_content(embed_code)
+    end
 
-      it "does NOT include 'data' attributes to initialise the CopyEmbedCode JS module" do
-        data_attrs = [
-          "[data-module='copy-embed-code']",
-          "[data-embed-code='{{embed:content_block_contact:test-block}}']",
-          "[data-embed-code-details='default block']",
-        ]
+    it "does NOT include 'data' attributes to initialise the CopyEmbedCode JS module" do
+      data_attrs = [
+        "[data-module='copy-embed-code']",
+        "[data-embed-code='{{embed:content_block_contact:test-block}}']",
+        "[data-embed-code-details='default block']",
+      ]
 
-        expect(page).to have_no_css("div#{data_attrs.join}")
-      end
+      expect(page).to have_no_css("div#{data_attrs.join}")
     end
   end
 end

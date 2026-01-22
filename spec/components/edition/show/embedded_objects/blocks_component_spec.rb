@@ -238,9 +238,9 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
     end
 
     describe "embed code visibility" do
-      context "when the edition is _published_" do
+      context "when Edition#show_embed_codes? is _true_" do
         before do
-          edition.state = :published
+          allow(edition).to receive(:show_embed_codes?).and_return(true)
           render_inline component
         end
 
@@ -314,31 +314,29 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         end
       end
 
-      (Edition.available_states - [:published]).each do |state|
-        context "when the edition is a non-published state (#{state})" do
-          before do
-            edition.state = state
-            render_inline component
-          end
+      context "when Edition#show_embed_codes? is _false_" do
+        before do
+          allow(edition).to receive(:show_embed_codes?).and_return(false)
+          render_inline component
+        end
 
-          it "does NOT include guidance on the use of embed codes" do
-            expect(page).to have_css ".app-c-embedded-objects-blocks-component__details-wrapper" do |wrapper|
-              expect(wrapper).to have_css ".govuk-details__summary-text", text: "All #{object_type} attributes"
-              expect(wrapper).to have_css ".govuk-details__text", visible: false do |details|
-                expect(details).to have_no_css ".app-c-embedded-objects-blocks-component__details-text",
-                                               text: "You can use any available embed code for each attribute separately in your content if required.",
-                                               visible: false
-              end
+        it "does NOT include guidance on the use of embed codes" do
+          expect(page).to have_css ".app-c-embedded-objects-blocks-component__details-wrapper" do |wrapper|
+            expect(wrapper).to have_css ".govuk-details__summary-text", text: "All #{object_type} attributes"
+            expect(wrapper).to have_css ".govuk-details__text", visible: false do |details|
+              expect(details).to have_no_css ".app-c-embedded-objects-blocks-component__details-text",
+                                             text: "You can use any available embed code for each attribute separately in your content if required.",
+                                             visible: false
             end
           end
+        end
 
-          it "does NOT include 'data' attributes to initialise the CopyEmbedCode JS module" do
-            expect(page).not_to have_css("div[data-module='copy-embed-code']")
-          end
+        it "does NOT include 'data' attributes to initialise the CopyEmbedCode JS module" do
+          expect(page).not_to have_css("div[data-module='copy-embed-code']")
+        end
 
-          it "does NOT include any embed-codes" do
-            expect(page).not_to have_css(".app-c-embedded-objects-blocks-component__embed-code")
-          end
+        it "does NOT include any embed-codes" do
+          expect(page).not_to have_css(".app-c-embedded-objects-blocks-component__embed-code")
         end
       end
     end
