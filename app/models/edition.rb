@@ -41,7 +41,7 @@ class Edition < ApplicationRecord
   end
 
   def show_embed_codes?
-    published?
+    published? || scheduled?
   end
 
   def render(embed_code = document.embed_code)
