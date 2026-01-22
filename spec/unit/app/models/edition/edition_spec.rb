@@ -381,6 +381,28 @@ RSpec.describe Edition, type: :model do
     end
   end
 
+  describe "#show_embed_codes?" do
+    %i[published scheduled].each do |state|
+      context "when in the '#{state}' state" do
+        before { edition.state = state }
+
+        it "returns true" do
+          expect(edition.show_embed_codes?).to be true
+        end
+      end
+    end
+
+    (Edition.available_states - %i[published scheduled]).each do |state|
+      context "when in the non-published/scheduled state '#{state}'" do
+        before { edition.state = state }
+
+        it "returns false" do
+          expect(edition.show_embed_codes?).to be false
+        end
+      end
+    end
+  end
+
   describe "#update_object_with_details" do
     before do
       edition.details["something"] = {

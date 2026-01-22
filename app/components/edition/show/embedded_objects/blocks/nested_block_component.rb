@@ -41,7 +41,7 @@ private
                                 field:,
                                 value: translated_value(field.name, value),
                               ), class: "app-c-embedded-objects-blocks-component__content govspeak")
-    if edition.published?
+    if edition.show_embed_codes?
       content << content_tag(:p,
                              document.embed_code_for_field(embed_code_identifier(embed_code_prefix, items_counter, field.name)),
                              class: "app-c-embedded-objects-blocks-component__embed-code")
@@ -64,7 +64,7 @@ private
   end
 
   def copy_embed_code_data_attributes(key, document)
-    return {} unless edition.published?
+    return {} unless edition.show_embed_codes?
 
     {
       module: "copy-embed-code",

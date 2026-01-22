@@ -60,7 +60,7 @@ private
   end
 
   def embed_code_usage
-    return unless edition.published?
+    return unless edition.show_embed_codes?
 
     I18n.t("embedded_object.embed_code_usage")
   end
@@ -103,7 +103,7 @@ private
 
   def content_for_row(key, value)
     content = content_tag(:p, value, class: "app-c-embedded-objects-blocks-component__content govspeak")
-    if edition.published?
+    if edition.show_embed_codes?
       content << content_tag(:p,
                              document.embed_code_for_field("#{object_type}/#{object_title}/#{key}"),
                              class: "app-c-embedded-objects-blocks-component__embed-code")
@@ -122,7 +122,7 @@ private
     content = content_tag(:div,
                           edition.render(document.embed_code_for_field("#{object_type}/#{object_title}")),
                           class: "app-c-embedded-objects-blocks-component__content govspeak")
-    if edition.published?
+    if edition.show_embed_codes?
       content << content_tag(:p,
                              document.embed_code_for_field("#{object_type}/#{object_title}"),
                              class: "app-c-embedded-objects-blocks-component__embed-code")
@@ -138,7 +138,7 @@ private
   end
 
   def copy_embed_code_data_attributes(key, document)
-    return {} unless edition.published?
+    return {} unless edition.show_embed_codes?
 
     {
       module: "copy-embed-code",

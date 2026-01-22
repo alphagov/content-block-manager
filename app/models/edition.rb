@@ -40,6 +40,10 @@ class Edition < ApplicationRecord
       published? && document.editions.published.count == 1
   end
 
+  def show_embed_codes?
+    published? || scheduled?
+  end
+
   def render(embed_code = document.embed_code)
     ContentBlockTools::ContentBlock.new(
       document_type: "content_block_#{block_type}",
