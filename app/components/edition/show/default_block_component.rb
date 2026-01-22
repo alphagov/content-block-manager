@@ -18,7 +18,7 @@ private
   end
 
   def embed_code_element
-    return unless edition.published?
+    return unless edition.show_embed_codes?
 
     content_tag(:p, embed_code, class: "app-c-content-block-manager-default-block__embed_code")
   end
@@ -28,7 +28,7 @@ private
   end
 
   def data_attributes
-    return { "testid": "default_block" } unless edition.published?
+    return { "testid": "default_block" } unless edition.show_embed_codes?
 
     {
       module: "copy-embed-code",
