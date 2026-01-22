@@ -1,8 +1,7 @@
-RSpec.describe Document::Show::HostEditionsTableComponent, type: :component do
+RSpec.describe Shared::HostEditionsTableComponent, type: :component do
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::DateHelper
 
-  let(:described_class) { Document::Show::HostEditionsTableComponent }
   let(:caption) { "Some caption" }
   let(:publishing_organisation) do
     {
@@ -202,7 +201,7 @@ RSpec.describe Document::Show::HostEditionsTableComponent, type: :component do
           ),
         )
 
-        expect(page).to have_css "a.app-table__sort-link[href*='##{Document::Show::HostEditionsTableComponent::TABLE_ID}']", count: 6
+        expect(page).to have_css "a.app-table__sort-link[href*='##{Shared::HostEditionsTableComponent::TABLE_ID}']", count: 6
       end
 
       it "shows all the headers unordered by default" do
@@ -296,8 +295,8 @@ RSpec.describe Document::Show::HostEditionsTableComponent, type: :component do
             ),
           )
 
-          expect(page).to have_css "ul.govuk-pagination__list a.govuk-pagination__link[href*='##{Document::Show::HostEditionsTableComponent::TABLE_ID}']", count: 2
-          expect(page).to have_css ".govuk-pagination__next a.govuk-pagination__link[href*='##{Document::Show::HostEditionsTableComponent::TABLE_ID}']"
+          expect(page).to have_css "ul.govuk-pagination__list a.govuk-pagination__link[href*='##{Shared::HostEditionsTableComponent::TABLE_ID}']", count: 2
+          expect(page).to have_css ".govuk-pagination__next a.govuk-pagination__link[href*='##{Shared::HostEditionsTableComponent::TABLE_ID}']"
         end
 
         it "shows the first page as selected by default" do

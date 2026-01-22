@@ -21,3 +21,7 @@ end
 Then("I should see {string}") do |value|
   expect(page).to have_text(value)
 end
+
+Then("I should see the list of host editions referencing my block") do
+  shows_list_of_locations
+end

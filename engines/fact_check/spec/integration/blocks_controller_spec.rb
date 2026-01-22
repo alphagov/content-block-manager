@@ -5,15 +5,28 @@ RSpec.describe FactCheck::BlocksController, type: :feature do
     logout
     user = create(:user)
     login_as(user)
+
+    allow_any_instance_of(Shared::HostEditionsTableComponent)
+      .to receive_message_chain(:helpers, :main_app, :host_content_preview_edition_path)
+            .and_return("/fake/path")
+    allow_any_instance_of(Shared::HostEditionsTableComponent)
+      .to receive_message_chain(:helpers, :url_for)
+            .and_return("/fake/path")
+    allow_any_instance_of(Shared::HostEditionsTableComponent)
+      .to receive_message_chain(:helpers, :main_app, :user_path)
+            .and_return("/fake/path")
   end
 
   describe "#show" do
     let(:block) { build(:content_block) }
     let(:content_id) { "some-content-block" }
+    let(:item_count) { 4 }
+    let(:host_content_items) { build(:host_content_items, items: build_list(:host_content_item, item_count)) }
 
     before do
       expect(ContentBlock).to receive(:from_content_id_alias).with(content_id).and_return(block)
       allow(block).to receive(:state).and_return("awaiting_factcheck")
+      allow(HostContentItem).to receive(:for_document).and_return(host_content_items)
     end
 
     it "returns information about a block" do
@@ -22,6 +35,15 @@ RSpec.describe FactCheck::BlocksController, type: :feature do
       expect(page).to have_css ".govuk-heading-xl", text: block.title
       expect(page).to have_css ".govuk-caption-xl", text: block.block_type
       expect(page).to have_css ".govuk-tag--pink", text: "In fact check"
+    end
+
+    it "shows the list of host editions referencing the block" do
+      visit block_path(content_id)
+
+      expect(page).to have_css "#host_editions", text: "List of locations" do |component|
+        expect(component).to have_content "My document type", count: item_count
+        expect(component).to have_content "My Item Title", count: item_count * 2 # Title appears twice in each row (once as text, once as link)
+      end
     end
 
     context "when the block is not embeddable as a block" do

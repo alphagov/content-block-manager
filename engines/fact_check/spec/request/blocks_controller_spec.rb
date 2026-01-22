@@ -6,10 +6,23 @@ RSpec.describe FactCheck::BlocksController, type: :request do
     let(:content_id) { "some-content-block" }
     let(:user) { create(:user) }
     let(:cookie_jar) { ActionDispatch::Cookies::CookieJar.build(request, cookies.to_hash) }
+    let(:host_content_items) { build(:host_content_items, items: []) }
 
     before do
       ENV["JWT_AUTH_SECRET"] = "secret"
+
+      allow_any_instance_of(Shared::HostEditionsTableComponent)
+        .to receive_message_chain(:helpers, :main_app, :host_content_preview_edition_path)
+              .and_return("/fake/path")
+      allow_any_instance_of(Shared::HostEditionsTableComponent)
+        .to receive_message_chain(:helpers, :url_for)
+              .and_return("/fake/path")
+      allow_any_instance_of(Shared::HostEditionsTableComponent)
+        .to receive_message_chain(:helpers, :main_app, :user_path)
+              .and_return("/fake/path")
+
       allow(ContentBlock).to receive(:from_content_id_alias).with(content_id).and_return(block)
+      allow(HostContentItem).to receive(:for_document).and_return(host_content_items)
     end
 
     context "when the user is authenticated" do

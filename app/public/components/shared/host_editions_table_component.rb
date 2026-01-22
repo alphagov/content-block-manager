@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Document::Show::HostEditionsTableComponent < ViewComponent::Base
+class Shared::HostEditionsTableComponent < ViewComponent::Base
   TABLE_ID = "host_editions"
 
   def initialize(caption:, host_content_items:, edition:, current_page: nil, order: nil)
@@ -132,7 +132,9 @@ private
   end
 
   def preview_path(content_item)
-    helpers.host_content_preview_edition_path(id: edition.id, host_content_id: content_item.host_content_id, locale: content_item.host_locale)
+    ### Using `main_app` here as this component is shared between the main app and engines.
+    ### See https://github.com/rails/rails/blob/428e3d4f1e7218e4965f35cfe75f08ec0808883a/railties/lib/rails/engine.rb#L277-L285
+    helpers.main_app.host_content_preview_edition_path(id: edition.id, host_content_id: content_item.host_content_id, locale: content_item.host_locale)
   end
 
   def preview_link(content_item)
@@ -180,7 +182,7 @@ private
     user_copy = if content_item.last_edited_by_editor
                   link_to(
                     content_item.last_edited_by_editor.name,
-                    helpers.user_path(content_item.last_edited_by_editor.uid), { class: "govuk-link" }
+                    helpers.main_app.user_path(content_item.last_edited_by_editor.uid), { class: "govuk-link" }
                   )
                 else
                   "Unknown user"

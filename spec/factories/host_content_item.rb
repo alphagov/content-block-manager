@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :host_content_item, class: "HostContentItem" do
-    title { "title" }
+    title { "My Item Title" }
     base_path { "/foo/bar" }
-    document_type { "something" }
+    document_type { "My Document Type" }
     publishing_organisation { { name: "organisation", content_id: SecureRandom.uuid } }
     publishing_app { "publishing_app" }
     last_edited_by_editor { build(:signon_user) }

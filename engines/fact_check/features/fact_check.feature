@@ -17,6 +17,7 @@ Feature: Fact check preview
     Then I should see the block's title
     And I should see "foo@example.com" as a previous value
     And I should see "bar@example.com" as a new value
+    And I should see the list of host editions referencing my block
 
   Scenario: User can see a preview of a brand new block in Fact Check
     Given a draft contact edition exists
@@ -27,3 +28,4 @@ Feature: Fact check preview
     Then I should see the block's title
     And I should not see a diff
     And I should see "bar@example.com"
+    And I should see the list of host editions referencing my block
