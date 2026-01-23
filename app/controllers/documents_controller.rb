@@ -18,6 +18,7 @@ class DocumentsController < BaseController
     @document = Document.find(params[:id])
     @edition = @document.most_recent_edition
     @schema = Schema.find_by_block_type(@document.block_type)
+    @subschemas = SubschemaCollection.new(@schema.subschemas)
     @content_block_versions = @document.versions
     @order = params[:order]
     @page = params[:page]
