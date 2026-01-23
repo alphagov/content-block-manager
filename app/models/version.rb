@@ -8,8 +8,4 @@ class Version < ApplicationRecord
   def field_diffs
     self[:field_diffs] ? DiffItem.from_hash(self[:field_diffs]) : {}
   end
-
-  def is_embedded_update?
-    updated_embedded_object_type && updated_embedded_object_title
-  end
 end

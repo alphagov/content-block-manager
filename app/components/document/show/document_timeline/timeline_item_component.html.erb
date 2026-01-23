@@ -10,15 +10,6 @@
     <p class="timeline__byline">by <%= byline %></p>
   </div>
 
-  <% if version.is_embedded_update? %>
-    <ul class="govuk-list timeline__embedded-item-list">
-        <li class="timeline__embedded-item-list__item">
-          <strong class="timeline__embedded-item-list__key"><%= new_subschema_item_details[:field] %>:</strong>
-          <span class="timeline__embedded-item-list__value"><%= new_subschema_item_details[:new_value] %></span>
-        </li>
-    </ul>
-  <% end %>
-
   <p class="timeline__date">
       <%= date %>
   </p>

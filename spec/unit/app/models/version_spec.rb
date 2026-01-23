@@ -67,17 +67,4 @@ RSpec.describe Version do
       expect(content_block_version.field_diffs).to eq(({}))
     end
   end
-
-  describe "#is_embedded_update?" do
-    it "returns false by default" do
-      assert_not content_block_version.is_embedded_update?
-    end
-
-    it "returns true when updated_embedded_object_type and updated_embedded_object_title are set" do
-      content_block_version.updated_embedded_object_type = "something"
-      content_block_version.updated_embedded_object_title = "something"
-
-      expect(content_block_version).to be_is_embedded_update
-    end
-  end
 end
