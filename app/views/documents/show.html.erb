@@ -82,7 +82,7 @@
   </div>
 <% end %>
 
-<% grouped_subschemas(@schema).each do |group, subschemas| %>
+<% @subschemas.grouped.each do |group, subschemas| %>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <h2 class="govuk-heading-l subschema-listing__heading"><%= h group.humanize %></h2>
@@ -99,7 +99,7 @@
   </div>
 <% end %>
 
-<% ungrouped_subschemas(@schema).each do |subschema| %>
+<% @subschemas.ungrouped.each do |subschema| %>
   <div class="subschema-listing" data-testid="<%= subschema.id %>_listing">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
