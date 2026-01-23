@@ -19,6 +19,7 @@ private
   def initialize(edition, schema)
     @edition = edition
     @schema = schema
+    @subschemas ||= SubschemaCollection.new(@schema.subschemas)
   end
 
   def is_new_block?
@@ -41,16 +42,16 @@ private
     subschemas.all? { |subschema| skip_subschema?(subschema) }
   end
 
-  def subschemas
-    @subschemas ||= ungrouped_subschemas(@schema)
+  def ungrouped
+    @ungrouped ||= @subschemas.ungrouped
   end
 
-  def groups
-    @groups ||= grouped_subschemas(@schema)
+  def grouped
+    @grouped ||= @subschemas.grouped
   end
 
   def subschema_steps
-    subschemas.map do |subschema|
+    ungrouped.map do |subschema|
       next if skip_subschema?(subschema)
 
       Workflow::Step.new(
@@ -63,8 +64,8 @@ private
   end
 
   def group_steps
-    groups.keys.map do |group|
-      next if skip_group?(groups[group])
+    grouped.keys.map do |group|
+      next if skip_group?(grouped[group])
 
       Workflow::Step.new(
         "#{Workflow::Step::GROUP_PREFIX}#{group}".to_sym,
