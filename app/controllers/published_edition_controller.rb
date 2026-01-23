@@ -6,6 +6,7 @@ class PublishedEditionController < BaseController
     raise "Document #{@document.id} has no published edition" unless @edition
 
     @schema = Schema.find_by_block_type(@document.block_type)
+    @subschemas = SubschemaCollection.new(@schema.subschemas)
     @content_block_versions = @document.versions
     @order = params[:order]
     @page = params[:page]

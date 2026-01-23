@@ -10,6 +10,7 @@ RSpec.describe PublishedEditionController, type: :controller do
     allow(document).to receive(:latest_published_edition).and_return(latest_edition)
     allow(document).to receive(:versions).and_return(versions)
     allow(Schema).to receive(:find_by_block_type).and_return(schema)
+    allow(schema).to receive(:subschemas).and_return([])
     allow(HostContentItem).to receive(:for_document).and_return(host_content_items)
   end
 
