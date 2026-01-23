@@ -35,3 +35,19 @@
       ) %>
   </div>
 </div>
+
+<% @subschemas.ungrouped.each do |subschema| %>
+  <div class="subschema-listing" data-testid="<%= subschema.id %>_listing">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <h2 class="govuk-heading-l subschema-listing__heading"><%= h subschema.name %></h2>
+
+        <%= render Edition::Show::EmbeddedObjects::SubschemaItemsComponent.new(
+          edition: @block.document.most_recent_edition,
+          schema: @block.schema,
+          subschema: subschema,
+          ) %>
+      </div>
+    </div>
+  </div>
+<% end %>

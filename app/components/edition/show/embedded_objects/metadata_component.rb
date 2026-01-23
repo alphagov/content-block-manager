@@ -18,7 +18,7 @@ private
       field = schema.field(key)
       {
         field: field.label,
-        value: helpers.translated_value(key, value),
+        value: value,
       }
     end
   end
