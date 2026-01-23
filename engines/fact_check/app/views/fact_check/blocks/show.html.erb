@@ -24,6 +24,17 @@
   </div>
 <% end %>
 
+<% @subschemas.ungrouped.each do |subschema| %>
+  <div class="subschema-listing" data-testid="<%= subschema.id %>_listing">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full govuk-!-margin-bottom-5">
+        <h2 class="govuk-heading-l"><%= h subschema.name %></h2>
+        <%= render FactCheck::UngroupedSubschemaDiffComponent.new(block: @block, subschema: subschema) %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
     <%= render Shared::HostEditionsTableComponent.new(
