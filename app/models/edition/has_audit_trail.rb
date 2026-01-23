@@ -18,8 +18,6 @@ module Edition::HasAuditTrail
     after_update :record_update
   end
 
-  attr_accessor :updated_embedded_object_type, :updated_embedded_object_title
-
 private
 
   def record_create
@@ -34,9 +32,7 @@ private
       versions.create!(
         event: "updated",
         user:, state:,
-        field_diffs: generate_diff,
-        updated_embedded_object_type:,
-        updated_embedded_object_title:
+        field_diffs: generate_diff
       )
     end
   end

@@ -15,21 +15,20 @@ private
   attr_reader :version, :schema, :is_first_published_version, :is_latest
 
   def title
-    if version.is_embedded_update?
-      "#{updated_subschema_id.humanize.singularize} added"
-    elsif version.state == "published"
+    case version.state
+    when "published"
       if is_first_published_version
         I18n.t("timeline_item.title.published", block_type: version.item.block_type.humanize)
       else
         version.state.capitalize
       end
-    elsif version.state == "scheduled"
+    when "scheduled"
       I18n.t("timeline_item.title.scheduled", datetime_string: version.item.scheduled_publication.to_fs(:long_ordinal_with_at))
-    elsif version.state == "draft_complete"
+    when "draft_complete"
       I18n.t("timeline_item.title.draft_complete")
-    elsif version.state == "awaiting_review"
+    when "awaiting_review"
       I18n.t("timeline_item.title.awaiting_review")
-    elsif version.state == "awaiting_factcheck"
+    when "awaiting_factcheck"
       I18n.t("timeline_item.title.awaiting_factcheck")
     else
       "#{version.item.block_type.humanize} #{version.state}"
@@ -54,15 +53,6 @@ private
     performer = outcome.performer ? " by #{outcome.performer.try(:name) || outcome.performer}" : ""
 
     "#{review_type} #{skipped_or_performed}#{performer}"
-  end
-
-  def updated_subschema_id
-    version.updated_embedded_object_type
-  end
-
-  def new_subschema_item_details
-    field_diff = version.field_diffs.dig("details", updated_subschema_id, version.updated_embedded_object_title).first
-    { field: field_diff[0].humanize, new_value: field_diff[1].new_value }
   end
 
   def date
@@ -95,7 +85,7 @@ private
   end
 
   def show_details_of_changes?
-    !version.is_embedded_update? && details_of_changes.present?
+    details_of_changes.present?
   end
 
   def details_of_changes

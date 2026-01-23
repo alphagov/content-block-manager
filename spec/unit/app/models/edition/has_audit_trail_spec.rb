@@ -41,26 +41,6 @@ RSpec.describe Edition::HasAuditTrail do
       expect(version.state).to eq("scheduled")
     end
 
-    it "adds event details if provided" do
-      Current.user = user
-      edition = create(
-        :edition,
-        creator: user,
-        document: create(:document, :pension),
-        state: :awaiting_factcheck,
-      )
-      expect(edition).to receive(:generate_diff).and_return({})
-      edition.updated_embedded_object_type = "something"
-      edition.updated_embedded_object_title = "here"
-
-      expect { edition.publish! }.to change { edition.versions.count }.from(1).to(2)
-
-      version = edition.versions.first
-
-      expect(version.updated_embedded_object_type).to eq(edition.updated_embedded_object_type)
-      expect(version.updated_embedded_object_title).to eq(edition.updated_embedded_object_title)
-    end
-
     it "does not record a version when updating an existing draft" do
       edition = create(
         :edition,
