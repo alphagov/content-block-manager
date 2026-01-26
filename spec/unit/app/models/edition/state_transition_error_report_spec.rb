@@ -7,6 +7,7 @@ RSpec.describe Edition::StateTransitionErrorReport do
 
     before do
       allow(GovukError).to receive(:notify)
+      allow(Rails.logger).to receive(:error)
       described_class.new(error: error, edition: edition).call
     end
 
@@ -48,6 +49,10 @@ RSpec.describe Edition::StateTransitionErrorReport do
           ),
         )
       end
+    end
+
+    it "logs the error in Rails" do
+      expect(Rails.logger).to have_received(:error).with(error_message)
     end
   end
 end
