@@ -28,7 +28,7 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-n": "^17.23.2",
     "eslint-plugin-promise": "^7.2.1",
-    "globals": "^17.0.0",
+    "globals": "^17.1.0",
     "jasmine-browser-runner": "^4.0.0",
     "jasmine-core": "^6.0.1",
     "markdown-link-check": "^3.14.2",
