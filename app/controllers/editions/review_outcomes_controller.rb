@@ -100,7 +100,15 @@ private
   end
 
   def handle_other_transition_error(error)
-    flash.alert = "Error: we can not change the status of this edition. #{error.message}"
+    record_error(error)
+    flash.alert = I18n.t("edition.states.transition_error")
     redirect_to document_path(@edition.document)
+  end
+
+  def record_error(error)
+    Edition::StateTransitionErrorReport.new(
+      error: error,
+      edition: @edition,
+    ).call
   end
 end

@@ -301,11 +301,13 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
           "for `Edition` with ID 123  (Transitions::InvalidTransition)"
         end
 
+        let(:error_report) { instance_double(Edition::StateTransitionErrorReport, call: nil) }
+        let(:error) { Transitions::InvalidTransition.new(error_message) }
+
         before do
-          allow(edition).to receive(:publish!).and_raise(
-            Transitions::InvalidTransition,
-            error_message,
-          )
+          allow(edition).to receive(:publish!).and_raise(error)
+
+          allow(Edition::StateTransitionErrorReport).to receive(:new).and_return(error_report)
 
           put :update, params: {
             id: 123,
@@ -317,10 +319,18 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
           expect(response).to redirect_to("/456")
         end
 
-        it "includes an error message with the transition error details" do
+        it "includes an error message" do
           expect(flash.alert).to eq(
-            "Error: we can not change the status of this edition. #{error_message}",
+            "Error: it was not possible to perform that action. The error has been logged.",
           )
+        end
+
+        it "records the error details using StateTransitionErrorReport to facilitate remediation" do
+          expect(Edition::StateTransitionErrorReport).to have_received(:new).with(
+            error: error,
+            edition: edition,
+          )
+          expect(error_report).to have_received(:call)
         end
       end
     end

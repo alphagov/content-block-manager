@@ -65,7 +65,16 @@ private
         state: :awaiting_review,
       ).to_s } }
   rescue Transitions::InvalidTransition => e
+    record_error(e)
+
     { path: document_path(@edition.document),
-      flash: { error: e.message } }
+      flash: { error: I18n.t("edition.states.transition_error") } }
+  end
+
+  def record_error(error)
+    Edition::StateTransitionErrorReport.new(
+      error: error,
+      edition: @edition,
+    ).call
   end
 end

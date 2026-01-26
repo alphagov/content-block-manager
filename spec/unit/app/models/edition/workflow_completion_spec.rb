@@ -185,16 +185,18 @@ RSpec.describe Edition::WorkflowCompletion do
     end
 
     context "when the transition Edition#ready_for_review! is NOT valid" do
-      let(:error_message) do
+      let(:error_details) do
         "Can't fire event `ready_for_review` in current state `published` " \
           "for `Edition` with ID 123  (Transitions::InvalidTransition)"
       end
 
+      let(:error) { Transitions::InvalidTransition.new(error_details) }
+
+      let(:error_report) { instance_double(Edition::StateTransitionErrorReport, call: nil) }
+
       before do
-        allow(edition).to receive(:ready_for_review!).and_raise(
-          Transitions::InvalidTransition,
-          error_message,
-        )
+        allow(edition).to receive(:ready_for_review!).and_raise(error)
+        allow(Edition::StateTransitionErrorReport).to receive(:new).and_return(error_report)
       end
 
       it "returns :path -> document" do
@@ -208,9 +210,19 @@ RSpec.describe Edition::WorkflowCompletion do
 
         expect(return_value.fetch(:flash)).to eq(
           {
-            error: error_message,
+            error: I18n.t("edition.states.transition_error"),
           },
         )
+      end
+
+      it "records the error details using StateTransitionErrorReport to facilitate remediation" do
+        described_class.new(edition, "send_to_review").call
+
+        expect(Edition::StateTransitionErrorReport).to have_received(:new).with(
+          error: error,
+          edition: edition,
+        )
+        expect(error_report).to have_received(:call)
       end
     end
   end
