@@ -62,10 +62,10 @@ There are a few differences in the code to the preview processes in publishing a
 
 1. For this Content Block flow, the block has not yet been published, so we don't want to update the Host Documents yet
 
-1. When the Host Document Preview page loads (step 3 of user journey), we go get a `PreviewContent` class, [which calls the Publishing API](https://github.com/alphagov/content-block-manager/blob/main/app/models/preview_content.rb#L5) to get the latest content for a Host Document
+1. When the Host Document Preview page loads (step 3 of user journey), we go get a `PreviewContent` class, [which calls the Publishing API](https://github.com/alphagov/content-block-manager/blob/main/engines/block_preview/app/model/block_preview/preview_content.rb) to get the latest content for a Host Document
 
-1. We then make a GET request to the Host Documents live frontend page on [Gov.UK, to transform its HTML](https://github.com/alphagov/content-block-manager/blob/main/app/services/generate_preview_html.rb#L16)
+1. We then make a GET request to the Host Documents live frontend page on [Gov.UK, to transform its HTML](https://github.com/alphagov/content-block-manager/blob/main/engines/block_preview/app/model/block_preview/preview_html.rb#L17)
 
-1. And use the data attribute on the content block `<span>` to replace [the block content with the current draft content](https://github.com/alphagov/content-block-manager/blob/main/app/services/generate_preview_html.rb#L75)
+1. And use the data attribute on the content block `<span>` to replace [the block content with the current draft content](https://github.com/alphagov/content-block-manager/blob/main/engines/block_preview/app/model/block_preview/preview_content.rb#L120)
 
-1. The transformed page is then served in [an iFrame on the Content Block Manager](https://github.com/alphagov/content-block-manager/blob/main/app/views/editions/host_content/preview.html.erb#L15)
+1. The transformed page is then served in [an iFrame on the Content Block Manager](https://github.com/alphagov/content-block-manager/blob/main/engines/block_preview/app/views/block_preview/preview/_iframe.html.erb)
