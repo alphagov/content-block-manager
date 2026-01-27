@@ -19,4 +19,29 @@
       margin-bottom: govuk-spacing(6);
     }
   }
+
+  &--bands {
+    margin-left: govuk-spacing(0);
+    margin-right: govuk-spacing(3);
+
+    margin-top: govuk-spacing(6);
+    margin-bottom: govuk-spacing(6);
+
+    .app-c-content-block-manager-array-item-component {
+      margin-bottom: govuk-spacing(6);
+    }
+
+    .gem-c-fieldset {
+      background-color: govuk-colour("white");
+      padding: govuk-spacing(3);
+    }
+
+    .govuk-button--warning {
+      margin-bottom: govuk-spacing(3);
+    }
+
+    .gem-c-button {
+      @extend .gem-c-button--secondary-quiet; // stylelint-disable-line scss/at-extend-no-missing-placeholder
+    }
+  }
 }

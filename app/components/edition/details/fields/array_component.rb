@@ -82,4 +82,11 @@ private
       field_reference: [subschema_block_type, object_title, field.name].compact,
     )
   end
+
+  def wrapper_classes
+    %W[
+      app-c-content-block-manager-array-component
+      app-c-content-block-manager-array-component--#{field.name}
+    ]
+  end
 end

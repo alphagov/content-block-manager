@@ -44,6 +44,12 @@ RSpec.describe Edition::Details::Fields::ArrayComponent, type: :component do
     expect(page).to have_css "turbo-frame[id='array-component-#{edition.id}-#{context.id}']"
   end
 
+  it "renders with a class including the field name" do
+    render_inline component
+
+    expect(page).to have_css ".app-c-content-block-manager-array-component--items"
+  end
+
   describe "when there are no items present" do
     context "and the field is required" do
       before do

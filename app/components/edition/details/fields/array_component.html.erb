@@ -1,4 +1,4 @@
-<div class="app-c-content-block-manager-array-component" data-ga4-section="<%= label %>" data-module="array-component">
+<%= tag.div class: wrapper_classes, data: { ga4_section: label, module: "array-component" } do %>
   <%= helpers.turbo_frame_tag frame_id do %>
     <% components.each do |component| %>
       <%= render component %>
@@ -20,4 +20,4 @@
       },
     } %>
   <% end %>
-</div>
+<% end %>
