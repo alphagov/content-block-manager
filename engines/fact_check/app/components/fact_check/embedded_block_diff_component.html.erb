@@ -1,0 +1,10 @@
+<div class="app-c-embedded-objects-blocks-component">
+  <% if rows.length.positive? %>
+    <div class="app-c-embedded-objects-blocks-component__main-summary-card-wrapper">
+      <%= render "govuk_publishing_components/components/summary_card", {
+        title:,
+        rows:,
+      } %>
+    </div>
+  <% end %>
+</div>
