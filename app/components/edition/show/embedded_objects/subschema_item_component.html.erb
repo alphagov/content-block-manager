@@ -1,5 +1,5 @@
 <%= render Edition::Show::EmbeddedObjects::MetadataComponent.new(
-  items: metadata_items, schema: schema) %>
+  items: block_content.metadata(object_title), schema: schema) %>
 
 <%= render Edition::Show::EmbeddedObjects::BlocksComponent.new(
-  items: block_items, object_type:, schema_name:, object_title:, edition: edition) %>
+  items: block_content.fields(object_title), object_type:, schema_name:, object_title:, edition: edition) %>

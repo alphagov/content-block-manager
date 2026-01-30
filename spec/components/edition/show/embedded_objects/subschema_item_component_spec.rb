@@ -36,6 +36,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::SubschemaItemComponent, type: :co
   before do
     allow(edition.document).to receive(:schema).and_return(schema)
     allow(schema).to receive(:subschema).with(object_type).and_return(subschema)
+    allow(subschema).to receive(:id).and_return(object_type)
     allow(subschema).to receive(:block_display_fields).and_return(%w[item_1 item_2 item_blank])
     allow(subschema).to receive(:field_ordering_rule).with("item_1").and_return(2)
     allow(subschema).to receive(:field_ordering_rule).with("item_2").and_return(1)
