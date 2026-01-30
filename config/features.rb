@@ -26,4 +26,8 @@ Flipflop.configure do
   feature :show_all_content_block_types,
           description: "Show all applicable content block types in Content Block Manager",
           default: ContentBlockManager.integration_or_staging? || !Rails.env.production?
+
+  feature :ga4_form_tracking,
+          description: "Add GA4 form tracking to Content Block Manager",
+          default: ContentBlockManager.integration_or_staging? || !Rails.env.production?
 end
