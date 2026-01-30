@@ -1,0 +1,14 @@
+#!/bin/bash -e
+# Runs Content Block Manager with all major publishing apps and frontends
+
+# Create the `published_documents` RabbitMQ Exchange
+govuk-docker run publishing-api-lite bundle exec rake setup_exchange
+
+# Create search indices
+govuk-docker run search-api-lite env SEARCH_INDEX=all rake search:create_all_indices
+
+# Generate a fake taxonomy tag (for publishing on Whitehall)
+govuk-docker run whitehall-lite rails taxonomy:populate_end_to_end_test_data
+govuk-docker run whitehall-lite rails taxonomy:rebuild_cache
+
+govuk-docker up content-block-manager-app whitehall-app publisher-app frontend-app government-frontend-app

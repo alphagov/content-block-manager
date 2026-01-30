@@ -19,7 +19,7 @@ you to test the whole publishing stack, as well as previewing content):
 __Note: you need to run the fullstack the first time you run the app to allow it to set up the dbs correctly__
 
 ```bash
-govuk-docker run content-block-manager-full
+bin/full-stack
 ```
 
 To run the just the application:
