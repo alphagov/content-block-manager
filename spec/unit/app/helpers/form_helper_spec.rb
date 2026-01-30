@@ -6,6 +6,30 @@ RSpec.describe FormHelper, type: :helper do
 
     let(:result) { ga4_data_attributes(edition: edition, section: section) }
 
+    let(:ga4_form_tracking_enabled) { true }
+
+    before do
+      allow(Flipflop).to receive(:enabled?).with(:ga4_form_tracking).and_return(ga4_form_tracking_enabled)
+    end
+
+    describe "when ga4_form_tracking is disabled" do
+      let(:ga4_form_tracking_enabled) { false }
+
+      it "instructs the GA4 code to not record form submissions" do
+        expect(result[:data][:ga4_form_record_json]).to eq(false)
+        expect(result[:data][:ga4_form_include_text]).to eq(false)
+      end
+    end
+
+    describe "when ga4_form_tracking is enabled" do
+      let(:ga4_form_tracking_enabled) { true }
+
+      it "instructs the GA4 code to record form submissions" do
+        expect(result[:data][:ga4_form_record_json]).to eq(true)
+        expect(result[:data][:ga4_form_include_text]).to eq(true)
+      end
+    end
+
     it "returns correctly structured data attributes with edition and section" do
       expect(result[:data][:module]).to eq("ga4-form-tracker")
       expect(result[:data][:ga4_form][:type]).to eq("Content Block")
