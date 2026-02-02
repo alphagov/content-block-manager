@@ -27,7 +27,6 @@ Feature: Drafting a content block
 
   Scenario: GDS editor saves their edition as a draft
     When I proceed without adding a rate
-    And I confirm I have checked the content
     And I save a draft
     Then I should be taken back to the document page
     And I should see a notice that the completed drafted has been saved

@@ -654,6 +654,18 @@ RSpec.describe "Workflow", type: :request do
         expect(page).to have_text(document.title)
         expect(page).to have_text I18n.t("edition.review.confirm")
       end
+
+      context "when pre_release_features are enabled" do
+        before do
+          allow_any_instance_of(ApplicationHelper).to receive(:pre_release_features?).and_return(true)
+        end
+
+        it "does not show the confirmation text" do
+          get workflow_path(id: edition.id, step:)
+
+          expect(page).to_not have_text I18n.t("edition.review.confirm")
+        end
+      end
     end
   end
 
