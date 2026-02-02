@@ -294,7 +294,7 @@ en:
     go_to_published_edition: Go to published edition
     return_to_latest_edition: Return to latest edition
     edit_block_type: "Edit %{block_type}"
-    send_to_fact_check: Ready for fact check
+    send_to_fact_check: Next
     schedule_block: Schedule block
     publish_block: Publish block
   timeline_item:
