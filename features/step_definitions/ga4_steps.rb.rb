@@ -8,7 +8,7 @@ Then("analytics messages should have been sent for each embedded object") do
   extend SchemaHelper
 
   @selected_subschemas.each do |subschema|
-    expect_select_subschema_messages_to_have_been_sent(subschema) if grouped_subschemas(@schema).any?
+    expect_select_subschema_messages_to_have_been_sent(subschema) if SubschemaCollection.new(@schema.subschemas).grouped.any?
     expect_add_subschema_messages_to_have_been_sent(subschema)
   end
 end

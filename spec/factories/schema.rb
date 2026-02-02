@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :schema, class: "Schema" do
-    body { {} }
+    body { { "properties" => {} } }
     block_type { "block_type" }
 
     Schema.valid_schemas.each do |type|
