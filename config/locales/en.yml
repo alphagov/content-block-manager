@@ -193,7 +193,7 @@ en:
         first:
           draft: "This content block has been saved as a draft"
           draft_complete: "This content block has been saved as a draft"
-          awaiting_review: "This content block is ready to be reviewed by a second pair of eyes. Please share the link to this page with the reviewer."
+          awaiting_review: "Edition saved"
           awaiting_factcheck: "This content block is ready to be fact-checked. Please send the unique fact check URL provided below to the designated subject matter expert."
           published: "This content block has been published, and it is ready to be used."
           scheduled: "This content block has been scheduled to be published, and it is ready to be used."
@@ -201,7 +201,7 @@ en:
         further:
           draft: "This content block edition has been saved as a draft"
           draft_complete: "This content block edition has been saved as a draft"
-          awaiting_review: "This content block edition is ready to be reviewed by a second pair of eyes. Please share the link to this page with the reviewer."
+          awaiting_review: "Edition saved"
           awaiting_factcheck: "This content block edition is ready to be fact-checked. Please send the unique fact check URL provided below to the designated subject matter expert."
           published: "This content block edition has been published, and it is ready to be used."
           scheduled: "This content block edition has been scheduled to be published, and it is ready to be used."
