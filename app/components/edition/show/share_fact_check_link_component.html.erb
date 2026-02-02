@@ -6,11 +6,13 @@
     Anyone with the link can view the content. You do not need a password.
   </p>
 
-  <%= render "govuk_publishing_components/components/copy_to_clipboard", {
-    label: link_content,
-    copyable_content: helpers.fact_check_url_with_token(edition),
-    button_text: "Copy link",
-  } %>
+  <div class="gem-c-copy-to-clipboard--primary">
+    <%= render "govuk_publishing_components/components/copy_to_clipboard", {
+      label: link_content,
+      copyable_content: helpers.fact_check_url_with_token(edition),
+      button_text: "Copy preview link",
+    } %>
+  </div>
 
   <p class="govuk-body govuk-!-margin-top-7">Reset and generate a new preview link if you've shared the preview with the wrong person or if the link has expired. This will disable the previous preview link.</p>
 

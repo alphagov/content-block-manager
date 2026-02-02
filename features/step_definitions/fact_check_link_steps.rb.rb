@@ -5,7 +5,7 @@ Then(/^I should see a link to share the block for fact check$/) do
 end
 
 When(/^I click to copy the link$/) do
-  click_on "Copy link"
+  click_on "Copy preview link"
 end
 
 Then(/^the link should be copied to my clipboard$/) do
