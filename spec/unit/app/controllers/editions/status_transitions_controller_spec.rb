@@ -80,14 +80,14 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
     context "when the transition is invalid" do
       let(:edition_invalid_for_transition) do
         document = create(:document, id: 456)
-        create(:edition, state: "awaiting_review", id: 123, document: document)
+        create(:edition, state: "awaiting_review", id: 234, document: document)
       end
 
       before do
         allow(Edition).to receive(:find).and_return(edition_invalid_for_transition)
         allow(GovukError).to receive(:notify)
 
-        post :create, params: { id: 123, transition: :ready_for_review }
+        post :create, params: { id: 234, transition: :ready_for_review }
       end
 
       it "redirects to the show page" do
@@ -102,12 +102,12 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
 
       it "records the error details using GovukError to facilitate remediation" do
         expected_error_details = "Can't fire event `ready_for_review` in current state " \
-          "`awaiting_review` for `Edition` with ID 123 "
+          "`awaiting_review` for `Edition` with ID 234 "
 
         expect(GovukError).to have_received(:notify).with(
           expected_error_details,
           extra: {
-            edition_id: 123,
+            edition_id: 234,
             document_id: 456,
           },
         )
