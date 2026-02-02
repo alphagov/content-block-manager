@@ -25,7 +25,7 @@ def preview_block_button
 end
 
 Then(/^I should see the review contact screen$/) do
-  assert_text "I confirm that the details I’ve put into the content block have been checked and are factually correct."
+  assert_text I18n.t("edition.review.confirm")
 end
 
 def preview_button_text

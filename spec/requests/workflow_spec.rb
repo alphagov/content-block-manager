@@ -72,7 +72,7 @@ RSpec.describe "Workflow", type: :request do
           get workflow_path(id: edition.id, step:)
 
           expect(page).to have_content(document.title)
-          expect(page).to have_content("I confirm that the details I’ve put into the content block have been checked and are factually correct.")
+          expect(page).to have_content I18n.t("edition.review.confirm")
         end
       end
 
@@ -652,7 +652,7 @@ RSpec.describe "Workflow", type: :request do
         get workflow_path(id: edition.id, step:)
 
         expect(page).to have_text(document.title)
-        expect(page).to have_text("I confirm that the details I’ve put into the content block have been checked and are factually correct.")
+        expect(page).to have_text I18n.t("edition.review.confirm")
       end
     end
   end
