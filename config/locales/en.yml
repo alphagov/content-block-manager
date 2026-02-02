@@ -228,11 +228,11 @@ en:
       supersede: Supersede
     outcomes:
       heading:
-        review: Ready for fact check
+        review: Was there a 2i review?
       options:
         review:
-          skip: "Skip 2i review"
-          performed: "Completed 2i review"
+          skip: "No, the review was skipped"
+          performed: "Yes, outside Content Block Manager"
         fact_check:
           skip: "Skip fact check"
           performed: "Completed fact check"

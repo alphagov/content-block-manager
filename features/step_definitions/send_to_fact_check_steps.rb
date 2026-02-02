@@ -18,12 +18,12 @@ Then("I am required to provide the outcome of the review process") do
     expect(page).to have_content(edition.title)
   end
 
-  expect(page).to have_field("Completed 2i review", type: :radio)
-  expect(page).to have_field("Skip 2i review", type: :radio)
+  expect(page).to have_field(I18n.t("edition.outcomes.options.review.performed"), type: :radio)
+  expect(page).to have_field(I18n.t("edition.outcomes.options.review.skip"), type: :radio)
 end
 
 When("I provide the outcome of the review process") do
-  choose("Skip 2i review")
+  choose(I18n.t("edition.outcomes.options.review.skip"))
   click_button("Continue")
 end
 
