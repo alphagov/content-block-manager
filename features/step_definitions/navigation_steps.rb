@@ -31,4 +31,5 @@ end
 Given("I am viewing the edition awaiting fact check") do
   edition = Document.last.editions.where(state: :awaiting_factcheck).most_recent
   visit document_path(edition.document)
+  expect(page).to have_content(I18n.t("edition.states.important_notice.awaiting_factcheck"))
 end

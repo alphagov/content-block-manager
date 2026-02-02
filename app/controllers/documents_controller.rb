@@ -17,7 +17,7 @@ class DocumentsController < BaseController
   def show
     @document = Document.find(params[:id])
     @edition = @document.most_recent_edition
-    add_important_notice if @edition.awaiting_review?
+    add_important_notice if @edition.awaiting_review? || @edition.awaiting_factcheck?
     @schema = Schema.find_by_block_type(@document.block_type)
     @subschemas = SubschemaCollection.new(@schema.subschemas)
     @content_block_versions = @document.versions
