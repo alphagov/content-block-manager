@@ -48,7 +48,7 @@ module Workflow::UpdateMethods
   end
 
   def complete_workflow
-    if params[:has_checked_content].blank?
+    if !helpers.pre_release_features? && params[:has_checked_content].blank?
       @check_content_error_copy = I18n.t("edition.review_page.errors.confirm")
       @error_summary_errors = [{ text: @check_content_error_copy, href: "#has_checked_content-0" }]
       render :review, status: :unprocessable_content

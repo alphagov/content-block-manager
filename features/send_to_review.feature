@@ -52,13 +52,7 @@ Feature: Editor sends edition to Review
     And I save and continue
     Then I see that I can complete the workflow with 'Ready for 2i'
 
-    When I confirm I have checked the content
     And I opt to send the edition to Review
     Then I see a notification that the transition to Awaiting review was successful
     And I see that the edition is in awaiting_review state
     And the calls to action are suited to the awaiting_review state
-
-  Scenario: Must confirm that contents are checked before going from workflow to 2i Review
-    Given I am on the draft's workflow review step
-    And I try to send the draft to review without confirming that I have checked the contents
-    Then I should see a message that I need to confirm the details are correct
