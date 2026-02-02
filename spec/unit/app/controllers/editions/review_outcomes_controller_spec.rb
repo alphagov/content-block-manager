@@ -216,6 +216,10 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
         ).to_s
         expect(flash[:success]).to eq(expected_success_message)
       end
+
+      it "shows an important notice directing user to share the link" do
+        expect(flash[:notice]).to eq(I18n.t("edition.states.important_notice.awaiting_factcheck"))
+      end
     end
 
     describe "when the transition fails" do

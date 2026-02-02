@@ -49,7 +49,7 @@ private
       state: @edition.state,
     ).to_s
 
-    add_important_notice if @edition.awaiting_review?
+    add_important_notice if @edition.awaiting_review? || @edition.awaiting_factcheck?
   end
 
   def add_important_notice

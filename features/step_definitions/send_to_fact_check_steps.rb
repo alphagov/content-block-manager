@@ -38,6 +38,12 @@ Then("I see that I need to indicate whether the review process was performed or 
   end
 end
 
+Then("I see a important notice that I should share the fact check link") do
+  within ".gem-c-notice" do
+    expect(page).to have_content(I18n.t("edition.states.important_notice.awaiting_factcheck"))
+  end
+end
+
 Given("the edition has been put into the awaiting_factcheck state by another process") do
   # e.g. a race condition...
   edition.update_column(:state, :awaiting_factcheck)

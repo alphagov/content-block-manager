@@ -208,6 +208,7 @@ en:
           deleted: "The edition has been deleted"
       important_notice:
         awaiting_review: "Share a link to this page for a 2i review"
+        awaiting_factcheck: "Share the preview link for a fact check"
       label_extended:
         draft: "Drafted on %{date} by %{user}"
         draft_complete: "Draft completed on %{date} by %{user}"
