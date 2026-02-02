@@ -25,6 +25,7 @@ end
 Given("I am viewing the edition awaiting review") do
   edition = Document.last.editions.where(state: :awaiting_review).most_recent
   visit document_path(edition.document)
+  expect(page).to have_content(I18n.t("edition.states.important_notice.awaiting_review"))
 end
 
 Given("I am viewing the edition awaiting fact check") do
