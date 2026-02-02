@@ -214,7 +214,7 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
           edition: edition,
           state: :awaiting_factcheck,
         ).to_s
-        expect(flash.notice).to eq(expected_success_message)
+        expect(flash[:success]).to eq(expected_success_message)
       end
     end
 

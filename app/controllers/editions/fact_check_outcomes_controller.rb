@@ -103,7 +103,7 @@ private
       destination_state = "published"
     end
 
-    flash.notice = Edition::StateTransitionMessage.new(
+    flash[:success] = Edition::StateTransitionMessage.new(
       edition: @edition,
       state: destination_state,
     ).to_s

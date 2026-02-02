@@ -44,7 +44,7 @@ private
   end
 
   def handle_success
-    flash.notice = Edition::StateTransitionMessage.new(
+    flash[:success] = Edition::StateTransitionMessage.new(
       edition: @edition,
       state: @edition.state,
     ).to_s

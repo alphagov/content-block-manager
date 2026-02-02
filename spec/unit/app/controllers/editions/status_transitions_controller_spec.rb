@@ -56,7 +56,7 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
               edition: edition,
               state: edition.reload.state,
             ).to_s
-            expect(flash.notice).to eq(expected_success_message)
+            expect(flash[:success]).to eq(expected_success_message)
           end
         end
       end

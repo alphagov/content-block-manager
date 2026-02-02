@@ -188,7 +188,7 @@ RSpec.describe EmbeddedObjects, type: :request do
       updated_edition = edition.reload
 
       expect(updated_edition.details).to eq(expected_details)
-      expect(flash.[](:notice)).to eq("Something added. You can add another something or finish creating the schema block.")
+      expect(flash.[](:success)).to eq("Something added. You can add another something or finish creating the schema block.")
     end
 
     describe "when the subschema belongs to a group" do
@@ -200,7 +200,7 @@ RSpec.describe EmbeddedObjects, type: :request do
         expect(response).to redirect_to(
           workflow_path(edition, step: "#{Workflow::Step::GROUP_PREFIX}#{group}"),
         )
-        expect(flash.[](:notice)).to eq("Something added. You can add another some group or finish creating the schema block.")
+        expect(flash.[](:success)).to eq("Something added. You can add another some group or finish creating the schema block.")
       end
     end
 
@@ -300,7 +300,7 @@ RSpec.describe EmbeddedObjects, type: :request do
       put embedded_object_edition_path(edition, object_type:, object_title:), params: params
 
       expect(response).to redirect_to(documents_path)
-      expect(flash.[](:notice)).to eq("Something edited. You can add another something or finish creating the schema block.")
+      expect(flash.[](:success)).to eq("Something edited. You can add another something or finish creating the schema block.")
     end
 
     describe "when the subschema belongs to a group" do
@@ -310,7 +310,7 @@ RSpec.describe EmbeddedObjects, type: :request do
         put embedded_object_edition_path(edition, object_type:, object_title:), params: params
 
         expect(response).to redirect_to(documents_path)
-        expect(flash.[](:notice)).to eq("Something edited. You can add another some group or finish creating the schema block.")
+        expect(flash.[](:success)).to eq("Something edited. You can add another some group or finish creating the schema block.")
       end
     end
 

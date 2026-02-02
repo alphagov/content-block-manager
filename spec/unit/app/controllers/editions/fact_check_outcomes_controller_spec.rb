@@ -263,7 +263,7 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
           edition: edition,
           state: :scheduled,
         ).to_s
-        expect(flash.notice).to eq(expected_success_message)
+        expect(flash[:success]).to eq(expected_success_message)
       end
     end
 
@@ -290,7 +290,7 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
           edition: edition,
           state: :published,
         ).to_s
-        expect(flash.notice).to eq(expected_success_message)
+        expect(flash[:success]).to eq(expected_success_message)
       end
     end
 

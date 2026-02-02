@@ -53,7 +53,7 @@
 
     <main class="govuk-main-wrapper<%= " govuk-main-wrapper--l" if yield(:back_link).blank? && yield(:breadcrumbs).blank? %>" id="main-content" data-module="ga4-link-tracker" role="main" data-ga4-link='{ "event_name": "navigation", "type": "generic_link" }' data-turbo="false">
 
-      <%= render Shared::FlashNoticeComponent.new(message: flash[:notice], html_safe: flash["html_safe"]) if flash[:notice] %>
+      <%= render Shared::FlashSuccessComponent.new(message: flash[:success], html_safe: flash["html_safe"]) if flash[:success] %>
       <%= render Shared::FlashAlertComponent.new(message: flash[:alert], html_safe: flash["html_safe"]) if flash[:alert] && yield(:error_summary).blank? %>
 
       <% column_width = yield(:page_full_width).present? ? "full" : "two-thirds" %>
