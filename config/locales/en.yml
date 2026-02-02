@@ -238,14 +238,13 @@ en:
           performed: "Completed fact check"
       performer:
         label:
-          review:    "2i reviewer"
+          review:    "Reviewer's name or email address"
           fact_check: "Fact check subject matter expert"
         hint:
-          review:    "Enter the email address or name of the 2i reviewer"
           fact_check: "Enter the email address or name of the subject matter expert"
       errors:
         missing_performer:
-          review:    "Provide the email or name of the 2i reviewer who performed the review"
+          review:    "Provide the email or name of the 2i reviewer"
           fact_check: "Provide the email or name of the subject matter expert who performed the fact check"
         missing_outcome:
           review:    "Indicate whether the 2i review process has been performed or not"

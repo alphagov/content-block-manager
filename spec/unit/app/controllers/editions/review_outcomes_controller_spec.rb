@@ -160,7 +160,7 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
       end
 
       it "shows an error message" do
-        expected_message = "Provide the email or name of the 2i reviewer who performed the review"
+        expected_message = I18n.t("edition.outcomes.errors.missing_performer.review")
         expect(flash.alert).to eq(expected_message)
       end
 
@@ -183,7 +183,7 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
       end
 
       it "shows an error message" do
-        expected_message = "Provide the email or name of the 2i reviewer who performed the review"
+        expected_message = I18n.t("edition.outcomes.errors.missing_performer.review")
         expect(flash.alert).to eq(expected_message)
       end
 
