@@ -1,10 +1,13 @@
 <% link_content = capture do %>
-  <p class="govuk-body">Send this link to someone so they can see the block.</p>
-  <p class="govuk-body">No password is needed, and anyone with the link can view it. You're responsible for who you share draft documents with.</p>
-  <p class="govuk-body">The link will expire on <%= edition.bypass_token_expiry_date.to_fs(:long_ordinal_with_at) %> or when the document is published.</p>
+  <p class="govuk-body">
+    Share this link with a fact checker. It will expire on <%= edition.bypass_token_expiry_date.to_fs(:long_ordinal_with_at) %> or when the document is published.
+  </p>
+  <p class="govuk-body">
+    Anyone with the link can view the content. You do not need a password.
+  </p>
 
   <%= render "govuk_publishing_components/components/copy_to_clipboard", {
-    label: "Copy and send this link to someone, and they’ll be able to view your draft.",
+    label: link_content,
     copyable_content: helpers.fact_check_url_with_token(edition),
     button_text: "Copy link",
   } %>
