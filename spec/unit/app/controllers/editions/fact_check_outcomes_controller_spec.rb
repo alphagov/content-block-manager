@@ -19,16 +19,16 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
     context "when the edition is going to be scheduled" do
       let(:edition) { create(:edition, :pension, id: 123, document: document, scheduled_publication: Time.zone.now) }
 
-      it "sets the page title to a 'schedule' call-to-action" do
-        expect(assigns(:title)).to eq("Schedule block")
+      it "uses the page title defined in the locale file" do
+        expect(assigns(:title)).to eq(I18n.t("edition.outcomes.heading.fact_check"))
       end
     end
 
     context "when the edition is going to be published" do
       let(:edition) { create(:edition, :pension, id: 123, document: document, scheduled_publication: nil) }
 
-      it "sets the page title to a 'publish' call-to-action" do
-        expect(assigns(:title)).to eq("Publish block")
+      it "uses the page title defined in the locale file" do
+        expect(assigns(:title)).to eq(I18n.t("edition.outcomes.heading.fact_check"))
       end
     end
 
@@ -139,8 +139,8 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
     context "when the edition is going to be scheduled" do
       let(:edition) { Edition.new(id: 123, document: document, scheduled_publication: Time.zone.now) }
 
-      it "sets the page title to a 'schedule' call-to-action" do
-        expect(assigns(:title)).to eq("Schedule block")
+      it "uses the page title defined in the locale file" do
+        expect(assigns(:title)).to eq(I18n.t("edition.outcomes.heading.fact_check"))
       end
 
       it "sets the call to action to a 'schedule' call-to-action" do
@@ -151,8 +151,8 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
     context "when the edition is going to be published" do
       let(:edition) { Edition.new(id: 123, document: document, scheduled_publication: nil) }
 
-      it "sets the page title to a 'publish' call-to-action" do
-        expect(assigns(:title)).to eq("Publish block")
+      it "uses the page title defined in the locale file" do
+        expect(assigns(:title)).to eq(I18n.t("edition.outcomes.heading.fact_check"))
       end
 
       it "sets the call to action to a 'publish' call-to-action" do

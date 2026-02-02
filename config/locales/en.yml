@@ -229,13 +229,14 @@ en:
     outcomes:
       heading:
         review: Was there a 2i review?
+        fact_check: Was there a fact check?
       options:
         review:
           skip: "No, the review was skipped"
           performed: "Yes, outside Content Block Manager"
         fact_check:
-          skip: "Skip fact check"
-          performed: "Completed fact check"
+          skip: "No"
+          performed: "Yes, outside Content Block Manager"
       performer:
         label:
           review:    "Reviewer's name or email address"
