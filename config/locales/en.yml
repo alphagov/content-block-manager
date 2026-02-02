@@ -206,6 +206,8 @@ en:
           published: "This content block edition has been published, and it is ready to be used."
           scheduled: "This content block edition has been scheduled to be published, and it is ready to be used."
           deleted: "The edition has been deleted"
+      important_notice:
+        awaiting_review: "Share a link to this page for a 2i review"
       label_extended:
         draft: "Drafted on %{date} by %{user}"
         draft_complete: "Draft completed on %{date} by %{user}"

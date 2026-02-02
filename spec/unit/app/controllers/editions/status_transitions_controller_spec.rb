@@ -77,6 +77,18 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
       end
     end
 
+    context "when the transition is to 'ready_for_review'" do
+      before do
+        edition.state = :draft_complete
+      end
+
+      it "sets an 'important notice' to the flash to direct user to share link" do
+        post :create, params: { id: 123, transition: :ready_for_review }
+
+        expect(flash[:notice]).to eq(I18n.t("edition.states.important_notice.awaiting_review"))
+      end
+    end
+
     context "when the transition is invalid" do
       let(:edition_invalid_for_transition) do
         document = create(:document, id: 456)

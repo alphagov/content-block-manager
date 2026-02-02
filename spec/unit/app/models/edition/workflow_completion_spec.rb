@@ -173,13 +173,19 @@ RSpec.describe Edition::WorkflowCompletion do
       it "returns :flash -> success" do
         return_value = described_class.new(edition, "send_to_review").call
 
-        expect(return_value.fetch(:flash)).to eq(
-          {
-            success: Edition::StateTransitionMessage.new(
-              edition: edition,
-              state: :awaiting_review,
-            ).to_s,
-          },
+        expect(return_value.fetch(:flash)).to include(
+          success: Edition::StateTransitionMessage.new(
+            edition: edition,
+            state: :awaiting_review,
+          ).to_s,
+        )
+      end
+
+      it "return :flash -> 'important notice' directing user to share the link" do
+        return_value = described_class.new(edition, "send_to_review").call
+
+        expect(return_value.fetch(:flash)).to include(
+          notice: I18n.t("edition.states.important_notice.awaiting_review"),
         )
       end
     end
