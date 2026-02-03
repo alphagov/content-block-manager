@@ -182,8 +182,8 @@ schemas:
       - abbreviation
       - synonym
       - tax_type
-      - note
       - description
+      - note
     fields:
       description:
         component:
