@@ -123,6 +123,9 @@ en:
       pension:
         rates:
           amount: "Enter an exact amount, with the currency symbol - for example: £122.50"
+      tax:
+        note: "Clarify the policy if necessary, for example, 'The amount of Capital Gains Tax you pay is based on your Income Tax band.'"
+        description: "A summary of the tax, for example, 'Capital Gains Tax is a tax on the profit when you sell something that’s increased in value.'"
     titles:
       contact:
         telephones:
