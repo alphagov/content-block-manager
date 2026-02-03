@@ -332,3 +332,6 @@ en:
     views:
       title: Views
       context: in last 30 days
+  schema:
+    title:
+      things_taxed: thing the tax is paid on

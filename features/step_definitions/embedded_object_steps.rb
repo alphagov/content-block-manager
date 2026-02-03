@@ -152,7 +152,8 @@ And("I click to add a new {string}") do |object_type|
   @selected_subschemas ||= []
   @selected_subschemas << object_type.pluralize
   @object_type = object_type
-  click_on I18n.t("buttons.add", item: add_indefinite_article(object_type.humanize.downcase))
+  subschema = @schema.subschema(object_type.pluralize)
+  click_on I18n.t("buttons.add", item: add_indefinite_article(subschema.name.humanize.singularize.downcase))
 end
 
 And("I click to add a(n) {string}") do |object_type|
