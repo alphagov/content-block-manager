@@ -1,9 +1,13 @@
 RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
   let(:document) { create(:document, :pension, id: 456) }
   let(:edition) { create(:edition, :pension, id: 123, document: document) }
+  let(:publish_edition_service) { instance_double(PublishEditionService, call: nil) }
+  let(:schedule_edition_service) { instance_double(ScheduleEditionService, call: nil) }
 
   before do
     allow(Edition).to receive(:find).and_return(edition)
+    allow(PublishEditionService).to receive(:new).and_return(publish_edition_service)
+    allow(ScheduleEditionService).to receive(:new).and_return(schedule_edition_service)
   end
 
   describe "GET to :new" do
@@ -49,7 +53,6 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
     context "when the form returned is valid" do
       before do
         allow(edition).to receive(:create_fact_check_outcome!)
-        allow(edition).to receive(:publish!)
       end
 
       describe "saving the Fact check outcome details" do
@@ -69,7 +72,7 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
           end
 
           it "publishes the edition" do
-            expect(edition).to have_received(:publish!)
+            expect(publish_edition_service).to have_received(:call).with(edition)
           end
 
           it "redirects to the document path" do
@@ -174,8 +177,6 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
       allow(Time).to receive(:current).and_return(time_now)
       allow(Current).to receive(:user).and_return(current_user)
       allow(edition).to receive(:update)
-      allow(edition).to receive(:schedule!)
-      allow(edition).to receive(:publish!)
       allow(edition).to receive(:fact_check_outcome).and_return(fact_check_outcome)
     end
 
@@ -198,8 +199,6 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
           id: 123,
           "fact_check_outcome" => {},
         }
-        allow(edition).to receive(:schedule!)
-        allow(edition).to receive(:publish!)
       end
 
       it "redirects to the same page to prevent the user progressing" do
@@ -212,8 +211,7 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
       end
 
       it "should not transition to the next state" do
-        expect(edition).not_to have_received(:schedule!)
-        expect(edition).not_to have_received(:publish!)
+        expect(schedule_edition_service).not_to have_received(:call).with(edition)
       end
     end
 
@@ -223,8 +221,6 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
           id: 123,
           "fact_check_outcome" => { "fact_check_performer" => "" },
         }
-        allow(edition).to receive(:schedule!)
-        allow(edition).to receive(:publish!)
       end
 
       it "redirects to the same page to prevent the user progressing" do
@@ -237,8 +233,8 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
       end
 
       it "should not transition to the next state" do
-        expect(edition).not_to have_received(:schedule!)
-        expect(edition).not_to have_received(:publish!)
+        expect(schedule_edition_service).not_to have_received(:call).with(edition)
+        expect(publish_edition_service).not_to have_received(:call).with(edition)
       end
     end
 
@@ -250,8 +246,9 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
           "fact_check_outcome" => { "fact_check_performer" => "Alice" },
         }
       end
-      it "transitions the edition using the 'schedule!' transition" do
-        expect(edition).to have_received(:schedule!)
+
+      it "schedules the edition" do
+        expect(schedule_edition_service).to have_received(:call).with(edition)
       end
 
       it "redirects to the documents_path to display the most recent edition" do
@@ -277,8 +274,8 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
         }
       end
 
-      it "transitions the edition using the 'publish!' transition" do
-        expect(edition).to have_received(:publish!)
+      it "publishes the edition" do
+        expect(publish_edition_service).to have_received(:call).with(edition)
       end
 
       it "redirects to the documents_path to display the most recent edition" do
@@ -305,7 +302,7 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
         let(:error) { Transitions::InvalidTransition.new(error_message) }
 
         before do
-          allow(edition).to receive(:publish!).and_raise(error)
+          allow(publish_edition_service).to receive(:call).and_raise(error)
 
           allow(Edition::StateTransitionErrorReport).to receive(:new).and_return(error_report)
 

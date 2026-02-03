@@ -96,10 +96,10 @@ private
 
   def transition_to_next_state
     if block_will_be_scheduled?
-      @edition.schedule!
+      ScheduleEditionService.new.call(@edition)
       destination_state = "scheduled"
     else
-      @edition.publish!
+      PublishEditionService.new.call(@edition)
       destination_state = "published"
     end
 
