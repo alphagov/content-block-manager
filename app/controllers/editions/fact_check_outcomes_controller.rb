@@ -38,7 +38,7 @@ private
 
   def set_edition_and_title
     @edition = Edition.find(params[:id])
-    @title = block_will_be_scheduled? ? "Schedule block" : "Publish block"
+    @title = I18n.t("edition.outcomes.heading.fact_check")
   end
 
   def finalise_edition
@@ -103,7 +103,7 @@ private
       destination_state = "published"
     end
 
-    flash.notice = Edition::StateTransitionMessage.new(
+    flash[:success] = Edition::StateTransitionMessage.new(
       edition: @edition,
       state: destination_state,
     ).to_s

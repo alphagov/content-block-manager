@@ -1,4 +1,4 @@
-RSpec.describe Shared::FlashNoticeComponent, type: :component do
+RSpec.describe Shared::FlashSuccessComponent, type: :component do
   let(:flash) do
     {
       message: "This is a notice",

@@ -42,7 +42,7 @@ class Editions::EmbeddedObjectsController < BaseController
 
       object_or_group = @subschema.group ? @subschema.group.humanize.singularize : @subschema.name.singularize
 
-      flash[:notice] = I18n.t(
+      flash[:success] = I18n.t(
         "edition.create.embedded_objects.added_confirmation",
         object_name: @subschema.name.singularize,
         object_or_group: object_or_group.downcase,
@@ -77,7 +77,7 @@ class Editions::EmbeddedObjectsController < BaseController
       @edition.save!
 
       object_or_group = @subschema.group ? @subschema.group.humanize.singularize : @subschema.name.singularize
-      flash[:notice] = I18n.t(
+      flash[:success] = I18n.t(
         "edition.create.embedded_objects.edited_confirmation",
         object_name: @subschema.name.singularize,
         object_or_group: object_or_group.downcase,

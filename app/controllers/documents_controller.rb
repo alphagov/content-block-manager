@@ -17,6 +17,7 @@ class DocumentsController < BaseController
   def show
     @document = Document.find(params[:id])
     @edition = @document.most_recent_edition
+    add_important_notice if @edition.awaiting_review? || @edition.awaiting_factcheck?
     @schema = Schema.find_by_block_type(@document.block_type)
     @subschemas = SubschemaCollection.new(@schema.subschemas)
     @content_block_versions = @document.versions
@@ -53,6 +54,10 @@ class DocumentsController < BaseController
   end
 
 private
+
+  def add_important_notice
+    flash[:notice] = I18n.t("edition.states.important_notice.#{@edition.state}")
+  end
 
   def params_filters
     params.slice(:keyword, :block_type, :lead_organisation, :page, :last_updated_to, :last_updated_from)

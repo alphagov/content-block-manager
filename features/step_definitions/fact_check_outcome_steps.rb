@@ -11,7 +11,7 @@ end
 
 Then("I am required to provide the outcome of the fact check process") do
   within "h1" do
-    expect(page).to have_content("Publish block")
+    expect(page).to have_content(I18n.t("edition.outcomes.heading.fact_check"))
   end
 
   within ".govuk-caption-xl" do
@@ -29,7 +29,7 @@ end
 
 Then("I am required to provide the subject matter expert") do
   within "h1" do
-    expect(page).to have_content("Publish block")
+    expect(page).to have_content(I18n.t("edition.outcomes.heading.fact_check"))
   end
 
   within ".govuk-caption-xl" do

@@ -72,10 +72,13 @@ private
 
   def transition_to_awaiting_factcheck_state
     @edition.ready_for_factcheck!
-    flash.notice = Edition::StateTransitionMessage.new(
+
+    flash[:success] = Edition::StateTransitionMessage.new(
       edition: @edition,
       state: :awaiting_factcheck,
     ).to_s
+
+    flash[:notice] = I18n.t("edition.states.important_notice.awaiting_factcheck")
   end
 
   def review_outcome_supplied?

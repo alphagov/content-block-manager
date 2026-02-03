@@ -18,12 +18,12 @@ Then("I am required to provide the outcome of the review process") do
     expect(page).to have_content(edition.title)
   end
 
-  expect(page).to have_field("Completed 2i review", type: :radio)
-  expect(page).to have_field("Skip 2i review", type: :radio)
+  expect(page).to have_field(I18n.t("edition.outcomes.options.review.performed"), type: :radio)
+  expect(page).to have_field(I18n.t("edition.outcomes.options.review.skip"), type: :radio)
 end
 
 When("I provide the outcome of the review process") do
-  choose("Skip 2i review")
+  choose(I18n.t("edition.outcomes.options.review.skip"))
   click_button("Continue")
 end
 
@@ -35,6 +35,12 @@ Then("I see that I need to indicate whether the review process was performed or 
   expect(page).to have_content("Indicate whether the 2i review process has been performed or not")
   within ".govuk-form-group--error" do
     expect(page).to have_content("Indicate whether the 2i review process has been performed or not")
+  end
+end
+
+Then("I see a important notice that I should share the fact check link") do
+  within ".gem-c-notice" do
+    expect(page).to have_content(I18n.t("edition.states.important_notice.awaiting_factcheck"))
   end
 end
 

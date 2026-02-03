@@ -67,7 +67,7 @@ RSpec.describe Edition::Show::ActionsComponent, type: :component do
         end
 
         it "does NOT offer a button to record the Review outcome" do
-          expect(page).to have_no_link("Ready for fact check")
+          expect(page).to have_no_link(I18n.t("show_action.send_to_fact_check"))
         end
       end
     end

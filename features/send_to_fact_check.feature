@@ -20,6 +20,7 @@ Feature: Editor sends edition to fact check, recording Review outcome
 
     When I provide the outcome of the review process
     Then I see a notification that the transition to Awaiting factcheck was successful
+    And I see a important notice that I should share the fact check link
 
     And I see that the edition is in awaiting_factcheck state
     And I see the transition to the awaiting_factcheck state in the timeline

@@ -44,10 +44,16 @@ private
   end
 
   def handle_success
-    flash.notice = Edition::StateTransitionMessage.new(
+    flash[:success] = Edition::StateTransitionMessage.new(
       edition: @edition,
       state: @edition.state,
     ).to_s
+
+    add_important_notice if @edition.awaiting_review? || @edition.awaiting_factcheck?
+  end
+
+  def add_important_notice
+    flash[:notice] = I18n.t("edition.states.important_notice.#{@edition.state}")
   end
 
   def handle_failure(error)

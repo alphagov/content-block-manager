@@ -19,6 +19,12 @@ Then("I see a secondary call to action edit the existing draft") do
   )
 end
 
+Then("I see a important notice that I should share the review link") do
+  within ".gem-c-notice" do
+    expect(page).to have_content(I18n.t("edition.states.important_notice.awaiting_review"))
+  end
+end
+
 Given("the document has been put into the awaiting_review state by another process") do
   # imagine it's a race condition...
   edition.update_column(:state, :awaiting_review)
