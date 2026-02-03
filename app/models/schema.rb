@@ -43,7 +43,7 @@ class Schema
   end
 
   def name
-    block_type.humanize
+    I18n.t("schema.title.#{block_type}", default: block_type.humanize)
   end
 
   def parameter
