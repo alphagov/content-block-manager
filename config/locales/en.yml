@@ -240,9 +240,7 @@ en:
       performer:
         label:
           review:    "Reviewer's name or email address"
-          fact_check: "Fact check subject matter expert"
-        hint:
-          fact_check: "Enter the email address or name of the subject matter expert"
+          fact_check: "Fact checker's name or email address"
       errors:
         missing_performer:
           review:    "Provide the email or name of the 2i reviewer"
