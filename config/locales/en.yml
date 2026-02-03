@@ -123,6 +123,8 @@ en:
       pension:
         rates:
           amount: "Enter an exact amount, with the currency symbol - for example: £122.50"
+      tax:
+        description: "A summary of the tax, for example, 'Capital Gains Tax is a tax on the profit when you sell something that’s increased in value.'"
     titles:
       contact:
         telephones:
