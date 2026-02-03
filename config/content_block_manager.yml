@@ -188,10 +188,12 @@ schemas:
       description:
         component:
           textarea
+        character_limit: 165
         govspeak_enabled: true
       note:
         component:
           textarea
+        character_limit: 165
         govspeak_enabled: true
     subschemas:
       things_taxed:
