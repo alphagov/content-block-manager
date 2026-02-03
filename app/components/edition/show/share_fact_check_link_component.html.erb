@@ -1,24 +1,23 @@
 <% link_content = capture do %>
-  <p class="govuk-body">
-    Share this link with a fact checker. It will expire on <%= edition.bypass_token_expiry_date.to_fs(:long_ordinal_with_at) %> or when the document is published.
-  </p>
-  <p class="govuk-body">
-    Anyone with the link can view the content. You do not need a password.
-  </p>
+  <%=
+    I18n.t("fact_check.share_preview.link_label_html", timestamp: formatted_expiration_timestamp).html_safe
+  %>
 
   <div class="gem-c-copy-to-clipboard--primary">
     <%= render "govuk_publishing_components/components/copy_to_clipboard", {
       label: link_content,
       copyable_content: helpers.fact_check_url_with_token(edition),
-      button_text: "Copy preview link",
+      button_text: I18n.t("fact_check.share_preview.link_text"),
     } %>
   </div>
 
-  <p class="govuk-body govuk-!-margin-top-7">Reset and generate a new preview link if you've shared the preview with the wrong person or if the link has expired. This will disable the previous preview link.</p>
+  <p class="govuk-body govuk-!-margin-top-7">
+    <%= I18n.t("fact_check.share_preview.reset_link_guidance") %>
+  </p>
 
   <%= form_for edition, url: update_fact_check_preview_link_edition_path(edition), method: :put do %>
     <%= render "govuk_publishing_components/components/button", {
-      text: "Reset preview link",
+      text: I18n.t("fact_check.share_preview.reset_link_text"),
       secondary_quiet: true,
       type: "submit",
     } %>
