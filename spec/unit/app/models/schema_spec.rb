@@ -58,6 +58,18 @@ RSpec.describe Schema do
     end
   end
 
+  describe "#name" do
+    it "returns a translation of the schema's block type" do
+      allow(I18n).to receive(:t).and_return("Pension")
+
+      expect(schema.name).to eq("Pension")
+
+      expect(I18n).to have_received(:t).with(
+        "schema.title.#{schema.block_type}", default: schema.block_type.humanize
+      )
+    end
+  end
+
   describe "#required_fields" do
     describe "when there are no required fields" do
       it "returns an empty array" do
