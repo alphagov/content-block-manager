@@ -39,7 +39,7 @@
     class: "govuk-width-container",
     data: {
       ga4_no_copy: "",
-      module: "ga4-event-tracker ga4-paste-tracker ga4-button-setup ga4-index-section-setup ga4-form-setup",
+      module: try(:ga4_form_tracking?) ? "ga4-form-setup" : "",
       ga4_search_section_type: "Filter by",
       ga4_section: yield(:page_title).presence || yield(:title),
       ga4_filter_type: controller_name,
