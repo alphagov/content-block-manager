@@ -1,17 +1,8 @@
-<% content_for :context, context %>
-<% content_for :title, "Select publish date" %>
-<% content_for :title_margin_bottom, 4 %>
-<% content_for :back_link do %>
-  <%= render "govuk_publishing_components/components/back_link", {
-    href: back_link,
-  } %>
-<% end %>
+<% content_for :error_summary, render(Shared::ErrorSummaryComponent.new(object: edition)) %>
 
 <%
   is_scheduled_param = params["schedule_publishing"]
 %>
-
-<% content_for :error_summary, render(Shared::ErrorSummaryComponent.new(object: edition)) %>
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">

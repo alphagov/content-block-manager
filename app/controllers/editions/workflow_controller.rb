@@ -26,6 +26,12 @@ class Editions::WorkflowController < BaseController
   end
   helper_method :context
 
+  def page_title(**args)
+    step = args.delete(:step) || current_step.name
+    I18n.t("edition.workflow.steps.#{step}.title", **args)
+  end
+  helper_method :page_title
+
   def form_data_attributes
     helpers.ga4_data_attributes(edition: @edition, section: current_step&.show_action)
   end

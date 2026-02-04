@@ -87,6 +87,28 @@ en:
     review_page:
       errors:
         confirm: Tick box to confirm details are correct
+    workflow:
+      steps:
+        cancel:
+          title: Do you want to save your draft, or delete it?
+        change_note:
+          title: Do users have to know the content has changed?
+        confirmation:
+          title: Your content block is available for use
+        add_embedded_object:
+          title: Add %{object_name}
+        embedded_objects:
+          title: "%{action} %{object_name}"
+        grouped_objects:
+          title: "%{action} %{group_name}"
+        internal_note:
+          title: Add an internal note
+        review:
+          title: Review %{block_type}
+        review_links:
+          title: Preview %{block_type}
+        schedule_publishing:
+          title: Select publish date
     hints:
       instructions_to_publishers_html: |
         Add information that’s important for anyone using or editing this block to know. For example, who to contact about the block if you have questions. <br/>
