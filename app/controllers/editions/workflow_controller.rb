@@ -33,7 +33,7 @@ class Editions::WorkflowController < BaseController
   helper_method :page_title
 
   def form_data_attributes
-    helpers.ga4_data_attributes(edition: @edition, section: current_step&.show_action)
+    helpers.ga4_data_attributes(edition: @edition)
   end
   helper_method :form_data_attributes
 

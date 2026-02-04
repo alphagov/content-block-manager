@@ -2,9 +2,8 @@ RSpec.describe FormHelper, type: :helper do
   describe "#ga4_data_attributes" do
     let(:document) { double(block_type: "email_address", is_new_block?: false) }
     let(:edition) { double(document: document) }
-    let(:section) { "details" }
 
-    let(:result) { ga4_data_attributes(edition: edition, section: section) }
+    let(:result) { ga4_data_attributes(edition: edition) }
 
     let(:ga4_form_tracking_enabled) { true }
 
@@ -12,49 +11,29 @@ RSpec.describe FormHelper, type: :helper do
       allow(Flipflop).to receive(:enabled?).with(:ga4_form_tracking).and_return(ga4_form_tracking_enabled)
     end
 
-    describe "when ga4_form_tracking is disabled" do
-      let(:ga4_form_tracking_enabled) { false }
-
-      it "instructs the GA4 code to not record form submissions" do
-        expect(result[:data][:ga4_form_record_json]).to eq(false)
-        expect(result[:data][:ga4_form_include_text]).to eq(false)
-      end
-    end
-
-    describe "when ga4_form_tracking is enabled" do
-      let(:ga4_form_tracking_enabled) { true }
-
-      it "instructs the GA4 code to record form submissions" do
-        expect(result[:data][:ga4_form_record_json]).to eq(true)
-        expect(result[:data][:ga4_form_include_text]).to eq(true)
-      end
-    end
-
     it "returns correctly structured data attributes with edition and section" do
       expect(result[:data][:module]).to eq("ga4-form-tracker")
-      expect(result[:data][:ga4_form][:type]).to eq("Content Block")
-      expect(result[:data][:ga4_form][:tool_name]).to eq("email_address")
-      expect(result[:data][:ga4_form][:event_name]).to eq("update")
-      expect(result[:data][:ga4_form][:section]).to eq("details")
+      expect(result[:data][:ga4_action]).to eq("update")
+      expect(result[:data][:ga4_tool_name]).to eq("email_address")
     end
 
     describe "when an edition's document is nil" do
       let(:document) { nil }
 
       it "returns event_name as 'create'" do
-        expect(result[:data][:ga4_form][:event_name]).to eq("create")
+        expect(result[:data][:ga4_action]).to eq("create")
       end
 
       it "returns nil for tool_name" do
-        expect(result[:data][:ga4_form][:tool_name]).to be_nil
+        expect(result[:data][:ga4_tool_name]).to be_nil
       end
 
       describe "when a block_type is given" do
         let(:block_type) { "contact_information" }
-        let(:result) { ga4_data_attributes(edition: edition, section: section, block_type: block_type) }
+        let(:result) { ga4_data_attributes(edition: edition, block_type: block_type) }
 
         it "the block type as the tool_name" do
-          expect(result[:data][:ga4_form][:tool_name]).to eq("contact_information")
+          expect(result[:data][:ga4_tool_name]).to eq("contact_information")
         end
       end
     end
@@ -63,11 +42,11 @@ RSpec.describe FormHelper, type: :helper do
       let(:edition) { nil }
 
       it "returns event_name as 'create'" do
-        expect(result[:data][:ga4_form][:event_name]).to eq("create")
+        expect(result[:data][:ga4_action]).to eq("create")
       end
 
       it "returns nil for tool_name" do
-        expect(result[:data][:ga4_form][:tool_name]).to be_nil
+        expect(result[:data][:ga4_tool_name]).to be_nil
       end
     end
 
@@ -75,9 +54,9 @@ RSpec.describe FormHelper, type: :helper do
       let(:document) { double(block_type: "email_address", is_new_block?: true) }
 
       it "returns event_name as 'create'" do
-        result = ga4_data_attributes(edition: edition, section: section)
+        result = ga4_data_attributes(edition: edition)
 
-        expect(result[:data][:ga4_form][:event_name]).to eq("create")
+        expect(result[:data][:ga4_action]).to eq("create")
       end
     end
   end

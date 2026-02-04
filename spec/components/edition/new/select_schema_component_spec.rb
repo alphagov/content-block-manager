@@ -16,13 +16,7 @@ RSpec.describe Edition::New::SelectSchemaComponent, type: :component do
   it "renders a form and buttons" do
     render_inline(component)
 
-    form_attributes = {
-      type: "Content Block",
-      tool_name: nil,
-      event_name: "create",
-      section: "select_schema",
-    }
-    expect(page).to have_css "form[data-module='ga4-form-tracker'][data-ga4-form='#{form_attributes.to_json}']"
+    expect(page).to have_css "form[data-module='ga4-form-tracker']"
 
     expect(page).to have_css "button", text: "Save and continue"
     expect(page).to have_css "a", text: "Cancel"

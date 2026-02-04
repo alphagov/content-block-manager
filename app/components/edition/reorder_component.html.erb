@@ -4,7 +4,7 @@
       <%= edition.clone_without_blocks.render %>
     </div>
 
-    <%= form_with url: order_update_edition_path(edition), method: :put, **helpers.ga4_data_attributes(edition:, section: "reorder") do |form| %>
+    <%= form_with url: order_update_edition_path(edition), method: :put, **helpers.ga4_data_attributes(edition:) do |form| %>
       <%= form.hidden_field "redirect_path", value: redirect_path %>
       <% item_keys.each_with_index do |item, position| %>
         <div class="app-c-content-block-manager-reorder-component__item" data-testid="reorder-item-<%= position %>">
