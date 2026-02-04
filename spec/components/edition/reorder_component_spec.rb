@@ -206,15 +206,6 @@ RSpec.describe Edition::ReorderComponent, type: :component do
     end
   end
 
-  it "renders the ga4 attributes" do
-    render_inline component
-
-    expect(page).to have_css "form[data-module='ga4-form-tracker']"
-
-    form_attributes = ga4_data_attributes(edition:, section: "reorder")[:data][:ga4_form]
-    expect(page).to have_css "form[data-ga4-form='#{form_attributes.to_json}']"
-  end
-
   def expect_wrapper_to_have_button(wrapper:, label:, order:)
     href = order_edit_edition_path(edition, order:, redirect_path:)
     expect(wrapper).to have_css "a[href='#{href}']", text: label

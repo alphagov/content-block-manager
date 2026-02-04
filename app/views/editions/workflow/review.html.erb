@@ -1,5 +1,5 @@
 <% content_for :context, context %>
-<% content_for :title, "Review #{@edition.block_type.humanize.downcase}" %>
+<% content_for :title, page_title(block_type: @edition.block_type.humanize.downcase) %>
 
 <% content_for :back_link do %>
   <%= render "govuk_publishing_components/components/back_link", {

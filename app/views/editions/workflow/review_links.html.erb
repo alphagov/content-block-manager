@@ -1,5 +1,5 @@
 <% content_for :context, context %>
-<% content_for :title, "Preview #{@document.block_type.humanize.downcase}" %>
+<% content_for :title, page_title(block_type: @document.block_type.humanize.downcase) %>
 <% content_for :title_margin_bottom, 4 %>
 <% content_for :back_link do %>
   <%= render "govuk_publishing_components/components/back_link", {

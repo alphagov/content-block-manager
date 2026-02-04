@@ -20,6 +20,6 @@ private
   end
 
   def data_attributes
-    helpers.ga4_data_attributes(edition: nil, section: "select_schema")
+    helpers.ga4_data_attributes(edition: nil)
   end
 end

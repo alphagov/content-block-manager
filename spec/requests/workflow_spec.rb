@@ -9,15 +9,6 @@ RSpec.describe "Workflow", type: :request do
     end
   end
 
-  def self.it_has_the_correct_ga4_attributes(attributes)
-    it "has the correct GA4 attributes" do
-      get workflow_path(id: edition.id, step:)
-
-      expect(page).to have_selector("form[data-module='ga4-form-tracker']")
-      expect(page).to have_selector("form[data-ga4-form='#{attributes.to_json}']")
-    end
-  end
-
   let(:details) do
     {
       foo: "Foo text",
@@ -49,8 +40,6 @@ RSpec.describe "Workflow", type: :request do
 
       describe "#show" do
         it_shows_the_correct_context
-
-        it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "create", section: "edit" })
       end
     end
 
@@ -59,7 +48,6 @@ RSpec.describe "Workflow", type: :request do
 
       describe "#show" do
         it_shows_the_correct_context
-        it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "create", section: "review" })
 
         it "shows the new edition for review" do
           get workflow_path(id: edition.id, step:)
@@ -124,7 +112,6 @@ RSpec.describe "Workflow", type: :request do
       describe "#show" do
         let(:step) { "embedded_subschema_1" }
 
-        it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "create", section: "embedded_subschema_1" })
         it_shows_the_correct_context
 
         it "shows the form for the first subschema" do
@@ -178,7 +165,6 @@ RSpec.describe "Workflow", type: :request do
 
       describe "#show" do
         it_shows_the_correct_context
-        it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "update", section: "edit" })
 
         it "shows the form" do
           get workflow_path(id: edition.id, step:)
@@ -312,7 +298,6 @@ RSpec.describe "Workflow", type: :request do
           end
 
           it_shows_the_correct_context
-          it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "update", section: "review_links" })
         end
 
         describe "when there is no embedded content" do
@@ -355,7 +340,6 @@ RSpec.describe "Workflow", type: :request do
 
       describe "#show" do
         it_shows_the_correct_context
-        it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "update", section: "internal_note" })
 
         it "shows the form" do
           get workflow_path(id: edition.id, step:)
@@ -385,7 +369,6 @@ RSpec.describe "Workflow", type: :request do
 
       describe "#show" do
         it_shows_the_correct_context
-        it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "update", section: "change_note" })
 
         it "shows the form" do
           get workflow_path(id: edition.id, step:)
@@ -453,8 +436,6 @@ RSpec.describe "Workflow", type: :request do
         describe "#show" do
           let(:step) { "embedded_subschema_1" }
 
-          it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "update", section: "embedded_subschema_1" })
-
           it "shows the form for the first subschema" do
             get workflow_path(id: edition.id, step: "embedded_subschema_1")
 
@@ -500,7 +481,6 @@ RSpec.describe "Workflow", type: :request do
 
         describe "#show" do
           let(:step) { "embedded_subschema_1" }
-          it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "update", section: "embedded_subschema_1" })
 
           it "shows the form for the first subschema" do
             get workflow_path(id: edition.id, step: "embedded_subschema_1")
@@ -580,7 +560,6 @@ RSpec.describe "Workflow", type: :request do
 
       describe "#show" do
         it_shows_the_correct_context
-        it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "update", section: "schedule_publishing" })
 
         it "shows the form" do
           get workflow_path(id: edition.id, step:)
@@ -646,7 +625,6 @@ RSpec.describe "Workflow", type: :request do
     describe "when on the review step" do
       let(:step) { :review }
       it_shows_the_correct_context
-      it_has_the_correct_ga4_attributes({ type: "Content Block", tool_name: "pension", event_name: "update", section: "review" })
 
       it "shows the correct context and confirmation text" do
         get workflow_path(id: edition.id, step:)

@@ -11,6 +11,6 @@
       url: create_embedded_object_edition_path(
         @edition,
         object_type: @subschema.block_type,
-      ), method: :post, **ga4_data_attributes(edition: @edition, section: "add_#{@subschema.block_type}")) do |form| %>
+      ), method: :post, **ga4_data_attributes(edition: @edition)) do |form| %>
   <%= render partial: "editions/embedded_objects/shared/form", locals: { form:, is_new_record: true } %>
 <% end %>

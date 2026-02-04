@@ -18,7 +18,7 @@
 <% end %>
 
 <div id="edition_<%= @edition.id %>">
-  <%= form_with url: @redirect_path, method: :post, **ga4_data_attributes(edition: @edition, section: "select_subschema") do %>
+  <%= form_with url: @redirect_path, method: :post, **ga4_data_attributes(edition: @edition) do %>
     <%= hidden_field_tag :object_type, "" %>
     <%= hidden_field_tag :group, @group %>
 
