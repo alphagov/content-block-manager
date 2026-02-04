@@ -1,5 +1,6 @@
 require_relative "../support/stubs"
 require_relative "../support/helpers"
+require "gds_api/test_helpers/publishing_api"
 
 # Suppress noisy Sidekiq logging in the test output
 # Sidekiq.configure_client do |cfg|
@@ -415,4 +416,18 @@ end
 
 Then("I do not see the warning that the pre-release features are enabled") do
   expect(page).to have_no_content("PRE-RELEASE FEATURES ENABLED")
+end
+
+Then("the block should have been sent to the Publishing API") do
+  @edition ||= Edition.last
+
+  payload = PublishingApi::ContentBlockPresenter.new(
+    schema_id: @schema.id,
+    content_id_alias: @edition.document.content_id_alias,
+    edition: @edition,
+  ).present
+
+  expect(WebMock).to have_requested(:put, "#{PUBLISHING_API_V2_ENDPOINT}/content/#{@edition.document.content_id}")
+                       .with(body: payload)
+  expect(WebMock).to have_requested(:post, "#{PUBLISHING_API_V2_ENDPOINT}/content/#{@edition.document.content_id}/publish")
 end

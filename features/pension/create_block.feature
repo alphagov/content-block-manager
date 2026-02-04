@@ -22,6 +22,7 @@ Feature: Create a pension block
     And I review and confirm I have checked the content
     Then the edition should have been created successfully
     And I should be taken to the confirmation page for a new "pension"
+    And the block should have been sent to the Publishing API
 
   @javascript
   Scenario: GDS editor creates a Pension with a rate
@@ -47,6 +48,7 @@ Feature: Create a pension block
     Then there should be no accessibility errors
     And I review and confirm I have checked the content
     Then I should be taken to the confirmation page for a new "pension"
+    And the block should have been sent to the Publishing API
     And analytics messages should have been sent for each step in the workflow
     And analytics messages should have been sent for each embedded object
     And there should be no accessibility errors

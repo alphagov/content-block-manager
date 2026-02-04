@@ -133,6 +133,7 @@ Feature: Create a contact object
     Then there should be no accessibility errors
     When I review and confirm I have checked the content
     Then I should be taken to the confirmation page for a new "contact"
+    And the block should have been sent to the Publishing API
     When I click to view the content block
     Then there should be no accessibility errors
     And I should see the created embedded object of type "email_address"

@@ -36,6 +36,7 @@ Feature: Edit Tax Content Block
     And I should not see a preview button
     When I review and confirm I have checked the content
     Then I should be taken to the confirmation page for a published block
+    And the block should have been sent to the Publishing API
     And there should be no accessibility errors
     When I click to view the content block
     Then the edition should have been updated successfully

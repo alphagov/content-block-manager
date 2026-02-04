@@ -1,25 +1,27 @@
 require "gds_api/publishing_api"
 require "gds_api/test_helpers/publishing_api"
-require_relative "mocha"
+
+UUID_REGEX = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+PUBLISHING_API_V2_ENDPOINT = "#{Plek.find('publishing-api')}/v2".freeze
 
 Before do
-  publishing_api_v1_endpoint = File.join(
-    Plek.find("publishing-api"),
-    "publish-intent",
-  )
+  # Stub publish intent requests
+  stub_request(:any, %r{\A#{Plek.find('publishing-api')}/publish-intent/})
 
-  stub_request(:any, %r{\A#{publishing_api_v1_endpoint}})
-  GdsApi::PublishingApi.any_instance.stubs(:discard_draft)
-  GdsApi::PublishingApi.any_instance.stubs(:publish)
-  GdsApi::PublishingApi.any_instance.stubs(:put_content)
-  GdsApi::PublishingApi.any_instance.stubs(:patch_links)
-  GdsApi::PublishingApi.any_instance.stubs(:unpublish)
-  GdsApi::PublishingApi.any_instance.stubs(:get_events_for_content_id).returns([])
-  stub_request(:get, %r{\A#{Plek.find('publishing-api')}/v2/links})
+  # Stub requests to send draft content to the Publishing API
+  stub_request(:put, %r{\A#{PUBLISHING_API_V2_ENDPOINT}/content/#{UUID_REGEX}})
+
+  # Stub requests to publish content
+  stub_request(:post, %r{\A#{PUBLISHING_API_V2_ENDPOINT}/content/#{UUID_REGEX}/publish})
+
+  # Stub requests to get links and expanded links
+  stub_request(:get, %r{\A#{PUBLISHING_API_V2_ENDPOINT}/links})
     .to_return(body: { links: {} }.to_json)
-  stub_request(:get, %r{\A#{Plek.find('publishing-api')}/v2/expanded-links})
+  stub_request(:get, %r{\A#{PUBLISHING_API_V2_ENDPOINT}/expanded-links})
     .to_return(body: { expanded_links: {} }.to_json)
-  stub_request(:get, %r{\A#{Plek.find('publishing-api')}/v2/content\?document_type=world_location})
+
+  # Stub requests for World Locations
+  stub_request(:get, %r{\A#{PUBLISHING_API_V2_ENDPOINT}/content\?document_type=world_location})
     .to_return(body: { results: [{ title: "United Kingdom" }] }.to_json)
 end
 

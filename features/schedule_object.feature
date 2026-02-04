@@ -31,6 +31,7 @@ Feature: Schedule a content object
     When I choose to schedule the change
     And the block is scheduled and published
     When I review and confirm I have checked the content
+    And the block should have been sent to the Publishing API
     Then the published state of the object should be shown
     And I should see the publish event on the timeline
 
