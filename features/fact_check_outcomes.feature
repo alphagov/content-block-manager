@@ -15,12 +15,13 @@ Feature: Editor records fact check outcome and publishes edition
 
     When I provide the outcome of the fact check process
     Then I am required to provide the subject matter expert
-
+    
     When I provide the subject matter expert
     Then I see a notification that the transition to Published was successful
     And I see that the edition is in published state
     And I should see the pension created event on the timeline
     And the calls to action are suited to the published state
+    And the block should have been sent to the Publishing API
 
   Scenario: Attempt to publish the edition without supplying fact check outcome
     Given I am viewing the edition awaiting fact check

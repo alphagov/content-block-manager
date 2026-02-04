@@ -20,6 +20,7 @@ Feature: Create Tax Content Block
     And I save and continue
     And I review and confirm I have checked the content
     Then I should be taken to the confirmation page for a new "tax"
+    And the block should have been sent to the Publishing API
     When I click to view the content block
     Then I should see the details for the tax content block
     Then I should see the details for each thing_taxed's rate

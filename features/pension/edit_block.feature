@@ -41,7 +41,8 @@ Feature: Edit a pension block
     And there should be no accessibility errors
     When I click to view the content block
     Then the edition should have been updated successfully
-    And I should be taken back to the document page
+    And the block should have been sent to the Publishing API
+    Then I should be taken back to the document page
     And I should see 1 publish events on the timeline
     And I should see the notes on the timeline
     And I should see the edition diff in a table
