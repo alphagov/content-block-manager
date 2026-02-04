@@ -13,6 +13,7 @@
 //= require components/govspeak-editor
 
 //= require ./modules/copy-embed-code
+//= require ./modules/ga4-form-setup
 
 'use strict'
 window.GOVUK.approveAllCookieTypes()
