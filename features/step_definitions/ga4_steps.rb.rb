@@ -1,13 +1,15 @@
 Then("analytics messages should have been sent for each step in the workflow") do
   all_steps_for_edition(Edition.last).each do |step|
-    assert_messages_sent(event_name: @action, section: step.to_s)
+    section = section_for_step(step)
+    assert_messages_sent(event_name: "form_response", section:)
   end
 end
 
 Then("analytics messages should have been sent for each embedded object") do
   extend SchemaHelper
 
-  @selected_subschemas.each do |subschema|
+  @selected_subschemas.each do |subschema_name|
+    subschema = @schema.subschema(subschema_name)
     expect_select_subschema_messages_to_have_been_sent(subschema) if SubschemaCollection.new(@schema.subschemas).grouped.any?
     expect_add_subschema_messages_to_have_been_sent(subschema)
   end
@@ -16,7 +18,7 @@ end
 def ga4_messages
   @ga4_messages ||= @js_console_messages.map { |message|
     data = parse_message_text(message[:text])
-    if data["event"] == "event_data" && data["event_data"]["type"] == "Content Block"
+    if data["event"] == "event_data"
       data["event_data"]
     end
   }.compact
@@ -35,13 +37,15 @@ end
 
 def expect_select_subschema_messages_to_have_been_sent(subschema)
   expected_text = {
-    @schema.subschema(subschema).name.singularize.capitalize => @schema.subschema(subschema).name.singularize.capitalize,
+    subschema.name.singularize.capitalize => subschema.name.singularize.capitalize,
   }.to_json
-  assert_messages_sent(event_name: @action, section: "select_subschema", text: expected_text)
+  section = "Add #{add_indefinite_article subschema.group.humanize.singularize.downcase}"
+  assert_messages_sent(event_name: "form_response", section:, text: expected_text)
 end
 
 def expect_add_subschema_messages_to_have_been_sent(subschema)
-  assert_messages_sent(event_name: @action, section: "add_#{subschema}", tool_name: @schema.block_type)
+  section = "Add #{add_indefinite_article subschema.name.singularize.downcase}"
+  assert_messages_sent(event_name: "form_response", section:, tool_name: @schema.block_type)
 end
 
 # Fetch all steps for an edition and schema, except the edit step, which is only accessed when making changes during
@@ -50,4 +54,18 @@ def all_steps_for_edition(edition)
   Workflow::Steps.for(edition, @schema)
                  .map(&:name)
                  .excluding(:edit_draft, :confirmation)
+end
+
+def section_for_step(step)
+  action = @edition.document.is_new_block? ? "Add" : "Edit"
+  block_type = @edition.block_type
+  if step.start_with?(Workflow::Step::GROUP_PREFIX)
+    group_name = step.to_s.gsub(Workflow::Step::GROUP_PREFIX, "").humanize(capitalize: false)
+    I18n.t("edition.workflow.steps.grouped_objects.title", group_name:, action:)
+  elsif step.start_with?(Workflow::Step::SUBSCHEMA_PREFIX)
+    object_name = step.to_s.gsub(Workflow::Step::SUBSCHEMA_PREFIX, "").humanize(capitalize: false)
+    I18n.t("edition.workflow.steps.embedded_objects.title", object_name:, action:)
+  else
+    I18n.t("edition.workflow.steps.#{step.name}.title", block_type:)
+  end
 end
