@@ -1,4 +1,6 @@
-RSpec.describe Version do
+RSpec.describe Version, type: :model do
+  it { is_expected.to have_many(:domain_events) }
+
   let(:event) { "created" }
   let(:item) do
     create(

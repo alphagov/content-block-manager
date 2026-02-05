@@ -14,6 +14,7 @@ class Edition < ApplicationRecord
 
   has_one :review_outcome, dependent: :destroy
   has_one :fact_check_outcome, dependent: :destroy
+  has_many :domain_events
 
   scope :current_versions, lambda {
     published

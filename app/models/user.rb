@@ -1,6 +1,8 @@
 class User < ApplicationRecord
   include GDS::SSO::User
 
+  has_many :domain_events
+
   serialize :permissions, coder: YAML, type: Array
 
   validates :name, presence: true

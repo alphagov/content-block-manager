@@ -18,6 +18,7 @@ class Document < ApplicationRecord
 
   validates :block_type, :sluggable_string, presence: true
 
+  has_many :domain_events
   has_many :versions, through: :editions, source: :versions
 
   has_one :latest_published_edition,
