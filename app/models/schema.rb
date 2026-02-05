@@ -11,15 +11,17 @@ class Schema
 
   class << self
     def valid_schemas
-      Flipflop.show_all_content_block_types? ? VALID_SCHEMAS.values.flatten : VALID_SCHEMAS[:live]
+      show_all_content_block_types? ? VALID_SCHEMAS.values.flatten : VALID_SCHEMAS[:live]
     end
 
     def all
-      @all ||= Public::Services.publishing_api.get_schemas.select { |k, _v|
-        is_valid_schema?(k)
+      @all ||= Public::Services.publishing_api.get_schemas.select { |key, _v|
+        key.start_with?(SCHEMA_PREFIX)
       }.map { |id, full_schema|
         full_schema.dig("definitions", "details")&.yield_self { |schema| new(id, schema) }
       }.compact
+
+      @all.select { |schema| is_valid_schema?(schema.id) }
     end
 
     def find_by_block_type(block_type)
@@ -27,11 +29,17 @@ class Schema
     end
 
     def is_valid_schema?(key)
-      key.start_with?(SCHEMA_PREFIX) && key.end_with?(*valid_schemas)
+      key.end_with?(*valid_schemas)
     end
 
     def schema_settings
       @schema_settings ||= YAML.load_file(CONFIG_PATH)
+    end
+
+  private
+
+    def show_all_content_block_types?
+      Flipflop.show_all_content_block_types? || Current.user&.has_permission?(User::Permissions::SHOW_ALL_CONTENT_BLOCK_TYPES)
     end
   end
 
