@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_23_132003) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_05_112726) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -26,6 +26,22 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_23_132003) do
     t.text "embed_code"
     t.index ["content_id_alias"], name: "index_documents_on_content_id_alias", unique: true
     t.index ["embed_code"], name: "index_documents_on_embed_code", unique: true
+  end
+
+  create_table "domain_events", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "edition_id"
+    t.integer "document_id"
+    t.string "name", null: false
+    t.jsonb "metadata"
+    t.integer "version_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["document_id"], name: "index_domain_events_on_document_id"
+    t.index ["edition_id"], name: "index_domain_events_on_edition_id"
+    t.index ["name"], name: "index_domain_events_on_name"
+    t.index ["user_id"], name: "index_domain_events_on_user_id"
+    t.index ["version_id"], name: "index_domain_events_on_version_id"
   end
 
   create_table "edition_authors", force: :cascade do |t|
@@ -104,6 +120,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_23_132003) do
     t.index ["item_type"], name: "index_versions_on_item_type"
   end
 
+  add_foreign_key "domain_events", "documents"
+  add_foreign_key "domain_events", "editions"
+  add_foreign_key "domain_events", "users"
+  add_foreign_key "domain_events", "versions"
   add_foreign_key "outcomes", "editions"
   add_foreign_key "outcomes", "users", column: "creator_id"
 end
