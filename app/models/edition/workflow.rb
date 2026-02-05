@@ -65,12 +65,25 @@ module Edition::Workflow
       end
     end
 
-    def event_fired(_current_state, new_state, _event)
-      versions.create!(
+    def event_fired(current_state, new_state, event)
+      version = versions.create!(
         event: "updated",
         user: Current.user,
         state: new_state,
         field_diffs: generate_diff,
+      )
+
+      DomainEvent.record(
+        document: document,
+        edition: self,
+        user: Current.user,
+        version: version,
+        name: "edition.state_transition.succeeded",
+        metadata: {
+          previous_state: current_state,
+          new_state: new_state,
+          transition_name: event,
+        },
       )
     end
 

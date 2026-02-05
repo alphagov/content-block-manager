@@ -4,6 +4,7 @@ RSpec.describe Edition::Workflow, type: :model do
 
   before do
     allow_any_instance_of(Edition).to receive(:versions).and_return(ar_association)
+    allow(DomainEvent).to receive(:record)
   end
 
   describe "use of state machine's 'event_fired' callback" do
@@ -76,6 +77,56 @@ RSpec.describe Edition::Workflow, type: :model do
 
         it "does NOT create a Version for the transition" do
           expect(ar_association).not_to have_received(:create!)
+        end
+      end
+    end
+
+    describe "recording domain events" do
+      let(:document) { build(:document) }
+      let(:edition) { create(:edition, :draft_complete, document: document) }
+      let(:user) { build(:user) }
+
+      before do
+        allow(DomainEvent).to receive(:record)
+      end
+
+      context "when the transition fails" do
+        before do
+          allow(edition).to receive(:publish!).and_raise(Transitions::InvalidTransition)
+          edition.publish!
+        rescue Transitions::InvalidTransition
+          # we're interested in whether an event is created after the error is handled
+        end
+
+        it "does NOT create a Domain Event for the transition" do
+          expect(DomainEvent).not_to have_received(:record)
+        end
+      end
+
+      context "when a transition completes successfully" do
+        let(:expected_transition_description) do
+          {
+            previous_state: :draft_complete,
+            new_state: :awaiting_review,
+            transition_name: :ready_for_review,
+          }
+        end
+
+        before do
+          allow(Current).to receive(:user).and_return(user)
+
+          edition.ready_for_review!
+        end
+
+        it "asks DomainEvent::record to record the transition" do
+          expect(DomainEvent).to have_received(:record).with(
+            name: "edition.state_transition.succeeded",
+            metadata: expected_transition_description,
+            edition: edition,
+            document: document,
+            user: user,
+            version: version,
+          )
         end
       end
     end
