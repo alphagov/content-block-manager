@@ -65,6 +65,15 @@ module Edition::Workflow
       end
     end
 
+    def event_fired(_current_state, new_state, _event)
+      versions.create!(
+        event: "updated",
+        user: Current.user,
+        state: new_state,
+        field_diffs: generate_diff,
+      )
+    end
+
     def has_review_outcome_recorded?
       return true if review_outcome.present?
 
