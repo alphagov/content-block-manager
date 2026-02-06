@@ -1,0 +1,20 @@
+<div class="app-c-embedded-objects-blocks-component--nested">
+  <%= render "govuk_publishing_components/components/summary_card", {
+    title:,
+    rows:,
+  } do %>
+    <% nested_items(items).each do |nested_field, items| %>
+      <% if items.is_a?(Array) %>
+        <%= render FactCheck::NestedBlockDiffComponent.with_collection(
+          items,
+          field: field.nested_field(nested_field),
+        ) %>
+      <% else %>
+        <%= render FactCheck::NestedBlockDiffComponent.new(
+          items:,
+          field: field.nested_field(nested_field),
+        ) %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
