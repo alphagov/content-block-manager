@@ -1,7 +1,9 @@
 class BlockPreview::PreviewController < BlockPreview::ApplicationController
+  include ContentBlockManager::AuthenticatesWithJWT
+
   def show
     host_content_id = params[:host_content_id]
-    @block = ContentBlock.from_edition_id(params[:edition_id])
+    @block = block
     @preview_content = BlockPreview::PreviewContent.new(
       content_id: host_content_id,
       block: @block,
@@ -16,7 +18,6 @@ class BlockPreview::PreviewController < BlockPreview::ApplicationController
       body: params.permit(body: {}).fetch(:body).to_h,
       method: params[:method].to_s,
     )
-    block = ContentBlock.from_edition_id(params[:edition_id])
 
     redirect_to host_content_preview_path(
       edition_id: block.id,
@@ -26,5 +27,11 @@ class BlockPreview::PreviewController < BlockPreview::ApplicationController
     )
   rescue BlockPreview::FormSubmission::UnexpectedResponseError, BlockPreview::FormSubmission::UnexpectedUrlError
     head :bad_request
+  end
+
+private
+
+  def block
+    @block ||= ContentBlock.from_edition_id(params[:edition_id])
   end
 end
