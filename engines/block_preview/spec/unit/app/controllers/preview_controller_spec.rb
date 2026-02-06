@@ -7,7 +7,7 @@ RSpec.describe BlockPreview::PreviewController, type: :controller do
     let(:base_path) { "/government/base-path" }
     let(:locale) { "en" }
 
-    let(:mock_block) { instance_double("ContentBlock") }
+    let(:mock_block) { instance_double("ContentBlock", auth_bypass_id: "auth-bypass-id") }
     let(:mock_preview_content) { instance_double(BlockPreview::PreviewContent) }
 
     before do
@@ -56,7 +56,7 @@ RSpec.describe BlockPreview::PreviewController, type: :controller do
     let(:body_params) { { "field_name" => "field_value" } }
     let(:locale) { "en" }
 
-    let(:mock_block) { instance_double("ContentBlock", id: 456) }
+    let(:mock_block) { instance_double("ContentBlock", id: 456, auth_bypass_id: "auth-bypass-id") }
     let(:mock_submission) { instance_double(BlockPreview::FormSubmission) }
     let(:redirect_path_result) { "/thank-you" }
 
