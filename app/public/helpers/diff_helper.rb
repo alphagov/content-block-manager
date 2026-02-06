@@ -1,14 +1,16 @@
 module DiffHelper
   def render_diff(before, after)
-    return Nokodiff.diff(before, after) if args_use_valid_html?(before, after)
-
-    Nokodiff.diff(make_valid_html(before), make_valid_html(after))
+    Nokodiff.diff(ensure_valid(before), ensure_valid(after))
   end
 
-  def args_use_valid_html?(before, after)
-    Nokodiff::HTMLFragmentValidator.validate_html!(before) && Nokodiff::HTMLFragmentValidator.validate_html!(after)
+  def arg_uses_valid_html?(arg)
+    Nokodiff::HTMLFragmentValidator.validate_html!(arg)
   rescue ArgumentError
     false
+  end
+
+  def ensure_valid(arg)
+    arg_uses_valid_html?(arg) ? arg : make_valid_html(arg)
   end
 
 private
