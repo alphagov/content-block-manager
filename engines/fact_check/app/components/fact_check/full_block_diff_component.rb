@@ -1,4 +1,4 @@
-class FactCheck::DefaultBlockComponent < ViewComponent::Base
+class FactCheck::FullBlockDiffComponent < ViewComponent::Base
   def initialize(block:)
     @block = block
   end
