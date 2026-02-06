@@ -1,0 +1,16 @@
+# This file contains a list of dependencies that are not part of the long term plan for the
+# 'engines/fact_check' package.
+# We should generally work to reduce this list over time.
+#
+# You can regenerate this file using the following command:
+#
+# bin/packwerk update-todo
+---
+".":
+  "::Schema::Field":
+    violations:
+    - privacy
+    files:
+    # Added here just for mock data in a test. Ticket here to improve this:
+    # TODO: https://gov-uk.atlassian.net/browse/CM-816
+    - engines/fact_check/spec/components/subschema_group_diff_component_spec.rb
