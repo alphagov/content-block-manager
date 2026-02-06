@@ -1,0 +1,10 @@
+<% embedded_objects.keys.each do |key| %>
+
+  <%= render FactCheck::NestedBlocksWithSummaryDiffComponent.new(
+    items: block_content_new.fields(key),
+    items_published: block_content_published.fields(key),
+    object_type:,
+    object_title: key,
+    edition: block) %>
+
+<% end %>
