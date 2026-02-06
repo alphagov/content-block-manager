@@ -12,16 +12,29 @@ RSpec.describe DiffHelper, type: :helper do
       expect(actual_diff_html).to eq(diff_html)
     end
 
-    context "when given invalid HTML" do
-      it "wraps the inputs in a tag to ensure Nokodiff doesn't raise an exception" do
+    context "when both arguments contain invalid HTML" do
+      it "wraps the arguments in a tag to ensure Nokodiff doesn't raise an exception" do
         expect {
           helper.render_diff("foo", "bar")
         }.not_to raise_error
       end
 
-      it "wraps the inputs in a tag to ensure Nokodiff returns a diff" do
+      it "wraps the arguments in a tag to ensure Nokodiff returns a diff" do
         expect(Nokodiff).to receive(:diff).with("<span>foo</span>", "<span>bar</span>")
         helper.render_diff("foo", "bar")
+      end
+    end
+
+    context "when one argument contain invalid HTML" do
+      it "wraps the invalid argument in a tag to ensure Nokodiff doesn't raise an exception" do
+        expect {
+          helper.render_diff("foo", "<span>bar</span>")
+        }.not_to raise_error
+      end
+
+      it "wraps the invalid argument in a tag to ensure Nokodiff returns a diff" do
+        expect(Nokodiff).to receive(:diff).with("<span>foo</span>", "<span>bar</span>")
+        helper.render_diff("foo", "<span>bar</span>")
       end
     end
   end
