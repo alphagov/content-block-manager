@@ -21,3 +21,4 @@
     # Added here just for mock data in a test. Ticket here to improve this:
     # TODO: https://gov-uk.atlassian.net/browse/CM-816
     - engines/fact_check/spec/components/tab_group_diff_component_spec.rb
+    - engines/fact_check/spec/integration/blocks_controller_spec.rb
