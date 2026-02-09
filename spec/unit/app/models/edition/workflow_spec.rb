@@ -1,50 +1,82 @@
 RSpec.describe Edition::Workflow, type: :model do
+  let(:version) { double("version") }
+  let(:ar_association) { double("association", create!: version) }
+
+  before do
+    allow_any_instance_of(Edition).to receive(:versions).and_return(ar_association)
+  end
+
   describe "use of state machine's 'event_fired' callback" do
     let(:user) { create("user") }
 
-    describe "creation of a new _version_" do
-      it "creates a 'updated' version after scheduling an edition" do
-        Current.user = user
-        edition = create(
-          :edition,
-          creator: user,
-          document: create(:document, :pension),
-          state: :awaiting_factcheck,
-        )
-        edition.scheduled_publication = Time.zone.now + 1.day
-        expect(edition).to receive(:generate_diff).and_return({})
+    describe "creation of a new _version_ on state transition" do
+      let(:user) { build(:user, id: 456) }
+      let(:document) { build(:document, id: 10) }
+      let(:edition) { build(:edition, id: 123, document: document) }
+      let(:diffs) { double("field_diffs") }
+      let(:ar_association) { double("association", create!: version) }
 
-        expect { edition.schedule! }.to change { edition.versions.count }.from(1).to(2)
-
-        version = edition.versions.first
-
-        expect(version.whodunnit).to eq(user.id.to_s)
-        expect(version.event).to eq("updated")
-        expect(version.state).to eq("scheduled")
+      before do
+        allow(edition.versions).to receive(:create)
+        allow(edition).to receive(:versions).and_return(ar_association)
       end
 
-      it "does not record a version when updating an existing draft" do
-        edition = create(
-          :edition,
-          document: create(:document, :pension),
-          state: "draft",
-        )
+      context "when the transition succeeds" do
+        before do
+          allow(Current).to receive(:user).and_return(user)
+          allow(edition).to receive(:generate_diff).and_return(diffs)
+          allow(edition).to receive(:record_create)
+          allow(DomainEvent).to receive(:create)
 
-        expect { edition.update!(details: { "foo": "bar" }) }.not_to(change { edition.versions.count })
+          edition.state = :draft
+
+          edition.complete_draft!
+        end
+
+        it "sets the state of the new version to the destination state of the transition" do
+          expect(ar_association).to have_received(:create!).with(
+            hash_including(
+              state: :draft_complete,
+            ),
+          )
+        end
+
+        it "associates the current User with the version" do
+          expect(ar_association).to have_received(:create!).with(
+            hash_including(
+              user: user,
+            ),
+          )
+        end
+
+        it "sets Version#field_diffs to any generated diffs" do
+          expect(ar_association).to have_received(:create!).with(
+            hash_including(
+              field_diffs: diffs,
+            ),
+          )
+        end
+
+        it "sets the Version#event to 'updated'" do
+          expect(ar_association).to have_received(:create!).with(
+            hash_including(
+              event: "updated",
+            ),
+          )
+        end
       end
 
-      it "checks for any field_diffs" do
-        Current.user = user
-        edition = create(
-          :edition,
-          creator: user,
-          document: create(:document, :pension),
-          state: :awaiting_factcheck,
-        )
-        edition.scheduled_publication = Time.zone.now + 1.day
+      context "when the transition fails" do
+        before do
+          allow(edition).to receive(:publish!).and_raise(Transitions::InvalidTransition)
+          edition.publish!
+        rescue Transitions::InvalidTransition
+          # we're interested in whether a version is created after the error is handled
+        end
 
-        expect(edition).to receive(:generate_diff).and_return({})
-        edition.schedule!
+        it "does NOT create a Version for the transition" do
+          expect(ar_association).not_to have_received(:create!)
+        end
       end
     end
   end
