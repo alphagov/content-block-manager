@@ -66,8 +66,8 @@ module Edition::Workflow
     end
 
     def event_fired(current_state, new_state, event)
-      version = versions.create!(
-        event: "updated",
+      version = Version.increment_for_edition(
+        edition: self,
         user: Current.user,
         state: new_state,
         field_diffs: generate_diff,

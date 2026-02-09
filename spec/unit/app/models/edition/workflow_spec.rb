@@ -1,9 +1,8 @@
 RSpec.describe Edition::Workflow, type: :model do
   let(:version) { double("version") }
-  let(:ar_association) { double("association", create!: version) }
 
   before do
-    allow_any_instance_of(Edition).to receive(:versions).and_return(ar_association)
+    allow(Version).to receive(:increment_for_edition).and_return(version)
     allow(DomainEvent).to receive(:record)
   end
 
@@ -15,54 +14,24 @@ RSpec.describe Edition::Workflow, type: :model do
       let(:document) { build(:document, id: 10) }
       let(:edition) { build(:edition, id: 123, document: document) }
       let(:diffs) { double("field_diffs") }
-      let(:ar_association) { double("association", create!: version) }
-
-      before do
-        allow(edition.versions).to receive(:create)
-        allow(edition).to receive(:versions).and_return(ar_association)
-      end
 
       context "when the transition succeeds" do
         before do
           allow(Current).to receive(:user).and_return(user)
           allow(edition).to receive(:generate_diff).and_return(diffs)
           allow(edition).to receive(:record_create)
-          allow(DomainEvent).to receive(:create)
 
           edition.state = :draft
 
           edition.complete_draft!
         end
 
-        it "sets the state of the new version to the destination state of the transition" do
-          expect(ar_association).to have_received(:create!).with(
-            hash_including(
-              state: :draft_complete,
-            ),
-          )
-        end
-
-        it "associates the current User with the version" do
-          expect(ar_association).to have_received(:create!).with(
-            hash_including(
-              user: user,
-            ),
-          )
-        end
-
-        it "sets Version#field_diffs to any generated diffs" do
-          expect(ar_association).to have_received(:create!).with(
-            hash_including(
-              field_diffs: diffs,
-            ),
-          )
-        end
-
-        it "sets the Version#event to 'updated'" do
-          expect(ar_association).to have_received(:create!).with(
-            hash_including(
-              event: "updated",
-            ),
+        it "asks Version::increment_for_edition to create a new version" do
+          expect(Version).to have_received(:increment_for_edition).with(
+            edition: edition,
+            user: user,
+            field_diffs: diffs,
+            state: :draft_complete,
           )
         end
       end
@@ -76,7 +45,7 @@ RSpec.describe Edition::Workflow, type: :model do
         end
 
         it "does NOT create a Version for the transition" do
-          expect(ar_association).not_to have_received(:create!)
+          expect(Version).not_to have_received(:increment_for_edition)
         end
       end
     end
