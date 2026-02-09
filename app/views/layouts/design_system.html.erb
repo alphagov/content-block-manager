@@ -1,26 +1,30 @@
 <% environment = GovukPublishingComponents::AppHelpers::Environment.current_acceptance_environment %>
 
-<% if user_signed_in? %>
-  <% content_for :head do %>
-    <meta name="govuk:components_gem_version" content="<%= GovukPublishingComponents::VERSION %>">
+<% content_for :head do %>
+  <meta name="govuk:components_gem_version" content="<%= GovukPublishingComponents::VERSION %>">
+
+  <% if user_signed_in? %>
     <meta name="govuk:user-created-at" content="<%= current_user&.created_at&.to_date %>">
     <meta name="govuk:user-organisation-name" content="<%= current_user&.organisation&.name %>">
     <meta name="govuk:user-role" content="<%= current_user&.role %>">
-    <meta name="govuk:format" content="<%= "#{action_name}-#{controller_name}" %>">
     <meta name="govuk:user-id" content="<%= current_user&.anonymous_user_id %>">
-    <% if get_content_id(@edition) %>
-      <meta name="govuk:content-id" content="<%= get_content_id(@edition) %>">
-    <% end %>
-    <%= javascript_include_tag "domain-config" %>
-    <%= javascript_include_tag "es6-components", defer: true %>
-    <%= javascript_include_tag "govuk_publishing_components/load-analytics" %>
-    <%= turbo_include_tags %>
+  <% end %>
 
-    <% if ENV["DEBUG_GA4"] %>
-      <script type="text/javascript">
-        window.GOVUK.analyticsGa4.showDebug = true
-      </script>
-    <% end %>
+  <meta name="govuk:format" content="<%= "#{action_name}-#{controller_name}" %>">
+
+  <% if get_content_id(@edition) %>
+    <meta name="govuk:content-id" content="<%= get_content_id(@edition) %>">
+  <% end %>
+
+  <%= javascript_include_tag "domain-config" %>
+  <%= javascript_include_tag "es6-components", defer: true %>
+  <%= javascript_include_tag "govuk_publishing_components/load-analytics" %>
+  <%= turbo_include_tags %>
+
+  <% if ENV["DEBUG_GA4"] %>
+    <script type="text/javascript">
+      window.GOVUK.analyticsGa4.showDebug = true
+    </script>
   <% end %>
 <% end %>
 

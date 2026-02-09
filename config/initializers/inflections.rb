@@ -5,6 +5,7 @@
 # locales as you wish. All of these examples are active by default:
 ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym "BSL"
+  inflect.acronym "JWT"
   inflect.plural(/(thing)([\s_])taxed/i, '\1s\2taxed')
   inflect.singular(/(thing)s([\s_])taxed/i, '\1\2taxed')
 end
