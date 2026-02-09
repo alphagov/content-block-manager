@@ -19,6 +19,7 @@ RSpec.describe PublishEditionService do
     end
 
     before do
+      allow(DomainEvent).to receive(:record)
       allow(Schema).to receive(:find_by_block_type).and_return(schema)
       allow(Organisation).to receive(:all).and_return([organisation])
       allow(Public::Services.publishing_api).to receive(:put_content)

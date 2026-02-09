@@ -16,6 +16,7 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
   before do
     login_as(user)
     allow(Edition).to receive(:find).and_return(edition)
+    allow(DomainEvent).to receive(:record)
   end
 
   describe "#create" do

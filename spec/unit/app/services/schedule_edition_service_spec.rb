@@ -13,6 +13,7 @@ RSpec.describe ScheduleEditionService do
   end
 
   before do
+    allow(DomainEvent).to receive(:record)
     allow(Schema).to receive(:find_by_block_type).and_return(schema)
     stub_publishing_api_has_embedded_content(content_id:, total: 0, results: [], order: HostContentItem::DEFAULT_ORDER)
     allow(Organisation).to receive(:all).and_return([organisation])

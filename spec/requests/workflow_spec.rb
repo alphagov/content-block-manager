@@ -28,6 +28,7 @@ RSpec.describe "Workflow", type: :request do
 
     stub_publishing_api_has_embedded_content(content_id: @content_id, total: 0, results: [], order: HostContentItem::DEFAULT_ORDER)
     allow(Organisation).to receive(:all).and_return([organisation])
+    allow(DomainEvent).to receive(:record)
   end
 
   describe "when creating a new content block" do

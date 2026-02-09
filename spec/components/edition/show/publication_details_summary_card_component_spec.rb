@@ -16,6 +16,8 @@ RSpec.describe Edition::Show::PublicationDetailsSummaryCardComponent, type: :com
   end
 
   describe "when the content block is scheduled" do
+    before { allow(DomainEvent).to receive(:record) }
+
     let(:scheduled_publication) { 2.days.from_now }
 
     it "shows the scheduled date time" do
