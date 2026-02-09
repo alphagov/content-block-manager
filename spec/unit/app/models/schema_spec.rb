@@ -155,17 +155,43 @@ RSpec.describe Schema do
   end
 
   describe ".valid_schemas" do
+    let(:user) { build(:user) }
+    let(:user_can_view_all_content_block_types) { false }
+
+    before do
+      allow(Current).to receive(:user).and_return(user)
+      allow(user).to receive(:has_permission?)
+                       .with(User::Permissions::SHOW_ALL_CONTENT_BLOCK_TYPES)
+                       .and_return(user_can_view_all_content_block_types)
+    end
+
     it "returns all of the schemas" do
       expect(Schema.valid_schemas).to eq(%w[tax contact pension])
     end
 
     describe "when the show_all_content_block_types feature flag is turned off" do
+      let(:user_can_view_all_content_block_types) { false }
+
       before do
         allow(Flipflop).to receive(:show_all_content_block_types?).and_return(false)
       end
 
       it "only returns the live schemas" do
         expect(Schema.valid_schemas).to eq(%w[contact pension])
+      end
+
+      describe "when the current user has the show_all_content_block_types permission" do
+        let(:user) { build(:user) }
+        let(:user_can_view_all_content_block_types) { true }
+
+        before do
+          allow(Current).to receive(:user).and_return(user)
+          allow(user).to receive(:has_permission?).with(User::Permissions::SHOW_ALL_CONTENT_BLOCK_TYPES).and_return(true)
+        end
+
+        it "returns all of the schemas" do
+          expect(Schema.valid_schemas).to eq(%w[tax contact pension])
+        end
       end
     end
   end

@@ -18,6 +18,7 @@ class User < ApplicationRecord
   module Permissions
     SIGNIN = "signin".freeze
     PRE_RELEASE_FEATURES_PERMISSION = "pre_release_features".freeze
+    SHOW_ALL_CONTENT_BLOCK_TYPES = "show_all_content_block_types".freeze
   end
 
   def organisation
