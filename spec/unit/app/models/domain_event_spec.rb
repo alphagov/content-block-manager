@@ -33,4 +33,60 @@ RSpec.describe DomainEvent, type: :model do
       end
     end
   end
+
+  describe "::record" do
+    let(:document) { create(:document, id: 2) }
+    let(:edition) { create(:edition, document: document) }
+    let(:user) { create(:user) }
+    let(:version) do
+      Version.create!(
+        item_type: "Edition",
+        item_id: edition.id,
+        event: "updated",
+      )
+    end
+
+    let(:metadata) do
+      {
+        previous_state: :draft_complete,
+        new_state: :awaiting_review,
+        transition_name: :ready_for_review,
+      }
+    end
+
+    let(:args) do
+      {
+        user: user,
+        edition: edition,
+        document: document,
+        version: version,
+        name: DomainEvent::EVENT_NAMES.first,
+        metadata: metadata,
+      }
+    end
+
+    let(:event) do
+      DomainEvent.record(**args)
+    end
+
+    before do
+      allow(Rails.logger).to receive(:info)
+    end
+
+    it("creates a DomainEvent with the given arguments") do
+      aggregate_failures do
+        expect(event.user_id).to eq(user.id)
+        expect(event.edition_id).to eq(edition.id)
+        expect(event.document_id).to eq(document.id)
+        expect(event.version_id).to eq(version.id)
+        expect(event.metadata.to_json).to eq(metadata.to_json)
+      end
+    end
+
+    it "logs that an event has been created, to assist with any debugging" do
+      expect(Rails.logger).to have_received(:info).with(
+        "DomainEvent: recording #{event.inspect}",
+      )
+    end
+  end
 end

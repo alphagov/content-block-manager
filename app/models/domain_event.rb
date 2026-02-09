@@ -16,4 +16,17 @@ class DomainEvent < ApplicationRecord
 
     errors.add :name, "not known"
   end
+
+  def self.record(document:, user:, name:, metadata: {}, edition: nil, version: nil)
+    create!(
+      document: document,
+      user: user,
+      name: name,
+      metadata: metadata,
+      edition: edition,
+      version: version,
+    ).tap do |event|
+      Rails.logger.info("DomainEvent: recording #{event.inspect}")
+    end
+  end
 end
