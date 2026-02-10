@@ -35,7 +35,7 @@ When("I complete the initial step of the workflow") do
   click_button "Save and continue"
 end
 
-Then("I should be able to complete all the steps in the workflow for a further edition") do
+Then("I should be able to complete all the steps in the workflow for a draft") do
   # initial step
   expect(current_path).to eq(workflow_path(edition, step: :edit_draft))
   click_button "Save and continue"
