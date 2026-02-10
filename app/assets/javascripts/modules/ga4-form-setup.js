@@ -26,8 +26,6 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
       form.setAttribute('data-ga4-form-record-json', '')
       form.setAttribute('data-ga4-form-split-response-text', '')
       form.setAttribute('data-ga4-form-include-text', '')
-
-      new window.GOVUK.Modules.Ga4FormTracker(form).init()
     }, this)
   }
 

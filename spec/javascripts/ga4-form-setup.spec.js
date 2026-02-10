@@ -1,13 +1,7 @@
 describe('GOVUK.Modules.Ga4FormSetup', function () {
-  let container, form, trackerSpy, trackerInitSpy
+  let container, form
 
   beforeEach(function () {
-    trackerInitSpy = jasmine.createSpy('init')
-    trackerSpy = jasmine.createSpy('Ga4FormTracker').and.returnValue({
-      init: trackerInitSpy
-    })
-    window.GOVUK.Modules.Ga4FormTracker = trackerSpy
-
     container = document.createElement('div')
     container.setAttribute('data-ga4-section', 'Test Section')
     container.innerHTML =
@@ -42,13 +36,5 @@ describe('GOVUK.Modules.Ga4FormSetup', function () {
     expect(form.hasAttribute('data-ga4-form-record-json')).toBe(true)
     expect(form.hasAttribute('data-ga4-form-split-response-text')).toBe(true)
     expect(form.hasAttribute('data-ga4-form-include-text')).toBe(true)
-  })
-
-  it('initializes the Ga4FormTracker for the found form', function () {
-    const module = new window.GOVUK.Modules.Ga4FormSetup(container)
-    module.init()
-
-    expect(trackerSpy).toHaveBeenCalledWith(form)
-    expect(trackerInitSpy).toHaveBeenCalled()
   })
 })
