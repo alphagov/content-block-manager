@@ -363,6 +363,20 @@ RSpec.describe Schema do
     it "includes the TimePeriod.date_time object as a field" do
       expect(schema.fields.map(&:name)).to eq(%w[description date_time])
     end
+
+    describe "#permitted_params" do
+      it "returns with the parameters of the embedded object included" do
+        expect(schema.permitted_params).to eq([
+          "description",
+          {
+            "date_time" => [
+              { "start" => %w[date time] },
+              { "end" => %w[date time] },
+            ],
+          },
+        ])
+      end
+    end
   end
 
   describe "when a schema has many embedded objects" do

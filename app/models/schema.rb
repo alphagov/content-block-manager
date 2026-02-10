@@ -92,7 +92,7 @@ class Schema
   end
 
   def permitted_params
-    field_names
+    fields.map(&:permitted_params)
   end
 
   def block_type
