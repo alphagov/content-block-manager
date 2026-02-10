@@ -73,21 +73,22 @@ def change_details(object_type: "pension")
     fill_in "Email address", with: "changed@example.com"
   end
 
-  select_organisation "Ministry of Example"
+  select_organisation Organisation.all.last
   fill_in "Instructions to publishers", with: "new context information"
   click_save_and_continue
 end
 
 def select_organisation(organisation)
+  @organisation = organisation
   if Capybara.current_session.driver.is_a?(Capybara::Playwright::Driver)
     Capybara.current_session.driver.with_playwright_page do |page|
       combobox = page.get_by_role("combobox", name: "Lead organisation")
       combobox.click
       listbox = combobox.locator(".choices__list").get_by_role("listbox")
-      listbox.get_by_role("option", name: organisation).click
+      listbox.get_by_role("option", name: organisation.name).click
     end
   else
-    select organisation, from: "edition_lead_organisation_id"
+    select organisation.name, from: "edition_lead_organisation_id"
   end
 end
 

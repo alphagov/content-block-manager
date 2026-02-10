@@ -68,7 +68,7 @@ Feature: Create a contact object
     And I click to close the preview
     And I save and continue
     And I review and confirm I have checked the content
-    Then I should be taken to the confirmation page for a new "contact"
+    Then I should be taken to the confirmation page
     When I click to view the content block
     Then the contact methods should be in the new order
 
@@ -132,7 +132,7 @@ Feature: Create a contact object
     When I save and continue
     Then there should be no accessibility errors
     When I review and confirm I have checked the content
-    Then I should be taken to the confirmation page for a new "contact"
+    Then I should be taken to the confirmation page
     And the block should have been sent to the Publishing API
     When I click to view the content block
     Then there should be no accessibility errors
@@ -174,7 +174,7 @@ Feature: Create a contact object
     Then I am asked to review my answers
     And I confirm I have checked the content
     And I review and confirm I have checked the content
-    And I should be taken to the confirmation page for a new "contact"
+    And I should be taken to the confirmation page
 
   Scenario: Fields with default values are not repopulated when editing
     When I click on the "email_addresses" subschema

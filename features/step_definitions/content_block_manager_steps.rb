@@ -29,15 +29,24 @@ When("I save a draft") do
 end
 
 When("I complete the form with the following fields:") do |table|
+  fill_in_form_fields(table)
+  click_save_and_continue
+end
+
+When("I fill the form with the following fields:") do |table|
+  fill_in_form_fields(table)
+end
+
+def fill_in_form_fields(table)
   fields = table.hashes.first
   @title = fields.delete("title")
-  @organisation = Organisation.all.find { |org| org.name == fields.delete("organisation") }
+  organisation = Organisation.all.find { |org| org.name == fields.delete("organisation") }
   @instructions_to_publishers = fields.delete("instructions_to_publishers")
   @details = fields
 
   fill_in label_for_title(@schema.block_type), with: @title if @title.present?
 
-  select_organisation(@organisation.name) if @organisation.present?
+  select_organisation(organisation) if organisation.present?
 
   fill_in "Instructions to publishers", with: @instructions_to_publishers if @instructions_to_publishers.present?
 
@@ -50,8 +59,6 @@ When("I complete the form with the following fields:") do |table|
       fill_in field[:id], with: @details[k]
     end
   end
-
-  click_save_and_continue
 end
 
 Then("the edition should have been created successfully") do
@@ -82,11 +89,12 @@ And("I should be taken to the confirmation page for a published block") do
   )
 end
 
-And("I should be taken to the confirmation page for a new {string}") do |block_type|
+And("I should be taken to the confirmation page") do
   content_block = Edition.last
+  confirmation_copy_presenter = ConfirmationCopyPresenter.new(content_block)
 
-  assert_text I18n.t("edition.confirmation_page.created.banner", block_type: block_type.titlecase)
-  assert_text I18n.t("edition.confirmation_page.created.detail")
+  assert_text confirmation_copy_presenter.for_panel
+  assert_text confirmation_copy_presenter.for_paragraph
 
   expect(page).to have_link(
     "View content block",

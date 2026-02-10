@@ -21,7 +21,7 @@ Feature: Create a pension block
     And I should not see a preview button
     And I review and confirm I have checked the content
     Then the edition should have been created successfully
-    And I should be taken to the confirmation page for a new "pension"
+    And I should be taken to the confirmation page
     And the block should have been sent to the Publishing API
 
   @javascript
@@ -47,7 +47,7 @@ Feature: Create a pension block
     When I save and continue
     Then there should be no accessibility errors
     And I review and confirm I have checked the content
-    Then I should be taken to the confirmation page for a new "pension"
+    Then I should be taken to the confirmation page
     And the block should have been sent to the Publishing API
     And analytics messages should have been sent for each step in the workflow
     And analytics messages should have been sent for each embedded object
