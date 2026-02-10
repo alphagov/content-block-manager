@@ -1,4 +1,6 @@
-RSpec.describe Version do
+RSpec.describe Version, type: :model do
+  it { is_expected.to have_many(:domain_events) }
+
   let(:event) { "created" }
   let(:item) do
     create(
@@ -47,6 +49,39 @@ RSpec.describe Version do
         :content_block_version,
         event: "invalid",
       )
+    end
+  end
+
+  describe "::increment_for_edition" do
+    let(:document) { create(:document) }
+    let(:edition) { create(:edition, document: document) }
+    let(:user) { create(:user) }
+    let(:diffs) do
+      {
+        "field_name" => { "previous_value" => "bar", "new_value" => "baz" },
+      }
+    end
+
+    let(:args) do
+      {
+        user: user,
+        edition: edition,
+        state: "published",
+        field_diffs: diffs,
+      }
+    end
+
+    let(:version) do
+      Version.increment_for_edition(**args)
+    end
+
+    it("creates a Version using the given arguments") do
+      aggregate_failures do
+        expect(version.whodunnit).to eq(user.id.to_s)
+        expect(version.item).to eq(edition)
+        expect(version.state).to eq("published")
+        expect(version.field_diffs).to eq(DiffItem.from_hash(diffs))
+      end
     end
   end
 

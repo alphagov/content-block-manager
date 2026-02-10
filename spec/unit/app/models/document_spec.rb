@@ -1,4 +1,6 @@
-RSpec.describe Document do
+RSpec.describe Document, type: :model do
+  it { is_expected.to have_many(:domain_events) }
+
   it "exists with required data" do
     document = create(
       :document,

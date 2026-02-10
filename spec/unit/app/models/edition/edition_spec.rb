@@ -1,4 +1,6 @@
 RSpec.describe Edition, type: :model do
+  it { is_expected.to have_many(:domain_events) }
+
   let(:new_content_id) { SecureRandom.uuid }
 
   let(:created_at) { Time.zone.local(2000, 12, 31, 23, 59, 59).utc }

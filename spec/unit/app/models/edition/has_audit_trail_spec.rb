@@ -20,52 +20,6 @@ RSpec.describe Edition::HasAuditTrail do
     end
   end
 
-  describe "record_update" do
-    it "creates a 'updated' version after scheduling an edition" do
-      Current.user = user
-      edition = create(
-        :edition,
-        creator: user,
-        document: create(:document, :pension),
-        state: :awaiting_factcheck,
-      )
-      edition.scheduled_publication = Time.zone.now + 1.day
-      expect(edition).to receive(:generate_diff).and_return({})
-
-      expect { edition.schedule! }.to change { edition.versions.count }.from(1).to(2)
-
-      version = edition.versions.first
-
-      expect(version.whodunnit).to eq(user.id.to_s)
-      expect(version.event).to eq("updated")
-      expect(version.state).to eq("scheduled")
-    end
-
-    it "does not record a version when updating an existing draft" do
-      edition = create(
-        :edition,
-        document: create(:document, :pension),
-        state: "draft",
-      )
-
-      expect { edition.update!(details: { "foo": "bar" }) }.not_to(change { edition.versions.count })
-    end
-
-    it "checks for any field_diffs" do
-      Current.user = user
-      edition = create(
-        :edition,
-        creator: user,
-        document: create(:document, :pension),
-        state: :awaiting_factcheck,
-      )
-      edition.scheduled_publication = Time.zone.now + 1.day
-
-      expect(edition).to receive(:generate_diff).and_return({})
-      edition.schedule!
-    end
-  end
-
   describe "acting_as" do
     before do
       @user = create(:user)

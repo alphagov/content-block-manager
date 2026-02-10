@@ -22,6 +22,8 @@ RSpec.describe Edition::WorkflowCompletion do
     allow(Public::Services.publishing_api).to receive(:put_content)
     allow(Public::Services.publishing_api).to receive(:publish)
     allow(edition).to receive(:complete_draft!).and_return(true)
+    allow(DomainEvent).to receive(:record)
+    allow(Version).to receive(:increment_for_edition)
   end
 
   describe "#call" do

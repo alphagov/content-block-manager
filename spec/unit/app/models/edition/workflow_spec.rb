@@ -1,4 +1,106 @@
 RSpec.describe Edition::Workflow, type: :model do
+  let(:version) { double("version") }
+
+  before do
+    allow(Version).to receive(:increment_for_edition).and_return(version)
+    allow(DomainEvent).to receive(:record)
+  end
+
+  describe "use of state machine's 'event_fired' callback" do
+    let(:user) { create("user") }
+
+    describe "creation of a new _version_ on state transition" do
+      let(:user) { build(:user, id: 456) }
+      let(:document) { build(:document, id: 10) }
+      let(:edition) { build(:edition, id: 123, document: document) }
+      let(:diffs) { double("field_diffs") }
+
+      context "when the transition succeeds" do
+        before do
+          allow(Current).to receive(:user).and_return(user)
+          allow(edition).to receive(:generate_diff).and_return(diffs)
+          allow(edition).to receive(:record_create)
+
+          edition.state = :draft
+
+          edition.complete_draft!
+        end
+
+        it "asks Version::increment_for_edition to create a new version" do
+          expect(Version).to have_received(:increment_for_edition).with(
+            edition: edition,
+            user: user,
+            field_diffs: diffs,
+            state: :draft_complete,
+          )
+        end
+      end
+
+      context "when the transition fails" do
+        before do
+          allow(edition).to receive(:publish!).and_raise(Transitions::InvalidTransition)
+          edition.publish!
+        rescue Transitions::InvalidTransition
+          # we're interested in whether a version is created after the error is handled
+        end
+
+        it "does NOT create a Version for the transition" do
+          expect(Version).not_to have_received(:increment_for_edition)
+        end
+      end
+    end
+
+    describe "recording domain events" do
+      let(:document) { build(:document) }
+      let(:edition) { create(:edition, :draft_complete, document: document) }
+      let(:user) { build(:user) }
+
+      before do
+        allow(DomainEvent).to receive(:record)
+      end
+
+      context "when the transition fails" do
+        before do
+          allow(edition).to receive(:publish!).and_raise(Transitions::InvalidTransition)
+          edition.publish!
+        rescue Transitions::InvalidTransition
+          # we're interested in whether an event is created after the error is handled
+        end
+
+        it "does NOT create a Domain Event for the transition" do
+          expect(DomainEvent).not_to have_received(:record)
+        end
+      end
+
+      context "when a transition completes successfully" do
+        let(:expected_transition_description) do
+          {
+            previous_state: :draft_complete,
+            new_state: :awaiting_review,
+            transition_name: :ready_for_review,
+          }
+        end
+
+        before do
+          allow(Current).to receive(:user).and_return(user)
+
+          edition.ready_for_review!
+        end
+
+        it "asks DomainEvent::record to record the transition" do
+          expect(DomainEvent).to have_received(:record).with(
+            name: "edition.state_transition.succeeded",
+            metadata: expected_transition_description,
+            edition: edition,
+            document: document,
+            user: user,
+            version: version,
+          )
+        end
+      end
+    end
+  end
+
   describe "transitions" do
     it "sets draft as the default state" do
       edition = create(:edition, document: create(:document, block_type: "pension"))

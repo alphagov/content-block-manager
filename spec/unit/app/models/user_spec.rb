@@ -10,7 +10,9 @@ class GDS::SSO::Lint::UserTest
   end
 end
 
-RSpec.describe User do
+RSpec.describe User, type: :model do
+  it { is_expected.to have_many(:domain_events) }
+
   describe "validations" do
     it "validates the presence of a name" do
       user = build(:user, name: nil)
