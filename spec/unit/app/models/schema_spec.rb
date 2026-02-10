@@ -330,7 +330,42 @@ RSpec.describe Schema do
     end
   end
 
-  describe "when a schema has embedded objects" do
+  describe "when a schema has an embedded object field such as TimePeriod.date_time" do
+    let(:body) do
+      {
+        "properties" => {
+          "description" => {
+            "type" => "string",
+          },
+          "date_time" => {
+            "type" => "object",
+            "properties" => {
+              "start" => {
+                "type" => "object",
+                "properties" => {
+                  "date" => { "type" => "string" },
+                  "time" => { "type" => "string" },
+                },
+              },
+              "end" => {
+                "type" => "object",
+                "properties" => {
+                  "date" => { "type" => "string" },
+                  "time" => { "type" => "string" },
+                },
+              },
+            },
+          },
+        },
+      }
+    end
+
+    it "includes the TimePeriod.date_time object as a field" do
+      expect(schema.fields.map(&:name)).to eq(%w[description date_time])
+    end
+  end
+
+  describe "when a schema has many embedded objects" do
     let(:body) do
       {
         "properties" => {
