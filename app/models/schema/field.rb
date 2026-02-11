@@ -55,7 +55,7 @@ class Schema
 
     def nested_fields
       if format == "object"
-        embedded_schema = Schema::EmbeddedSchema.new(name, properties, schema, config)
+        embedded_schema = Schema::EmbeddedSchema.new(name, properties, schema, config_for_embedded_schema)
         embedded_schema.fields
       elsif format == "array" && properties["items"]["type"] == "object"
         embedded_schema = Schema::EmbeddedSchema.new(name, properties["items"], schema, config, is_array: true)
@@ -147,6 +147,12 @@ class Schema
     end
 
   private
+
+    def config_for_embedded_schema
+      return schema.config.dig("subschemas", name) if schema.config["subschemas"]
+
+      config
+    end
 
     def custom_component
       @custom_component ||= config["component"]
