@@ -273,17 +273,27 @@ RSpec.describe DetailsValidator do
     let(:validator) { DetailsValidator.new }
 
     it "returns the key when an error does not have a data_pointer" do
-      expect("my_key").to eq(validator.key_with_optional_prefix({}, "my_key"))
+      expect(validator.key_with_optional_prefix({}, "my_key")).to eq("my_key")
+    end
+
+    it "returns the key when a reference has a data_pointer but no schema_pointer" do
+      error = { "data_pointer" => "/foo/something" }
+      expect(validator.key_with_optional_prefix(error, "my_key")).to eq("foo_something_my_key")
+    end
+
+    it "returns the key when a reference has a data_pointer and the schema_pointer does not include a pattern property" do
+      error = { "data_pointer" => "/foo/something", "schema_pointer" => "/properties/things/foo/something" }
+      expect(validator.key_with_optional_prefix(error, "my_key")).to eq("foo_something_my_key")
     end
 
     it "returns the key without a reference to the embedded object when a data_pointer is present" do
-      error = { "data_pointer" => "/foo/something" }
-      expect("foo_my_key").to eq(validator.key_with_optional_prefix(error, "my_key"))
+      error = { "data_pointer" => "/foo/something", "schema_pointer" => "/properties/things/patternProperties/^[a-z0-9]+(?:-[a-z0-9]+)*$" }
+      expect(validator.key_with_optional_prefix(error, "my_key")).to eq("foo_my_key")
     end
 
     it "returns the key without a reference to the embedded object when a data_pointer is present and nested" do
-      error = { "data_pointer" => "/foo/something/field" }
-      expect("foo_field_my_key").to eq(validator.key_with_optional_prefix(error, "my_key"))
+      error = { "data_pointer" => "/foo/something/field", "schema_pointer" => "/properties/things/patternProperties/^[a-z0-9]+(?:-[a-z0-9]+)*$" }
+      expect(validator.key_with_optional_prefix(error, "my_key")).to eq("foo_field_my_key")
     end
   end
 

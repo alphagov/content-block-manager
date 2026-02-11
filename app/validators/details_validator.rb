@@ -45,10 +45,9 @@ class DetailsValidator < ActiveModel::Validator
 
   def key_with_optional_prefix(error, key)
     if error["data_pointer"].present?
-      keys = error["data_pointer"].split("/")
+      prefix = generate_prefix(error)
       [
-        keys[1],
-        *keys[3..],
+        prefix,
         key,
       ].compact.join("_")
     else
@@ -66,6 +65,23 @@ class DetailsValidator < ActiveModel::Validator
   end
 
 private
+
+  def generate_prefix(error)
+    keys = error["data_pointer"].split("/")[1..]
+    if error_is_for_embedded_object?(error)
+      # Returns a reference to the data pointer with the key of the embedded object removed
+      [
+        keys[0],
+        *keys[2..],
+      ]
+    else
+      keys
+    end
+  end
+
+  def error_is_for_embedded_object?(error)
+    error["schema_pointer"]&.include?("patternProperties")
+  end
 
   def compact_nested(object)
     return object unless object.respond_to?(:compact_blank!)
