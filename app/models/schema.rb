@@ -2,7 +2,7 @@ class Schema
   SCHEMA_PREFIX = "content_block".freeze
 
   VALID_SCHEMAS = {
-    alpha: %w[tax],
+    alpha: %w[tax time_period],
     live: %w[contact pension],
   }.freeze
   private_constant :VALID_SCHEMAS

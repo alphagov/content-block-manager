@@ -166,7 +166,7 @@ RSpec.describe Schema do
     end
 
     it "returns all of the schemas" do
-      expect(Schema.valid_schemas).to eq(%w[tax contact pension])
+      expect(Schema.valid_schemas).to eq(%w[tax time_period contact pension])
     end
 
     describe "when the show_all_content_block_types feature flag is turned off" do
@@ -190,7 +190,7 @@ RSpec.describe Schema do
         end
 
         it "returns all of the schemas" do
-          expect(Schema.valid_schemas).to eq(%w[tax contact pension])
+          expect(Schema.valid_schemas).to eq(%w[tax time_period contact pension])
         end
       end
     end
