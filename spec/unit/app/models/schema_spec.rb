@@ -212,22 +212,24 @@ RSpec.describe Schema do
             },
           },
         },
-        "content_block_bar" => {
-          "definitions" => {
-            "details" => {
-              "properties" => {
-                "bar_field" => {
-                  "type" => "string",
-                },
-                "bar_field2" => {
-                  "type" => "string",
-                },
-              },
-            },
-          },
-        },
         "content_block_invalid" => {},
       })
+
+      allow(Dir).to receive(:glob).and_call_original
+      allow(Dir).to receive(:glob).with(Rails.root.join("app/models/schema/definitions/*.json")).and_return(["bar.json"])
+      file_stub = double("file", read: {
+        "type": "object",
+        "properties" => {
+          "bar_field" => {
+            "type" => "string",
+          },
+          "bar_field2" => {
+            "type" => "string",
+          },
+        },
+      }.to_json)
+      allow(File).to receive(:open).with("bar.json").and_return(file_stub)
+
       allow(Schema).to receive(:is_valid_schema?).with(anything).and_return(false)
       allow(Schema).to receive(:is_valid_schema?).with(satisfy { |arg| %w[content_block_foo content_block_bar].include?(arg) }).and_return(true)
     end

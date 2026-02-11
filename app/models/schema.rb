@@ -14,14 +14,11 @@ class Schema
       show_all_content_block_types? ? VALID_SCHEMAS.values.flatten : VALID_SCHEMAS[:live]
     end
 
+    # Load schemas from the Publishing API (`remote_schemas`) and the app itself (`local_schemas`). Eventually, we
+    # will move all of our schemas to the app
     def all
-      @all ||= Public::Services.publishing_api.get_schemas.select { |key, _v|
-        key.start_with?(SCHEMA_PREFIX)
-      }.map { |id, full_schema|
-        full_schema.dig("definitions", "details")&.yield_self { |schema| new(id, schema) }
-      }.compact
-
-      @all.select { |schema| is_valid_schema?(schema.id) }
+      all_schemas = remote_schemas + local_schemas
+      all_schemas.select { |schema| is_valid_schema?(schema.id) }
     end
 
     def find_by_block_type(block_type)
@@ -40,6 +37,22 @@ class Schema
 
     def show_all_content_block_types?
       Flipflop.show_all_content_block_types? || Current.user&.has_permission?(User::Permissions::SHOW_ALL_CONTENT_BLOCK_TYPES)
+    end
+
+    def remote_schemas
+      @remote_schemas ||= Public::Services.publishing_api.get_schemas.select { |key, _v|
+        key.start_with?(SCHEMA_PREFIX)
+      }.map { |id, full_schema|
+        full_schema.dig("definitions", "details")&.yield_self { |schema| new(id, schema) }
+      }.compact
+    end
+
+    def local_schemas
+      @local_schemas ||= Dir.glob(Rails.root.join("app/models/schema/definitions/*.json")).map do |path|
+        id = "#{SCHEMA_PREFIX}_#{File.basename(path, '.json')}"
+        body = JSON.parse(File.open(path).read)
+        new(id, body)
+      end
     end
   end
 
