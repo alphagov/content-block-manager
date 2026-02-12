@@ -74,5 +74,15 @@ RSpec.describe PublishingApi::ContentBlockPresenter do
         expect(result[:change_note]).to be_nil
       end
     end
+
+    PublishingApi::ContentBlockPresenter::LOCAL_SCHEMAS.each do |schema|
+      context "when the schema is #{schema}" do
+        let(:schema_id) { schema }
+
+        it "returns the generic schema name" do
+          expect(result[:schema_name]).to eq("content_block")
+        end
+      end
+    end
   end
 end
