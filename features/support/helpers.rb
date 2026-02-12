@@ -21,6 +21,12 @@ def should_show_summary_card_for_pension_content_block(document_title, descripti
   expect(page).to have_selector(".govuk-summary-list__value", text: description)
 end
 
+def should_show_summary_card_for_time_period_content_block(document_title, description, organisation, instructions_to_publishers = nil)
+  should_show_generic_content_block_details(document_title, "time_period", organisation, instructions_to_publishers)
+  expect(page).to have_selector(".govuk-summary-list__key", text: "Description")
+  expect(page).to have_selector(".govuk-summary-list__value", text: description)
+end
+
 def should_show_generic_content_block_details(document_title, block_type, organisation, instructions_to_publishers = nil)
   expect(page).to have_selector(
     ".govuk-summary-list__key",

@@ -60,6 +60,10 @@ When("I supply the time periods correctly") do
   time_period.fill_time_period_fields(details: time_period.initial_details, page: page)
 end
 
+When("I supply the changed values of the time period") do
+  time_period.fill_time_period_fields(details: time_period.changed_details, page: page)
+end
+
 When("I edit the draft time period block") do
   visit workflow_path(edition, step: "review")
   click_link "Edit"
@@ -69,5 +73,9 @@ When("I edit the draft time period block") do
 end
 
 Then("I should see the edited time period values have been saved") do
+  expect(page).to have_content(time_period.changed_details.date_time)
+end
+
+Then("I should see the changed values of the new edition") do
   expect(page).to have_content(time_period.changed_details.date_time)
 end

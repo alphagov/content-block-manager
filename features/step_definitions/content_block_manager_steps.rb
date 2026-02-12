@@ -241,6 +241,12 @@ Then("the edition should have been updated successfully") do
       @organisation,
       "new context information",
     )
+  when "time_period"
+    should_show_summary_card_for_time_period_content_block(
+      "Changed title",
+      "Initial description",
+      @organisation,
+    )
   else
     should_show_summary_card_for_contact_content_block(
       "Changed title",

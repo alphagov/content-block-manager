@@ -18,6 +18,10 @@ Given("a draft time period block exists") do
   create_time_period_edition(state: :draft)
 end
 
+Given("a published time period content block exists") do
+  create_time_period_edition(state: :published)
+end
+
 Given("a tax content block has been created") do
   create_published_tax_edition
 end

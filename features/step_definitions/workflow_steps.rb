@@ -44,6 +44,13 @@ Then("I should be able to complete all the steps in the workflow for a draft") d
   validate_workflow_review_path
 end
 
+Then("I should be able to complete all the steps in the workflow for a further edition") do
+  validate_internal_note_path_and_continue
+  validate_change_note_path_and_continue
+  validate_schedule_publishing_path_and_continue
+  validate_workflow_review_path
+end
+
 def validate_review_links_path_and_continue
   expect(current_path).to eq(workflow_path(edition, step: :review_links))
   click_button "Save and continue"
