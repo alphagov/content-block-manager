@@ -23,3 +23,10 @@ Feature: Create "Time period" content block
     When I click to view the content block
     Then I should see the details for the time_period content block
 
+  Scenario: Editor can edit a draft time period block
+    Given a draft time period block exists
+    When I am viewing the draft edition
+    And I edit the draft time period block
+    And I confirm I have checked the content
+    Then I should see the edited time period values have been saved
+

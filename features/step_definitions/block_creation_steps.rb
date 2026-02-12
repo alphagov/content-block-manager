@@ -14,6 +14,10 @@ Given("a pension content block has been created") do
   create_published_pension_edition
 end
 
+Given("a draft time period block exists") do
+  create_time_period_edition(state: :draft)
+end
+
 Given("a tax content block has been created") do
   create_published_tax_edition
 end
@@ -105,6 +109,20 @@ def create_draft_contact_edition
   )
 end
 
+def create_time_period_edition(state:)
+  @content_blocks ||= []
+  @content_block = create(
+    :edition,
+    :time_period,
+    state.to_sym,
+    document: time_period_document,
+    details: time_period.initial_details.to_h.stringify_keys,
+    creator: @user,
+    lead_organisation_id: organisation_id,
+    title: "Tax year",
+  )
+end
+
 def create_published_tax_edition
   @content_blocks ||= []
   @content_block = create(
@@ -179,4 +197,8 @@ end
 
 def contact_document
   @contact_document ||= create(:document, :contact)
+end
+
+def time_period_document
+  @time_period_document ||= create(:document, :time_period)
 end
