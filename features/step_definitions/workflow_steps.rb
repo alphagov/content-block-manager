@@ -36,29 +36,42 @@ When("I complete the initial step of the workflow") do
 end
 
 Then("I should be able to complete all the steps in the workflow for a draft") do
-  # initial step
-  expect(current_path).to eq(workflow_path(edition, step: :edit_draft))
-  click_button "Save and continue"
+  validate_edit_draft_path_and_continue
+  validate_review_links_path_and_continue
+  validate_internal_note_path_and_continue
+  validate_change_note_path_and_continue
+  validate_schedule_publishing_path_and_continue
+  validate_workflow_review_path
+end
 
-  # links step
+def validate_review_links_path_and_continue
   expect(current_path).to eq(workflow_path(edition, step: :review_links))
   click_button "Save and continue"
+end
 
-  # internal-note step
+def validate_edit_draft_path_and_continue
+  expect(current_path).to eq(workflow_path(edition, step: :edit_draft))
+  click_button "Save and continue"
+end
+
+def validate_internal_note_path_and_continue
   expect(current_path).to eq(workflow_path(edition, step: :internal_note))
   click_button "Save and continue"
+end
 
-  # change-note step
+def validate_change_note_path_and_continue
   expect(current_path).to eq(workflow_path(edition, step: :change_note))
   choose "No - it's a minor edit that does not change the meaning"
   click_button "Save and continue"
+end
 
-  # scheduling step
+def validate_schedule_publishing_path_and_continue
   expect(current_path).to eq(workflow_path(edition, step: :schedule_publishing))
   choose "Publish the edit now"
   click_button "Save and continue"
+end
 
-  # workflow review step
+def validate_workflow_review_path
   expect(current_path).to eq(workflow_path(edition, step: :review))
 end
 
