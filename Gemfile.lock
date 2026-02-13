@@ -896,7 +896,7 @@ GEM
     uri (1.1.1)
     useragent (0.16.11)
     version_gem (1.1.8)
-    view_component (4.3.0)
+    view_component (4.4.0)
       actionview (>= 7.1.0)
       activesupport (>= 7.1.0)
       concurrent-ruby (~> 1)
@@ -1318,7 +1318,7 @@ CHECKSUMS
   uri (1.1.1) sha256=379fa58d27ffb1387eaada68c749d1426738bd0f654d812fcc07e7568f5c57c6
   useragent (0.16.11) sha256=700e6413ad4bb954bb63547fa098dddf7b0ebe75b40cc6f93b8d54255b173844
   version_gem (1.1.8) sha256=a964767ecbe36551b9ff2e59099548c27569f2f7f94bdb09f609d76393a8e008
-  view_component (4.3.0) sha256=6eba5183704e01dd08fb0804885334586858446ca61f570e9fa29232e379ff54
+  view_component (4.4.0) sha256=ecccecb495ee4b4a5d9f93382992dc32c11a0708fde5ec261150a0f5223393d0
   warden (1.2.9) sha256=46684f885d35a69dbb883deabf85a222c8e427a957804719e143005df7a1efd0
   warden-oauth2 (0.0.1) sha256=9f8dfd89d23ef8936734ca897acd7dde86802c8139d6299774d6e6bf292921fd
   webmock (3.26.1) sha256=4f696fb57c90a827c20aadb2d4f9058bbff10f7f043bd0d4c3f58791143b1cd7
