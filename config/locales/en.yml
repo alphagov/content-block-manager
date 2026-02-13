@@ -40,6 +40,7 @@ en:
           default: Title
           contact: Contact name
           tax: Tax name
+          time_period: Time period name
   document:
     new:
       title: Select a content block

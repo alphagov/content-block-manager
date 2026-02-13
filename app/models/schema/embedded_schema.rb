@@ -30,10 +30,6 @@ class Schema
       @group_order ||= config["group_order"]&.to_i || Float::INFINITY
     end
 
-    def permitted_params
-      fields.map(&:permitted_params)
-    end
-
   private
 
     def field_names

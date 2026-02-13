@@ -11,6 +11,8 @@ Before do
   # Stub requests to send draft content to the Publishing API
   stub_request(:put, %r{\A#{PUBLISHING_API_V2_ENDPOINT}/content/#{UUID_REGEX}})
 
+  stub_request(:get, %r{\A#{PUBLISHING_API_V2_ENDPOINT}/schemas}).to_return(body: { schemas: [] }.to_json)
+
   # Stub requests to publish content
   stub_request(:post, %r{\A#{PUBLISHING_API_V2_ENDPOINT}/content/#{UUID_REGEX}/publish})
 

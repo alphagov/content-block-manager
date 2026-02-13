@@ -24,6 +24,12 @@ Then("I should see all the schemas listed") do
   end
 end
 
+And("the local schema {string} exists") do |block_type|
+  @schemas ||= {}
+  @schema = Schema.find_by_block_type(block_type)
+  @schemas[block_type] = @schema
+end
+
 And("the schema {string} exists") do |block_type|
   @schemas ||= {}
   body = GovukSchemas::Schema.find(publisher_schema: "content_block_#{block_type}")
