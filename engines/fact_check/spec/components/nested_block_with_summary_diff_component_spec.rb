@@ -26,22 +26,7 @@ RSpec.describe FactCheck::NestedBlocksWithSummaryDiffComponent, type: :component
   let(:object_type) { "addresses" }
   let(:object_title) { "address-1" }
 
-  let(:body) do
-    { "type" => "object",
-      "properties" =>
-      { "addresses" =>
-        { "type" => "object",
-          "patternProperties" =>
-          { ".*" =>
-            { "type" => "object",
-              "properties" =>
-              { "state_or_county" => { "type" => "string" },
-                "street_address" => { "type" => "string" },
-                "title" => { "type" => "string" },
-                "town_or_city" => { "type" => "string" } } } } } } }
-  end
-
-  let(:schema) { build(:schema, body:) }
+  let(:schema) { build(:schema, body: SchemaHelpers::REALISTIC_CONTACT_SCHEMA_BODY) }
   let(:document) { create(:document, :contact, schema:) }
   let(:pub_edition) { build(:edition, :contact, :published, document:, details: published_details) }
   let(:edition) { build(:edition, :contact, :awaiting_factcheck, document:, details: new_details) }
