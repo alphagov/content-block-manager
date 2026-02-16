@@ -154,6 +154,22 @@ RSpec.describe Schema do
     end
   end
 
+  describe ".live" do
+    let(:alpha_schemas) { 3.times.map { double("schema") } }
+    let(:live_schemas) { 2.times.map { double("schema") } }
+
+    before do
+      alpha_schemas.each { |s| allow(s).to receive(:live?).and_return(false) }
+      live_schemas.each { |s| allow(s).to receive(:live?).and_return(true) }
+
+      allow(Schema).to receive(:all).and_return(alpha_schemas + live_schemas)
+    end
+
+    it "returns live schemas" do
+      expect(Schema.live).to eq(live_schemas)
+    end
+  end
+
   describe ".valid_schemas" do
     let(:user) { build(:user) }
     let(:user_can_view_all_content_block_types) { false }

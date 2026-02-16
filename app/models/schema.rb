@@ -20,6 +20,10 @@ class Schema
       all_schemas.select { |schema| is_valid_schema?(schema.id) }
     end
 
+    def live
+      all.select(&:live?)
+    end
+
     def find_by_block_type(block_type)
       all.find { |schema| schema.block_type == block_type } || raise(ArgumentError, "Cannot find schema for #{block_type}")
     end
