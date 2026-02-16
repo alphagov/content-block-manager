@@ -1,6 +1,14 @@
 RSpec.describe Document::DocumentFilter do
   let(:user) { create(:user) }
   let(:is_e2e_user) { false }
+  let(:valid_schemas) do
+    [
+      build(:schema, :pension),
+      build(:schema, :contact),
+    ]
+  end
+
+  let(:filter) { Document::DocumentFilter.new(valid_schemas:) }
 
   before do
     allow(user).to receive(:is_e2e_user?).and_return(is_e2e_user)
@@ -12,13 +20,13 @@ RSpec.describe Document::DocumentFilter do
 
     before do
       allow(Document).to receive(:where)
-              .with(block_type: Schema.valid_schemas)
+              .with(block_type: valid_schemas.map(&:block_type))
               .and_return(document_scope_spy)
     end
 
     describe "when a user is not an e2e user" do
       it "only returns non-testing artefacts" do
-        Document::DocumentFilter.new({}).paginated_documents
+        filter.call({})
 
         expect(document_scope_spy).to have_received(:where).with(testing_artefact: false)
       end
@@ -27,7 +35,7 @@ RSpec.describe Document::DocumentFilter do
         it "returns live documents" do
           allow(Document).to receive(:with_keyword)
 
-          Document::DocumentFilter.new({}).paginated_documents
+          filter.call({})
 
           expect(Document).to_not have_received(:with_keyword)
           expect(document_scope_spy).to_not have_received(:where).with(id: anything)
@@ -35,7 +43,7 @@ RSpec.describe Document::DocumentFilter do
         end
 
         it "filters out inactive editions" do
-          Document::DocumentFilter.new({}).paginated_documents
+          filter.call({})
 
           expect(document_scope_spy).to have_received(:merge).with(Edition.active)
         end
@@ -52,7 +60,7 @@ RSpec.describe Document::DocumentFilter do
         end
 
         it "returns live documents with keyword" do
-          Document::DocumentFilter.new({ keyword: }).paginated_documents
+          filter.call({ keyword: })
 
           expect(Document).to have_received(:with_keyword).with(keyword)
           expect(document_scope_spy).to have_received(:where).with(id: ids)
@@ -63,7 +71,7 @@ RSpec.describe Document::DocumentFilter do
           let(:keyword) { "{{embed:content_block_pension:basic-state-pension/rates/full-basic-state-pension-amount/amount}}" }
 
           it "searches with the attribute reference stripped from the embed code" do
-            Document::DocumentFilter.new({ keyword: }).paginated_documents
+            filter.call({ keyword: })
 
             expect(Document).to have_received(:with_keyword).with("{{embed:content_block_pension:basic-state-pension}}")
             expect(document_scope_spy).to have_received(:where).with(id: ids)
@@ -75,7 +83,7 @@ RSpec.describe Document::DocumentFilter do
           let(:keyword) { "{{embed:content_block_pension:basic-state-pension}}" }
 
           it "searches with the embed code intact" do
-            Document::DocumentFilter.new({ keyword: }).paginated_documents
+            filter.call({ keyword: })
 
             expect(Document).to have_received(:with_keyword).with(keyword)
             expect(document_scope_spy).to have_received(:where).with(id: ids)
@@ -86,7 +94,7 @@ RSpec.describe Document::DocumentFilter do
 
       describe "when a block type is given" do
         it "returns live documents of the type given" do
-          Document::DocumentFilter.new({ block_type: %w[email_address] }).paginated_documents
+          filter.call({ block_type: %w[email_address] })
 
           expect(document_scope_spy).to have_received(:where).with(block_type: %w[email_address])
         end
@@ -94,7 +102,7 @@ RSpec.describe Document::DocumentFilter do
 
       describe "when a lead organisation id is given" do
         it "returns live documents with lead org given" do
-          Document::DocumentFilter.new({ lead_organisation: "123" }).paginated_documents
+          filter.call({ lead_organisation: "123" })
 
           expect(document_scope_spy).to have_received(:with_lead_organisation).with("123")
         end
@@ -111,9 +119,9 @@ RSpec.describe Document::DocumentFilter do
         end
 
         it "returns live documents with the filters given" do
-          Document::DocumentFilter.new(
+          filter.call(
             { block_type: %w[email_address], keyword: "ministry of example", lead_organisation: "123" },
-          ).paginated_documents
+          )
 
           expect(document_scope_spy).to have_received(:where).with(id: ids)
           expect(document_scope_spy).to have_received(:where).with(block_type: %w[email_address])
@@ -123,36 +131,22 @@ RSpec.describe Document::DocumentFilter do
 
       describe "when a page is given" do
         it "passes the page to the query" do
-          Document::DocumentFilter.new({ page: 2 }).paginated_documents
+          filter.call({ page: 2 })
 
           expect(document_scope_spy).to have_received(:page).with(2)
         end
       end
 
       describe "last updated dates" do
-        describe "when dates are missing" do
-          it "does not filter by date if one or more date element is missing" do
-            Document::DocumentFilter.new(
-              {
-                last_updated_from: { "3i" => "", "2i" => "2", "1i" => "2025" },
-                last_updated_to: { "3i" => "", "2i" => "", "1i" => ""  },
-              },
-            ).paginated_documents
-
-            expect(document_scope_spy).to_not have_received(:last_updated_before)
-            expect(document_scope_spy).to_not have_received(:last_updated_after)
-          end
-        end
-
         describe "when dates are valid" do
           it "filters using last updated from date" do
             expected_date_time = Time.zone.local(2025, 2, 1)
 
-            Document::DocumentFilter.new(
+            filter.call(
               {
                 last_updated_from: { "3i" => "1", "2i" => "2", "1i" => "2025" },
               },
-            ).paginated_documents
+            )
 
             expect(document_scope_spy).to have_received(:last_updated_after).with(expected_date_time)
           end
@@ -160,11 +154,11 @@ RSpec.describe Document::DocumentFilter do
           it "filters using last updated to date" do
             expected_date_time = Time.zone.local(2026, 4, 3).end_of_day
 
-            Document::DocumentFilter.new(
+            filter.call(
               {
                 last_updated_to: { "3i" => "3", "2i" => "4", "1i" => "2026" },
               },
-            ).paginated_documents
+            )
 
             expect(document_scope_spy).to have_received(:last_updated_before).with(expected_date_time)
           end
@@ -176,15 +170,13 @@ RSpec.describe Document::DocumentFilter do
       let(:is_e2e_user) { true }
 
       it "does not filter by testing_artefact" do
-        Document::DocumentFilter.new({}).paginated_documents
+        filter.call({})
 
         expect(document_scope_spy).to_not have_received(:where).with(testing_artefact: false)
       end
     end
 
     describe "date validation" do
-      let(:document_filter) { Document::DocumentFilter.new(filters) }
-
       %i[last_updated_from last_updated_to].each do |attribute|
         describe "when #{attribute} contains non-date values" do
           let(:filters) do
@@ -193,12 +185,14 @@ RSpec.describe Document::DocumentFilter do
             }
           end
 
-          it "returns invalid" do
-            expect(document_filter.valid?).to be false
+          it "raises an error" do
+            expect { filter.call(filters) }.to raise_error(Document::DocumentFilter::InvalidFiltersError)
           end
 
           it "returns errors" do
-            errors = document_filter.errors
+            filter.call(filters)
+          rescue Document::DocumentFilter::InvalidFiltersError => e
+            errors = e.errors
             expect(errors.count).to eq(1)
             expect(errors.first.attribute).to eq(attribute.to_s)
             expect(errors.first.full_message).to eq(I18n.t("document.index.errors.date.invalid", attribute: attribute.to_s.humanize))
@@ -212,12 +206,14 @@ RSpec.describe Document::DocumentFilter do
             }
           end
 
-          it "returns invalid" do
-            expect(document_filter.valid?).to be false
+          it "raises an error" do
+            expect { filter.call(filters) }.to raise_error(Document::DocumentFilter::InvalidFiltersError)
           end
 
           it "returns errors" do
-            errors = document_filter.errors
+            filter.call(filters)
+          rescue Document::DocumentFilter::InvalidFiltersError => e
+            errors = e.errors
             expect(errors.count).to eq(1)
             expect(errors.first.attribute).to eq(attribute.to_s)
             expect(errors.first.full_message).to eq(I18n.t("document.index.errors.date.invalid", attribute: attribute.to_s.humanize))
@@ -233,12 +229,14 @@ RSpec.describe Document::DocumentFilter do
           }
         end
 
-        it "returns invalid" do
-          expect(document_filter.valid?).to be false
+        it "raises an error" do
+          expect { filter.call(filters) }.to raise_error(Document::DocumentFilter::InvalidFiltersError)
         end
 
         it "returns errors" do
-          errors = document_filter.errors
+          filter.call(filters)
+        rescue Document::DocumentFilter::InvalidFiltersError => e
+          errors = e.errors
           expect(errors.count).to eq(1)
           expect(errors.first.attribute).to eq("last_updated_from")
           expect(errors.first.full_message).to eq(I18n.t("document.index.errors.date.range.invalid"))

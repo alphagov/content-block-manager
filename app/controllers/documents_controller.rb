@@ -3,14 +3,18 @@ class DocumentsController < BaseController
 
   def index
     if params_filters.any?
-      @filters = params_filters
-      filter_result = Document::DocumentFilter.new(@filters)
-      @documents = filter_result.paginated_documents
-      unless filter_result.valid?
-        @errors = filter_result.errors
+      filter = Document::DocumentFilter.new(valid_schemas:)
+
+      begin
+        @filters = params_filters
+        @documents = filter.call(@filters)
+        render :index
+      rescue Document::DocumentFilter::InvalidFiltersError => e
+        @documents = filter.call({})
+        @errors = e.errors
         @error_summary_errors = @errors.map { |error| { text: error.full_message, href: "##{error.attribute}_3i" } }
+        render :index
       end
-      render :index
     else
       redirect_to root_path(default_filters)
     end
