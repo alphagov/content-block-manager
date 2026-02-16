@@ -5,7 +5,6 @@ class Schema
     alpha: %w[tax time_period],
     live: %w[contact pension],
   }.freeze
-  private_constant :VALID_SCHEMAS
 
   CONFIG_PATH = Rails.root.join("config/content_block_manager.yml").to_s
 
@@ -61,6 +60,10 @@ class Schema
   def initialize(id, body)
     @id = id
     @body = body
+  end
+
+  def live?
+    block_type.in?(VALID_SCHEMAS[:live])
   end
 
   def name

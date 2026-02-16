@@ -520,4 +520,29 @@ RSpec.describe Schema do
       expect { schema.field("invalid_field") }.to raise_error("Field 'invalid_field' not found")
     end
   end
+
+  describe "#live?" do
+    let(:schema) { build(:schema, block_type:) }
+    subject { schema.live? }
+
+    context "with live schemas" do
+      Schema::VALID_SCHEMAS[:live].each do |schema_id|
+        let(:block_type) { schema_id }
+
+        context "when the schema is #{schema_id}" do
+          it { is_expected.to be(true) }
+        end
+      end
+    end
+
+    context "with alpha schemas" do
+      Schema::VALID_SCHEMAS[:alpha].each do |schema_id|
+        let(:block_type) { schema_id }
+
+        context "when the schema is #{schema_id}" do
+          it { is_expected.to be(false) }
+        end
+      end
+    end
+  end
 end
