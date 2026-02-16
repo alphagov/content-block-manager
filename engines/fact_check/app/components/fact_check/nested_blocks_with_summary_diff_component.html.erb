@@ -1,0 +1,26 @@
+<div class="app-c-embedded-objects-blocks-component app-c-embedded-objects-blocks-component--with-block">
+  <div class="app-c-embedded-objects-blocks-component__main-summary-card-wrapper">
+    <%= render "govuk_publishing_components/components/summary_card", {
+      title:,
+      rows: [block_row],
+    } %>
+  </div>
+
+  <div class="app-c-embedded-objects-blocks-component__details-wrapper">
+    <%= render "govuk_publishing_components/components/details", {
+      title: "All #{object_name} attributes",
+      summary_aria_attributes: {
+        label: object_title,
+      },
+    } do %>
+      <div class="app-c-embedded-objects-blocks-component__details-text">
+        <%= all_attributes_preamble %>
+      </div>
+      <div class="app-c-embedded-objects-blocks-component__details-summary-list">
+        <%= render "govuk_publishing_components/components/summary_list",
+          items: attribute_rows(:field) %>
+        <%= nested_blocks %>
+      </div>
+    <% end %>
+  </div>
+</div>

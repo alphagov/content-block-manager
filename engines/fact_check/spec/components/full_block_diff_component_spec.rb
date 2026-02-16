@@ -1,4 +1,4 @@
-RSpec.describe FactCheck::DefaultBlockComponent, type: :component do
+RSpec.describe FactCheck::FullBlockDiffComponent, type: :component do
   let(:document) { build(:document, :contact) }
   let(:published_block) { build(:content_block) }
   let(:content_block) { build(:content_block) }
@@ -21,7 +21,7 @@ RSpec.describe FactCheck::DefaultBlockComponent, type: :component do
 
     it "renders the default block with the diff showing" do
       render_inline(
-        FactCheck::DefaultBlockComponent.new(block: content_block),
+        FactCheck::FullBlockDiffComponent.new(block: content_block),
       )
 
       expect(page).to have_css(
@@ -50,7 +50,7 @@ RSpec.describe FactCheck::DefaultBlockComponent, type: :component do
 
     it "renders the default block without a diff" do
       render_inline(
-        FactCheck::DefaultBlockComponent.new(block: content_block),
+        FactCheck::FullBlockDiffComponent.new(block: content_block),
       )
 
       expect(page).to_not have_css(".diff")

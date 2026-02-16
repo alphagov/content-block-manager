@@ -5,6 +5,7 @@ Feature: Fact check preview
     And the schema "contact" exists
     And the schema "pension" exists
 
+  @javascript
   Scenario: User can see a preview of a contact block in Fact Check
     Given a published contact edition exists
     And that contact has an email address with the following fields:
@@ -18,6 +19,14 @@ Feature: Fact check preview
     Then I should see the block's title
     And I should see "foo@example.com" as a previous value
     And I should see "bar@example.com" as a new value
+    When I select the "Email address (1)" tab
+    Then I should see a summary card entitled "Email address block"
+    And I should see "foo@example.com" as a previous value in the summary card
+    And I should see "bar@example.com" as a new value in the summary card
+    And I open the full "email address" summary card attributes
+    And I should see "foo@example.com" as a previous value in the summary details
+    And I should see "bar@example.com" as a new value in the summary details
+    And I should see "my email" in the summary details
     And I should see the list of host editions referencing my block
 
   Scenario: User can see a preview of a brand new contact block in Fact Check

@@ -73,5 +73,27 @@ RSpec.describe FactCheck::BlocksController, type: :feature do
         expect(page).to have_css ".govuk-summary-card__title", text: "Default block"
       end
     end
+
+    context "when the block has a grouped subschema" do
+      let(:subschemas) do
+        [Schema::EmbeddedSchema.new("addresses", {}, schema),
+         Schema::EmbeddedSchema.new("contact_links", {}, schema)]
+      end
+      let(:schema) { build(:schema, block_type: :contact, body: SchemaHelpers::MINIMAL_CONTACT_SCHEMA_BODY) }
+
+      before do
+        allow(schema).to receive(:subschemas).and_return(subschemas)
+        allow(block).to receive(:schema).and_return(schema)
+      end
+
+      it "should render a set of tabs for the grouped subschemas" do
+        expect(FactCheck::TabGroupDiffComponent).to receive(:new).once.and_call_original
+
+        visit block_path(content_id)
+
+        expect(page).to have_css(".govuk-heading-l", text: "Contact methods")
+        expect(page).to have_css(".govuk-tabs")
+      end
+    end
   end
 end

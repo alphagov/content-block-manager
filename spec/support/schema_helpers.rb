@@ -1,4 +1,33 @@
 module SchemaHelpers
+  MINIMAL_ADDRESS_SUBSCHEMA_BODY =
+    { "addresses" =>
+      { "type" => "object",
+        "patternProperties" =>
+        { ".*" =>
+          { "type" => "object",
+            "properties" =>
+            { "state_or_county" => { "type" => "string" },
+              "street_address" => { "type" => "string" },
+              "title" => { "type" => "string" },
+              "town_or_city" => { "type" => "string" } } } } } }.freeze
+
+  MINIMAL_CONTACT_LINK_SUBSCHEMA_BODY =
+    { "contact_links" =>
+      { "type" => "object",
+        "patternProperties" =>
+        { ".*" =>
+          { "type" => "object",
+            "required" => %w[label url],
+            "properties" =>
+            { "description" => { "type" => "string" },
+              "label" => { "type" => "string" },
+              "title" => { "type" => "string", "default" => "Contact link" },
+              "url" => { "type" => "string" } } } } } }.freeze
+
+  MINIMAL_CONTACT_SCHEMA_BODY =
+    { "type" => "object",
+      "properties" => MINIMAL_ADDRESS_SUBSCHEMA_BODY.merge(MINIMAL_CONTACT_LINK_SUBSCHEMA_BODY) }.freeze
+
   def stub_request_for_schema(block_type, subschemas: [], fields: nil)
     schema = double(
       id: "content_block_type",
@@ -30,4 +59,5 @@ end
 RSpec.configure do |config|
   config.include SchemaHelpers, type: :request
   config.include SchemaHelpers, type: :feature
+  config.include SchemaHelpers, type: :component
 end

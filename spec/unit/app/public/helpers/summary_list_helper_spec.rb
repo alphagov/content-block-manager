@@ -22,6 +22,24 @@ RSpec.describe SummaryListHelper do
     }
   end
 
+  let(:input_combined) do
+    {
+      "string_item" => { "published" => "Item", "new" => "Item" },
+      "array_items" => [{ "published" => "Item 1", "new" => "Item 1" },
+                        { "published" => "Item 2", "new" => "Item 2" }],
+      "array_of_objects_items" => [
+        {
+          "title" => { "published" => "Item 1 Title" },
+          "description" => { "new" => "Item 1 Title" },
+        },
+      ],
+      "object_item" => {
+        "title" => { "published" => "Object Title", "new" => "Object Title" },
+        "description" => { "published" => "Object Description", "new" => "Object Description" },
+      },
+    }
+  end
+
   describe "#first_class_items" do
     it "returns any string items and flattens out non-nested arrays" do
       expected = {
@@ -33,6 +51,13 @@ RSpec.describe SummaryListHelper do
       }
 
       expect(first_class_items(input)).to eq(expected)
+    end
+
+    context "when provided with combined edition details" do
+      it "should return any direct child items with a 'published' or 'new' child key" do
+        expected = { "string_item" => { "new" => "Item", "published" => "Item" } }
+        expect(first_class_items(input_combined)).to eq(expected)
+      end
     end
   end
 
@@ -55,7 +80,24 @@ RSpec.describe SummaryListHelper do
         },
       }
 
-      expect(expected).to eq(nested_items(input))
+      expect(nested_items(input)).to eq(expected)
+    end
+
+    context "when provided with combined edition details" do
+      it "should not return items with a 'published' or 'new' key as 'nested items'" do
+        expected = { "array_items" =>
+                     [{ "published" => "Item 1", "new" => "Item 1" },
+                      { "published" => "Item 2", "new" => "Item 2" }],
+                     "array_of_objects_items" =>
+                     [{ "description" => { "new" => "Item 1 Title" }, "title" => { "published" => "Item 1 Title" } }],
+                     "object_item" =>
+                     { "description" =>
+                       { "new" => "Object Description", "published" => "Object Description" },
+                       "title" =>
+                       { "new" => "Object Title", "published" => "Object Title" } } }
+
+        expect(nested_items(input_combined)).to eq(expected)
+      end
     end
   end
 end
