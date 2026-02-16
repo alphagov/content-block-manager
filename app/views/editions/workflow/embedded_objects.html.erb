@@ -9,41 +9,52 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-    <%= form_with url: workflow_path(
-      @edition,
-      step: @step_name,
-      ), method: :put, id: "embedded_objects", **form_data_attributes do %>
+    <% if @subschema.relationship_type.one_to_many? %>
+      <%= form_with url: workflow_path(
+        @edition,
+        step: @step_name,
+        ), method: :put, id: "embedded_objects", **form_data_attributes do %>
 
-      <% if @edition.details[@subschema.block_type] %>
-        <%= render Shared::EmbeddedObjects::SummaryCardComponent.with_collection(
-          @edition.details[@subschema.block_type].keys,
-          edition: @edition,
-          object_type: @subschema.block_type,
-          redirect_url: request.fullpath,
-          test_id_prefix: "embedded",
-        ) %>
-      <% else %>
-        <% if I18n.exists?("edition.create.embedded_objects.#{@subschema.id}") %>
-          <%= render "govuk_publishing_components/components/hint", {
-            text: t("edition.create.embedded_objects.#{@subschema.id}", block_type: @subschema.name.humanize(capitalize: false)),
-          } %>
+        <% if @edition.details[@subschema.block_type] %>
+          <%= render Shared::EmbeddedObjects::SummaryCardComponent.with_collection(
+            @edition.details[@subschema.block_type].keys,
+            edition: @edition,
+            object_type: @subschema.block_type,
+            redirect_url: request.fullpath,
+            test_id_prefix: "embedded",
+            ) %>
+        <% else %>
+          <% if I18n.exists?("edition.create.embedded_objects.#{@subschema.id}") %>
+            <%= render "govuk_publishing_components/components/hint", {
+              text: t("edition.create.embedded_objects.#{@subschema.id}", block_type: @subschema.name.humanize(capitalize: false)),
+            } %>
+          <% end %>
         <% end %>
+
+        <%= render "govuk_publishing_components/components/button", {
+          text: @add_button_text,
+          href: new_embedded_object_edition_path(
+            @edition,
+            object_type: @subschema.block_type,
+            ),
+          secondary_solid: true,
+          margin_bottom: 6,
+        } %>
       <% end %>
 
-      <%= render "govuk_publishing_components/components/button", {
-        text: @add_button_text,
-        href: new_embedded_object_edition_path(
-          @edition,
-          object_type: @subschema.block_type,
-        ),
-        secondary_solid: true,
-        margin_bottom: 6,
-      } %>
-    <% end %>
-
-    <%= render Shared::ContinueOrCancelButtonGroup.new(
-      form_id: "embedded_objects",
-      edition: @edition,
-      ) %>
+      <%= render Shared::ContinueOrCancelButtonGroup.new(
+        form_id: "embedded_objects",
+        edition: @edition,
+        ) %>
+    <% else %>
+      <%= form_with(
+            url: create_embedded_object_edition_path(
+              @edition,
+              object_type: @subschema.block_type,
+              step: @step_name,
+              ), method: :post, **ga4_data_attributes(edition: @edition)) do |form| %>
+        <%= render partial: "editions/embedded_objects/shared/form", locals: { form:, is_new_record: true } %>
+      <% end %>
+  <% end %>
   </div>
 </div>

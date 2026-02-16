@@ -1,6 +1,5 @@
 {
   "type": "object",
-  "required": ["date_time"],
   "additionalProperties": false,
   "properties": {
     "description": {

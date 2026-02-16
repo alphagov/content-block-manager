@@ -56,10 +56,14 @@ class Edition < ApplicationRecord
   end
 
   def add_object_to_details(object_type, body)
-    key = ObjectKey.new(details, object_type, body["title"]).to_s
-
     details[object_type] ||= {}
-    details[object_type][key] = remove_destroyed body.to_h
+
+    if body["title"]
+      key = ObjectKey.new(details, object_type, body["title"]).to_s
+      details[object_type][key] = remove_destroyed body.to_h
+    else
+      details[object_type] = remove_destroyed body.to_h
+    end
   end
 
   def update_object_with_details(object_type, object_title, body)

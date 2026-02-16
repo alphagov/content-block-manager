@@ -166,6 +166,6 @@ private
   end
 
   def embedded_objects
-    @body["properties"].select { |_k, v| v["type"] == "object" && v["patternProperties"] }
+    @body["properties"].select { |_k, v| v["type"] == "object" }
   end
 end

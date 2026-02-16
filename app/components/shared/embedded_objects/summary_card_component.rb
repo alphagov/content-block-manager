@@ -25,6 +25,7 @@ private
   end
 
   def items
+    binding.pry
     schema.fields.index_with do |field|
       object[field.name]
     end

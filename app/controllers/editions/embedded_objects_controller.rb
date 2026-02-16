@@ -1,5 +1,6 @@
 class Editions::EmbeddedObjectsController < BaseController
   include EmbeddedObjects
+  include Workflow::HasSteps
 
   before_action :initialize_edition
 
@@ -42,13 +43,20 @@ class Editions::EmbeddedObjectsController < BaseController
 
       object_or_group = @subschema.group ? @subschema.group.humanize.singularize : @subschema.name.singularize
 
-      flash[:success] = I18n.t(
-        "edition.create.embedded_objects.added_confirmation",
-        object_name: @subschema.name.singularize,
-        object_or_group: object_or_group.downcase,
-        schema_name: @schema.name.singularize.downcase,
-      )
-      redirect_to embedded_objects_path
+      if @subschema.relationship_type.one_to_many?
+        flash[:success] = I18n.t(
+          "edition.create.embedded_objects.added_confirmation",
+          object_name: @subschema.name.singularize,
+          object_or_group: object_or_group.downcase,
+          schema_name: @schema.name.singularize.downcase,
+        )
+        redirect_to embedded_objects_path
+      else
+        redirect_to workflow_path(
+          id: @edition.id,
+          step: next_step&.name,
+        )
+      end
     end
   rescue ActiveRecord::RecordInvalid
     render :new, status: :unprocessable_content
