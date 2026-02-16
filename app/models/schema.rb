@@ -92,7 +92,7 @@ class Schema
   end
 
   def permitted_params
-    field_names
+    fields.map(&:permitted_params)
   end
 
   def block_type
@@ -166,6 +166,6 @@ private
   end
 
   def embedded_objects
-    @body["properties"].select { |_k, v| v["type"] == "object" }
+    @body["properties"].select { |_k, v| v["type"] == "object" && v["patternProperties"] }
   end
 end

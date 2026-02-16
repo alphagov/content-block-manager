@@ -21,6 +21,12 @@ def should_show_summary_card_for_pension_content_block(document_title, descripti
   expect(page).to have_selector(".govuk-summary-list__value", text: description)
 end
 
+def should_show_summary_card_for_time_period_content_block(document_title, description, organisation, instructions_to_publishers = nil)
+  should_show_generic_content_block_details(document_title, "time_period", organisation, instructions_to_publishers)
+  expect(page).to have_selector(".govuk-summary-list__key", text: "Description")
+  expect(page).to have_selector(".govuk-summary-list__value", text: description)
+end
+
 def should_show_generic_content_block_details(document_title, block_type, organisation, instructions_to_publishers = nil)
   expect(page).to have_selector(
     ".govuk-summary-list__key",
@@ -73,21 +79,22 @@ def change_details(object_type: "pension")
     fill_in "Email address", with: "changed@example.com"
   end
 
-  select_organisation "Ministry of Example"
+  select_organisation Organisation.all.last
   fill_in "Instructions to publishers", with: "new context information"
   click_save_and_continue
 end
 
 def select_organisation(organisation)
+  @organisation = organisation
   if Capybara.current_session.driver.is_a?(Capybara::Playwright::Driver)
     Capybara.current_session.driver.with_playwright_page do |page|
       combobox = page.get_by_role("combobox", name: "Lead organisation")
       combobox.click
       listbox = combobox.locator(".choices__list").get_by_role("listbox")
-      listbox.get_by_role("option", name: organisation).click
+      listbox.get_by_role("option", name: organisation.name).click
     end
   else
-    select organisation, from: "edition_lead_organisation_id"
+    select organisation.name, from: "edition_lead_organisation_id"
   end
 end
 
