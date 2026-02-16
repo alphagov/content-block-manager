@@ -2,6 +2,7 @@ require "record_tag_helper/helper"
 
 class Document::Index::FilterOptionsComponent < ViewComponent::Base
   include ActionView::Helpers::RecordTagHelper
+
   def initialize(filters:, errors: nil)
     @filters = filters
     @errors = errors
@@ -24,11 +25,11 @@ private
   end
 
   def items_for_block_type
-    Schema.valid_schemas.map do |schema_name|
+    helpers.valid_schemas.map do |schema|
       {
-        label: schema_name.humanize,
-        value: schema_name,
-        checked: @filters.any? && @filters[:block_type]&.include?(schema_name),
+        label: schema.block_type.humanize,
+        value: schema.block_type,
+        checked: @filters.any? && @filters[:block_type]&.include?(schema.block_type),
       }
     end
   end
