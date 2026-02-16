@@ -1,4 +1,6 @@
 class DocumentsController < BaseController
+  include SchemaHelper
+
   def index
     if params_filters.any?
       @filters = params_filters
@@ -42,7 +44,7 @@ class DocumentsController < BaseController
   end
 
   def new
-    @schemas = Schema.all
+    @schemas = valid_schemas
   end
 
   def new_document_options_redirect
