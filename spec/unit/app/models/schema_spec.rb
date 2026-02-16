@@ -320,14 +320,14 @@ RSpec.describe Schema do
     end
   end
 
-  describe "when a schema has an embedded object field such as TimePeriod.date_time" do
+  describe "when a schema has an embedded object field such as TimePeriod.date_range" do
     let(:body) do
       {
         "properties" => {
           "description" => {
             "type" => "string",
           },
-          "date_time" => {
+          "date_range" => {
             "type" => "object",
             "properties" => {
               "start" => {
@@ -350,8 +350,8 @@ RSpec.describe Schema do
       }
     end
 
-    it "includes the TimePeriod.date_time object as a field" do
-      expect(schema.fields.map(&:name)).to eq(%w[description date_time])
+    it "includes the TimePeriod.date_range object as a field" do
+      expect(schema.fields.map(&:name)).to eq(%w[description date_range])
     end
 
     describe "#permitted_params" do
@@ -359,7 +359,7 @@ RSpec.describe Schema do
         expect(schema.permitted_params).to eq([
           "description",
           {
-            "date_time" => [
+            "date_range" => [
               { "start" => %w[date time] },
               { "end" => %w[date time] },
             ],

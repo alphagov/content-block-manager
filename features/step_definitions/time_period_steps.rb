@@ -73,9 +73,9 @@ When("I edit the draft time period block") do
 end
 
 Then("I should see the edited time period values have been saved") do
-  expect(page).to have_content(time_period.changed_details.date_time)
+  expect(page).to have_content(time_period.changed_details.date_range)
 end
 
 Then("I should see the changed values of the new edition") do
-  expect(page).to have_content(time_period.changed_details.date_time)
+  expect(page).to have_content(time_period.changed_details.date_range)
 end
