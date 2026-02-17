@@ -23,7 +23,17 @@ private
         max_array_length = [Array(pub_val).length, Array(new_val).length].max
 
         combined_hash[key] = (0..max_array_length - 1).map do |index|
-          combine_hashes(Array(pub_val)[index] || {}, Array(new_val)[index] || {})
+          published = Array(pub_val)[index] || {}
+          new = Array(new_val)[index] || {}
+
+          if published.is_a?(Hash) && new.is_a?(Hash)
+            combine_hashes(published, new)
+          else
+            {
+              "published" => published,
+              "new" => new,
+            }
+          end
         end
       else
         combined_hash[key] = {}
