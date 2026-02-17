@@ -170,50 +170,17 @@ RSpec.describe Schema do
     end
   end
 
-  describe ".valid_schemas" do
-    let(:user) { build(:user) }
-    let(:user_can_view_all_content_block_types) { false }
-
-    before do
-      allow(Current).to receive(:user).and_return(user)
-      allow(user).to receive(:has_permission?)
-                       .with(User::Permissions::SHOW_ALL_CONTENT_BLOCK_TYPES)
-                       .and_return(user_can_view_all_content_block_types)
-    end
-
-    it "returns all of the schemas" do
-      expect(Schema.valid_schemas).to eq(%w[tax time_period contact pension])
-    end
-
-    describe "when the show_all_content_block_types feature flag is turned off" do
-      let(:user_can_view_all_content_block_types) { false }
-
-      before do
-        allow(Flipflop).to receive(:show_all_content_block_types?).and_return(false)
-      end
-
-      it "only returns the live schemas" do
-        expect(Schema.valid_schemas).to eq(%w[contact pension])
-      end
-
-      describe "when the current user has the show_all_content_block_types permission" do
-        let(:user) { build(:user) }
-        let(:user_can_view_all_content_block_types) { true }
-
-        before do
-          allow(Current).to receive(:user).and_return(user)
-          allow(user).to receive(:has_permission?).with(User::Permissions::SHOW_ALL_CONTENT_BLOCK_TYPES).and_return(true)
-        end
-
-        it "returns all of the schemas" do
-          expect(Schema.valid_schemas).to eq(%w[tax time_period contact pension])
-        end
-      end
+  describe ".supported_block_types" do
+    it "returns the supported block types" do
+      expect(Schema.supported_block_types).to eq(%w[tax time_period contact pension])
     end
   end
 
   describe ".all" do
     before(:each) do
+      Schema.instance_variable_set("@remote_schemas", nil)
+      Schema.instance_variable_set("@local_schemas", nil)
+
       allow(Public::Services.publishing_api).to receive(:get_schemas).once.and_return({
         "something" => {},
         "something_else" => {},
@@ -245,17 +212,24 @@ RSpec.describe Schema do
         },
       }.to_json)
       allow(File).to receive(:open).with("bar.json").and_return(file_stub)
-
       allow(Schema).to receive(:is_valid_schema?).with(anything).and_return(false)
       allow(Schema).to receive(:is_valid_schema?).with(satisfy { |arg| %w[content_block_foo content_block_bar].include?(arg) }).and_return(true)
     end
 
+    after(:each) do
+      Schema.instance_variable_set("@remote_schemas", nil)
+      Schema.instance_variable_set("@local_schemas", nil)
+    end
+
     it "returns a list of schemas with the content block prefix" do
       schemas = Schema.all
-      expect(%w[content_block_foo content_block_bar]).to eq(schemas.map(&:id))
+
+      expect(schemas.map(&:id)).to eq(%w[content_block_foo content_block_bar])
+
       fields = schemas.map(&:fields)
-      expect(%w[foo_field]).to eq(fields.[](0).map(&:name))
-      expect(%w[bar_field bar_field2]).to eq(fields.[](1).map(&:name))
+
+      expect(fields.[](0).map(&:name)).to eq(%w[foo_field])
+      expect(fields.[](1).map(&:name)).to eq(%w[bar_field bar_field2])
     end
 
     it "memoizes the result" do
@@ -307,7 +281,7 @@ RSpec.describe Schema do
 
   describe ".is_valid_schema?" do
     it "returns true when the schema has correct prefix/suffix" do
-      Schema.valid_schemas.each do |schema|
+      Schema.supported_block_types.each do |schema|
         schema_name = "#{Schema::SCHEMA_PREFIX}_#{schema}"
         expect(Schema.is_valid_schema?(schema_name)).to be
       end

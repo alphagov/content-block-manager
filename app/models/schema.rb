@@ -9,8 +9,8 @@ class Schema
   CONFIG_PATH = Rails.root.join("config/content_block_manager.yml").to_s
 
   class << self
-    def valid_schemas
-      show_all_content_block_types? ? VALID_SCHEMAS.values.flatten : VALID_SCHEMAS[:live]
+    def supported_block_types
+      VALID_SCHEMAS.values.flatten
     end
 
     # Load schemas from the Publishing API (`remote_schemas`) and the app itself (`local_schemas`). Eventually, we
@@ -29,7 +29,7 @@ class Schema
     end
 
     def is_valid_schema?(key)
-      key.end_with?(*valid_schemas)
+      key.end_with?(*supported_block_types)
     end
 
     def schema_settings
@@ -37,10 +37,6 @@ class Schema
     end
 
   private
-
-    def show_all_content_block_types?
-      Flipflop.show_all_content_block_types? || Current.user&.has_permission?(User::Permissions::SHOW_ALL_CONTENT_BLOCK_TYPES)
-    end
 
     def remote_schemas
       @remote_schemas ||= Public::Services.publishing_api.get_schemas.select { |key, _v|

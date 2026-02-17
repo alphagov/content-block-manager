@@ -3,9 +3,9 @@ FactoryBot.define do
     body { { "properties" => {} } }
     block_type { "block_type" }
 
-    Schema.valid_schemas.each do |type|
-      trait type.to_sym do
-        block_type { type }
+    Schema.supported_block_types.each do |block_type|
+      trait block_type.to_sym do
+        block_type { block_type }
       end
     end
 

@@ -13,7 +13,7 @@ class Document < ApplicationRecord
            -> { order(created_at: :asc, id: :asc) },
            inverse_of: :document
 
-  enum :block_type, Schema.valid_schemas.index_with(&:to_s)
+  enum :block_type, Schema.supported_block_types.index_with(&:to_s)
   attr_readonly :block_type
 
   validates :block_type, :sluggable_string, presence: true
