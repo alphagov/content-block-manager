@@ -60,3 +60,21 @@ Feature: Create Tax Content Block
     When I click to view the content block
     Then I should see the details for the tax content block
     Then I should see the details for each thing_taxed's rate
+
+  Scenario: Editor can create a tax block if the block type is hidden, but they can see all block types
+    Given the schema "tax" is an alpha schema
+    And the show_all_content_block_types feature flag is not turned on
+    And I have the "show_all_content_block_types" permission
+    When I complete the form with the following fields:
+      | title           | abbreviation   | synonym | tax_type | note      | description      | organisation        | instructions_to_publishers |
+      | Value Added Tax | VAT            | VAT     | Tax      | Some note | Some description | Ministry of Example | This is important          |
+    When I click to add a new "thing_taxed"
+    And I complete the "thing_taxed" form with the following fields:
+      | title                   | type        | rates_0_name  | rates_0_value |
+      | Most goods and services | Transaction | Standard Rate | 20%           |
+    And I save and continue
+    And I review and confirm I have checked the content
+    Then I should be taken to the confirmation page
+    And the block should have been sent to the Publishing API
+    When I click to view the content block
+    Then I should see the details for the tax content block

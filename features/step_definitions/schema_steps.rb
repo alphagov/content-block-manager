@@ -39,6 +39,16 @@ And("the schema {string} exists") do |block_type|
   Schema.stubs(:find_by_block_type).with(block_type).returns(@schema)
 end
 
+And("the schema {string} is an alpha schema") do |block_type|
+  schema = @schemas[block_type]
+  schema.stubs(:live?).returns(false)
+end
+
+And("the schema {string} is a live schema") do |block_type|
+  schema = @schemas[block_type]
+  schema.stubs(:live?).returns(true)
+end
+
 And("a schema {string} exists:") do |block_type, json|
   @schemas ||= {}
   body = JSON.parse(json)
