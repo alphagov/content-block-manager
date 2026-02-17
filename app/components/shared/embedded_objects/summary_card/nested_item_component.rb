@@ -29,6 +29,7 @@ private
           field: nested_field,
           value: translated_value(field_name, value),
         ),
+        data: { testid: nested_field.name },
       }
     end
   end
