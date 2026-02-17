@@ -24,11 +24,11 @@ FactoryBot.define do
 
     auth_bypass_id { SecureRandom.uuid }
 
-    Schema.valid_schemas.each do |type|
-      trait type.to_sym do
+    Schema.supported_block_types.each do |block_type|
+      trait block_type.to_sym do
         after(:build) do |edition, _evaluator|
           unless edition.document_id || edition.document
-            edition.document = build(:document, block_type: type)
+            edition.document = build(:document, block_type:)
           end
         end
       end

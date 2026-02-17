@@ -5,6 +5,7 @@ RSpec.describe "Layout", type: :feature do
     login_as_admin
 
     allow(Organisation).to receive(:all).and_return([organisation])
+    allow(Schema).to receive(:all).and_return([])
   end
 
   let(:organisation) { build(:organisation) }

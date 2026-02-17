@@ -13,9 +13,11 @@ RSpec.describe "Documents", type: :request do
 
   describe "#index" do
     let(:document) { create(:document, :contact) }
+    let(:schema) { build(:schema, block_type: document.block_type) }
 
     before do
-      stub_request_for_schema(document.block_type, fields: [build(:field, name: "email_address")])
+      allow(schema).to receive(:fields).and_return([build(:field, name: "email_address")])
+      allow(Schema).to receive(:all).and_return([schema])
     end
 
     it "only returns the most recent edition when multiple editions exist for a document" do

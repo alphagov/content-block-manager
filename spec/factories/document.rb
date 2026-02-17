@@ -10,10 +10,10 @@ FactoryBot.define do
       schema { nil }
     end
 
-    Schema.valid_schemas.each do |type|
-      trait type.to_sym do
-        block_type { type }
-        schema { build(:schema, block_type: type) }
+    Schema.supported_block_types.each do |block_type|
+      trait block_type.to_sym do
+        block_type { block_type }
+        schema { build(:schema, block_type:) }
       end
     end
 

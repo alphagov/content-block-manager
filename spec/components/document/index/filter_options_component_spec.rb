@@ -1,6 +1,13 @@
 RSpec.describe Document::Index::FilterOptionsComponent, type: :component do
   let(:helper_mock) { double }
 
+  let(:schemas) do
+    [
+      build(:schema, :pension),
+      build(:schema, :contact),
+    ]
+  end
+
   before do
     allow_any_instance_of(described_class).to receive(:helpers).and_return(helper_mock)
     allow(helper_mock).to receive(:content_block_manager).and_return(helper_mock)
@@ -12,7 +19,7 @@ RSpec.describe Document::Index::FilterOptionsComponent, type: :component do
       { text: "Ministry of Example", value: 2 },
     ])
 
-    allow(Schema).to receive(:valid_schemas).and_return(%w[pension contact])
+    allow(helper_mock).to receive(:valid_schemas).and_return(schemas)
   end
 
   it "expands all sections by default" do

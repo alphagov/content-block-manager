@@ -5,13 +5,12 @@ class Schema
     alpha: %w[tax time_period],
     live: %w[contact pension],
   }.freeze
-  private_constant :VALID_SCHEMAS
 
   CONFIG_PATH = Rails.root.join("config/content_block_manager.yml").to_s
 
   class << self
-    def valid_schemas
-      show_all_content_block_types? ? VALID_SCHEMAS.values.flatten : VALID_SCHEMAS[:live]
+    def supported_block_types
+      VALID_SCHEMAS.values.flatten
     end
 
     # Load schemas from the Publishing API (`remote_schemas`) and the app itself (`local_schemas`). Eventually, we
@@ -21,12 +20,16 @@ class Schema
       all_schemas.select { |schema| is_valid_schema?(schema.id) }
     end
 
+    def live
+      all.select(&:live?)
+    end
+
     def find_by_block_type(block_type)
       all.find { |schema| schema.block_type == block_type } || raise(ArgumentError, "Cannot find schema for #{block_type}")
     end
 
     def is_valid_schema?(key)
-      key.end_with?(*valid_schemas)
+      key.end_with?(*supported_block_types)
     end
 
     def schema_settings
@@ -34,10 +37,6 @@ class Schema
     end
 
   private
-
-    def show_all_content_block_types?
-      Flipflop.show_all_content_block_types? || Current.user&.has_permission?(User::Permissions::SHOW_ALL_CONTENT_BLOCK_TYPES)
-    end
 
     def remote_schemas
       @remote_schemas ||= Public::Services.publishing_api.get_schemas.select { |key, _v|
@@ -61,6 +60,10 @@ class Schema
   def initialize(id, body)
     @id = id
     @body = body
+  end
+
+  def live?
+    block_type.in?(VALID_SCHEMAS[:live])
   end
 
   def name

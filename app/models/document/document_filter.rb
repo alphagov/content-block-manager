@@ -1,34 +1,41 @@
 class Document::DocumentFilter
-  FILTER_ERROR = Data.define(:attribute, :full_message)
-  DEFAULT_PAGE_SIZE = 10
+  class InvalidFiltersError < StandardError
+    attr_reader :errors
 
-  def initialize(filters = {})
-    @filters = filters
-  end
-
-  def paginated_documents
-    unpaginated_documents.page(page).per(DEFAULT_PAGE_SIZE)
-  end
-
-  def errors
-    @errors ||= begin
-      @errors = []
-      from = validate_date(:last_updated_from)
-      to = validate_date(:last_updated_to)
-
-      if @errors.empty? && to.present? && from.present? && from.after?(to)
-        @errors << FILTER_ERROR.new(attribute: "last_updated_from", full_message: I18n.t("document.index.errors.date.range.invalid"))
-      end
-
-      @errors
+    def initialize(errors)
+      @errors = errors
+      super
     end
   end
 
-  def valid?
-    errors.empty?
+  FILTER_ERROR = Data.define(:attribute, :full_message)
+  DEFAULT_PAGE_SIZE = 10
+
+  def initialize(valid_schemas:)
+    @valid_schemas = valid_schemas.map(&:block_type)
+  end
+
+  def call(filters = {})
+    @filters = filters
+    validate_filters
+    unpaginated_documents.page(page).per(DEFAULT_PAGE_SIZE)
+  end
+
+  def validate_filters
+    @errors = []
+    from = validate_date(:last_updated_from)
+    to = validate_date(:last_updated_to)
+
+    if @errors.empty? && to.present? && from.present? && from.after?(to)
+      @errors << FILTER_ERROR.new(attribute: "last_updated_from", full_message: I18n.t("document.index.errors.date.range.invalid"))
+    end
+
+    raise InvalidFiltersError, @errors if @errors.any?
   end
 
 private
+
+  attr_reader :valid_schemas, :filters
 
   def validate_date(key)
     return unless is_date_present?(key)
@@ -41,15 +48,15 @@ private
   end
 
   def page
-    @filters[:page].presence || 1
+    filters[:page].presence || 1
   end
 
   def is_date_present?(date_key)
-    @filters[date_key].present? && @filters[date_key].any? { |_, value| value.present? }
+    filters[date_key].present? && filters[date_key].any? { |_, value| value.present? }
   end
 
   def date_from_filters(date_key)
-    filter = @filters[date_key]
+    filter = filters[date_key]
     year = filter["1i"].to_i
     month = filter["2i"].to_i
     day = filter["3i"].to_i
@@ -71,17 +78,17 @@ private
   end
 
   def unpaginated_documents
-    documents = Document.where(block_type: Schema.valid_schemas)
+    documents = Document.where(block_type: valid_schemas)
                          .joins(:editions)
                          .merge(Edition.most_recent_for_document)
                          .merge(Edition.active)
 
     documents = documents.where(testing_artefact: false) unless Current.user&.is_e2e_user?
     documents = documents.where(id: ids_with_keyword(keyword)) if keyword.present?
-    documents = documents.where(block_type: @filters[:block_type]) if @filters[:block_type].present?
-    documents = documents.with_lead_organisation(@filters[:lead_organisation]) if @filters[:lead_organisation].present?
-    documents = documents.last_updated_after(from_date) if valid? && from_date
-    documents = documents.last_updated_before(to_date) if valid? && to_date
+    documents = documents.where(block_type: filters[:block_type]) if filters[:block_type].present?
+    documents = documents.with_lead_organisation(filters[:lead_organisation]) if filters[:lead_organisation].present?
+    documents = documents.last_updated_after(from_date) if from_date
+    documents = documents.last_updated_before(to_date) if to_date
 
     documents.order("editions.updated_at DESC")
   end
@@ -91,16 +98,16 @@ private
   end
 
   def keyword
-    @keyword ||= if @filters[:keyword] && embed_code_from_keyword.present?
+    @keyword ||= if filters[:keyword] && embed_code_from_keyword.present?
                    "{{embed:#{embed_code_from_keyword.document_type}:#{embed_code_from_keyword.identifier}}}"
                  else
-                   @filters[:keyword]
+                   filters[:keyword]
                  end
   end
 
   def embed_code_from_keyword
     @embed_code_from_keyword ||= begin
-      ContentBlockTools::ContentBlockReference.from_string(@filters[:keyword])
+      ContentBlockTools::ContentBlockReference.from_string(filters[:keyword])
     rescue ContentBlockTools::InvalidEmbedCodeError
       nil
     end
