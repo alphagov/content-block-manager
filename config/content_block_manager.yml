@@ -235,3 +235,6 @@ schemas:
             component: date_time
           end:
             component: date_time
+        field_order:
+          - start
+          - end
