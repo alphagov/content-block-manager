@@ -19,7 +19,9 @@ RSpec.describe Edition::Details::Fields::DateTimeComponent, type: :component do
     render_inline(component)
   end
 
-  it "should render the inputs" do
+  it "should render the inputs with a title" do
+    expect(page).to have_css(".govuk-fieldset__legend", text: I18n.t("edition.titles.date_range.start"))
+
     expect(page).to have_css(".govuk-fieldset__legend", text: "Date")
     expect(page).to have_css("input", count: 3)
 

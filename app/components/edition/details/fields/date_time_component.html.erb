@@ -1,3 +1,7 @@
+<legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+  <%= I18n::t("edition.titles.#{block_type}.#{field_name}") %>
+</legend>
+
 <%= render("components/datetime_fields", {
   heading_size: "s",
   field_name: field_name,
