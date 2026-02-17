@@ -1,0 +1,42 @@
+<legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+  <%= I18n::t("edition.titles.#{block_type}.#{field_name}") %>
+</legend>
+
+<%= render("components/datetime_fields", {
+  heading_size: "s",
+  field_name: field_name,
+  prefix: prefix,
+  date_heading: "Date",
+  date_hint: "For example, 01 08 2025",
+  time_hint: "For example, 09:30 or 19:30",
+  error_items: [],
+  year: {
+    value: nil,
+    id: "#{prefix}_#{field_name}_year",
+    name: "#{prefix}[#{field_name}(1i)]",
+    label: "Year",
+    width: 4,
+  },
+  month: {
+    value: nil,
+    id: "#{prefix}_#{field_name}_month",
+    name: "#{prefix}[#{field_name}(2i)]",
+    label: "Month",
+    width: 2,
+  },
+  day: {
+    value: nil,
+    id: "#{prefix}#{field_name}_day",
+    name: "#{prefix}[#{field_name}(3i)]",
+    label: "Day",
+    width: 2,
+  },
+  hour: {
+    value: nil,
+    id: "#{prefix}_#{field_name}_hour",
+  },
+  minute: {
+    value: nil,
+    id: "#{prefix}_#{field_name}_minute",
+  },
+}) %>
