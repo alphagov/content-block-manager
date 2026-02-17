@@ -167,6 +167,9 @@ en:
           bsl_guidance: British Sign Language (BSL)
           opening_hours: Opening hours
           call_charges: Call charges
+      date_range:
+        start: Start date and time
+        end: End date and time
     labels:
       lead_organisation: Lead organisation
       instructions_to_publishers:
