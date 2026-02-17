@@ -165,6 +165,23 @@ RSpec.describe CombinedEditionDetails do
                                    { "number" => { "new" => "223" }, "label" => { "new" => "after 2" } }] })
         end
       end
+
+      context "when the arrays do not contain hashes" do
+        let(:published_details) do
+          { "telephone_numbers" => %w[111] }
+        end
+        let(:new_details) do
+          { "telephone_numbers" => %w[222] }
+        end
+
+        it "should combine the arrays into an array of hashes with 'published' and 'new' keys" do
+          expect(content).to eq({
+            "telephone_numbers" => [
+              { "published" => "111", "new" => "222" },
+            ],
+          })
+        end
+      end
     end
   end
 end
