@@ -1,5 +1,5 @@
 Feature: Create "Time period" content block
-  - So that I can publish a block representing a time perio
+  - So that I can publish a block representing a time period
   - As an editor
   - I want to draft the initial block (and edit that draft)
 
