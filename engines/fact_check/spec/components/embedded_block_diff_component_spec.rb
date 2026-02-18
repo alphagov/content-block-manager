@@ -33,8 +33,8 @@ RSpec.describe FactCheck::EmbeddedBlockDiffComponent, type: :component do
       expect(page).to have_css(".govuk-summary-card__title", text: "Example type block")
     end
 
-    it "should render the item label" do
-      expect(page).to have_css(".govuk-summary-list__key", text: "Amount")
+    it "should render a summary row" do
+      expect(page).to have_summary_row.with_key("Amount").with_value("£12.34")
     end
 
     describe "when the block has a published edition and a newer unpublished edition" do
@@ -42,10 +42,8 @@ RSpec.describe FactCheck::EmbeddedBlockDiffComponent, type: :component do
       let(:items_published) { { "amount" => "£1.234" } }
 
       it "should render the diff between the two editions" do
-        expect(page).to have_css(".compare-editions") do |element|
-          expect(element).to have_css(".diff del", text: "£1.234")
-          expect(element).to have_css(".diff ins", text: "£12.34")
-        end
+        expect(page).to have_summary_row.with_key("Amount").with_css(".compare-editions .diff del", text: "£1.234")
+        expect(page).to have_summary_row.with_key("Amount").with_css(".compare-editions .diff ins", text: "£12.34")
       end
     end
 
@@ -54,9 +52,11 @@ RSpec.describe FactCheck::EmbeddedBlockDiffComponent, type: :component do
       let(:items_published) { nil }
 
       it "should render only the new edition with no diff" do
-        expect(page).to have_css(".compare-editions") do |element|
-          expect(element).not_to have_css(".diff")
-          expect(element).to have_text("£12.34")
+        expect(page).to have_summary_row.with_key("Amount").not_with_css(".compare-editions .diff")
+        expect(page).to have_summary_row.with_key("Amount").with_css(".compare-editions", text: "£12.34")
+      end
+    end
+
         end
       end
     end
