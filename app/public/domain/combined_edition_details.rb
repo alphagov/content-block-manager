@@ -1,5 +1,6 @@
 class CombinedEditionDetails
-  def initialize(published_details, new_details)
+  def initialize(published_details:, new_details:)
+    published_details ||= {}
     @content = combine_hashes(published_details, new_details)
   end
 

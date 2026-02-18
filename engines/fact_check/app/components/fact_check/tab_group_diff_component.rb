@@ -2,7 +2,7 @@ class FactCheck::TabGroupDiffComponent < ViewComponent::Base
   def initialize(block:, subschemas:)
     @block = block
     @subschemas = subschemas
-    @combined_details = CombinedEditionDetails.new(block.published_block&.details || {}, block.details)
+    @combined_details = CombinedEditionDetails.new(published_details: block.published_block&.details, new_details: block.details)
   end
 
 private
