@@ -1,6 +1,6 @@
 RSpec.describe CombinedEditionDetails do
   describe "#content" do
-    let(:content) { described_class.new(published_details, new_details).content }
+    let(:content) { described_class.new(published_details:, new_details:).content }
 
     context "when provided with simple flat details" do
       let(:published_details) { { "title" => "Old Title" } }
@@ -27,6 +27,15 @@ RSpec.describe CombinedEditionDetails do
         it "should include only the 'published' key for that field" do
           expect(content).to eq({ "title" =>
                                   { "new" => "New Title" } })
+        end
+      end
+
+      context "when published details is nil" do
+        let(:published_details) { nil }
+
+        it "should include only the 'published' key for that field" do
+          expect(content).to eq({ "title" =>
+                                    { "new" => "New Title" } })
         end
       end
     end
