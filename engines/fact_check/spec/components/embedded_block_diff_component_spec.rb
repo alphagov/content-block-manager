@@ -33,8 +33,8 @@ RSpec.describe FactCheck::EmbeddedBlockDiffComponent, type: :component do
       expect(page).to have_css(".govuk-summary-card__title", text: "Example type block")
     end
 
-    it "should render the item label" do
-      expect(page).to have_css(".govuk-summary-list__key", text: "Amount")
+    it "should render a summary row" do
+      expect(page).to have_summary_row.with_key("Amount").with_value("£12.34")
     end
 
     describe "when the block has a published edition and a newer unpublished edition" do
@@ -42,10 +42,8 @@ RSpec.describe FactCheck::EmbeddedBlockDiffComponent, type: :component do
       let(:items_published) { { "amount" => "£1.234" } }
 
       it "should render the diff between the two editions" do
-        expect(page).to have_css(".compare-editions") do |element|
-          expect(element).to have_css(".diff del", text: "£1.234")
-          expect(element).to have_css(".diff ins", text: "£12.34")
-        end
+        expect(page).to have_summary_row.with_key("Amount").with_css(".compare-editions .diff del", text: "£1.234")
+        expect(page).to have_summary_row.with_key("Amount").with_css(".compare-editions .diff ins", text: "£12.34")
       end
     end
 
@@ -54,9 +52,161 @@ RSpec.describe FactCheck::EmbeddedBlockDiffComponent, type: :component do
       let(:items_published) { nil }
 
       it "should render only the new edition with no diff" do
-        expect(page).to have_css(".compare-editions") do |element|
-          expect(element).not_to have_css(".diff")
-          expect(element).to have_text("£12.34")
+        expect(page).to have_summary_row.with_key("Amount").not_with_css(".compare-editions .diff")
+        expect(page).to have_summary_row.with_key("Amount").with_css(".compare-editions", text: "£12.34")
+      end
+    end
+
+    describe "when there are nested items" do
+      let(:subschema_body) do
+        {
+          "properties" => {
+            "rates" => {
+              "type" => "object",
+              "properties" => {
+                "name" => { "type" => "string" },
+                "value" => { "type" => "string" },
+                "bands" => {
+                  "type" => "array",
+                  "items" => {
+                    "type" => "object",
+                    "properties" => {
+                      "name" => { "type" => "string" },
+                      "lower_threshold" => {
+                        "type" => "object",
+                        "properties" => {
+                          "value" => { "type" => "string" },
+                        },
+                      },
+                      "upper_threshold" => {
+                        "type" => "object",
+                        "properties" => {
+                          "value" => { "type" => "string" },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        }
+      end
+
+      let(:subschema) { build(:schema, body: subschema_body) }
+
+      let(:items) do
+        {
+          "rates" => [
+            {
+              "name" => "Personal allowance",
+              "value" => "0%",
+              "bands" => [
+                {
+                  "name" => "Personal allowance band",
+                  "upper_threshold" => {
+                    "value" => "£12,570",
+                  },
+                },
+              ],
+            },
+            {
+              "name" => "Basic rate",
+              "value" => "20%",
+              "bands" => [
+                {
+                  "name" => "Basic rate band",
+                  "lower_threshold" => {
+                    "value" => "£12,571",
+                  },
+                  "upper_threshold" => {
+                    "value" => "£50,270",
+                  },
+                },
+              ],
+            },
+          ],
+        }
+      end
+
+      it "should render the values nested within the card" do
+        expect(page).to have_css(".govuk-summary-card__content") do |summary_card_content|
+          expect(summary_card_content).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Rate 1/) do |rate_details|
+            expect(rate_details).to have_summary_row.with_key("Name").with_value("Personal allowance")
+            expect(rate_details).to have_summary_row.with_key("Value").with_value("0%")
+
+            expect(rate_details).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Band 1/) do |band_details|
+              expect(band_details).to have_summary_row.with_key("Name").with_value("Personal allowance band")
+
+              expect(band_details).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Upper threshold/) do |upper_threshold_details|
+                expect(upper_threshold_details).to have_summary_row.with_key("Value").with_value("£12,570")
+              end
+            end
+          end
+
+          expect(summary_card_content).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Rate 2/) do |rate_details|
+            expect(rate_details).to have_summary_row.with_key("Name").with_value("Basic rate")
+            expect(rate_details).to have_summary_row.with_key("Value").with_value("20%")
+
+            expect(rate_details).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Band 1/) do |band_details|
+              expect(band_details).to have_summary_row.with_key("Name").with_value("Basic rate band")
+
+              expect(band_details).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Lower threshold/) do |lower_threshold_details|
+                expect(lower_threshold_details).to have_summary_row.with_key("Value").with_value("£12,571")
+              end
+
+              expect(band_details).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Upper threshold/) do |upper_threshold_details|
+                expect(upper_threshold_details).to have_summary_row.with_key("Value").with_value("£50,270")
+              end
+            end
+          end
+        end
+      end
+
+      context "when a published version exists" do
+        let(:items_published) do
+          {
+            "rates" => [
+              {
+                "name" => "Personal allowance",
+                "value" => "0%",
+                "bands" => [
+                  {
+                    "name" => "Personal allowance band",
+                    "upper_threshold" => {
+                      "value" => "£12,550",
+                    },
+                  },
+                ],
+              },
+              {
+                "name" => "Basic rate",
+                "value" => "20%",
+                "bands" => [
+                  {
+                    "name" => "Basic rate band",
+                    "lower_threshold" => {
+                      "value" => "£12,571",
+                    },
+                    "upper_threshold" => {
+                      "value" => "£50,270",
+                    },
+                  },
+                ],
+              },
+            ],
+          }
+        end
+
+        it "shows a diff of the changed values" do
+          expect(page).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Band 1/) do |band_details|
+            expect(band_details).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Upper threshold/) do |upper_threshold_details|
+              expect(upper_threshold_details).to have_summary_row.with_key("Value")
+                                                                 .with_css(".compare-editions .diff del", text: "£12,550")
+              expect(upper_threshold_details).to have_summary_row.with_key("Value")
+                                                                 .with_css(".compare-editions .diff ins", text: "£12,570")
+            end
+          end
         end
       end
     end
