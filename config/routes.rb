@@ -67,12 +67,18 @@ Rails.application.routes.draw do
       # State transitions
       resources :edition_status_transitions, only: [:create], controller: "editions/status_transitions"
 
-      # Embedded object actions
+      # Embedded objects actions (one-to-many)
       get "embedded-objects/(:object_type)/new", to: "editions/embedded_objects#new", as: :new_embedded_object
       post "embedded-objects", to: "editions/embedded_objects#new_embedded_objects_options_redirect", as: :new_embedded_objects_options_redirect
       post "embedded-objects/:object_type", to: "editions/embedded_objects#create", as: :create_embedded_object
       get "embedded-objects/:object_type/:object_title/edit", to: "editions/embedded_objects#edit", as: :edit_embedded_object
       put "embedded-objects/:object_type/:object_title", to: "editions/embedded_objects#update", as: :embedded_object
+
+      # Embedded object actions (one-to-one)
+      get "embedded-object/(:object_type)/new", to: "editions/embedded_object#new", as: :new_sole_embedded_object
+      post "embedded-object/:object_type", to: "editions/embedded_object#create", as: :create_sole_embedded_object
+      get "embedded-object/:object_type/edit", to: "editions/embedded_object#edit", as: :edit_sole_embedded_object
+      put "embedded-object/:object_type/", to: "editions/embedded_object#update", as: :sole_embedded_object
 
       # Reorder actions
       get :order, to: "editions/order#edit", as: :order_edit

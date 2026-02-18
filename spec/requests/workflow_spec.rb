@@ -156,6 +156,49 @@ RSpec.describe "Workflow", type: :request do
             expect(page).to have_content("Add another subschema 1")
           end
         end
+
+        context "when a 'one-to-one' subschema exists" do
+          let(:subschemas) do
+            [
+              double("one_to_one_subschema",
+                     id: "one_to_one_subschema",
+                     name: "one_to_one_subschema",
+                     block_type: "one_to_one_subschema",
+                     relationship_type: subschema_relationship_type_predicate,
+                     fields: [],
+                     group: nil),
+            ]
+          end
+
+          before do
+            allow(subschema_relationship_type_predicate).to receive(:one_to_one?).and_return(true)
+          end
+
+          context "when the sole embedded object does not yet exist" do
+            let(:details) do
+              { "title" => "Edition title" }
+            end
+
+            it "renders the 'new' view to create the sole embedded object" do
+              get workflow_path(id: edition.id, step: "embedded_one_to_one_subschema")
+
+              expect(response).to redirect_to(new_sole_embedded_object_edition_path(edition, :one_to_one_subschema))
+            end
+          end
+
+          context "when the sole embedded object already exists" do
+            let(:details) do
+              { "title" => "Edition title",
+                "one_to_one_subschema" => { name: "existing item" } }
+            end
+
+            it "renders the 'edit' view to edit the existing sole embedded object" do
+              get workflow_path(id: edition.id, step: "embedded_one_to_one_subschema")
+
+              expect(response).to redirect_to(edit_sole_embedded_object_edition_path(edition, :one_to_one_subschema))
+            end
+          end
+        end
       end
 
       describe "#update" do

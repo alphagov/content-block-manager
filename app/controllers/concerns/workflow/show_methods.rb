@@ -9,11 +9,12 @@ module Workflow::ShowMethods
     render :edit_draft
   end
 
-  # This handles the optional embedded objects and groups in the flow, delegating to `embedded_objects`
-  # or `embedded_group_objects` as appropriate
+  # This handles the optional embedded objects and groups in the flow, delegating
+  # to `embedded_objects` or `embedded_object` for a subschema, else
+  # to `embedded_group_objects`
   def method_missing(method_name, *arguments, &block)
     if method_name.to_s =~ /#{Workflow::Step::SUBSCHEMA_PREFIX}(.*)/
-      embedded_objects(::Regexp.last_match(1))
+      handle_subschema(::Regexp.last_match(1))
     elsif method_name.to_s =~ /#{Workflow::Step::GROUP_PREFIX}(.*)/
       group_objects(::Regexp.last_match(1))
     else
@@ -92,21 +93,39 @@ module Workflow::ShowMethods
 
 private
 
-  def embedded_objects(subschema_name)
+  def handle_subschema(subschema_name)
     @subschema = @schema.subschema(subschema_name)
+
+    unless @subschema
+      raise ActionController::RoutingError,
+            "Subschema #{subschema_name} does not exist"
+    end
+
+    return embedded_object if @subschema.relationship_type.one_to_one?
+
+    embedded_objects
+  end
+
+  def embedded_object
+    @step_name = current_step.name
+
+    if has_embedded_objects
+      redirect_to edit_sole_embedded_object_edition_path(@edition, @subschema.block_type)
+    else
+      redirect_to new_sole_embedded_object_edition_path(@edition, @subschema.block_type)
+    end
+  end
+
+  def embedded_objects
     @step_name = current_step.name
     @action = @edition.document.is_new_block? ? "Add" : "Edit"
     @add_button_text = if has_embedded_objects
-                         I18n.t("buttons.add_another", item: subschema_name.humanize.singularize.downcase)
+                         I18n.t("buttons.add_another", item: @subschema.name.humanize.singularize.downcase)
                        else
                          I18n.t("buttons.add", item: helpers.add_indefinite_article(@subschema.name.humanize.singularize.downcase))
                        end
 
-    if @subschema
-      render :embedded_objects
-    else
-      raise ActionController::RoutingError, "Subschema #{subschema_name} does not exist"
-    end
+    render :embedded_objects
   end
 
   def group_objects(group_name)
