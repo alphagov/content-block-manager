@@ -1,4 +1,6 @@
 Then("analytics messages should have been sent for each step in the workflow") do
+  expect_select_schema_message_to_have_been_sent if @edition.document.is_new_block?
+
   all_steps_for_edition(Edition.last).each do |step|
     section = section_for_step(step)
     assert_messages_sent(event_name: "form_response", section:)
@@ -35,12 +37,13 @@ def assert_messages_sent(**args)
   expect(ga4_messages).to include(include(expected_messages))
 end
 
+def expect_select_schema_message_to_have_been_sent
+  assert_messages_sent(event_name: "form_response", section: I18n.t("document.new.title"), text: @schema.name.singularize.capitalize)
+end
+
 def expect_select_subschema_messages_to_have_been_sent(subschema)
-  expected_text = {
-    subschema.name.singularize.capitalize => subschema.name.singularize.capitalize,
-  }.to_json
   section = "Add #{add_indefinite_article subschema.group.humanize.singularize.downcase}"
-  assert_messages_sent(event_name: "form_response", section:, text: expected_text)
+  assert_messages_sent(event_name: "form_response", section:, text: subschema.name.singularize.capitalize)
 end
 
 def expect_add_subschema_messages_to_have_been_sent(subschema)
