@@ -10,7 +10,6 @@
     },
     "date_range": {
       "type": "object",
-      "required": ["start", "end"],
       "additionalProperties": false,
       "properties": {
         "start": {
