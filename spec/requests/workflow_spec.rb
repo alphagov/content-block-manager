@@ -21,6 +21,9 @@ RSpec.describe "Workflow", type: :request do
   let(:edition) { create(:edition, document:, details:, lead_organisation_id: organisation.id, instructions_to_publishers: "instructions", title: "Some Edition Title") }
 
   let!(:schema) { stub_request_for_schema("pension") }
+  let(:subschema_relationship_type_predicate) do
+    double("relationship type predicate", one_to_one?: false)
+  end
 
   before do
     login_as_admin
@@ -104,8 +107,22 @@ RSpec.describe "Workflow", type: :request do
     describe "when subschemas are present" do
       let(:subschemas) do
         [
-          double("subschema_1", id: "subschema_1", name: "subschema_1", block_type: "subschema_1", block_display_fields: [], fields: [build(:field, name: "name", data_attributes: nil)], group: nil),
-          double("subschema_2", id: "subschema_2", name: "subschema_2", block_type: "subschema_1", fields: [], group: nil),
+          double("subschema_1",
+                 id: "subschema_1",
+                 name: "subschema_1",
+                 block_type: "subschema_1",
+                 relationship_type: subschema_relationship_type_predicate,
+                 block_display_fields: [],
+                 fields: [build(:field, name: "name", data_attributes: nil)],
+                 group: nil),
+
+          double("subschema_2",
+                 id: "subschema_2",
+                 name: "subschema_2",
+                 block_type: "subschema_1",
+                 relationship_type: subschema_relationship_type_predicate,
+                 fields: [],
+                 group: nil),
         ]
       end
 
@@ -424,8 +441,19 @@ RSpec.describe "Workflow", type: :request do
       describe "when subschemas are present" do
         let(:subschemas) do
           [
-            double("subschema", id: "subschema_1", name: "subschema_1", block_type: "subschema_1", group: nil),
-            double("subschema", id: "subschema_2", name: "subschema_2", block_type: "subschema_2", group: nil),
+            double("subschema",
+                   id: "subschema_1",
+                   name: "subschema_1",
+                   block_type: "subschema_1",
+                   relationship_type: subschema_relationship_type_predicate,
+                   group: nil),
+
+            double("subschema",
+                   id: "subschema_2",
+                   name: "subschema_2",
+                   block_type: "subschema_2",
+                   relationship_type: subschema_relationship_type_predicate,
+                   group: nil),
           ]
         end
 
@@ -470,8 +498,21 @@ RSpec.describe "Workflow", type: :request do
         let(:group) { nil }
         let(:subschemas) do
           [
-            double("subschema", id: "subschema_1", name: "subschema_1", block_type: "subschema_1", group:, group_order: 0, fields: []),
-            double("subschema", id: "subschema_2", name: "subschema_2", block_type: "subschema_2", group:, group_order: 1, fields: []),
+            double("subschema",
+                   id: "subschema_1",
+                   name: "subschema_1",
+                   block_type: "subschema_1",
+                   relationship_type: subschema_relationship_type_predicate,
+                   group:,
+                   group_order: 0,
+                   fields: []),
+            double("subschema",
+                   id: "subschema_2",
+                   name: "subschema_2",
+                   block_type: "subschema_2",
+                   relationship_type: subschema_relationship_type_predicate,
+                   group:,
+                   group_order: 1, fields: []),
           ]
         end
 
