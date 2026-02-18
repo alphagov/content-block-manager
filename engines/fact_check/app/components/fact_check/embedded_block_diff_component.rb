@@ -54,4 +54,8 @@ private
   def schema
     @schema ||= document.schema.subschema(object_type)
   end
+
+  def get_published_item(*args)
+    items_published&.dig(*args) || {}
+  end
 end
