@@ -27,7 +27,7 @@ module Edition::ValidatesDetails
   # When an error is raised about a field within the details hash
   # we have to prefix it. This overrides the default `read_attribute_for_validation`
   # method, and reads it from the details hash if the attribute name
-  # is prefixes
+  # is prefixed
   def read_attribute_for_validation(attr)
     if attr.starts_with?(DETAILS_PREFIX)
       key = attr.to_s.delete_prefix(DETAILS_PREFIX)
