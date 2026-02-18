@@ -2,15 +2,14 @@ class FactCheck::EmbeddedMetadataDiffComponent < ViewComponent::Base
   include DiffHelper
   include TranslationHelper
 
-  def initialize(schema:, items:, items_published: {})
+  def initialize(schema:, items:)
     @items = items
-    @items_published = items_published
     @schema = schema
   end
 
 private
 
-  attr_reader :items, :items_published, :schema
+  attr_reader :items, :schema
 
   def rows
     ordering = MetadataRowOrderingRule.new(field_order:)
@@ -24,7 +23,7 @@ private
         field: field.label,
         value: content_tag(
           :div,
-          items_published ? render_diff(items_published[key], value) : value,
+          value["published"] ? render_diff(value["published"], value["new"]) : value["new"],
           class: "compare-editions",
         ),
       }

@@ -1,15 +1,17 @@
 RSpec.describe FactCheck::EmbeddedBlockDiffComponent, type: :component do
-  let(:items) { {} }
-  let(:items_published) { nil }
+  let(:items_new) { {} }
+  let(:items_published) { {} }
   let(:object_type) { "example_type" }
   let(:object_title) { "Example Title" }
   let(:subschema) { build(:schema, body: { "properties" => { "amount" => "" } }) }
   let(:schema) { double(:schema) }
   let(:document) { build(:document, schema:) }
 
+  let(:items) { CombinedEditionDetails.new(published_details: items_published, new_details: items_new).content }
+
   describe "when there is no data to render" do
     before do
-      render_inline(described_class.new(items:, items_published:, object_type:, object_title:, document:))
+      render_inline(described_class.new(items:, object_type:, object_title:, document:))
     end
 
     it "should not render the card" do
@@ -18,11 +20,11 @@ RSpec.describe FactCheck::EmbeddedBlockDiffComponent, type: :component do
   end
 
   describe "when there is data to render" do
-    let(:items) { { "amount" => "£12.34" } }
+    let(:items_new) { { "amount" => "£12.34" } }
 
     before do
       allow(schema).to receive(:subschema).with(object_type).and_return(subschema)
-      render_inline(described_class.new(items:, items_published:, object_type:, object_title:, document:))
+      render_inline(described_class.new(items:, object_type:, object_title:, document:))
     end
 
     it "should render the card" do
@@ -38,7 +40,7 @@ RSpec.describe FactCheck::EmbeddedBlockDiffComponent, type: :component do
     end
 
     describe "when the block has a published edition and a newer unpublished edition" do
-      let(:items) { { "amount" => "£12.34" } }
+      let(:items_new) { { "amount" => "£12.34" } }
       let(:items_published) { { "amount" => "£1.234" } }
 
       it "should render the diff between the two editions" do
@@ -48,12 +50,12 @@ RSpec.describe FactCheck::EmbeddedBlockDiffComponent, type: :component do
     end
 
     describe "when the block does not have a published edition" do
-      let(:items) { { "amount" => "£12.34" } }
-      let(:items_published) { nil }
+      let(:items_new) { { "amount" => "£12.34" } }
+      let(:items_published) { {} }
 
       it "should render only the new edition with no diff" do
-        expect(page).to have_summary_row.with_key("Amount").not_with_css(".compare-editions .diff")
-        expect(page).to have_summary_row.with_key("Amount").with_css(".compare-editions", text: "£12.34")
+        expect(page).to have_summary_row.with_key("Amount").not_with_css(".compare-editions")
+        expect(page).to have_summary_row.with_key("Amount").with_value("£12.34")
       end
     end
 
@@ -95,7 +97,7 @@ RSpec.describe FactCheck::EmbeddedBlockDiffComponent, type: :component do
 
       let(:subschema) { build(:schema, body: subschema_body) }
 
-      let(:items) do
+      let(:items_new) do
         {
           "rates" => [
             {

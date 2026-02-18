@@ -1,9 +1,11 @@
 RSpec.describe FactCheck::EmbeddedMetadataDiffComponent, type: :component do
   let(:schema) { build(:schema, body: { "properties" => { "title" => "", "frequency" => "" } }) }
-  let(:items) { {} }
-  let(:items_published) { nil }
+  let(:items_new) { {} }
+  let(:items_published) { {} }
   let(:subschema) { build(:schema) }
-  let(:component) { described_class.new(schema:, items:, items_published:) }
+  let(:component) { described_class.new(schema:, items:) }
+
+  let(:items) { CombinedEditionDetails.new(published_details: items_published, new_details: items_new).content }
 
   describe "when there is no data to render" do
     it "should not render the summary list component" do
@@ -17,7 +19,7 @@ RSpec.describe FactCheck::EmbeddedMetadataDiffComponent, type: :component do
 
   describe "when there is data to render" do
     describe "when the block has a published edition and a newer unpublished edition" do
-      let(:items) { { "title" => "some new title", "frequency" => "a week" } }
+      let(:items_new) { { "title" => "some new title", "frequency" => "a week" } }
       let(:items_published) { { "title" => "some title", "frequency" => "a day" } }
       before do
         render_inline(component)
@@ -37,8 +39,8 @@ RSpec.describe FactCheck::EmbeddedMetadataDiffComponent, type: :component do
     end
 
     describe "when the block does not have a published edition" do
-      let(:items) { { "title" => "some new title", "frequency" => "a week" } }
-      let(:items_published) { nil }
+      let(:items_new) { { "title" => "some new title", "frequency" => "a week" } }
+      let(:items_published) { {} }
 
       it "should render only the new edition with no diff" do
         render_inline(component)

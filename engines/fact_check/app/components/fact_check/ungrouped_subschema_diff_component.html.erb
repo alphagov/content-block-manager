@@ -1,13 +1,11 @@
 <% embedded_objects.keys.each do |key| %>
 
   <%= render FactCheck::EmbeddedMetadataDiffComponent.new(
-    items: block_content_new.metadata(key),
-    items_published: block_content_published.metadata(key),
+    items: combined_metadata_for_key(key),
     schema: schema) %>
 
   <%= render FactCheck::EmbeddedBlockDiffComponent.new(
-    items: block_content_new.fields(key),
-    items_published: block_content_published.fields(key),
+    items: combined_fields_for_key(key),
     object_type:,
     object_title: key,
     document: block.document) %>

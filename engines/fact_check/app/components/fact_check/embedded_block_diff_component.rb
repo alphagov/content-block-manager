@@ -2,9 +2,8 @@ class FactCheck::EmbeddedBlockDiffComponent < ViewComponent::Base
   include SummaryListHelper
   include DiffHelper
 
-  def initialize(items:, items_published:, object_type:, object_title:, document:)
+  def initialize(items:, object_type:, object_title:, document:)
     @items = items
-    @items_published = items_published
     @object_type = object_type
     @object_title = object_title
     @document = document
@@ -12,43 +11,27 @@ class FactCheck::EmbeddedBlockDiffComponent < ViewComponent::Base
 
 private
 
-  attr_reader :items, :items_published, :object_type, :object_title, :document
+  attr_reader :items, :object_type, :object_title, :document
 
   def title
     "#{object_type.singularize.humanize.downcase} block".capitalize
   end
 
   def rows
-    summary_card_rows(items).map.with_index do |item, index|
+    first_class_items(items).flat_map do |key, value|
       {
-        **item,
-        value: content_tag(:div, row_content(item, index), class: "compare-editions"),
+        key: schema.field(key).label,
+        value: content_for_row(value),
       }
     end
   end
 
-  def row_content(item, index)
-    return item[:value] unless items_published
-
-    published = summary_card_rows(items_published)[index][:value]
-    render_diff(published, item[:value])
-  end
-
-  def summary_card_rows(block_items, key_name = :key)
-    first_class_items(block_items).flat_map do |key, value|
-      build_row_for_field(key_name, key, value)
+  def content_for_row(value)
+    if value["published"]
+      content_tag(:div, render_diff(value["published"], value["new"]), class: "compare-editions")
+    else
+      value["new"]
     end
-  end
-
-  def build_row_for_field(key_name, key, value)
-    {
-      "#{key_name}": schema.field(key).label,
-      value: content_for_row(key, value),
-    }
-  end
-
-  def content_for_row(_key, value)
-    content_tag(:p, value, class: "app-c-embedded-objects-blocks-component__content govspeak")
   end
 
   def schema
