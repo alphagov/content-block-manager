@@ -49,10 +49,11 @@ RSpec.describe DetailsValidator do
     )
 
     expect(edition).to be_invalid
-    errors = edition.errors
 
-    expect_error errors:, key: :details_foo, type: "blank", attribute: "Foo"
-    expect_error errors:, key: :details_bar, type: "blank", attribute: "Bar"
+    expect(edition).to have_error_for(:details_foo)
+                         .with_error_message_for(type: "blank", attribute: "Foo")
+    expect(edition).to have_error_for(:details_bar)
+                         .with_error_message_for(type: "blank", attribute: "Bar")
   end
 
   it "validates the format of fields" do
@@ -67,11 +68,11 @@ RSpec.describe DetailsValidator do
     )
 
     expect(edition).to be_invalid
-    errors = edition.errors
 
-    expect(2).to eq(errors.count)
-    expect_error errors:, key: :details_foo, type: "invalid", attribute: "Foo"
-    expect_error errors:, key: :details_bar, type: "invalid", attribute: "Bar"
+    expect(edition).to have_error_for(:details_foo)
+                         .with_error_message_for(type: "invalid", attribute: "Foo")
+    expect(edition).to have_error_for(:details_bar)
+                         .with_error_message_for(type: "invalid", attribute: "Bar")
   end
 
   it "validates the presence of nested fields in nested objects" do
@@ -93,10 +94,8 @@ RSpec.describe DetailsValidator do
 
     expect(edition).to be_invalid
 
-    errors = edition.errors
-
-    expect(1).to eq(errors.count)
-    expect_error errors:, key: :details_things_my_string, type: "blank", attribute: "My string"
+    expect(edition).to have_error_for(:details_things_my_string)
+                         .with_error_message_for(type: "blank", attribute: "My string")
   end
 
   it "validates the format of nested fields in nested objects" do
@@ -118,9 +117,8 @@ RSpec.describe DetailsValidator do
 
     expect(edition).to be_invalid
 
-    errors = edition.errors
-
-    expect_error errors:, key: :details_things_something_else, type: "invalid", attribute: "Something else"
+    expect(edition).to have_error_for(:details_things_something_else)
+                         .with_error_message_for(type: "invalid", attribute: "Something else")
   end
 
   describe "validating against a regular expression" do
@@ -149,8 +147,8 @@ RSpec.describe DetailsValidator do
       )
 
       expect(edition).to be_invalid
-      errors = edition.errors
-      expect_error errors:, key: :details_foo, type: "invalid", attribute: "Foo"
+      expect(edition).to have_error_for(:details_foo)
+                           .with_error_message_for(type: "invalid", attribute: "Foo")
     end
   end
 
@@ -217,8 +215,9 @@ RSpec.describe DetailsValidator do
       )
 
       expect(edition).to be_invalid
-      errors = edition.errors
-      expect_error errors:, key: :details_things_array_of_objects_1_foo, type: "blank", attribute: "Foo"
+
+      expect(edition).to have_error_for(:details_things_array_of_objects_1_foo)
+                           .with_error_message_for(type: "blank", attribute: "Foo")
     end
 
     it "returns an error if an item is invalid in an array of objects" do
@@ -247,8 +246,8 @@ RSpec.describe DetailsValidator do
       )
 
       expect(edition).to be_invalid
-      errors = edition.errors
-      expect_error errors:, key: :details_things_array_of_objects_0_foo, type: "invalid", attribute: "Foo"
+      expect(edition).to have_error_for(:details_things_array_of_objects_0_foo)
+                           .with_error_message_for(type: "invalid", attribute: "Foo")
     end
   end
 
@@ -295,9 +294,5 @@ RSpec.describe DetailsValidator do
       error = { "data_pointer" => "/foo/something/field", "schema_pointer" => "/properties/things/patternProperties/^[a-z0-9]+(?:-[a-z0-9]+)*$" }
       expect(validator.key_with_optional_prefix(error, "my_key")).to eq("foo_field_my_key")
     end
-  end
-
-  def expect_error(errors:, key:, type:, attribute:)
-    expect(errors[key]).to eq([I18n.t("activerecord.errors.models.edition.#{type}", attribute:)])
   end
 end
