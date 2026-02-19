@@ -74,6 +74,16 @@ RSpec.describe DetailsValidator do
       end
     end
 
+    describe "when the end time is before the start date" do
+      let(:end_date) { "2023-04-06" }
+
+      it { is_expected.not_to be_valid }
+
+      it "adds an error to the start date field" do
+        expect(errors[:details_date_range_end_date]).to include("Date must be after Start date")
+      end
+    end
+
     describe "when the end time is invalid" do
       let(:end_time) { "INVALID TIME" }
 

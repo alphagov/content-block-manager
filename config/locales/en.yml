@@ -172,6 +172,10 @@ en:
       lead_organisation: Lead organisation
       instructions_to_publishers:
         Instructions to publishers (optional)
+      time_period:
+        date_range:
+          start:
+            date: Start date
       contact:
         addresses:
           title: Address name
