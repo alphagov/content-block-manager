@@ -139,6 +139,8 @@ class Schema
         { name => [*nested_fields.map(&:permitted_params), "_destroy"] || [] }
       elsif format == "array"
         { name => [*array_items["properties"]&.keys, "_destroy"] || [] }
+      elsif format == "object" && properties["subtype"] == "date_range" && properties["required"]
+        { name => properties["required"].flat_map { |required_field| (1..5).map { |i| "#{required_field}(#{i}i)" } } }
       elsif nested_fields.present?
         { name => nested_fields.map(&:permitted_params) }
       else
