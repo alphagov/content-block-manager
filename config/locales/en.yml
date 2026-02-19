@@ -13,6 +13,7 @@ en:
           format: "%{message}"
           invalid: "Invalid %{attribute}"
           blank: "%{attribute} cannot be blank"
+          minimum: "%{attribute} must be after %{minimum_date}"
           attributes:
             schedule_publishing:
               blank: "Select publish date"

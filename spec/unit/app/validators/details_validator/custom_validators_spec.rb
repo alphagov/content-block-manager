@@ -28,7 +28,12 @@ RSpec.describe DetailsValidator::CustomValidators do
 
       expect(edition).to be_invalid
 
-      expect(edition).to have_error_for(:details_date).with_error_message_for(type: "invalid", attribute: "Date")
+      expect(edition).to have_error_for(:details_date)
+                           .with_error_message_for(
+                             type: "minimum",
+                             attribute: "Date",
+                             minimum_date: Date.iso8601("2022-01-01").to_fs(:long),
+                           )
     end
 
     it "is valid if the date is after the minimum date" do
@@ -77,7 +82,43 @@ RSpec.describe DetailsValidator::CustomValidators do
 
         expect(edition).to be_invalid
 
-        expect(edition).to have_error_for(:details_end_date).with_error_message_for(type: "invalid", attribute: "End date")
+        expect(edition).to have_error_for(:details_end_date)
+                             .with_error_message_for(
+                               type: "minimum",
+                               attribute: "End date",
+                               minimum_date: "Start date",
+                             )
+      end
+
+      it "uses a translation key for the pointer" do
+        edition = build(
+          :edition,
+          :pension,
+          details: {
+            start_date: "2025-01-01",
+            end_date: "2024-01-01",
+          },
+          schema:,
+        )
+
+        translated_date = "Translated date"
+
+        allow(I18n).to receive(:t).and_call_original
+
+        expect(I18n).to receive(:t).with(
+          "start_date",
+          scope: [:edition, :labels, schema.block_type],
+          default: "Start date",
+        ).and_return(translated_date)
+
+        expect(edition).to be_invalid
+
+        expect(edition).to have_error_for(:details_end_date)
+                             .with_error_message_for(
+                               type: "minimum",
+                               attribute: "End date",
+                               minimum_date: translated_date,
+                             )
       end
 
       it "is valid if the date is after the pointer" do

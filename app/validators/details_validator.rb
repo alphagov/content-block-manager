@@ -9,7 +9,9 @@ class DetailsValidator < ActiveModel::Validator
     errors.each do |e|
       if e["type"] == "required"
         add_blank_errors(e)
-      elsif %w[format pattern formatMinimum].include?(e["type"])
+      elsif e["type"] == "formatMinimum"
+        add_format_minimum_errors(e, edition.schema.block_type)
+      elsif %w[format pattern].include?(e["type"])
         add_format_errors(e)
       end
     end
@@ -26,15 +28,39 @@ class DetailsValidator < ActiveModel::Validator
     end
   end
 
+  def add_format_minimum_errors(error, block_type)
+    attribute, key = get_attribute_and_key_from_error(error)
+    minimum_date = resolve_format_minimum_date(error["schema"]["formatMinimum"], block_type)
+
+    edition.errors.add(
+      "details_#{key}",
+      translate_error("minimum", attribute, minimum_date: minimum_date),
+    )
+  end
+
+  def resolve_format_minimum_date(format_minimum, block_type)
+    return Date.iso8601(format_minimum).to_fs(:long) if format_minimum.is_a?(String)
+
+    translation_path = format_minimum["$ref"].delete_prefix("#").split("/").compact_blank
+    I18n.t(
+      translation_path.join("."),
+      scope: [:edition, :labels, block_type],
+      default: translation_path.join(" ").humanize,
+    )
+  end
+
   def add_format_errors(error)
-    data_pointer = error["data_pointer"].delete_prefix("/")
-    field_items = data_pointer.split("/")
-    attribute = field_items.last
-    key = key_with_optional_prefix(error, nil)
+    attribute, key = get_attribute_and_key_from_error(error)
     edition.errors.add(
       "details_#{key}",
       translate_error("invalid", attribute),
     )
+  end
+
+  def get_attribute_and_key_from_error(error)
+    data_pointer = error["data_pointer"].delete_prefix("/")
+    field_items = data_pointer.split("/")
+    [field_items.last, key_with_optional_prefix(error, nil)]
   end
 
   def validate_with_schema(edition)
@@ -62,12 +88,13 @@ class DetailsValidator < ActiveModel::Validator
     end
   end
 
-  def translate_error(type, attribute)
+  def translate_error(type, attribute, **args)
     default = "activerecord.errors.models.edition.#{type}".to_sym
     I18n.t(
       "activerecord.errors.models.edition.attributes.#{attribute}.#{type}",
       attribute: attribute.humanize,
       default: [default],
+      **args,
     )
   end
 
