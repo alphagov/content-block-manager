@@ -9,7 +9,7 @@ RSpec.describe DetailsValidator do
       {
         description: "Some description",
         note: "Some note",
-        date_time:,
+        date_range:,
       }
     end
 
@@ -19,7 +19,7 @@ RSpec.describe DetailsValidator do
     let(:end_date) { "2026-04-05" }
     let(:end_time) { "23:59" }
 
-    let(:date_time) do
+    let(:date_range) do
       {
         start: {
           date: start_date,
@@ -50,7 +50,7 @@ RSpec.describe DetailsValidator do
       it { is_expected.not_to be_valid }
 
       it "adds an error to the start date field" do
-        expect(errors[:details_date_time_start_date]).to include("Invalid Date")
+        expect(errors[:details_date_range_start_date]).to include("Invalid Date")
       end
     end
 
@@ -60,7 +60,7 @@ RSpec.describe DetailsValidator do
       it { is_expected.not_to be_valid }
 
       it "adds an error to the start date field" do
-        expect(errors[:details_date_time_start_time]).to include("Invalid Time")
+        expect(errors[:details_date_range_start_time]).to include("Invalid Time")
       end
     end
 
@@ -70,7 +70,7 @@ RSpec.describe DetailsValidator do
       it { is_expected.not_to be_valid }
 
       it "adds an error to the end date field" do
-        expect(errors[:details_date_time_end_date]).to include("Invalid Date")
+        expect(errors[:details_date_range_end_date]).to include("Invalid Date")
       end
     end
 
@@ -80,7 +80,7 @@ RSpec.describe DetailsValidator do
       it { is_expected.not_to be_valid }
 
       it "adds an error to the start date field" do
-        expect(errors[:details_date_time_end_time]).to include("Invalid Time")
+        expect(errors[:details_date_range_end_time]).to include("Invalid Time")
       end
     end
   end
