@@ -44,7 +44,7 @@ class DetailsValidator < ActiveModel::Validator
     schemer = JSONSchemer.schema(
       edition.schema.body,
       keywords: {
-        "formatMinimum" => format_date_minimum,
+        "formatMinimum" => format_date_minimum(details),
       },
     )
     schemer.validate(details)
