@@ -46,4 +46,19 @@ RSpec.describe Edition::Details::Fields::DateTimeComponent, type: :component do
       expect(page).to have_css('*[name="edition[details][date_range][start(5i)]"]') # minute
     end
   end
+
+  describe "when there are existing values" do
+    let(:details) { { "date_range" => { "start" => { "date" => "2001-02-03", "time" => "04:05" } } } }
+
+    it "should show existing values" do
+      inputs = page.find_all("input")
+      expect(inputs[2].value).to eq("2001")
+      expect(inputs[1].value).to eq("2")
+      expect(inputs[0].value).to eq("3")
+
+      selects = page.find_all("select")
+      expect(selects[0].value).to eq("04")
+      expect(selects[1].value).to eq("05")
+    end
+  end
 end
