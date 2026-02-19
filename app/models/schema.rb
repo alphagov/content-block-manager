@@ -8,6 +8,9 @@ class Schema
 
   CONFIG_PATH = Rails.root.join("config/content_block_manager.yml").to_s
 
+  # Defines fields that are not used for display
+  INTERNAL_FIELD_NAMES = %w[order].freeze
+
   class << self
     def supported_block_types
       VALID_SCHEMAS.values.flatten
@@ -157,7 +160,7 @@ private
   end
 
   def properties_to_ignore
-    [*embedded_objects.keys, "order"]
+    [embedded_objects.keys, INTERNAL_FIELD_NAMES].flatten
   end
 
   def sort_fields(fields)
