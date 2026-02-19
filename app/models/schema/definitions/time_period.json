@@ -34,7 +34,8 @@
           "properties": {
             "date": {
               "type": "string",
-              "format": "date"
+              "format": "date",
+              "formatMinimum": { "$ref": "#/date_range/start/date" }
             },
             "time": {
               "type": "string",
