@@ -139,10 +139,14 @@ class Schema
         { name => [*nested_fields.map(&:permitted_params), "_destroy"] || [] }
       elsif format == "array"
         { name => [*array_items["properties"]&.keys, "_destroy"] || [] }
-      elsif format == "object" && properties["subtype"] == "date_range" && properties["required"]
-        { name => properties["required"].flat_map { |required_field| (1..5).map { |i| "#{required_field}(#{i}i)" } } }
+      elsif properties["format"] == "date"
+        (1..3).map { |i| "foo(#{i}i)" }
+      elsif properties["x-custom-format"] == "time"
+        (4..5).map { |i| "foo(#{i}i)" }
+      elsif nested_fields.present? && nested_fields.is_a?(Hash) && nested_fields.key?("x-custom-format")
+        nested_fields.flat_map(&:permitted_params).flatten
       elsif nested_fields.present?
-        { name => nested_fields.map(&:permitted_params) }
+        { name => nested_fields.map(&:permitted_params).flatten }
       else
         name
       end

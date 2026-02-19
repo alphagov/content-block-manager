@@ -8,6 +8,9 @@ class BaseController < ApplicationController
   end
 
   def edition_params
+    puts ""
+    puts "perm: #{@schema.permitted_params}"
+    puts ""
     params.require("edition")
           .permit(
             :lead_organisation_id,

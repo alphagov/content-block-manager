@@ -95,7 +95,9 @@ class Schema
   end
 
   def permitted_params
-    fields.map(&:permitted_params)
+    foo = fields.map(&:permitted_params)
+    puts "p_p #{foo}"
+    foo
   end
 
   def block_type
