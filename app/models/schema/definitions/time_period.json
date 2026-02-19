@@ -1,6 +1,6 @@
 {
   "type": "object",
-  "required": ["date_time"],
+  "required": ["date_range"],
   "additionalProperties": false,
   "properties": {
     "description": {
@@ -9,7 +9,7 @@
     "note": {
       "type": "string"
     },
-    "date_time": {
+    "date_range": {
       "type": "object",
       "required": ["start", "end"],
       "additionalProperties": false,

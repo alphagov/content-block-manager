@@ -1,7 +1,7 @@
 module TimePeriodHelpers
   def initial_details
     OpenStruct.new({
-      "date_time" => {
+      "date_range" => {
         "start" => {
           "date" => "2025-04-06",
           "time" => "00:00",
@@ -18,7 +18,7 @@ module TimePeriodHelpers
 
   def changed_details
     OpenStruct.new({
-      "date_time" => {
+      "date_range" => {
         "start" => {
           "date" => "2026-05-07",
           "time" => "23:59",
@@ -35,21 +35,21 @@ module TimePeriodHelpers
 
   def fill_time_period_fields(details:, page:)
     page.fill_in(
-      "edition_details_date_time_start_date",
-      with: details.date_time.dig("start", "date"),
+      "edition_details_date_range_start_date",
+      with: details.date_range.dig("start", "date"),
     )
     page.fill_in(
-      "edition_details_date_time_start_time",
-      with: details.date_time.dig("start", "time"),
+      "edition_details_date_range_start_time",
+      with: details.date_range.dig("start", "time"),
     )
 
     page.fill_in(
-      "edition_details_date_time_end_date",
-      with: details.date_time.dig("end", "date"),
+      "edition_details_date_range_end_date",
+      with: details.date_range.dig("end", "date"),
     )
     page.fill_in(
-      "edition_details_date_time_end_time",
-      with: details.date_time.dig("end", "time"),
+      "edition_details_date_range_end_time",
+      with: details.date_range.dig("end", "time"),
     )
   end
 end
