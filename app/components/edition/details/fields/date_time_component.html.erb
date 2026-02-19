@@ -11,32 +11,32 @@
   time_hint: "For example, 09:30 or 19:30",
   error_items: [],
   year: {
-    value: nil,
+    value: date_value&.year,
     id: "#{prefix}_#{field_name}_year",
     name: "#{prefix}[#{field_name}(1i)]",
     label: "Year",
     width: 4,
   },
   month: {
-    value: nil,
+    value: date_value&.month,
     id: "#{prefix}_#{field_name}_month",
     name: "#{prefix}[#{field_name}(2i)]",
     label: "Month",
     width: 2,
   },
   day: {
-    value: nil,
+    value: date_value&.day,
     id: "#{prefix}#{field_name}_day",
     name: "#{prefix}[#{field_name}(3i)]",
     label: "Day",
     width: 2,
   },
   hour: {
-    value: nil,
+    value: Array(time_value)[0]&.to_i,
     id: "#{prefix}_#{field_name}_hour",
   },
   minute: {
-    value: nil,
+    value: Array(time_value)[1]&.to_i,
     id: "#{prefix}_#{field_name}_minute",
   },
 }) %>
