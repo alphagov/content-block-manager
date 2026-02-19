@@ -23,9 +23,16 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
 
       form.setAttribute('data-ga4-form', JSON.stringify(eventData))
 
-      form.setAttribute('data-ga4-form-record-json', '')
-      form.setAttribute('data-ga4-form-split-response-text', '')
+      // Set options as outlined in https://docs.publishing.service.gov.uk/repos/govuk_publishing_components/analytics-ga4/trackers/ga4-form-tracker.html#options-for-text-field
+      if (form.querySelectorAll('.govuk-form-group').length > 1) {
+        // only record JSON if number of fields larger than 1
+        form.setAttribute('data-ga4-form-record-json', '')
+        form.setAttribute('data-ga4-form-split-response-text', '')
+      }
+
       form.setAttribute('data-ga4-form-include-text', '')
+      // This ensures any empty fields are sent to GA4 as `undefined` instead of "No Answer Given"
+      form.setAttribute('data-ga4-form-no-answer-undefined', '')
     }, this)
   }
 
