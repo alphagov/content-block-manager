@@ -17,6 +17,8 @@ class DetailsValidator < ActiveModel::Validator
         min  = Date.iso8601(min_str)
 
         inst >= min ? true : "formatMinimum"
+      rescue Date::Error
+        true # If the date is invalid, this will have been caught by the date validator, so return true
       end
     end
   end
