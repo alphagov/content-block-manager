@@ -11,7 +11,7 @@ private
   def combine_hashes(published, new)
     combined_hash = {}
 
-    all_keys = (published.keys + new.keys).uniq
+    all_keys = (published.keys + new.keys).uniq - Schema::INTERNAL_FIELD_NAMES
 
     all_keys.each do |key|
       pub_val = published[key]

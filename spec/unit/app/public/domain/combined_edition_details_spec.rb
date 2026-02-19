@@ -38,6 +38,19 @@ RSpec.describe CombinedEditionDetails do
                                     { "new" => "New Title" } })
         end
       end
+
+      context "when internal field names are present" do
+        Schema::INTERNAL_FIELD_NAMES.each do |internal_field|
+          context "when `#{internal_field}` is present in the details" do
+            let(:published_details) { { "title" => "Old Title", internal_field => "something" } }
+            let(:new_details) { { "title" => "New Title", internal_field => "else" } }
+
+            it "should not include the ignored key" do
+              expect(content.keys).to eq(%w[title])
+            end
+          end
+        end
+      end
     end
 
     context "when provided with nested details" do
@@ -112,6 +125,34 @@ RSpec.describe CombinedEditionDetails do
                                       "url" =>
                                       { "published" => "https://nice.example.com",
                                         "new" => "https://bad.example.com" } } } })
+        end
+      end
+    end
+
+    context "when internal field names are present" do
+      Schema::INTERNAL_FIELD_NAMES.each do |internal_field|
+        context "when `#{internal_field}` is present in the details" do
+          let(:published_details) do
+            { "contact_links" =>
+                { "contact-link" =>
+                    { "title" => "My Nice Contact link",
+                      "label" => "My Nice label",
+                      "url" => "https://nice.example.com",
+                      internal_field => "something" } } }
+          end
+
+          let(:new_details) do
+            { "contact_links" =>
+                { "contact-link" =>
+                    { "title" => "My Bad Contact link",
+                      "label" => "My Bad Label",
+                      "url" => "https://bad.example.com",
+                      internal_field => "else" } } }
+          end
+
+          it "does not include the ignored key" do
+            expect(content["contact_links"]["contact-link"].keys).to eq(%w[title label url])
+          end
         end
       end
     end
