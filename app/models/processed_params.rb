@@ -10,6 +10,23 @@ class ProcessedParams
     params
   end
 
+  class << self
+    def tmp_convert_dates_to_db_format(details)
+      date_range = details["date_range"]
+      return details unless date_range
+
+      details.merge(
+          { "date_range" =>
+            { "start" =>
+              { "date" => Date.new(*[date_range["start(1i)"], date_range["start(2i)"], date_range["start(3i)"]].map(&:to_i)),
+                "time" => [date_range["start(4i)"], date_range["start(5i)"]].join(":") },
+              "end" =>
+              { "date" => Date.new(*[date_range["end(1i)"], date_range["end(2i)"], date_range["end(3i)"]].map(&:to_i)),
+                "time" => [date_range["end(4i)"], date_range["end(5i)"]].join(":") } } },
+      )
+    end
+  end
+
 private
 
   attr_reader :schema, :params

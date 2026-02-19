@@ -22,7 +22,8 @@ class EditionsController < BaseController
 
   def create
     @schema = Schema.find_by_block_type(block_type_param)
-    @edition = CreateEditionService.new(@schema).call(edition_params, document_id: params[:document_id])
+    edition_params2 = edition_params.merge({ "details" => ProcessedParams.tmp_convert_dates_to_db_format(edition_params[:details]) })
+    @edition = CreateEditionService.new(@schema).call(edition_params2, document_id: params[:document_id])
     redirect_to workflow_path(id: @edition.id, step: steps[1].name)
   rescue ActiveRecord::RecordInvalid => e
     @title = params[:document_id] ? e.record.document.title : "Create content block"

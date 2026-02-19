@@ -10,7 +10,7 @@ module Workflow::UpdateMethods
       title: edition_params[:title],
       lead_organisation_id: edition_params[:lead_organisation_id],
       instructions_to_publishers: edition_params[:instructions_to_publishers],
-      details: @edition.details.merge(edition_params[:details]),
+      details: @edition.details.merge(ProcessedParams.tmp_convert_dates_to_db_format(edition_params[:details])),
     )
     @edition.save!
 
