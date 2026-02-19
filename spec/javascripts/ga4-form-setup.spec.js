@@ -36,5 +36,6 @@ describe('GOVUK.Modules.Ga4FormSetup', function () {
     expect(form.hasAttribute('data-ga4-form-record-json')).toBe(true)
     expect(form.hasAttribute('data-ga4-form-split-response-text')).toBe(true)
     expect(form.hasAttribute('data-ga4-form-include-text')).toBe(true)
+    expect(form.hasAttribute('data-ga4-form-no-answer-undefined')).toBe(true)
   })
 })
