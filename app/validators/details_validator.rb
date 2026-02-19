@@ -1,4 +1,6 @@
 class DetailsValidator < ActiveModel::Validator
+  include CustomValidators
+
   attr_reader :edition
 
   def validate(edition)
@@ -7,7 +9,7 @@ class DetailsValidator < ActiveModel::Validator
     errors.each do |e|
       if e["type"] == "required"
         add_blank_errors(e)
-      elsif %w[format pattern].include?(e["type"])
+      elsif %w[format pattern formatMinimum].include?(e["type"])
         add_format_errors(e)
       end
     end
@@ -39,7 +41,12 @@ class DetailsValidator < ActiveModel::Validator
     # Fetch the details and remove any blank fields (JSONSchema classes an empty string as valid,
     # unless a specific format has been specified)
     details = compact_nested(edition.details)
-    schemer = JSONSchemer.schema(edition.schema.body)
+    schemer = JSONSchemer.schema(
+      edition.schema.body,
+      keywords: {
+        "formatMinimum" => format_date_minimum,
+      },
+    )
     schemer.validate(details)
   end
 
