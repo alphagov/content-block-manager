@@ -49,6 +49,32 @@ RSpec.describe DetailsValidator::CustomValidators do
       expect(edition).to be_valid
     end
 
+    it "does not do minimum validation if the date is invalid" do
+      edition = build(
+        :edition,
+        :pension,
+        details: {
+          date: "INVALID",
+        },
+        schema:,
+      )
+
+      expect(edition).to be_invalid
+
+      expect(edition).to_not have_error_for(:details_date)
+                          .with_error_message_for(
+                            type: "minimum",
+                            attribute: "Date",
+                            minimum_date: Date.iso8601("2022-01-01").to_fs(:long),
+                          )
+
+      expect(edition).to have_error_for(:details_date)
+                               .with_error_message_for(
+                                 type: "invalid",
+                                 attribute: "Date",
+                               )
+    end
+
     describe "when formatMinimum is a pointer" do
       let(:body) do
         {
