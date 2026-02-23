@@ -26,6 +26,15 @@ Feature: Create "Time period" content block
     When I click to view the content block
     Then I should see the details for the time_period content block
 
+  Scenario: Time period validates correctly
+    When I fill the form with the following fields:
+      | title            | note      | description      | organisation        | instructions_to_publishers |
+      | Current Tax Year | Some note | Some description | Ministry of Example | This is important          |
+    And I proceed to add a date range for the Time period
+    When I supply the time periods with the end date before the start date
+    And I save and continue
+    Then I should see an error message telling me that the end date cannot be before the start date
+
   Scenario: Editor can edit a draft time period block
     Given a draft time period block exists
     When I am viewing the draft edition
