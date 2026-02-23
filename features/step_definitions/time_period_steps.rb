@@ -6,11 +6,11 @@ module TimePeriodHelpers
     OpenStruct.new({
       "date_range" => {
         "start" => {
-          "date" => "2025-04-06",
+          "date" => "2025-04-05",
           "time" => "00:00",
         },
         "end" => {
-          "date" => "2026-04-05",
+          "date" => "2026-04-06",
           "time" => "23:59",
         },
       },
@@ -23,11 +23,11 @@ module TimePeriodHelpers
     OpenStruct.new({
       "date_range" => {
         "start" => {
-          "date" => "2026-05-07",
+          "date" => "2026-05-06",
           "time" => "23:59",
         },
         "end" => {
-          "date" => "2027-05-06",
+          "date" => "2026-05-07",
           "time" => "00:00",
         },
       },
