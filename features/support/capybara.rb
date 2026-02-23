@@ -11,7 +11,7 @@ Capybara.automatic_label_click = true
 Capybara.register_driver :playwright do |app|
   Capybara::Playwright::Driver.new(app,
                                    browser_type: :chromium,
-                                   headless: true)
+                                   headless: ActiveModel::Type::Boolean.new.cast(ENV.fetch("HEADLESS", true)))
 end
 
 Capybara.configure do |config|
