@@ -8,6 +8,12 @@ module SchemaHelper
     show_all_content_block_types? ? Schema.all : Schema.live
   end
 
+  def classes_for_subschema_listing_heading(subschema)
+    return "subschema-listing__heading" if subschema.relationship_type.one_to_many?
+
+    ""
+  end
+
 private
 
   def show_all_content_block_types?
