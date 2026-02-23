@@ -66,6 +66,10 @@ class Edition < ApplicationRecord
     details[object_type][object_title] = remove_destroyed body.to_h
   end
 
+  def store_sole_object_in_details(object_type, body)
+    details[object_type] = remove_destroyed body.to_h
+  end
+
   def has_entries_for_subschema_id?(subschema_id)
     details[subschema_id].present?
   end

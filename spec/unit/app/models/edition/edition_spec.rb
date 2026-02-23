@@ -246,6 +246,30 @@ RSpec.describe Edition, type: :model do
     end
   end
 
+  describe "#store_sole_object_in_details(object_type, body)" do
+    let(:edition) { Edition.new }
+    let(:object_body) { { start: { date: "2025-04-05" } } }
+
+    context "when the given key does not exist" do
+      before { edition.details = {} }
+
+      it "adds the given body to the details, under the given object_type key" do
+        edition.store_sole_object_in_details(:date_range, object_body)
+
+        expect(edition.details.fetch(:date_range)).to eq(object_body)
+      end
+    end
+
+    context "when the give key DOES already exist" do
+      before { edition.details = { date_range: { other: { field_name: "value" } } } }
+      it "replaces the given body in the details, under the given object_type key" do
+        edition.store_sole_object_in_details(:date_range, object_body)
+
+        expect(edition.details.fetch(:date_range)).to eq(object_body)
+      end
+    end
+  end
+
   describe "#add_object_to_details" do
     it "adds an object with the correct key to the details hash" do
       edition.add_object_to_details(
