@@ -9,9 +9,6 @@
     "description": {
       "type": "string"
     },
-    "note": {
-      "type": "string"
-    },
     "synonym": {
       "type": "string"
     },

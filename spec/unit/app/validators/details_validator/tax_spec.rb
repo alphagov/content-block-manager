@@ -12,7 +12,6 @@ RSpec.describe DetailsValidator do
       {
         abbreviation: "TAX",
         description: "Some description",
-        note: "Some note",
         synonym: "Some synonym",
         tax_type:,
         things_taxed:,
