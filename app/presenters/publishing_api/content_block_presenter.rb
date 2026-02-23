@@ -2,6 +2,7 @@ module PublishingApi
   class ContentBlockPresenter
     LOCAL_SCHEMAS = %w[
       content_block_time_period
+      content_block_tax
     ].freeze
 
     def initialize(schema_id:, content_id_alias:, edition:)
