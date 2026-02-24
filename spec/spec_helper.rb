@@ -18,7 +18,9 @@ Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
 GovukTest.configure
 
 RSpec.configure do |config|
-  config.pattern += ",engines/*/spec/**/*_spec.rb"
+  if ARGV.empty?
+    config.pattern = "{spec,engines/*/spec}/**/*_spec.rb"
+  end
 
   config.expose_dsl_globally = false
   config.infer_spec_type_from_file_location!
