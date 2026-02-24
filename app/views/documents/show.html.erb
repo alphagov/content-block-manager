@@ -105,7 +105,7 @@
       <div class="govuk-grid-column-full">
         <h2 class="govuk-heading-l subschema-listing__heading"><%= h subschema.name %></h2>
 
-        <%= render Edition::Show::EmbeddedObjects::SubschemaItemsComponent.new(
+        <%= render Edition::Show::SubschemaItemsComponent.new(
           edition: @edition,
           schema: @schema,
           subschema: subschema,

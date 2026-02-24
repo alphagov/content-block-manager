@@ -1,4 +1,4 @@
-RSpec.describe Edition::Show::EmbeddedObjects::SubschemaItemsComponent, type: :component do
+RSpec.describe Edition::Show::SubschemaItemsComponent, type: :component do
   include Rails.application.routes.url_helpers
 
   let(:details) do
