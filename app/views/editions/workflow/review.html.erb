@@ -31,13 +31,24 @@
 
       <% @schema.subschemas.each do |subschema| %>
         <% if @edition.details[subschema.id] %>
-          <%= render Shared::EmbeddedObjects::SummaryCardComponent.with_collection(
-            @edition.details[subschema.id].keys,
-            edition: @edition,
-            object_type: subschema.id,
-            redirect_url: redirect_url_for_subschema(subschema, @edition),
-            test_id_prefix: "review_embedded",
+
+          <% if subschema.relationship_type.one_to_one? %>
+            <%= render Shared::EmbeddedObject::SummaryCardComponent.new(
+              edition: @edition,
+              object_type: subschema.id,
+              redirect_url: redirect_url_for_subschema(subschema, @edition),
+              test_id_prefix: "review_sole_embedded",
             ) %>
+          <% else %>
+            <%= render Shared::EmbeddedObjects::SummaryCardComponent.with_collection(
+              @edition.details[subschema.id].keys,
+              edition: @edition,
+              object_type: subschema.id,
+              redirect_url: redirect_url_for_subschema(subschema, @edition),
+              test_id_prefix: "review_embedded",
+            ) %>
+          <% end %>
+
         <% end %>
       <% end %>
 

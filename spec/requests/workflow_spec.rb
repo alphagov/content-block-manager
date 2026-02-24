@@ -67,6 +67,35 @@ RSpec.describe "Workflow", type: :request do
           expect(page).to have_content(document.title)
           expect(page).to have_content I18n.t("edition.review.confirm")
         end
+
+        context "when the edition has a subschema in a 1:1 relationship" do
+          let(:embedded_object_details) do
+            {
+              "start" => { "date" => "2025-04-06", "time" => "00:00" },
+              "end" => { "date" => "2026-04-05", "time" => "23:52" },
+            }
+          end
+
+          let(:edition) do
+            create(
+              :edition,
+              :time_period,
+              lead_organisation_id: organisation.id,
+              details: { "date_range" => embedded_object_details },
+            )
+          end
+
+          before do
+            allow(Schema).to receive(:find_by_block_type).and_call_original
+            allow(Schema).to receive(:remote_schemas).and_return([])
+          end
+
+          it "displays the subschema in a single summary card" do
+            get workflow_path(id: edition.id, step: :review)
+
+            expect(page).to have_css(".gem-c-summary-card[data-test-id='review_sole_embedded_date_range']")
+          end
+        end
       end
 
       describe "#update" do
