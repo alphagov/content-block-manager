@@ -15,9 +15,12 @@ Feature: Create "Time period" content block
     When I fill the form with the following fields:
       | title            | note      | description      | organisation        | instructions_to_publishers |
       | Current Tax Year | Some note | Some description | Ministry of Example | This is important          |
-    And I supply the time periods correctly
+    And I proceed to add a date range for the Time period
+    And I supply the initial time periods correctly
     And I save and continue
-    And I review and confirm I have checked the content
+    Then I see the initial time period represented clearly
+
+    When I review and confirm I have checked the content
     Then I should be taken to the confirmation page
     And the block should have been sent to the Publishing API
     When I click to view the content block
