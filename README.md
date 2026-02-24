@@ -78,6 +78,15 @@ Javascript unit tests can also be run separately:
 govuk-docker-run bundle exec rake jasmine
 ```
 
+If you want to run the feature tests with a live browser (handy for debugging), then you can run:
+
+```bash
+HEADLESS=false bundle exec cucumber
+```
+
+NOTE: As this is running outside of the GOV.UK Docker environment, you will need a local database and Redis set up
+and running.
+
 ### Further documentation
 
 See the [`docs/`](docs/) directory.

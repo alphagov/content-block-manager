@@ -150,6 +150,6 @@ def add_change_note
 end
 
 def review_and_confirm
-  check "has_checked_content"
+  check I18n.t("edition.review.confirm")
   submit
 end
