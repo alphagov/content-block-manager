@@ -720,4 +720,53 @@ RSpec.describe Schema::Field do
       end
     end
   end
+
+  describe "#permitted_params" do
+    context "when the schema is empty" do
+      let(:field) { Schema::Field.new("something", schema) }
+
+      it "should return itself" do
+        expect(field.permitted_params).to eq("something")
+      end
+    end
+
+    context "when the schema contains nested objects" do
+      let(:body) do
+        { "type" => "object",
+          "properties" =>
+          { "something" =>
+            { "type" => "object",
+              "properties" =>
+              { "foo" =>
+                { "type" => "object",
+                  "properties" =>
+                  { "bar" => "" } } } } } }
+      end
+      let(:schema) { build(:schema, body:) }
+
+      it "should return the params in the format with each object containing a list of its children" do
+        expect(field.permitted_params).to eq({ "something" => [{ "foo" => %w[bar] }] })
+      end
+    end
+
+    context "when the schema contains nested arrays" do
+      let(:body) do
+        { "type" => "object",
+          "properties" =>
+          { "something" =>
+            { "type" => "array",
+              "items" =>
+              { "type" => "object",
+                "properties" =>
+                { "foo" =>
+                  { "type" => "object",
+                    "properties" => { "bar" => "" } } } } } } }
+      end
+      let(:schema) { build(:schema, body:) }
+
+      it "should return the params in the format with each object containing a list of its children and finally one '_destroy' key" do
+        expect(field.permitted_params).to eq({ "something" => [{ "foo" => %w[bar] }, "_destroy"] })
+      end
+    end
+  end
 end
