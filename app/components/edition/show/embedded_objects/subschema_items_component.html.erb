@@ -1,7 +1,0 @@
-<% embedded_objects.keys.each do |key| %>
-  <%= render Edition::Show::EmbeddedObjects::SubschemaItemComponent.new(
-        edition:,
-        schema_name: schema.block_type,
-        object_type:,
-        object_title: key) %>
-<% end %>

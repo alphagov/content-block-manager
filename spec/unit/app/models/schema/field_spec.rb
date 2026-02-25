@@ -189,7 +189,7 @@ RSpec.describe Schema::Field do
       let(:config) do
         {
           "subschemas" => {
-            "date_time" => {
+            "date_range" => {
               "field_order" => %w[start end],
             },
           },
@@ -199,7 +199,7 @@ RSpec.describe Schema::Field do
       let(:body) do
         {
           "properties" => {
-            "date_time" => {
+            "date_range" => {
               "type" => "object",
               "properties" => {
                 "end" => { "type" => "string" },
@@ -211,7 +211,7 @@ RSpec.describe Schema::Field do
         }
       end
 
-      let(:field) { Schema::Field.new("date_time", schema) }
+      let(:field) { Schema::Field.new("date_range", schema) }
 
       it "returns fields ordered according to the config" do
         nested_fields = field.nested_fields

@@ -8,14 +8,14 @@ class BlockContent
 
   attr_reader :block, :schema, :block_display_fields, :object_type
 
-  def metadata(object_title)
+  def metadata(object_title = nil)
     return unless block
 
     block_details(block, object_title)
       .reject { |k, v| v.blank? || block_display_fields.include?(k) }
   end
 
-  def fields(object_title)
+  def fields(object_title = nil)
     return unless block
 
     block_details(block, object_title)
@@ -25,7 +25,9 @@ class BlockContent
 
 private
 
-  def block_details(block, object_title)
-    block.details.dig(object_type, object_title) || {}
+  def block_details(block, object_title = nil)
+    return block.details.dig(object_type, object_title) || {} if object_title
+
+    block.details[object_type] || {}
   end
 end

@@ -1,0 +1,26 @@
+<div class="app-c-embedded-object-summary-card-component">
+  <% content = capture do %>
+    <% nested_items(items).each do |field, items| %>
+      <% if items.is_a?(Array) %>
+        <%= render Shared::EmbeddedObjects::SummaryCard::NestedItemComponent.with_collection(
+          items,
+          field:,
+        ) %>
+      <% else %>
+        <%= render Shared::EmbeddedObjects::SummaryCard::NestedItemComponent.new(
+          items:,
+          field:,
+        ) %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= render "govuk_publishing_components/components/summary_card", {
+    title:,
+    rows:,
+    summary_card_actions:,
+    data_attributes:,
+  } do %>
+    <%= content %>
+  <% end %>
+</div>

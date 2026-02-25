@@ -34,6 +34,70 @@ RSpec.describe Schema::EmbeddedSchema do
     expect(schema_id).to eq(schema.id)
   end
 
+  describe "#relationship_type" do
+    context "when subschema maps to parent 'one to one' (TimePeriod has_one #date_range) " \
+              "i.e. WITHOUT the use of 'patternProperties'" do
+      let(:subschema_id) { "date_range" }
+      let(:parent_schema) { double(:schema, id: "time_period") }
+      let(:subschema) { Schema::EmbeddedSchema.new(subschema_id, body, parent_schema) }
+      let(:body) do
+        {
+          "type" => "object",
+          "properties" => {
+            "date_time" => {
+              "type" => "object",
+              "properties" => {
+                "start" => {
+                  "type" => "object",
+                  "properties" => {
+                    "date" => { "type" => "string" },
+                    "time" => { "type" => "string" },
+                  },
+                },
+                "end" => {
+                  "type" => "object",
+                  "properties" => {
+                    "date" => { "type" => "string" },
+                    "time" => { "type" => "string" },
+                  },
+                },
+              },
+            },
+          },
+        }
+      end
+
+      it "has a one-to-one relationship" do
+        expect(subschema.relationship_type).to be_one_to_one
+      end
+    end
+
+    context "when subschema maps to parent 'one to many' (Contact has many EmailAddresses) " \
+              "i.e. WITH the use of 'patternProperties'" do
+      let(:subschema_id) { "email" }
+      let(:parent_schema) { double(:schema, id: "email_addresses") }
+      let(:subschema) { Schema::EmbeddedSchema.new(subschema_id, body, parent_schema) }
+      let(:body) do
+        {
+          "type" => "object",
+          "patternProperties" => {
+            "^[a-z0-9]+(?:-[a-z0-9]+)*$" => {
+              "type" => "object",
+              "properties" => {
+                "body" => { "type" => "string" },
+                "email_address" => { "type" => "string" },
+              },
+            },
+          },
+        }
+      end
+
+      it "has a one-to-many relationship" do
+        expect(subschema.relationship_type).to be_one_to_many
+      end
+    end
+  end
+
   it "returns the fields" do
     expect(%w[title amount description frequency]).to eq(schema.fields.map(&:name))
   end

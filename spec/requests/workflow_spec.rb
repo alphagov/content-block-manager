@@ -21,6 +21,9 @@ RSpec.describe "Workflow", type: :request do
   let(:edition) { create(:edition, document:, details:, lead_organisation_id: organisation.id, instructions_to_publishers: "instructions", title: "Some Edition Title") }
 
   let!(:schema) { stub_request_for_schema("pension") }
+  let(:subschema_relationship_type_predicate) do
+    double("relationship type predicate", one_to_one?: false)
+  end
 
   before do
     login_as_admin
@@ -64,6 +67,35 @@ RSpec.describe "Workflow", type: :request do
           expect(page).to have_content(document.title)
           expect(page).to have_content I18n.t("edition.review.confirm")
         end
+
+        context "when the edition has a subschema in a 1:1 relationship" do
+          let(:embedded_object_details) do
+            {
+              "start" => { "date" => "2025-04-06", "time" => "00:00" },
+              "end" => { "date" => "2026-04-05", "time" => "23:52" },
+            }
+          end
+
+          let(:edition) do
+            create(
+              :edition,
+              :time_period,
+              lead_organisation_id: organisation.id,
+              details: { "date_range" => embedded_object_details },
+            )
+          end
+
+          before do
+            allow(Schema).to receive(:find_by_block_type).and_call_original
+            allow(Schema).to receive(:remote_schemas).and_return([])
+          end
+
+          it "displays the subschema in a single summary card" do
+            get workflow_path(id: edition.id, step: :review)
+
+            expect(page).to have_css(".gem-c-summary-card[data-test-id='review_sole_embedded_date_range']")
+          end
+        end
       end
 
       describe "#update" do
@@ -104,8 +136,22 @@ RSpec.describe "Workflow", type: :request do
     describe "when subschemas are present" do
       let(:subschemas) do
         [
-          double("subschema_1", id: "subschema_1", name: "subschema_1", block_type: "subschema_1", block_display_fields: [], fields: [build(:field, name: "name", data_attributes: nil)], group: nil),
-          double("subschema_2", id: "subschema_2", name: "subschema_2", block_type: "subschema_1", fields: [], group: nil),
+          double("subschema_1",
+                 id: "subschema_1",
+                 name: "subschema_1",
+                 block_type: "subschema_1",
+                 relationship_type: subschema_relationship_type_predicate,
+                 block_display_fields: [],
+                 fields: [build(:field, name: "name", data_attributes: nil)],
+                 group: nil),
+
+          double("subschema_2",
+                 id: "subschema_2",
+                 name: "subschema_2",
+                 block_type: "subschema_1",
+                 relationship_type: subschema_relationship_type_predicate,
+                 fields: [],
+                 group: nil),
         ]
       end
 
@@ -137,6 +183,49 @@ RSpec.describe "Workflow", type: :request do
 
             expect(page).to have_content("existing subschema")
             expect(page).to have_content("Add another subschema 1")
+          end
+        end
+
+        context "when a 'one-to-one' subschema exists" do
+          let(:subschemas) do
+            [
+              double("one_to_one_subschema",
+                     id: "one_to_one_subschema",
+                     name: "one_to_one_subschema",
+                     block_type: "one_to_one_subschema",
+                     relationship_type: subschema_relationship_type_predicate,
+                     fields: [],
+                     group: nil),
+            ]
+          end
+
+          before do
+            allow(subschema_relationship_type_predicate).to receive(:one_to_one?).and_return(true)
+          end
+
+          context "when the sole embedded object does not yet exist" do
+            let(:details) do
+              { "title" => "Edition title" }
+            end
+
+            it "renders the 'new' view to create the sole embedded object" do
+              get workflow_path(id: edition.id, step: "embedded_one_to_one_subschema")
+
+              expect(response).to redirect_to(new_sole_embedded_object_edition_path(edition, :one_to_one_subschema))
+            end
+          end
+
+          context "when the sole embedded object already exists" do
+            let(:details) do
+              { "title" => "Edition title",
+                "one_to_one_subschema" => { name: "existing item" } }
+            end
+
+            it "renders the 'edit' view to edit the existing sole embedded object" do
+              get workflow_path(id: edition.id, step: "embedded_one_to_one_subschema")
+
+              expect(response).to redirect_to(edit_sole_embedded_object_edition_path(edition, :one_to_one_subschema))
+            end
           end
         end
       end
@@ -424,8 +513,19 @@ RSpec.describe "Workflow", type: :request do
       describe "when subschemas are present" do
         let(:subschemas) do
           [
-            double("subschema", id: "subschema_1", name: "subschema_1", block_type: "subschema_1", group: nil),
-            double("subschema", id: "subschema_2", name: "subschema_2", block_type: "subschema_2", group: nil),
+            double("subschema",
+                   id: "subschema_1",
+                   name: "subschema_1",
+                   block_type: "subschema_1",
+                   relationship_type: subschema_relationship_type_predicate,
+                   group: nil),
+
+            double("subschema",
+                   id: "subschema_2",
+                   name: "subschema_2",
+                   block_type: "subschema_2",
+                   relationship_type: subschema_relationship_type_predicate,
+                   group: nil),
           ]
         end
 
@@ -470,8 +570,21 @@ RSpec.describe "Workflow", type: :request do
         let(:group) { nil }
         let(:subschemas) do
           [
-            double("subschema", id: "subschema_1", name: "subschema_1", block_type: "subschema_1", group:, group_order: 0, fields: []),
-            double("subschema", id: "subschema_2", name: "subschema_2", block_type: "subschema_2", group:, group_order: 1, fields: []),
+            double("subschema",
+                   id: "subschema_1",
+                   name: "subschema_1",
+                   block_type: "subschema_1",
+                   relationship_type: subschema_relationship_type_predicate,
+                   group:,
+                   group_order: 0,
+                   fields: []),
+            double("subschema",
+                   id: "subschema_2",
+                   name: "subschema_2",
+                   block_type: "subschema_2",
+                   relationship_type: subschema_relationship_type_predicate,
+                   group:,
+                   group_order: 1, fields: []),
           ]
         end
 

@@ -438,7 +438,7 @@ Then("the block should have been sent to the Publishing API") do
   payload = PublishingApi::ContentBlockPresenter.new(
     schema_id: @schema.id,
     content_id_alias: @edition.document.content_id_alias,
-    edition: @edition,
+    edition: @edition.reload,
   ).present
 
   expect(WebMock).to have_requested(:put, "#{PUBLISHING_API_V2_ENDPOINT}/content/#{@edition.document.content_id}")

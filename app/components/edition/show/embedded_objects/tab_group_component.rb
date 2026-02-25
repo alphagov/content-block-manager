@@ -25,7 +25,7 @@ private
   end
 
   def component_for_subschema(subschema)
-    Edition::Show::EmbeddedObjects::SubschemaItemsComponent.new(
+    Edition::Show::SubschemaItemsComponent.new(
       edition:,
       schema:,
       subschema:,

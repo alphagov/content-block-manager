@@ -25,13 +25,13 @@ RSpec.describe Edition::Show::EmbeddedObjects::TabGroupComponent, type: :compone
     tab_component_1_double = double("TabComponent", id: subschema_1.id, label: "Tab 1", content: "<p>content_1</p>")
     tab_component_2_double = double("TabComponent", id: subschema_2.id, label: "Tab 2", content: "<p>content_2</p>")
 
-    expect(Edition::Show::EmbeddedObjects::SubschemaItemsComponent).to receive(:new).with(
+    expect(Edition::Show::SubschemaItemsComponent).to receive(:new).with(
       edition:,
       schema:,
       subschema: subschema_1,
     ).and_return(tab_component_1_double)
 
-    expect(Edition::Show::EmbeddedObjects::SubschemaItemsComponent).to receive(:new).with(
+    expect(Edition::Show::SubschemaItemsComponent).to receive(:new).with(
       edition:,
       schema:,
       subschema: subschema_2,

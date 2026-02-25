@@ -1,6 +1,34 @@
 RSpec.describe SchemaHelper, type: :helper do
   include Rails.application.routes.url_helpers
 
+  describe "classes_for_subschema_listing_heading(subschema)" do
+    let(:relationship_type_predicate) do
+      double("relationship type predicate", one_to_many?: double)
+    end
+
+    let(:subschema) { double("subschema", relationship_type: relationship_type_predicate) }
+
+    context "when the subschema is in a 1:1 relationship with its parent schema" do
+      before do
+        allow(relationship_type_predicate).to receive(:one_to_many?).and_return(false)
+      end
+
+      it "returns no special styling classes" do
+        expect(classes_for_subschema_listing_heading(subschema)).to be_blank
+      end
+    end
+
+    context "when the subschema is in a one-to-many relationship with its parent schema" do
+      before do
+        allow(relationship_type_predicate).to receive(:one_to_many?).and_return(true)
+      end
+
+      it "returns a special styling class suited to more deeply nested objects" do
+        expect(classes_for_subschema_listing_heading(subschema)).to eq("subschema-listing__heading")
+      end
+    end
+  end
+
   describe "#redirect_url_for_subschema" do
     let(:edition) { build_stubbed(:edition, :contact) }
     let(:subschema) { double(:subschema, group:, id: "my_subschema") }

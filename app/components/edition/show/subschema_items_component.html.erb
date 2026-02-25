@@ -1,0 +1,19 @@
+<% if subschema.relationship_type.one_to_one? %>
+
+  <%= render Edition::Show::EmbeddedObject::SubschemaItemComponent.new(
+    edition:,
+    schema_name: schema.block_type,
+    object_type:,
+  ) %>
+
+<% else %>
+
+  <% embedded_objects.keys.each do |key| %>
+    <%= render Edition::Show::EmbeddedObjects::SubschemaItemComponent.new(
+          edition:,
+          schema_name: schema.block_type,
+          object_type:,
+          object_title: key) %>
+  <% end %>
+
+<% end %>

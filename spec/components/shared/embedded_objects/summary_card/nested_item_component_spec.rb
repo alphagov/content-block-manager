@@ -113,6 +113,13 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCard::NestedItemComponent, type: 
         end
       end
     end
+
+    it "includes a data attribute for use in identifying each field's row in tests" do
+      render_inline component
+
+      expect(page).to have_css(".govuk-summary-list__row[data-testid='#{name_field.name}']")
+      expect(page).to have_css(".govuk-summary-list__row[data-testid='#{email_field.name}']")
+    end
   end
 
   describe "when there is an object embedded in the nested field" do

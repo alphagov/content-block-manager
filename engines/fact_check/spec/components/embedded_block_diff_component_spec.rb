@@ -1,10 +1,15 @@
 RSpec.describe FactCheck::EmbeddedBlockDiffComponent, type: :component do
   let(:items_new) { {} }
   let(:items_published) { {} }
+
   let(:object_type) { "example_type" }
   let(:object_title) { "Example Title" }
-  let(:subschema) { build(:schema, body: { "properties" => { "amount" => "" } }) }
+
+  let(:subschema_body) { { "properties" => { "amount" => "" } } }
+  let(:subschema) { build(:embedded_schema, body: subschema_body) }
+
   let(:schema) { double(:schema) }
+
   let(:document) { build(:document, schema:) }
 
   let(:items) { CombinedEditionDetails.new(published_details: items_published, new_details: items_new).content }
@@ -94,8 +99,6 @@ RSpec.describe FactCheck::EmbeddedBlockDiffComponent, type: :component do
           },
         }
       end
-
-      let(:subschema) { build(:schema, body: subschema_body) }
 
       let(:items_new) do
         {
