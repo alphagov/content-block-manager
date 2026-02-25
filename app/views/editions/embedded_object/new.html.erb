@@ -6,7 +6,6 @@
   } %>
 <% end %>
 <% content_for :error_summary, render(Shared::ErrorSummaryComponent.new(object: @edition, parent_class: "edition")) %>
-<h2>Sole</h2>
 <%= form_with(
       url: create_sole_embedded_object_edition_path(
         @edition,
