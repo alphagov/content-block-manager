@@ -36,4 +36,21 @@ RSpec.describe DateTimeConverter do
       end
     end
   end
+
+  describe "when converting from date and time as strings" do
+    let(:date_string) { "3000-12-25" }
+    let(:time_string) { "01:23" }
+    let(:converter) { DateTimeConverter.from_strings(date: date_string, time: time_string) }
+    let(:date_time) { converter.date_time }
+
+    it "should return a Time with the correctly set fields" do
+      expect(date_time).to be_a(Time)
+
+      expect(date_time.year).to eq(3000)
+      expect(date_time.month).to eq(12)
+      expect(date_time.day).to eq(25)
+      expect(date_time.hour).to eq(1)
+      expect(date_time.min).to eq(23)
+    end
+  end
 end

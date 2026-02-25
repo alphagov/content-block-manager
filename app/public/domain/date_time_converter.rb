@@ -3,6 +3,10 @@ class DateTimeConverter
     def from_object(date_object:, field_name:)
       DateTimeConverter.new(Time.zone.local(*(1..5).map { |index| date_object["#{field_name}(#{index}i)"].to_i }))
     end
+
+    def from_strings(date:, time:)
+      DateTimeConverter.new(Time.zone.parse("#{date} #{time}"))
+    end
   end
 
   def initialize(date_time)
