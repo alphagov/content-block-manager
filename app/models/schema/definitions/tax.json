@@ -1,0 +1,100 @@
+{
+  "type": "object",
+  "required": ["tax_type"],
+  "additionalProperties": false,
+  "properties": {
+    "abbreviation": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "synonym": {
+      "type": "string"
+    },
+    "tax_type": {
+      "type": "string",
+      "enum": ["Tax", "Duty", "Levy", "Surcharge", "Repayment", "Charge"]
+    },
+    "things_taxed": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[a-z0-9]+(?:-[a-z0-9]+)*$": {
+          "type": "object",
+          "required": ["title", "type", "rates"],
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "Entity value",
+                "Transaction",
+                "Gain",
+                "Activity",
+                "Income",
+                "Asset"
+              ]
+            },
+            "rates": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["name", "value"],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  },
+                  "bands": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": ["name"],
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "lower_threshold": {
+                          "type": "object",
+                          "required": ["value"],
+                          "properties": {
+                            "show": {
+                              "type": "boolean",
+                              "default": false
+                            },
+                            "value": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "upper_threshold": {
+                          "type": "object",
+                          "required": ["value"],
+                          "properties": {
+                            "show": {
+                              "type": "boolean",
+                              "default": false
+                            },
+                            "value": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

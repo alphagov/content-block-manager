@@ -4,15 +4,15 @@ Feature: Create Tax Content Block
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And the schema "tax" exists
+    And the local schema "tax" exists
     And I visit the Content Block Manager home page
     And I click to create an object
     And I click on the "tax" schema
 
   Scenario: Editor can create a tax content block
     When I complete the form with the following fields:
-      | title           | abbreviation   | synonym | tax_type | note      | description      | organisation        | instructions_to_publishers |
-      | Value Added Tax | VAT            | VAT     | Tax      | Some note | Some description | Ministry of Example | This is important          |
+      | title           | abbreviation   | synonym | tax_type | description      | organisation        | instructions_to_publishers |
+      | Value Added Tax | VAT            | VAT     | Tax      | Some description | Ministry of Example | This is important          |
     When I click to add a new "thing_taxed"
     And I complete the "thing_taxed" form with the following fields:
       | title                   | type        | rates_0_name  | rates_0_value |
@@ -27,8 +27,8 @@ Feature: Create Tax Content Block
 
   Scenario: Editor can create a tax content block with bands and thresholds
     When I complete the form with the following fields:
-      | title      | tax_type | note      | description      | organisation        | instructions_to_publishers |
-      | Income tax | Tax      | Some note | Some description | Ministry of Example | This is important          |
+      | title      | tax_type | description      | organisation        | instructions_to_publishers |
+      | Income tax | Tax      | Some description | Ministry of Example | This is important          |
     When I click to add a new "thing_taxed"
     And I fill in the "thing_taxed" form with the following fields:
       | title  | type   | rates_0_name       | rates_0_value |
@@ -66,8 +66,8 @@ Feature: Create Tax Content Block
     And the show_all_content_block_types feature flag is not turned on
     And I have the "show_all_content_block_types" permission
     When I complete the form with the following fields:
-      | title           | abbreviation   | synonym | tax_type | note      | description      | organisation        | instructions_to_publishers |
-      | Value Added Tax | VAT            | VAT     | Tax      | Some note | Some description | Ministry of Example | This is important          |
+      | title           | abbreviation   | synonym | tax_type | description      | organisation        | instructions_to_publishers |
+      | Value Added Tax | VAT            | VAT     | Tax      | Some description | Ministry of Example | This is important          |
     When I click to add a new "thing_taxed"
     And I complete the "thing_taxed" form with the following fields:
       | title                   | type        | rates_0_name  | rates_0_value |
