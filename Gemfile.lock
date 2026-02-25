@@ -286,7 +286,7 @@ GEM
     govuk_personalisation (1.1.0)
       plek (>= 1.9.0)
       rails (>= 6, < 9)
-    govuk_publishing_components (64.1.0)
+    govuk_publishing_components (64.1.2)
       govuk_app_config
       govuk_personalisation (>= 0.7.0)
       kramdown
@@ -708,8 +708,8 @@ GEM
       activesupport (>= 5.0.0)
       minitest
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.6.2)
-      loofah (~> 2.21)
+    rails-html-sanitizer (1.7.0)
+      loofah (~> 2.25)
       nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
     railties (8.0.3)
       actionpack (= 8.0.3)
@@ -1089,7 +1089,7 @@ CHECKSUMS
   govuk_app_config (9.23.6) sha256=54d824ac3159a852947e70bd49d5660bb91518142a63eff38556ee65687ea5cb
   govuk_frontend_toolkit (9.0.1) sha256=18fdae529c9003e023c3461d89a45ddaf5ac0df311705351743c9f1b7b48a2de
   govuk_personalisation (1.1.0) sha256=6e7a0dcfaec11570d95490160a95aff85150df5b667a586ecd7d5de04feac5dd
-  govuk_publishing_components (64.1.0) sha256=ea08d3c7d795525c132c37f480fa66dad3feeeff4d24e9095ebb10ce04e2c3c0
+  govuk_publishing_components (64.1.2) sha256=721414604090538709c35904be8c620ed38515172f01381b10c4ed7bc9684750
   govuk_schemas (6.2.2) sha256=1af140e4d82a357cd70b2c2ac396cf8278a337ce3f2add3175a87a8ad08aa008
   govuk_sidekiq (10.1.0) sha256=040e131c7c68e391e1ad66ef02e2c8fcc4f286df5e0ff905c1bdc368c47c290f
   govuk_test (4.1.2) sha256=ab0318c625d0e4b9358092bb7add4c852dd1bc69a3ff2edcfe4bfa1d156c9bb9
@@ -1242,7 +1242,7 @@ CHECKSUMS
   rails (8.0.3) sha256=5d83c0822d1aaea32a278a99b1afedd3f28e14cfff846e96987bb24ebcb3fd45
   rails-controller-testing (1.0.5) sha256=741448db59366073e86fc965ba403f881c636b79a2c39a48d0486f2607182e94
   rails-dom-testing (2.3.0) sha256=8acc7953a7b911ca44588bf08737bc16719f431a1cc3091a292bca7317925c1d
-  rails-html-sanitizer (1.6.2) sha256=35fce2ca8242da8775c83b6ba9c1bcaad6751d9eb73c1abaa8403475ab89a560
+  rails-html-sanitizer (1.7.0) sha256=28b145cceaf9cc214a9874feaa183c3acba036c9592b19886e0e45efc62b1e89
   railties (8.0.3) sha256=ace31dcad7134299a64d6d96310d76d32868756e58e2983e25b121acd457f1d2
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
   rake (13.3.1) sha256=8c9e89d09f66a26a01264e7e3480ec0607f0c497a861ef16063604b1b08eb19c
