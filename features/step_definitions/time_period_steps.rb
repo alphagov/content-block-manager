@@ -6,11 +6,28 @@ module TimePeriodHelpers
     OpenStruct.new({
       "date_range" => {
         "start" => {
-          "date" => "2025-04-06",
+          "date" => "2025-04-05",
           "time" => "00:00",
         },
         "end" => {
-          "date" => "2026-04-05",
+          "date" => "2026-04-06",
+          "time" => "23:59",
+        },
+      },
+      "description" => "Initial description",
+      "note" => "Initial note",
+    })
+  end
+
+  def incorrect_details
+    OpenStruct.new({
+      "date_range" => {
+        "start" => {
+          "date" => "2025-04-05",
+          "time" => "00:00",
+        },
+        "end" => {
+          "date" => "2025-04-04",
           "time" => "23:59",
         },
       },
@@ -23,11 +40,11 @@ module TimePeriodHelpers
     OpenStruct.new({
       "date_range" => {
         "start" => {
-          "date" => "2026-05-07",
+          "date" => "2026-05-06",
           "time" => "23:59",
         },
         "end" => {
-          "date" => "2027-05-06",
+          "date" => "2026-05-07",
           "time" => "00:00",
         },
       },
@@ -107,6 +124,10 @@ When("I supply the initial time periods correctly") do
   time_period.fill_time_period_fields(details: time_period.initial_details, page: page)
 end
 
+When("I supply the time periods with the end date before the start date") do
+  time_period.fill_time_period_fields(details: time_period.incorrect_details, page: page)
+end
+
 When("I supply the changed values of the time period") do
   click_button("Save and continue")
 
@@ -137,4 +158,11 @@ end
 
 Then("I see the initial time period represented clearly") do
   time_period.should_see_time_period_represented_clearly(details: time_period.initial_details, page: page)
+end
+
+Then("I should see an error message telling me that the end date cannot be before the start date") do
+  expect(page).to have_selector("a[href='#edition_details_date_range_end_date']"),
+                  text: I18n.t("activerecord.errors.models.edition.minimum",
+                               attribute: "Date",
+                               minimum_date: "Start date")
 end
