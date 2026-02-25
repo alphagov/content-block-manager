@@ -11,4 +11,11 @@ class DateTimeConverter
 
   attr_reader :date_time
 
+  def to_date_string
+    date_time.strftime("%Y-%m-%d")
+  end
+
+  def to_time_string
+    date_time.strftime("%H:%M")
+  end
 end
