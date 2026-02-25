@@ -183,3 +183,11 @@ Then("I see embed codes for the time period date and time values") do
     end
   end
 end
+
+Then("I see embed code for the default time period block") do
+  within ".gem-c-summary-card[title='Default block']" do
+    expect(page).to have_content(
+      edition.document.embed_code,
+    )
+  end
+end

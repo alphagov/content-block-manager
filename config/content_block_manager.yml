@@ -1,5 +1,6 @@
 schemas:
   content_block_time_period:
+    embeddable_as_block: true
     subschemas:
       date_range:
         block_display_fields:
