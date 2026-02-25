@@ -73,4 +73,55 @@ RSpec.describe EditionHelper, type: :helper do
       end
     end
   end
+
+  describe "#date_range_from_params" do
+    context "when called with empty details" do
+      let(:details) { {} }
+
+      it "should return an empty date range" do
+        expect(date_range_from_params(details)).to eq({})
+      end
+    end
+
+    context "when called with details which don't contain a date range as input" do
+      let(:details) { { "foo" => "bar" } }
+
+      it "should return an empty date range" do
+        expect(date_range_from_params(details)).to eq({})
+      end
+    end
+
+    context "when called with a date range in the rails array format" do
+      let(:details) do
+        { "date_range" =>
+          {
+            "start(1i)" => "2025",
+            "start(2i)" => "04",
+            "start(3i)" => "06",
+            "start(4i)" => "00",
+            "start(5i)" => "00",
+            "end(1i)" => "2026",
+            "end(2i)" => "04",
+            "end(3i)" => "05",
+            "end(4i)" => "23",
+            "end(5i)" => "59",
+          } }
+      end
+
+      it "should return the date range in the format we store in the model" do
+        expect(date_range_from_params(details)).to eq({
+          "date_range" => {
+            "start" => {
+              "date" => "2025-04-06",
+              "time" => "00:00",
+            },
+            "end" => {
+              "date" => "2026-04-05",
+              "time" => "23:59",
+            },
+          },
+        })
+      end
+    end
+  end
 end
