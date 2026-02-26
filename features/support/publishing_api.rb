@@ -25,6 +25,15 @@ Before do
   # Stub requests for World Locations
   stub_request(:get, %r{\A#{PUBLISHING_API_V2_ENDPOINT}/content\?document_type=world_location})
     .to_return(body: { results: [{ title: "United Kingdom" }] }.to_json)
+
+  # Stub requests for Schemas
+  schemas = GovukSchemas::Schema.schema_names.select { |name|
+    name.start_with?(Schema::SCHEMA_PREFIX)
+  }.index_with do |schema_name|
+    GovukSchemas::Schema.find(publisher_schema: schema_name)
+  end
+  stub_request(:get, %r{\A#{PUBLISHING_API_V2_ENDPOINT}/schemas})
+    .to_return(body: schemas.to_json)
 end
 
 World(GdsApi::TestHelpers::PublishingApi)
