@@ -8,7 +8,6 @@ Feature: Editor sends edition to fact check, recording Review outcome
     Given I am logged in
     And I have the "pre_release_features" permission
     And the organisation "Ministry of Example" exists
-    And the schema "pension" exists
     And a pension content block in the awaiting_review state exists
 
   Scenario: Ready for fact check, supplying Review outcome

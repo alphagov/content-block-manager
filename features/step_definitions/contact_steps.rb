@@ -34,8 +34,7 @@ def visit_new_contact_block_page
   visit root_path
   click_link "Create content block"
 
-  @schema = @schemas["contact"]
-  Schema.expects(:find_by_block_type).with("contact").at_least_once.returns(@schema)
+  @schema = Schema.find_by_block_type("contact")
   choose "Contact"
   click_button "Save and continue"
 end

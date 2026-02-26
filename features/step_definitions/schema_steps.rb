@@ -1,6 +1,5 @@
-When("I click on the {string} schema") do |schema_id|
-  @schema = @schemas[schema_id]
-  Schema.expects(:find_by_block_type).with(schema_id).at_least_once.returns(@schema)
+When("I click on the {string} schema") do |block_type|
+  @schema = Schema.find_by_block_type(block_type)
   choose @schema.name
   click_save_and_continue
 end
@@ -19,33 +18,18 @@ Then("I should see a form for the schema") do
 end
 
 Then("I should see all the schemas listed") do
-  @schemas.values.each do |schema|
+  Schema.all.each do |schema| # rubocop:disable Rails/FindEach - `Schema` is not an ActiveRecord object
     expect(page).to have_content(schema.name)
   end
 end
 
-And("the local schema {string} exists") do |block_type|
-  @schemas ||= {}
-  @schema = Schema.find_by_block_type(block_type)
-  @schemas[block_type] = @schema
-end
-
-And("the schema {string} exists") do |block_type|
-  @schemas ||= {}
-  body = GovukSchemas::Schema.find(publisher_schema: "content_block_#{block_type}")
-  @schema = build(:schema, block_type:, body: body["definitions"]["details"])
-  @schemas[block_type] = @schema
-  Schema.stubs(:all).returns(@schemas.values)
-  Schema.stubs(:find_by_block_type).with(block_type).returns(@schema)
-end
-
 And("the schema {string} is an alpha schema") do |block_type|
-  schema = @schemas[block_type]
+  schema = Schema.find_by_block_type(block_type)
   schema.stubs(:live?).returns(false)
 end
 
 And("the schema {string} is a live schema") do |block_type|
-  schema = @schemas[block_type]
+  schema = Schema.find_by_block_type(block_type)
   schema.stubs(:live?).returns(true)
 end
 

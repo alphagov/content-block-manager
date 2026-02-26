@@ -6,7 +6,6 @@ Feature: Create "Time period" content block
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And the local schema "time_period" exists
     And I visit the Content Block Manager home page
     And I click to create an object
     And I click on the "time_period" schema

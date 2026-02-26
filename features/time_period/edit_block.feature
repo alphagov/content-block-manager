@@ -6,7 +6,6 @@ Feature: Edit published time period block to create a new edition
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And the local schema "time_period" exists
     And a published time period content block exists
 
   Scenario:

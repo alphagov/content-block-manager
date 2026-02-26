@@ -1,37 +1,46 @@
 Given("a pension content block has been drafted") do
   create_pension_edition(state: :draft)
+  @schema = Schema.find_by_block_type("pension")
 end
 
 Given("a pension content block is awaiting fact check") do
   create_pension_edition(state: :awaiting_factcheck)
+  @schema = Schema.find_by_block_type("pension")
 end
 
 Given("a pension content block in the awaiting_review state exists") do
   create_pension_edition(state: :awaiting_review)
+  @schema = Schema.find_by_block_type("pension")
 end
 
 Given("a pension content block has been created") do
   create_published_pension_edition
+  @schema = Schema.find_by_block_type("pension")
 end
 
 Given("a draft time period block exists") do
   create_time_period_edition(state: :draft)
+  @schema = Schema.find_by_block_type("time_period")
 end
 
 Given("a published time period content block exists") do
   create_time_period_edition(state: :published)
+  @schema = Schema.find_by_block_type("time_period")
 end
 
 Given("a tax content block has been created") do
   create_published_tax_edition
+  @schema = Schema.find_by_block_type("tax")
 end
 
 Given("a published contact edition exists") do
   create_published_contact_edition
+  @schema = Schema.find_by_block_type("contact")
 end
 
 Given("a draft contact edition exists") do
   create_draft_contact_edition
+  @schema = Schema.find_by_block_type("contact")
 end
 
 Given("a contact content block has been created") do
@@ -48,6 +57,7 @@ Given("a contact content block has been created") do
     @content_block.publish!
   end
   @content_blocks.push(@content_block)
+  @schema = Schema.find_by_block_type("contact")
 end
 
 Given(/^([^"]*) content blocks of type ([^"]*) have been created with the fields:$/) do |count, block_type, table|

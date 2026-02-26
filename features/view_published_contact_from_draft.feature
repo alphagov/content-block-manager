@@ -7,7 +7,6 @@ Feature: View published contact from draft
     Given I am logged in
     And I have the "pre_release_features" permission
     And the organisation "Ministry of Example" exists
-    And the schema "contact" exists
 
   Scenario: Editor can follow link to published edition
     Given a published contact edition exists

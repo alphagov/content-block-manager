@@ -2,8 +2,6 @@ Feature: Fact check preview
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And the schema "contact" exists
-    And the schema "pension" exists
 
   @javascript
   Scenario: User can see a preview of a contact block in Fact Check

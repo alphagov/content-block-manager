@@ -3,7 +3,6 @@ Feature: Edit a contact
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And the schema "contact" exists
     And a draft contact edition exists
 
   Scenario: Can cancel creation of new contact method

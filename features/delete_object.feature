@@ -4,7 +4,6 @@ Feature: Delete a content object
     Given I am logged in
     And I have the "pre_release_features" permission
     And the organisation "Ministry of Example" exists
-    And the schema "pension" exists
 
   Scenario: GDS editor creates a Pension and deletes it
     Given a pension content block has been drafted

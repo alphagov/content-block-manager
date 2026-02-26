@@ -3,7 +3,6 @@ Feature: Create a pension block
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And the schema "pension" exists
 
   Scenario: GDS editor creates a Pension without a rate
     When I visit the Content Block Manager home page

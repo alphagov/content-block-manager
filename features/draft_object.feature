@@ -5,8 +5,6 @@ Feature: Drafting a content block
     # temporary until we release this feature:
     And I have the "pre_release_features" permission
     And the organisation "Ministry of Example" exists
-    And the schema "pension" exists
-    And the schema "contact" exists
     And I visit the Content Block Manager home page
     And I click to create an object
     And I click on the "pension" schema

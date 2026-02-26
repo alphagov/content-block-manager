@@ -126,7 +126,7 @@ Then("I should see that the opening hours have been changed") do
 end
 
 Then("I should see errors for the required {string} fields") do |object_type|
-  schema = @schemas.values.first.subschema(object_type.pluralize)
+  schema = @schema.subschema(object_type.pluralize)
   required_fields = schema.body["required"]
   required_fields.each do |required_field|
     assert_text "#{Edition.human_attribute_name("details_#{required_field}")} cannot be blank", minimum: 2

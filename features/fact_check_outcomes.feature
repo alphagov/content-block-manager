@@ -3,7 +3,6 @@ Feature: Editor records fact check outcome and publishes edition
     Given I am logged in
     And I have the "pre_release_features" permission
     And the organisation "Ministry of Example" exists
-    And the schema "pension" exists
     And a pension content block is awaiting fact check
 
   Scenario: Complete fact check, publishing the edition
