@@ -1,0 +1,38 @@
+<%= render("components/datetime_fields", {
+  heading_size: "s",
+  field_name: field_name,
+  prefix: name_prefix,
+  date_heading: "Date",
+  date_hint: "For example, 01 08 2025",
+  time_hint: "For example, 09:30 or 19:30",
+  error_items: [],
+  year: {
+    value: nil,
+    id: "#{field_name}_year",
+    name: "#{name_prefix}[#{field_name}(1i)]",
+    label: "Year",
+    width: 4,
+  },
+  month: {
+    value: nil,
+    id: "#{field_name}_month",
+    name: "#{name_prefix}[#{field_name}(2i)]",
+    label: "Month",
+    width: 2,
+  },
+  day: {
+    value: nil,
+    id: "#{field_name}_day",
+    name: "#{name_prefix}[#{field_name}(3i)]",
+    label: "Day",
+    width: 2,
+  },
+  hour: {
+    value: nil,
+    id: "#{field_name}_hour",
+  },
+  minute: {
+    value: nil,
+    id: "#{field_name}_minute",
+  },
+}) %>
