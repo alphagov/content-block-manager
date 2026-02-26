@@ -3,13 +3,11 @@ Feature: Search for a content object
     Given I am logged in
     And the organisation "Department of Placeholder" exists
     And the organisation "Ministry of Example" exists
-    And the schema "pension" exists
     And 1 content blocks of type pension have been created with the fields:
       | title |  a pension |
       | description  | ABC123 |
       | organisation | Department of Placeholder |
       | instructions_to_publishers | for GDS use only |
-    And the schema "contact" exists
     And 1 content blocks of type contact have been created with the fields:
       | title | example search title |
       | description  | hello example |

@@ -2,10 +2,8 @@ Feature: Hiding alpha block types behind permissions and a feature flag
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And the schema "pension" exists
-    And the schema "pension" is a live schema
-    And the schema "tax" exists
     And the schema "tax" is an alpha schema
+    And the schema "pension" is a live schema
     And a pension content block has been created
     And a tax content block has been created
 

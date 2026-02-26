@@ -2,7 +2,6 @@ Feature: Edit a pension block
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And the schema "pension" exists
     And a pension content block has been created
     And dependent content exists for a content block
 

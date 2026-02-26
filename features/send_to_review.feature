@@ -8,7 +8,6 @@ Feature: Editor sends edition to Review
     Given I am logged in
     And I have the "pre_release_features" permission
     And the organisation "Ministry of Example" exists
-    And the schema "pension" exists
     And a pension content block has been drafted
 
   Scenario: Send to '2i' Review from block show page

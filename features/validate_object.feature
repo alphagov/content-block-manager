@@ -3,7 +3,6 @@ Feature: Validating a content block
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And the schema "pension" exists
 
   Scenario: GDS editor sees validation errors when not selecting an object type
     When I visit the Content Block Manager home page

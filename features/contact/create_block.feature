@@ -3,7 +3,6 @@ Feature: Create a contact object
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And the schema "contact" exists
     And I visit the Content Block Manager home page
     And I click to create an object
     And I click on the "contact" schema

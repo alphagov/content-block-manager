@@ -15,7 +15,7 @@ Then(/^I should( not)? see the (.+) blocks listed$/) do |negated, block_type|
 end
 
 And(/^I should( not)? be able to filter for (.+) blocks$/) do |negated, block_type|
-  schema = @schemas[block_type]
+  schema = Schema.find_by_block_type(block_type)
   within("div.govuk-accordion__section", text: /Content block type/) do |filter|
     if negated
       expect(filter).to_not have_text(schema.name)
@@ -26,7 +26,7 @@ And(/^I should( not)? be able to filter for (.+) blocks$/) do |negated, block_ty
 end
 
 Then(/^I should( not)? be able to create a (.+) block$/) do |negated, block_type|
-  schema = @schemas[block_type]
+  schema = Schema.find_by_block_type(block_type)
   if negated
     expect(page).to_not have_selector("label", text: schema.name)
   else

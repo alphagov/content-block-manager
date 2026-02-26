@@ -3,7 +3,6 @@ Feature: Editor can use a fact check link to allow non-signon users to access a 
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And the schema "pension" exists
     And a pension content block is awaiting fact check
 
   @javascript

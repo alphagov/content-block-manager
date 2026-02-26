@@ -4,7 +4,6 @@ Feature: Edit Tax Content Block
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And the local schema "tax" exists
     And a tax content block has been created
     And dependent content exists for a content block
 

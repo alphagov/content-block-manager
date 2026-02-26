@@ -32,8 +32,7 @@ def visit_new_pension_block_page
   visit root_path
   click_link "Create content block"
 
-  @schema = @schemas["pension"]
-  Schema.expects(:find_by_block_type).with("pension").at_least_once.returns(@schema)
+  @schema = Schema.find_by_block_type("pension")
   choose "Pension"
   click_button "Save and continue"
 end
