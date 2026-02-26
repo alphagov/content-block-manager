@@ -45,16 +45,30 @@ RSpec.describe "EmbeddedObjectController requests", type: :request do
             "properties" => {
               "start" => {
                 "type" => "object",
+                "x-custom-format" => "datetime",
                 "properties" => {
-                  "date" => { "type" => "string" },
-                  "time" => { "type" => "string" },
+                  "date" => {
+                    "type" => "string",
+                    "format" => "date",
+                  },
+                  "time" => {
+                    "type" => "string",
+                    "x-custom-format" => "time",
+                  },
                 },
               },
               "end" => {
                 "type" => "object",
+                "x-custom-format" => "datetime",
                 "properties" => {
-                  "date" => { "type" => "string" },
-                  "time" => { "type" => "string" },
+                  "date" => {
+                    "type" => "string",
+                    "format" => "date",
+                  },
+                  "time" => {
+                    "type" => "string",
+                    "x-custom-format" => "time",
+                  },
                 },
               },
             },
@@ -66,7 +80,7 @@ RSpec.describe "EmbeddedObjectController requests", type: :request do
     let(:schema) { double("schema", body: [], name: "Schema") }
 
     let(:subschema) do
-      Schema::EmbeddedSchema.new(subschema_id, body, parent_schema)
+      Schema::EmbeddedSchema.new(subschema_id, body["properties"][subschema_id], parent_schema)
     end
 
     before do
@@ -100,8 +114,16 @@ RSpec.describe "EmbeddedObjectController requests", type: :request do
           "edition" =>
             { "details" => {
               "date_range" => {
-                "start" => { "date" => "2025-04-06", "time" => "00:00" },
-                "end" => { "date" => "2026-04-05", "time" => "23:59" },
+                "start(1i)" => "2025",
+                "start(2i)" => "04",
+                "start(3i)" => "06",
+                "start(4i)" => "00",
+                "start(5i)" => "00",
+                "end(1i)" => "2026",
+                "end(2i)" => "04",
+                "end(3i)" => "05",
+                "end(4i)" => "23",
+                "end(5i)" => "59",
               },
             } },
           "id" => "123",
@@ -192,8 +214,16 @@ RSpec.describe "EmbeddedObjectController requests", type: :request do
           "edition" =>
             { "details" => {
               "date_range" => {
-                "start" => { "date" => "2025-04-06", "time" => "00:00" },
-                "end" => { "date" => "2026-04-05", "time" => "23:59" },
+                "start(1i)" => "2025",
+                "start(2i)" => "04",
+                "start(3i)" => "06",
+                "start(4i)" => "00",
+                "start(5i)" => "00",
+                "end(1i)" => "2026",
+                "end(2i)" => "04",
+                "end(3i)" => "05",
+                "end(4i)" => "23",
+                "end(5i)" => "59",
               },
             } },
           "id" => "123",

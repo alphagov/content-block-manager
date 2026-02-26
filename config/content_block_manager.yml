@@ -6,6 +6,14 @@ schemas:
         block_display_fields:
           - start
           - end
+        fields:
+          start:
+            component: date_time
+          end:
+            component: date_time
+        field_order:
+          - start
+          - end
   content_block_pension:
     fields:
       description:

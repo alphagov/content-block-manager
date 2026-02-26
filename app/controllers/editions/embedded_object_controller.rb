@@ -1,6 +1,7 @@
 class Editions::EmbeddedObjectController < BaseController
   include EmbeddedObjects
   include Workflow::HasSteps
+  include EditionHelper
 
   before_action :initialize_edition
   before_action :set_schema_and_subschema, only: %i[create edit update]
@@ -15,7 +16,10 @@ class Editions::EmbeddedObjectController < BaseController
   end
 
   def create
-    @object = object_params(@subschema).dig(:details, @subschema.block_type)
+    details = object_params(@subschema)[:details]
+    details = date_range_from_params(details) if details["date_range"]
+    @object = details[@subschema.block_type]
+
     @edition.store_sole_object_in_details(@subschema.block_type, @object)
     @back_link = review_path
 
@@ -39,7 +43,9 @@ class Editions::EmbeddedObjectController < BaseController
   end
 
   def update
-    @object = object_params(@subschema).dig(:details, @subschema.block_type)
+    details = object_params(@subschema)[:details]
+    details = date_range_from_params(details) if details["date_range"]
+    @object = details[@subschema.block_type]
 
     @redirect_url = params[:redirect_url]
     @edition.store_sole_object_in_details(params[:object_type], @object)
