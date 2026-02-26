@@ -100,18 +100,34 @@ module TimePeriodHelpers
   def should_see_time_period_represented_clearly(details:, page:)
     page.within("div[title='Start']") do
       expect(page).to have_content("Date")
-      expect(page).to have_content(details.date_range.dig("start", "date"))
+      expect(page).to have_content(
+        ContentBlockTools::Presenters::FieldPresenters::TimePeriod::DatePresenter.new(
+          details.date_range.dig("start", "date"),
+        ).render,
+      )
 
       expect(page).to have_content("Time")
-      expect(page).to have_content(details.date_range.dig("start", "time"))
+      expect(page).to have_content(
+        ContentBlockTools::Presenters::FieldPresenters::TimePeriod::TimePresenter.new(
+          details.date_range.dig("start", "time"),
+        ).render,
+      )
     end
 
     page.within("div[title='End']") do
       expect(page).to have_content("Date")
-      expect(page).to have_content(details.date_range.dig("end", "date"))
+      expect(page).to have_content(
+        ContentBlockTools::Presenters::FieldPresenters::TimePeriod::DatePresenter.new(
+          details.date_range.dig("end", "date"),
+        ).render,
+      )
 
       expect(page).to have_content("Time")
-      expect(page).to have_content(details.date_range.dig("end", "time"))
+      expect(page).to have_content(
+        ContentBlockTools::Presenters::FieldPresenters::TimePeriod::TimePresenter.new(
+          details.date_range.dig("end", "time"),
+        ).render,
+      )
     end
   end
 end
@@ -157,6 +173,7 @@ Then("I should see the edited time period values have been saved") do
 end
 
 Then("I should see the changed values of the new edition") do
+  find("span[data-ga4-expandable='']", text: "All date range attributes").click
   time_period.should_see_time_period_represented_clearly(details: time_period.changed_details, page: page)
 end
 
