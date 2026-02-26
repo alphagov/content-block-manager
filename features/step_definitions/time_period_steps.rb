@@ -6,11 +6,11 @@ module TimePeriodHelpers
     OpenStruct.new({
       "date_range" => {
         "start" => {
-          "date" => "2025-04-05",
+          "date" => "2025-04-06",
           "time" => "00:00",
         },
         "end" => {
-          "date" => "2026-04-06",
+          "date" => "2026-04-05",
           "time" => "23:59",
         },
       },
@@ -40,11 +40,11 @@ module TimePeriodHelpers
     OpenStruct.new({
       "date_range" => {
         "start" => {
-          "date" => "2026-05-06",
+          "date" => "2026-05-07",
           "time" => "23:59",
         },
         "end" => {
-          "date" => "2026-05-07",
+          "date" => "2027-05-06",
           "time" => "00:00",
         },
       },
@@ -165,4 +165,29 @@ Then("I should see an error message telling me that the end date cannot be befor
                   text: I18n.t("activerecord.errors.models.edition.minimum",
                                attribute: "Date",
                                minimum_date: "Start date")
+end
+
+Then("I see embed codes for the time period date and time values") do
+  within ".subschema-listing[data-testid='date_range_listing']" do
+    %w[
+      date_range/start/date
+      date_range/start/time
+      date_range/end/date
+      date_range/end/time
+    ].each do |embed_code|
+      aggregate_failures do
+        expect(page).to have_content(
+          edition.document.embed_code_for_field(embed_code),
+        )
+      end
+    end
+  end
+end
+
+Then("I see embed code for the default time period block") do
+  within ".gem-c-summary-card[title='Default block']" do
+    expect(page).to have_content(
+      edition.document.embed_code,
+    )
+  end
 end

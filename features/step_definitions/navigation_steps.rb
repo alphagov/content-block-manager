@@ -12,6 +12,11 @@ When("I revisit the edit page") do
   visit_edit_page
 end
 
+Given("I am viewing the published edition") do
+  edition = Document.last.editions.published.most_recent
+  visit document_path(edition.document)
+end
+
 Given("I am viewing the draft edition") do
   edition = Document.last.editions.draft.most_recent
   visit document_path(edition.document)
