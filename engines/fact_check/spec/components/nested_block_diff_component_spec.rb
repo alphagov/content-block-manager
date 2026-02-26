@@ -41,7 +41,7 @@ RSpec.describe FactCheck::NestedBlockDiffComponent, type: :component do
       expect(elements.length).to eq(3)
       expect(elements[0]).to have_css(".diff del", text: "something")
       expect(elements[0]).to have_css(".diff ins", text: "something else")
-      expect(elements[0]).to have_css(".diff ins strong", text: " else")
+      expect(elements[0]).to have_css(".diff ins span.diff-marker", text: " else")
 
       expect(elements[1]).not_to have_css(".diff del")
       expect(elements[1]).to have_css(".diff ins", text: "https://example.com")
