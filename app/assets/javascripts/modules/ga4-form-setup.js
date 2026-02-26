@@ -14,11 +14,21 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
       const action = form.getAttribute('data-ga4-action')
       const toolName = form.getAttribute('data-ga4-tool-name')
 
+      let button = form.querySelector("button[type='submit']")
+
+      // Some buttons are not in the form, e.g. the "Save and continue" when adding subschemas. To
+      // get the button text, we need to find the button with the same `form` attribute.
+      if (!button) {
+        const formId = form.getAttribute('id')
+        button = document.querySelector(`button[form='${formId}']`)
+      }
+
       const eventData = {
         type: `Content block ${action}`,
         tool_name: toolName,
         event_name: 'form_response',
-        section: this.section
+        section: this.section,
+        action: button.textContent
       }
 
       form.setAttribute('data-ga4-form', JSON.stringify(eventData))
