@@ -4,8 +4,8 @@ module DiffHelper
   end
 
   def arg_uses_valid_html?(arg)
-    Nokodiff::HTMLFragmentValidator.validate_html!(arg)
-  rescue ArgumentError
+    Nokodiff::HTMLFragment.new(arg)
+  rescue Nokodiff::HTMLFragment::InvalidHTMLError
     false
   end
 
