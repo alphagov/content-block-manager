@@ -24,7 +24,7 @@ jobs:
           MINIMUM_COVERAGE: 99.40
         run: bundle exec rake check_coverage
       - name: Upload coverage
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: coverage
