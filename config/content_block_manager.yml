@@ -15,8 +15,10 @@ schemas:
         fields:
           start:
             component: date_time
+            embeddable_as_block: true
           end:
             component: date_time
+            embeddable_as_block: true
         field_order:
           - start
           - end

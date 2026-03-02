@@ -46,9 +46,20 @@ RSpec.describe Shared::EmbeddedObject::SummaryCardComponent, type: :component do
     before do
       allow(subschema).to receive(:block_display_fields).and_return(%w[start end])
       allow(schema).to receive(:subschema).and_return(subschema)
+
+      %w[
+        date_range/start/date
+        date_range/start/time
+        date_range/end/date
+        date_range/end/time
+      ].each do |field_path|
+        allow(edition).to receive(:render)
+          .with(edition.document.embed_code_for_field(field_path))
+          .and_return("FORMATTED_DATE_OR_TIME")
+      end
     end
 
-    it "renders a summary card for each of the nested fields" do
+    it "renders a summary card for each of the nested fields, with formatted dates and times" do
       render_inline component
 
       expect(page).to have_css ".govuk-summary-card__title", text: "Date range details"
@@ -56,24 +67,24 @@ RSpec.describe Shared::EmbeddedObject::SummaryCardComponent, type: :component do
       expect(page).to have_css ".gem-c-summary-card[title='Start']" do
         expect(page).to have_css ".govuk-summary-list__row[data-testid='date']" do
           expect(page).to have_css ".govuk-summary-list__key", text: "Date"
-          expect(page).to have_css ".govuk-summary-list__value", text: "2025-04-06"
+          expect(page).to have_css ".govuk-summary-list__value", text: "FORMATTED_DATE_OR_TIME"
         end
 
         expect(page).to have_css ".govuk-summary-list__row[data-testid='time']" do
           expect(page).to have_css ".govuk-summary-list__key", text: "Time"
-          expect(page).to have_css ".govuk-summary-list__value", text: "00:00"
+          expect(page).to have_css ".govuk-summary-list__value", text: "FORMATTED_DATE_OR_TIME"
         end
       end
 
       expect(page).to have_css ".gem-c-summary-card[title='End']" do
         expect(page).to have_css ".govuk-summary-list__row[data-testid='date']" do
           expect(page).to have_css ".govuk-summary-list__key", text: "Date"
-          expect(page).to have_css ".govuk-summary-list__value", text: "2026-04-05"
+          expect(page).to have_css ".govuk-summary-list__value", text: "FORMATTED_DATE_OR_TIME"
         end
 
         expect(page).to have_css ".govuk-summary-list__row[data-testid='time']" do
           expect(page).to have_css ".govuk-summary-list__key", text: "Time"
-          expect(page).to have_css ".govuk-summary-list__value", text: "23:59"
+          expect(page).to have_css ".govuk-summary-list__value", text: "FORMATTED_DATE_OR_TIME"
         end
       end
     end

@@ -5,16 +5,17 @@
         <%= render Shared::EmbeddedObjects::SummaryCard::NestedItemComponent.with_collection(
           items,
           field: field.nested_field(nested_field),
+          edition: edition,
           ) %>
       <% else %>
         <%= render Shared::EmbeddedObjects::SummaryCard::NestedItemComponent.new(
           items:,
           field: field.nested_field(nested_field),
+          edition: edition,
           ) %>
       <% end %>
     <% end %>
   <% end %>
-
   <%= render "govuk_publishing_components/components/summary_card", {
     title:,
     rows:,
