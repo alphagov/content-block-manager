@@ -11,7 +11,6 @@
       "properties": {
         "start": {
           "type": "object",
-          "x-custom-format": "datetime",
           "additionalProperties": false,
           "properties": {
             "date": {
@@ -26,7 +25,6 @@
         },
         "end": {
           "type": "object",
-          "x-custom-format": "datetime",
           "additionalProperties": false,
           "properties": {
             "date": {
