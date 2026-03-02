@@ -36,23 +36,6 @@ module EditionHelper
     raise ArgumentError, "No status label found for #{edition.state}"
   end
 
-  def date_range_from_params(edition_param_details)
-    date_range = edition_param_details["date_range"]
-
-    start_date_time = DateTimeConverter.from_object(date_object: date_range, field_name: "start")
-    end_date_time = DateTimeConverter.from_object(date_object: date_range, field_name: "end")
-
-    { "date_range" =>
-      { "start" =>
-        { "date" => start_date_time.to_date_string,
-          "time" => start_date_time.to_time_string },
-        "end" =>
-        { "date" => end_date_time.to_date_string,
-          "time" => end_date_time.to_time_string } } }
-  rescue NoMethodError
-    {}
-  end
-
 private
 
   def label_for_state(edition)
