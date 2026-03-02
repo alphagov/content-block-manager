@@ -144,13 +144,13 @@ RSpec.describe Schema::Field do
         expect(nested_fields.count).to eq(2)
 
         expect(nested_fields[0].name).to eq("foo")
-        expect(nested_fields[0].format).to eq("string")
+        expect(nested_fields[0].type).to eq("string")
         expect(nested_fields[0].enum_values).to be_nil
         expect(nested_fields[0].name_attribute).to eq("edition[details][something][foo]")
         expect(nested_fields[0].id_attribute).to eq("edition_details_something_foo")
 
         expect(nested_fields[1].name).to eq("bar")
-        expect(nested_fields[1].format).to eq("string")
+        expect(nested_fields[1].type).to eq("string")
         expect(nested_fields[1].enum_values).to eq(%w[foo bar])
         expect(nested_fields[1].name_attribute).to eq("edition[details][something][bar]")
         expect(nested_fields[1].id_attribute).to eq("edition_details_something_bar")
@@ -244,13 +244,13 @@ RSpec.describe Schema::Field do
         expect(nested_fields.count).to eq(2)
 
         expect(nested_fields[0].name).to eq("foo")
-        expect(nested_fields[0].format).to eq("string")
+        expect(nested_fields[0].type).to eq("string")
         expect(nested_fields[0].enum_values).to be_nil
         expect(nested_fields[0].name_attribute).to eq("edition[details][something][][foo]")
         expect(nested_fields[0].id_attribute).to eq("edition_details_something_foo")
 
         expect(nested_fields[1].name).to eq("bar")
-        expect(nested_fields[1].format).to eq("string")
+        expect(nested_fields[1].type).to eq("string")
         expect(nested_fields[1].enum_values).to eq(%w[foo bar])
         expect(nested_fields[1].name_attribute).to eq("edition[details][something][][bar]")
         expect(nested_fields[1].id_attribute).to eq("edition_details_something_bar")
@@ -315,7 +315,7 @@ RSpec.describe Schema::Field do
         nested_field = field.nested_field("bar")
 
         expect(nested_field.name).to eq("bar")
-        expect(nested_field.format).to eq("string")
+        expect(nested_field.type).to eq("string")
         expect(nested_field.enum_values).to eq(%w[bat cat])
         expect(nested_field.default_value).to eq("cat")
       end
@@ -690,7 +690,7 @@ RSpec.describe Schema::Field do
 
   describe "#id_attribute" do
     before do
-      allow(field).to receive(:format).and_return("string")
+      allow(field).to receive(:type).and_return("string")
       allow(field).to receive(:parent_schemas).and_return(parents)
     end
 

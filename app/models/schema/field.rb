@@ -22,7 +22,7 @@ class Schema
       elsif enum_values
         "enum"
       else
-        format
+        type
       end
     end
 
@@ -37,8 +37,8 @@ class Schema
       @config ||= schema.config.dig("fields", name) || {}
     end
 
-    def format
-      @format ||= properties["type"]
+    def type
+      @type ||= properties["type"]
     end
 
     def enum_values
@@ -54,10 +54,10 @@ class Schema
     end
 
     def nested_fields
-      if format == "object"
+      if type == "object"
         embedded_schema = Schema::EmbeddedSchema.new(name, properties, schema, config_for_embedded_schema)
         embedded_schema.fields
-      elsif format == "array" && properties["items"]["type"] == "object"
+      elsif type == "array" && properties["items"]["type"] == "object"
         embedded_schema = Schema::EmbeddedSchema.new(name, properties["items"], schema, config, is_array: true)
         embedded_schema.fields
       end
@@ -103,7 +103,7 @@ class Schema
 
     def name_attribute_part(index = nil)
       name_part = "[#{name}]"
-      name_part += "[#{index}]" if format == "array"
+      name_part += "[#{index}]" if type == "array"
       name_part
     end
 
@@ -118,7 +118,7 @@ class Schema
 
     def id_attribute_part(index = nil)
       id_part = "_#{name}"
-      id_part += "_#{index}" if format == "array" && index.present?
+      id_part += "_#{index}" if type == "array" && index.present?
       id_part
     end
 
@@ -130,14 +130,14 @@ class Schema
       path = []
       parent_schemas.each { |parent_schema| path << parent_schema.value_lookup_parts(index) }
       path << name
-      path << index if format == "array"
+      path << index if type == "array"
       path.flatten
     end
 
     def permitted_params
-      if format == "array" && nested_fields.present?
+      if type == "array" && nested_fields.present?
         { name => [*nested_fields.map(&:permitted_params), "_destroy"] || [] }
-      elsif format == "array"
+      elsif type == "array"
         { name => [*array_items["properties"]&.keys, "_destroy"] || [] }
       elsif properties["format"] == "date"
         (1..3).map { |i| "(#{i}i)" }
