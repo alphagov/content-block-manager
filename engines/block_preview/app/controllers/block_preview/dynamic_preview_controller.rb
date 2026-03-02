@@ -18,7 +18,7 @@ private
 
   def block
     document = Document.find(params[:document_id])
-    edition = document.latest_published_edition
+    edition = params[:block] == "published" ? document.latest_published_edition : document.most_recent_edition
     @block ||= ContentBlock.from_edition_id(edition.id)
   end
 end

@@ -1,0 +1,24 @@
+<div class="app-c-dynamic-preview-header-component">
+  <div class="govuk-width-container">
+    <form>
+      <%= render "govuk_publishing_components/components/select_with_search", {
+        id: "edition",
+        name: "block",
+        label: "Edition",
+        include_blank: false,
+        options: [{ text: "Edition - draft",
+                    value: "draft",
+                    selected: params[:block] == "draft"
+                  },
+                  { text: "Edition - published",
+                    value: "published",
+                    selected: params[:block] != "draft"
+                  }]
+      } %>
+      <%= render "govuk_publishing_components/components/button", {
+        text: "View results",
+        margin_bottom: 4,
+      } %>
+    </form>
+  </div>
+</div>
