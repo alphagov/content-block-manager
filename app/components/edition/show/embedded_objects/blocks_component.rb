@@ -112,16 +112,17 @@ private
   end
 
   def data_attributes_for_row(key)
+    field_path = [object_type, object_title, key].join("/")
     {
-      testid: (object_title.parameterize + "_#{key}").underscore,
-      **copy_embed_code_data_attributes("#{object_type}/#{object_title}/#{key}", document),
+      testid: test_id_for_row(key),
+      **copy_embed_code_data_attributes(field_path, document),
     }
   end
 
   def content_for_block_row
-    content = content_tag(:div,
-                          edition.render(document.embed_code_for_field("#{object_type}/#{object_title}")),
-                          class: "app-c-embedded-objects-blocks-component__content govspeak")
+    content = @block_content ||= content_tag(:div,
+                                             edition.render(document.embed_code_for_field("#{object_type}/#{object_title}")),
+                                             class: "app-c-embedded-objects-blocks-component__content govspeak")
     if edition.show_embed_codes?
       content << content_tag(:p,
                              document.embed_code_for_field("#{object_type}/#{object_title}"),
@@ -132,9 +133,16 @@ private
 
   def data_attributes_for_block_row
     {
-      testid: object_title.parameterize.underscore,
+      testid: test_id_for_row,
       **copy_embed_code_data_attributes("#{object_type}/#{object_title}", document),
     }
+  end
+
+  def test_id_for_row(key = nil)
+    testid_name = (object_title || object_type).parameterize
+    testid_name += "_#{key}" if key
+
+    testid_name.underscore
   end
 
   def copy_embed_code_data_attributes(key, document)
