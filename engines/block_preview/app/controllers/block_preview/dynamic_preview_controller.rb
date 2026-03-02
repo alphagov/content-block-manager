@@ -5,6 +5,7 @@ class BlockPreview::DynamicPreviewController < BlockPreview::ApplicationControll
 
   def show
     host_content_id = params[:host_content_id]
+    @context = "Document preview"
     @block = block
     @preview_content = BlockPreview::PreviewContent.new(
       content_id: host_content_id,
