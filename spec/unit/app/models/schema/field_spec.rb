@@ -770,7 +770,7 @@ RSpec.describe Schema::Field do
     context "when the schema contains a custom 'datetime' format" do
       let(:time) do
         { "time" =>
-          { "x-custom-format" => "time" } }
+          { "format" => "time" } }
       end
       let(:date) do
         { "date" =>

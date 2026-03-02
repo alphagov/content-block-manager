@@ -141,7 +141,7 @@ class Schema
         { name => [*array_items["properties"]&.keys, "_destroy"] || [] }
       elsif properties["format"] == "date"
         (1..3).map { |i| "(#{i}i)" }
-      elsif properties["x-custom-format"] == "time"
+      elsif properties["format"] == "time"
         (4..5).map { |i| "(#{i}i)" }
       elsif properties["x-custom-format"] == "datetime"
         nested_fields.flat_map(&:permitted_params).map { |field| "#{name}#{field}" }
