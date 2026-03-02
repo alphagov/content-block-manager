@@ -28,17 +28,17 @@ RSpec.describe FactCheck::FullBlockDiffComponent, type: :component do
         ".govuk-summary-list__row .govuk-summary-list__value .govspeak.compare-editions",
       )
       expect(page).to have_css(
-        "div.diff del strong",
+        "div.diff del span.diff-marker",
         text: "Hell",
       )
       expect(page).to have_css(".diff", text: "Hello")
 
       expect(page).to have_css(
-        "div.diff ins strong",
+        "div.diff ins span.diff-marker",
         text: "G",
       )
       expect(page).to have_css(
-        "div.diff ins strong",
+        "div.diff ins span.diff-marker",
         text: "odbye",
       )
       expect(page).to have_css(".diff", text: "Goodbye")
