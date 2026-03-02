@@ -3,6 +3,7 @@ schemas:
     embeddable_as_block: true
     subschemas:
       date_range:
+        embeddable_as_block: true
         block_display_fields:
           - start
           - end
