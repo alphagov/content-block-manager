@@ -141,6 +141,32 @@ RSpec.describe Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent, typ
     end
   end
 
+  context "when the nested field's schema is configured to be #embeddable_as_block?" do
+    before do
+      allow(embedded_schema).to receive(:embeddable_as_block?).and_return(true)
+      allow(edition).to receive(:render).and_return("RENDERED_FIELD")
+    end
+
+    it "obtains the field as a rendered block using Edition#render(embed_code_for_field)" do
+      render_inline component
+
+      expect(edition).to have_received(:render).with("{{embed:content_block_pension:/prefix/foo}}")
+      expect(edition).to have_received(:render).with("{{embed:content_block_pension:/prefix/fizz}}")
+    end
+
+    it "displays the rendered content obtained from Edition#render(embed_code_for_field)" do
+      render_inline component
+
+      expect(page).to have_css(".govuk-summary-list__row[data-testid='prefix/foo']") do |row|
+        expect(row).to have_content("RENDERED_FIELD")
+      end
+
+      expect(page).to have_css(".govuk-summary-list__row[data-testid='prefix/fizz']") do |row|
+        expect(row).to have_content("RENDERED_FIELD")
+      end
+    end
+  end
+
   context "when there are nested items (arrays of hashes)" do
     let(:items) do
       {
