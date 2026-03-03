@@ -54,4 +54,10 @@ private
     value = param_value("#{time_field.name}(5i)") || date_time&.min
     value.to_i
   end
+
+  def error_items
+    context.edition.errors[date_field.error_key].map do |error|
+      { text: error }
+    end
+  end
 end

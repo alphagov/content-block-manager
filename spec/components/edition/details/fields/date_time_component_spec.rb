@@ -162,4 +162,45 @@ RSpec.describe Edition::Details::Fields::DateTimeComponent, type: :component do
       end
     end
   end
+
+  describe "errors" do
+    let(:date_nested_field) { context.field.nested_field("date") }
+
+    context "when there are no errors" do
+      it "does not render an error state" do
+        expect(page).not_to have_css(".govuk-form-group--error")
+      end
+
+      it "does not render an error message" do
+        expect(page).not_to have_css(".govuk-error-message")
+      end
+    end
+
+    context "when there are errors on the date field" do
+      before do
+        edition.errors.add(date_nested_field.error_key, "Enter a valid date")
+        render_inline(component)
+      end
+
+      it "renders the form group with an error state" do
+        expect(page).to have_css(".govuk-form-group--error")
+      end
+
+      it "displays the error message" do
+        expect(page).to have_css(".govuk-error-message", text: "Enter a valid date")
+      end
+
+      context "when there are multiple errors" do
+        before do
+          edition.errors.add(date_nested_field.error_key, "Date must be in the future")
+          render_inline(component)
+        end
+
+        it "displays all error messages" do
+          expect(page).to have_css(".govuk-error-message", text: "Enter a valid date")
+          expect(page).to have_css(".govuk-error-message", text: "Date must be in the future")
+        end
+      end
+    end
+  end
 end
