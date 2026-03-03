@@ -3,7 +3,16 @@ class BlockPreview::DynamicPreviewController < BlockPreview::ApplicationControll
 
   layout "fullscreen_preview"
 
-  def show() end
+  def show
+    host_content_id = params[:host_content_id]
+    @block = block
+    @preview_content = BlockPreview::PreviewContent.new(
+      content_id: host_content_id,
+      block: @block,
+      base_path: params[:base_path],
+      locale: params[:locale] || "en",
+    )
+  end
 
 private
 
