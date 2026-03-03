@@ -122,6 +122,21 @@ RSpec.describe "components/datetime_fields", type: :view do
         expect(rendered).to have_css "legend", text: "Publication date"
         expect(rendered).not_to have_css "legend", text: "Date (required)"
       end
+
+      it "provides a default ID for the date fields" do
+        render_component(defaults)
+
+        expected_id = "#{defaults[:id]}_date"
+
+        expect(rendered).to have_css ".gem-c-date-input##{expected_id}"
+      end
+
+      it "allows an ID to be specified for the date fields" do
+        expected_id = "some_id"
+        render_component(defaults.merge(date_id: expected_id))
+
+        expect(rendered).to have_css ".gem-c-date-input##{expected_id}"
+      end
     end
 
     describe "error messages" do
