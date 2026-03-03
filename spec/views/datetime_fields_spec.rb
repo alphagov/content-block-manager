@@ -122,6 +122,21 @@ RSpec.describe "components/datetime_fields", type: :view do
       expect(rendered).to have_css ".app-c-datetime-fields[data-module='my-module']"
     end
 
+    it "provides a default ID for the date fields" do
+      render_component(defaults)
+
+      expected_id = "#{defaults[:id]}_date"
+
+      expect(rendered).to have_css ".gem-c-date-input##{expected_id}"
+    end
+
+    it "allows an ID to be specified for the date fields" do
+      expected_id = "some_id"
+      render_component(defaults.merge(date_id: expected_id))
+
+      expect(rendered).to have_css ".gem-c-date-input##{expected_id}"
+    end
+
     context "when hour[:name] is provided" do
       it "uses it as the select name without a prefix" do
         render_component(defaults.merge(hour: { name: "my_field(4i)" }))
