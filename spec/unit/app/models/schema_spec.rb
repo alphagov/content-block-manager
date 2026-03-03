@@ -178,29 +178,20 @@ RSpec.describe Schema do
 
   describe ".all" do
     before(:each) do
-      Schema.instance_variable_set("@remote_schemas", nil)
-      Schema.instance_variable_set("@local_schemas", nil)
-
-      allow(Public::Services.publishing_api).to receive(:get_schemas).once.and_return({
-        "something" => {},
-        "something_else" => {},
-        "content_block_foo" => {
-          "definitions" => {
-            "details" => {
-              "properties" => {
-                "foo_field" => {
-                  "type" => "string",
-                },
-              },
-            },
-          },
-        },
-        "content_block_invalid" => {},
-      })
+      Schema.instance_variable_set("@all", nil)
 
       allow(Dir).to receive(:glob).and_call_original
-      allow(Dir).to receive(:glob).with(Rails.root.join("app/models/schema/definitions/*.json")).and_return(["bar.json"])
-      file_stub = double("file", read: {
+      allow(Dir).to receive(:glob).with(Rails.root.join("app/models/schema/definitions/*.json")).and_return(%w[foo.json bar.json invalid.json])
+
+      foo_stub = double("file", read: {
+        "type": "object",
+        "properties" => {
+          "foo_field" => {
+            "type" => "string",
+          },
+        },
+      }.to_json)
+      bar_stub = double("file", read: {
         "type": "object",
         "properties" => {
           "bar_field" => {
@@ -211,14 +202,18 @@ RSpec.describe Schema do
           },
         },
       }.to_json)
-      allow(File).to receive(:open).with("bar.json").and_return(file_stub)
+      invalid_stub = double("file", read: "")
+
+      allow(File).to receive(:open).with("foo.json").and_return(foo_stub)
+      allow(File).to receive(:open).with("bar.json").and_return(bar_stub)
+      allow(File).to receive(:open).with("invalid.json").and_return(invalid_stub)
+
       allow(Schema).to receive(:is_valid_schema?).with(anything).and_return(false)
       allow(Schema).to receive(:is_valid_schema?).with(satisfy { |arg| %w[content_block_foo content_block_bar].include?(arg) }).and_return(true)
     end
 
     after(:each) do
-      Schema.instance_variable_set("@remote_schemas", nil)
-      Schema.instance_variable_set("@local_schemas", nil)
+      Schema.instance_variable_set("@all", nil)
     end
 
     it "returns a list of schemas with the content block prefix" do
@@ -233,12 +228,8 @@ RSpec.describe Schema do
     end
 
     it "memoizes the result" do
-      # Mocha won't let us assert how many times something was called, so
-      # given that we only expect Publishing API to be called once, let's
-      # call our service method twice and assert that no errors were raised
-      assert_nothing_raised do
-        2.times { Schema.all }
-      end
+      2.times { Schema.all }
+      expect(Dir).to have_received(:glob).once
     end
   end
 

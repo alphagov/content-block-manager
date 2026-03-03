@@ -87,7 +87,6 @@ RSpec.describe "Workflow", type: :request do
 
           before do
             allow(Schema).to receive(:find_by_block_type).and_call_original
-            allow(Schema).to receive(:remote_schemas).and_return([])
           end
 
           it "displays the subschema in a single summary card" do

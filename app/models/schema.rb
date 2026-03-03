@@ -16,11 +16,14 @@ class Schema
       VALID_SCHEMAS.values.flatten
     end
 
-    # Load schemas from the Publishing API (`remote_schemas`) and the app itself (`local_schemas`). Eventually, we
-    # will move all of our schemas to the app
     def all
-      all_schemas = remote_schemas + local_schemas
-      all_schemas.select { |schema| is_valid_schema?(schema.id) }
+      @all ||= Dir.glob(Rails.root.join("app/models/schema/definitions/*.json")).map { |path|
+        id = "#{SCHEMA_PREFIX}_#{File.basename(path, '.json')}"
+        next unless is_valid_schema?(id)
+
+        body = JSON.parse(File.open(path).read)
+        new(id, body)
+      }.compact
     end
 
     def live
@@ -37,24 +40,6 @@ class Schema
 
     def schema_settings
       @schema_settings ||= YAML.load_file(CONFIG_PATH)
-    end
-
-  private
-
-    def remote_schemas
-      @remote_schemas ||= Public::Services.publishing_api.get_schemas.select { |key, _v|
-        key.start_with?(SCHEMA_PREFIX)
-      }.map { |id, full_schema|
-        full_schema.dig("definitions", "details")&.yield_self { |schema| new(id, schema) }
-      }.compact
-    end
-
-    def local_schemas
-      @local_schemas ||= Dir.glob(Rails.root.join("app/models/schema/definitions/*.json")).map do |path|
-        id = "#{SCHEMA_PREFIX}_#{File.basename(path, '.json')}"
-        body = JSON.parse(File.open(path).read)
-        new(id, body)
-      end
     end
   end
 
