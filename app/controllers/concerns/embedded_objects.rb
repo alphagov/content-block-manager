@@ -17,18 +17,15 @@ module EmbeddedObjects
   end
 
   def object_params(subschema)
-    processed_params(subschema).require("edition").permit(
-      details: {
-        subschema.block_type.to_s => subschema.permitted_params,
-      },
+    processed_params(subschema).permit(
+      subschema.block_type.to_s => subschema.permitted_params,
     )
   end
 
   def processed_params(subschema)
-    params["edition"]["details"] = ProcessedParams.new(
-      params["edition"]["details"],
+    ProcessedParams.new(
+      params.deep_dup.require(:edition).require(:details),
       subschema,
     ).result
-    params
   end
 end
