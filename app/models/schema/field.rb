@@ -38,7 +38,7 @@ class Schema
     end
 
     def type
-      @type ||= properties["type"]
+      @type ||= properties.fetch("type", "").inquiry
     end
 
     def enum_values
@@ -54,10 +54,10 @@ class Schema
     end
 
     def nested_fields
-      if type == "object"
+      if type.object?
         embedded_schema = Schema::EmbeddedSchema.new(name, properties, schema, config_for_embedded_schema)
         embedded_schema.fields
-      elsif type == "array" && properties["items"]["type"] == "object"
+      elsif type.array? && properties["items"]["type"] == "object"
         embedded_schema = Schema::EmbeddedSchema.new(name, properties["items"], schema, config, is_array: true)
         embedded_schema.fields
       end
@@ -135,9 +135,9 @@ class Schema
     end
 
     def permitted_params
-      if type == "array" && nested_fields.present?
+      if type.array? && nested_fields.present?
         { name => [*nested_fields.map(&:permitted_params), "_destroy"] || [] }
-      elsif type == "array"
+      elsif type.array?
         { name => [*array_items["properties"]&.keys, "_destroy"] || [] }
       elsif properties["format"] == "date"
         (1..3).map { |i| "(#{i}i)" }

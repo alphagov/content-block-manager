@@ -17,7 +17,7 @@ RSpec.describe ProcessedParams do
 
     let(:fields) do
       [
-        double(:field, name: "foo", type: "string", show_field: nil, nested_fields: nil),
+        build(:field, name: "foo", type: "string", show_field: nil, nested_fields: nil),
       ]
     end
 
@@ -27,10 +27,10 @@ RSpec.describe ProcessedParams do
   end
 
   context "when there are conditionally revealed fields" do
-    let(:show_field) { double(:field, name: "show") }
+    let(:show_field) { build(:field, name: "show") }
     let(:fields) do
       [
-        double(:field, name: "foo", type: "object", show_field:, schema:),
+        build(:field, name: "foo", type: "object", show_field:, schema:),
       ]
     end
 
@@ -79,15 +79,15 @@ RSpec.describe ProcessedParams do
   end
 
   context "when there is an object that has a show field nested within an object" do
-    let(:show_field) { double(:field, name: "show") }
+    let(:show_field) { build(:field, name: "show") }
     let(:nested_fields) do
       [
-        double(:nested_field, name: "nested", type: "object", show_field:),
+        build(:field, name: "nested", type: "object", show_field:, schema:),
       ]
     end
     let(:fields) do
       [
-        double(:field, name: "foo", type: "object", show_field: nil, schema:, nested_fields:),
+        build(:field, name: "foo", type: "object", show_field: nil, schema:, nested_fields:),
       ]
     end
 
@@ -144,15 +144,15 @@ RSpec.describe ProcessedParams do
   end
 
   context "when there is an object that has a show field within an array" do
-    let(:show_field) { double(:field, name: "show") }
+    let(:show_field) { build(:field, name: "show") }
     let(:nested_fields) do
       [
-        double(:nested_field, name: "nested", type: "object", show_field:),
+        build(:field, name: "nested", type: "object", show_field:),
       ]
     end
     let(:fields) do
       [
-        double(:field, name: "foo", type: "array", show_field: nil, schema:, nested_fields:),
+        build(:field, name: "foo", type: "array", show_field: nil, schema:, nested_fields:),
       ]
     end
 

@@ -740,7 +740,7 @@ RSpec.describe Schema::Field do
               { "foo" =>
                 { "type" => "object",
                   "properties" =>
-                  { "bar" => "" } } } } } }
+                  { "bar" => { "type" => "string" } } } } } } }
       end
 
       it "should return the params in the format with each object containing a list of its children" do
@@ -759,7 +759,7 @@ RSpec.describe Schema::Field do
                 "properties" =>
                 { "foo" =>
                   { "type" => "object",
-                    "properties" => { "bar" => "" } } } } } } }
+                    "properties" => { "bar" => { "type" => "string" } } } } } } } }
       end
 
       it "should return the params in the format with each object containing a list of its children and finally one '_destroy' key" do

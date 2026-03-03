@@ -20,9 +20,9 @@ private
 
       if conditional_object_field?(field)
         collection[field.name] = update_conditional_object(field, collection[field.name])
-      elsif field.nested_fields && field.type == "object"
+      elsif field.nested_fields && field.type.object?
         collection[field.name] = processed_fields(field.nested_fields, collection[field.name])
-      elsif field.nested_fields && field.type == "array"
+      elsif field.nested_fields && field.type.array?
         collection[field.name] = collection[field.name].map { |item| processed_fields(field.nested_fields, item) }
       end
     end
@@ -30,7 +30,7 @@ private
   end
 
   def conditional_object_field?(field)
-    field.type == "object" && field.show_field
+    field.type.object? && field.show_field
   end
 
   def update_conditional_object(field, collection)
