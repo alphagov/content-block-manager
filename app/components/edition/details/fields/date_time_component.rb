@@ -28,4 +28,10 @@ private
   def time_field
     @time_field ||= context.field.nested_fields.find { |f| f.format.time? }
   end
+
+  def error_items
+    context.edition.errors[date_field.error_key].map do |error|
+      { text: error }
+    end
+  end
 end
