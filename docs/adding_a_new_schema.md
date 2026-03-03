@@ -2,37 +2,25 @@
 
 To add a new content block schema, follow the instructions below:
 
-## Add the new type to Content Data API
+## Add the new type to Content Block Manager
 
-We need to add the new type to the `no_content` Parser as they do not need frontend Parsers,
-[as in this commit](https://github.com/alphagov/content-data-api/commit/e02a85381dac95a7a08964e81587a1b49e384554)
+Schemas are defined in the [Schema definitions directory](https://github.com/alphagov/content-block-manager/tree/main/app/models/schema/definitions)
+in a JSON schema format.
 
-## Open a pull request to Content Data API
+This represents the shape of the data which will be stored in a content block's `details` field.
 
-Once these changes are made, open a pull request to Content Data API and get it approved
+Once the schema is defined, you must define it as a supported schema in the
+[`VALID_SCHEMAS` constant within the Schema class](https://github.com/alphagov/content-block-manager/blob/main/app/models/schema.rb#L4)
+so that it can be used in Content Block Manager.
 
-## Create a new schema in Publishing API
+Schemas can be defined as `live` or `alpha`. `live` schemas are visible in production, and can be accessed by anyone.
+`alpha` schemas are only visible in integration/staging or for users with the `SHOW_ALL_CONTENT_BLOCK_TYPES` role
+in production.
 
-Follow steps 1 to 5 in the [instructions in Publishing API for adding a new schema](https://github.com/alphagov/publishing-api/blob/main/docs/content_schemas/adding-a-new-schema.md)
+## Add tests for the new schema
 
-**NOTE:** Schemas MUST be prefixed with `content_block_*` for Content Block Manager to pick them up.
-
-If a content block type has embedded objects, you can use the `embedded_object` helper, which ensures that all embedded
-objects have a title and a key to ensure they can be referenced correctly ([Example here](https://github.com/alphagov/publishing-api/blob/9d4ce614ee3e95e82e5399201e4315ec9625e152/content_schemas/formats/content_block_pension.jsonnet#L13))
-
-## Add expansion rules for your new schema
-
-A good example is in [this commit](https://github.com/alphagov/publishing-api/commit/ae69bd878c87d475ace819acc6b7d76b60f5c360). Failure
-to do this will mean that updates to content will not get picked up when changes are made
-
-## Open a pull request to Publishing API
-
-Once these changes are made, open a pull request to Publishing API and get it approved
-
-## Add the schema to Content Block Manager
-
-Update the [`VALID_SCHEMAS` constant](https://github.com/alphagov/content-block-manager/blob/main/app/models/schema.rb#L4)
-in Content Block Manager (and, if necessary, the [`valid_schemas` method](https://github.com/alphagov/content-block-manager/blob/097a134bf77a19a791f9dea06ff7ff20eab70178/app/models/schema.rb#L10)).
+You should add tests for the new schema in the [Schema tests directory](https://github.com/alphagov/content-block-manager/tree/main/spec/unit/app/validators/details_validator),
+following the pattern of the existing tests. If the schema has specific validation rules, ensure these are covered too.
 
 ## Add any customisations
 
@@ -41,13 +29,18 @@ which allows you to configure how the schema is presented in Content Block Manag
 
 [See all available configuration variables](configuration.md)
 
-## Open another pull request
+## Open a pull request
 
-Once these changes are made, open pull request to Content Block Manager and get these changes approved
+Once these changes are made, open a pull request to Content Block Manager and get these changes approved
 
-## Optional: Add a component to Content Block Tools
+## Add support to Content Block Tools
 
-If there are any custom behaviours required for a content block, you can add a component to the
+Once the block is added to Content Block Manager, you must define it as a supported content block in the
+[Content Block Tools gem](https://github.com/alphagov/govuk_content_block_tools).
+
+Supported content blocks are defined in the [`SUPPORTED_DOCUMENT_TYPES` constant within the `ContentBlockReference` class](https://github.com/alphagov/govuk_content_block_tools/blob/main/lib/content_block_tools/content_block_reference.rb#L31).
+
+If there are any custom behaviours required for a content block, you can also add a component to the
 [Content Block Tools gem](https://github.com/alphagov/govuk_content_block_tools).
 
 You can see [an example component here](https://github.com/alphagov/govuk_content_block_tools/blob/main/app/components/content_block_tools/contact_component.rb).
