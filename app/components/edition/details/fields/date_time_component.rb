@@ -5,17 +5,20 @@ class Edition::Details::Fields::DateTimeComponent < ViewComponent::Base
     @field_name = context.field.name
     @name_prefix = "edition[details][#{@block_type}]"
     @details = context.edition&.details&.dig(block_type, field_name) || {}
-    @date_time = DateTimeConverter.from_strings(date: @details["date"], time: @details["time"]).date_time
   end
 
 private
 
-  attr_reader :context, :field_name, :name_prefix, :block_type, :date_time
+  attr_reader :context, :field_name, :name_prefix, :block_type
 
   def field_name_for(part)
     lookup = %w[year month day hour minute]
     field = %w[year month day].include?(part) ? date_field : time_field
     "#{name_prefix}[#{field_name}][#{field.name}(#{lookup.index(part) + 1}i)]"
+  end
+
+  def date_time
+    Edition::DateTimeParts.new(edition: context.edition, params:, block_type:, field_name:, date_field:, time_field:)
   end
 
   def date_field
