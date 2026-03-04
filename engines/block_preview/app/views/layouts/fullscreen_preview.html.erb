@@ -42,6 +42,28 @@
         data-ga4-link='{ "event_name": "navigation", "type": "generic_link" }'
         data-turbo="false">
 
+    <div class="app-views-dynamic-preview-header">
+      <% if yield(:title).present? %>
+        <div class="govuk-width-container">
+          <div class="govuk-grid-row">
+            <div class="govuk-grid-column-three-quarters">
+              <%
+                heading_options = {
+                  context: yield(:context),
+                  text: yield(:title),
+                  heading_level: 1,
+                  font_size: "xl",
+                }
+              %>
+              <%= render "govuk_publishing_components/components/heading", heading_options %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <%= yield :header %>
+    </div>
+
     <%= yield %>
 
   </main>
