@@ -72,6 +72,9 @@ class DetailsValidator < ActiveModel::Validator
       keywords: {
         "formatMinimum" => format_date_minimum(details),
       },
+      formats: {
+        "time" => ->(instance, _format) { instance.match?(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/) },
+      },
     )
     schemer.validate(details)
   end

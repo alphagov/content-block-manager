@@ -53,7 +53,7 @@ RSpec.describe "EmbeddedObjectController requests", type: :request do
                   },
                   "time" => {
                     "type" => "string",
-                    "x-custom-format" => "time",
+                    "format" => "time",
                   },
                 },
               },
@@ -67,7 +67,7 @@ RSpec.describe "EmbeddedObjectController requests", type: :request do
                   },
                   "time" => {
                     "type" => "string",
-                    "x-custom-format" => "time",
+                    "format" => "time",
                   },
                 },
               },
