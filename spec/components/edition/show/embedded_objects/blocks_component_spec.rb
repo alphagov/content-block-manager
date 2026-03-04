@@ -459,15 +459,22 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
     test_id:,
     key:,
     value:,
+    embed_code: nil,
     embed_code_suffix: nil,
     visible: true,
     parent_container: page
   )
+    expected_embed_code = embed_code ||
+      document
+        .embed_code_for_field([object_type, object_title, embed_code_suffix]
+        .compact
+        .join("/"))
+
     expect(parent_container).to have_css "[data-testid='#{test_id}']", visible: visible do |row|
       expect(row).to have_css ".govuk-summary-list__key", text: key, visible: visible
       expect(row).to have_css ".govuk-summary-list__value", visible: visible do |col|
         expect(col).to have_css ".app-c-embedded-objects-blocks-component__content.govspeak", text: value, visible: visible
-        expect(col).to have_css ".app-c-embedded-objects-blocks-component__embed-code", text: document.embed_code_for_field([object_type, object_title, embed_code_suffix].compact.join("/")), visible: visible
+        expect(col).to have_css ".app-c-embedded-objects-blocks-component__embed-code", text: expected_embed_code, visible: visible
       end
     end
   end
