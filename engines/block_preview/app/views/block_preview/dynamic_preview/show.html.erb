@@ -6,10 +6,12 @@
   <%= javascript_include_tag "host-content-iframe" %>
 <% end %>
 
-<%= render(BlockPreview::DynamicPreviewHeader.new(
-  block: @block,
-  title: @title
-)) %>
+<% content_for :header do %>
+  <%= render(BlockPreview::DynamicPreviewHeader.new(
+    block: @block,
+    title: @title
+    )) %>
+<% end %>
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
