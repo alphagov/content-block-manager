@@ -12,8 +12,8 @@ Feature: Create "Time period" content block
 
   Scenario: Editor can create a "Time period" content block
     When I fill the form with the following fields:
-      | title            | note      | description      | organisation        | instructions_to_publishers |
-      | Current Tax Year | Some note | Some description | Ministry of Example | This is important          |
+      | title            | description      | organisation        | instructions_to_publishers |
+      | Current Tax Year | Some description | Ministry of Example | This is important          |
     And I proceed to add a date range for the Time period
     And I supply the initial time periods correctly
     And I save and continue
@@ -27,8 +27,8 @@ Feature: Create "Time period" content block
 
   Scenario: Time period validates correctly
     When I fill the form with the following fields:
-      | title            | note      | description      | organisation        | instructions_to_publishers |
-      | Current Tax Year | Some note | Some description | Ministry of Example | This is important          |
+      | title            | description      | organisation        | instructions_to_publishers |
+      | Current Tax Year | Some description | Ministry of Example | This is important          |
     And I proceed to add a date range for the Time period
     When I supply the time periods with the end date before the start date
     And I save and continue

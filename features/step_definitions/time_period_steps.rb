@@ -15,7 +15,6 @@ module TimePeriodHelpers
         },
       },
       "description" => "Initial description",
-      "note" => "Initial note",
     })
   end
 
@@ -32,7 +31,6 @@ module TimePeriodHelpers
         },
       },
       "description" => "Initial description",
-      "note" => "Initial note",
     })
   end
 
@@ -49,7 +47,6 @@ module TimePeriodHelpers
         },
       },
       "description" => "Changed description",
-      "note" => "Changed note",
     })
   end
 
