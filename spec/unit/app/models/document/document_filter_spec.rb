@@ -194,7 +194,7 @@ RSpec.describe Document::DocumentFilter do
           rescue Document::DocumentFilter::InvalidFiltersError => e
             errors = e.errors
             expect(errors.count).to eq(1)
-            expect(errors.first.attribute).to eq(attribute.to_s)
+            expect(errors.first.attribute).to eq("#{attribute}_3i")
             expect(errors.first.full_message).to eq(I18n.t("document.index.errors.date.invalid", attribute: attribute.to_s.humanize))
           end
         end
@@ -215,7 +215,7 @@ RSpec.describe Document::DocumentFilter do
           rescue Document::DocumentFilter::InvalidFiltersError => e
             errors = e.errors
             expect(errors.count).to eq(1)
-            expect(errors.first.attribute).to eq(attribute.to_s)
+            expect(errors.first.attribute).to eq("#{attribute}_3i")
             expect(errors.first.full_message).to eq(I18n.t("document.index.errors.date.invalid", attribute: attribute.to_s.humanize))
           end
         end
@@ -238,7 +238,7 @@ RSpec.describe Document::DocumentFilter do
         rescue Document::DocumentFilter::InvalidFiltersError => e
           errors = e.errors
           expect(errors.count).to eq(1)
-          expect(errors.first.attribute).to eq("last_updated_from")
+          expect(errors.first.attribute).to eq("last_updated_from_3i")
           expect(errors.first.full_message).to eq(I18n.t("document.index.errors.date.range.invalid"))
         end
       end

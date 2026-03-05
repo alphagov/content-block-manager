@@ -14,7 +14,7 @@ class DocumentsController < BaseController
       rescue Document::DocumentFilter::InvalidFiltersError => e
         @documents = @filter.call({})
         @errors = e.errors
-        @error_summary_errors = @errors.map { |error| { text: error.full_message, href: "##{error.attribute}_3i" } }
+        @error_summary_errors = @errors.map { |error| { text: error.full_message, href: "##{error.attribute}" } }
         render :index
       end
     else
