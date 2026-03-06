@@ -5,14 +5,29 @@ RSpec.describe Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent, typ
       "fizz" => "buzz",
     }
   end
+  let(:embedded_schema) { double("embedded_schema", embeddable_as_block?: false) }
   let(:field) { double("field", title: "Nested Field", name: "nested_field") }
   let(:document) { build(:document, :pension) }
   let(:edition) { build(:edition, :published, document: document) }
   let(:embed_code_prefix) { "prefix" }
   let(:items_counter) { nil }
 
-  let(:foo_field) { double("foo_field", label: "Foo", name: "foo", hidden?: false, govspeak_enabled?: false) }
-  let(:fizz_field) { double("fizz_field", label: "Fizz", name: "fizz", hidden?: false, govspeak_enabled?: false) }
+  let(:foo_field) do
+    double("foo_field",
+           label: "Foo",
+           name: "foo",
+           hidden?: false,
+           govspeak_enabled?: false,
+           schema: embedded_schema)
+  end
+  let(:fizz_field) do
+    double("fizz_field",
+           label: "Fizz",
+           name: "fizz",
+           hidden?: false,
+           govspeak_enabled?: false,
+           schema: embedded_schema)
+  end
 
   before do
     allow(field).to receive(:nested_field).with("foo").and_return(foo_field)
@@ -72,7 +87,14 @@ RSpec.describe Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent, typ
   end
 
   context "when govspeak is enabled for a field" do
-    let(:foo_field) { double("foo_field", label: "Foo", name: "foo", hidden?: false, govspeak_enabled?: true) }
+    let(:foo_field) do
+      double("foo_field",
+             label: "Foo",
+             name: "foo",
+             hidden?: false,
+             govspeak_enabled?: true,
+             schema: embedded_schema)
+    end
 
     it "renders govspeak content" do
       allow_any_instance_of(described_class).to receive(:render_govspeak).with("bar").and_return("<strong>bar</strong>".html_safe)
@@ -94,7 +116,14 @@ RSpec.describe Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent, typ
       }
     end
     let(:nested_field) { double("nested_field", title: "Child Field", name: "nested") }
-    let(:child_field) { double("child_field", label: "Child", name: "child", hidden?: false, govspeak_enabled?: false) }
+    let(:child_field) do
+      double("child_field",
+             label: "Child",
+             name: "child",
+             hidden?: false,
+             govspeak_enabled?: false,
+             schema: embedded_schema)
+    end
 
     before do
       allow(field).to receive(:nested_field).with("nested").and_return(nested_field)
@@ -112,6 +141,32 @@ RSpec.describe Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent, typ
     end
   end
 
+  context "when the nested field's schema is configured to be #embeddable_as_block?" do
+    before do
+      allow(embedded_schema).to receive(:embeddable_as_block?).and_return(true)
+      allow(edition).to receive(:render).and_return("RENDERED_FIELD")
+    end
+
+    it "obtains the field as a rendered block using Edition#render(embed_code_for_field)" do
+      render_inline component
+
+      expect(edition).to have_received(:render).with("{{embed:content_block_pension:/prefix/foo}}")
+      expect(edition).to have_received(:render).with("{{embed:content_block_pension:/prefix/fizz}}")
+    end
+
+    it "displays the rendered content obtained from Edition#render(embed_code_for_field)" do
+      render_inline component
+
+      expect(page).to have_css(".govuk-summary-list__row[data-testid='prefix/foo']") do |row|
+        expect(row).to have_content("RENDERED_FIELD")
+      end
+
+      expect(page).to have_css(".govuk-summary-list__row[data-testid='prefix/fizz']") do |row|
+        expect(row).to have_content("RENDERED_FIELD")
+      end
+    end
+  end
+
   context "when there are nested items (arrays of hashes)" do
     let(:items) do
       {
@@ -122,7 +177,14 @@ RSpec.describe Edition::Show::EmbeddedObjects::Blocks::NestedBlockComponent, typ
       }
     end
     let(:things_field) { double("things_field", title: "Things", name: "things") }
-    let(:name_field) { double("name_field", label: "Name", name: "name", hidden?: false, govspeak_enabled?: false) }
+    let(:name_field) do
+      double("name_field",
+             label: "Name",
+             name: "name",
+             hidden?: false,
+             govspeak_enabled?: false,
+             schema: embedded_schema)
+    end
 
     before do
       allow(field).to receive(:nested_field).with("things").and_return(things_field)
