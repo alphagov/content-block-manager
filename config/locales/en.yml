@@ -53,6 +53,11 @@ en:
           invalid: "%{attribute} is not a valid date"
           range:
             invalid: "From date must be before to date"
+        lead_organisation:
+          invalid: "Lead Organisation is not valid"
+        request:
+          invalid: Invalid request
+
   edition:
     new:
       general_field_notice:

@@ -100,14 +100,6 @@ RSpec.describe Document::DocumentFilter do
         end
       end
 
-      describe "when a lead organisation id is given" do
-        it "returns live documents with lead org given" do
-          filter.call({ lead_organisation: "123" })
-
-          expect(document_scope_spy).to have_received(:with_lead_organisation).with("123")
-        end
-      end
-
       describe "when block types, keyword and organisation is given" do
         let(:keyword_spy) { spy }
         let(:keyword) { "ministry of example" }
@@ -120,12 +112,12 @@ RSpec.describe Document::DocumentFilter do
 
         it "returns live documents with the filters given" do
           filter.call(
-            { block_type: %w[email_address], keyword: "ministry of example", lead_organisation: "123" },
+            { block_type: %w[email_address], keyword: "ministry of example", lead_organisation: "cd9316d5-93a9-4aa9-9698-c9112cf17639" },
           )
 
           expect(document_scope_spy).to have_received(:where).with(id: ids)
           expect(document_scope_spy).to have_received(:where).with(block_type: %w[email_address])
-          expect(document_scope_spy).to have_received(:with_lead_organisation).with("123")
+          expect(document_scope_spy).to have_received(:with_lead_organisation).with("cd9316d5-93a9-4aa9-9698-c9112cf17639")
         end
       end
 
@@ -176,6 +168,51 @@ RSpec.describe Document::DocumentFilter do
       end
     end
 
+    describe "lead organisation validation" do
+      let(:filters) { { lead_organisation: } }
+
+      describe "when lead_organisation is nil" do
+        let(:lead_organisation) { nil }
+
+        it "should not raise any errors" do
+          expect { filter.call(filters) }.not_to raise_error
+        end
+      end
+
+      describe "when lead_organisation is blank" do
+        let(:lead_organisation) { "" }
+
+        it "should not raise any errors" do
+          expect { filter.call(filters) }.not_to raise_error
+        end
+      end
+
+      describe "when lead_organisation is a UUID" do
+        let(:lead_organisation) { "d6b3028f-ea57-4cd2-878d-29b73089a3ae" }
+
+        it "should not raise any errors" do
+          expect { filter.call(filters) }.not_to raise_error
+        end
+      end
+
+      describe "when lead_organisation is invalid" do
+        let(:lead_organisation) { "HMRC" }
+
+        it "should raise an invalid filter error" do
+          expect { filter.call(filters) }.to raise_error(Document::DocumentFilter::InvalidFiltersError)
+        end
+
+        it "should return the error details" do
+          filter.call(filters)
+        rescue Document::DocumentFilter::InvalidFiltersError => e
+          errors = e.errors
+          expect(errors.count).to eq(1)
+          expect(errors.first.attribute).to eq("lead_organisation")
+          expect(errors.first.full_message).to eq(I18n.t("document.index.errors.lead_organisation.invalid"))
+        end
+      end
+    end
+
     describe "date validation" do
       %i[last_updated_from last_updated_to].each do |attribute|
         describe "when #{attribute} contains non-date values" do
@@ -194,7 +231,7 @@ RSpec.describe Document::DocumentFilter do
           rescue Document::DocumentFilter::InvalidFiltersError => e
             errors = e.errors
             expect(errors.count).to eq(1)
-            expect(errors.first.attribute).to eq(attribute.to_s)
+            expect(errors.first.attribute).to eq("#{attribute}_3i")
             expect(errors.first.full_message).to eq(I18n.t("document.index.errors.date.invalid", attribute: attribute.to_s.humanize))
           end
         end
@@ -215,7 +252,7 @@ RSpec.describe Document::DocumentFilter do
           rescue Document::DocumentFilter::InvalidFiltersError => e
             errors = e.errors
             expect(errors.count).to eq(1)
-            expect(errors.first.attribute).to eq(attribute.to_s)
+            expect(errors.first.attribute).to eq("#{attribute}_3i")
             expect(errors.first.full_message).to eq(I18n.t("document.index.errors.date.invalid", attribute: attribute.to_s.humanize))
           end
         end
@@ -238,7 +275,7 @@ RSpec.describe Document::DocumentFilter do
         rescue Document::DocumentFilter::InvalidFiltersError => e
           errors = e.errors
           expect(errors.count).to eq(1)
-          expect(errors.first.attribute).to eq("last_updated_from")
+          expect(errors.first.attribute).to eq("last_updated_from_3i")
           expect(errors.first.full_message).to eq(I18n.t("document.index.errors.date.range.invalid"))
         end
       end

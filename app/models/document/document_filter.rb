@@ -25,9 +25,10 @@ class Document::DocumentFilter
     @errors = []
     from = validate_date(:last_updated_from)
     to = validate_date(:last_updated_to)
+    validate_lead_organisation
 
     if @errors.empty? && to.present? && from.present? && from.after?(to)
-      @errors << FILTER_ERROR.new(attribute: "last_updated_from", full_message: I18n.t("document.index.errors.date.range.invalid"))
+      @errors << FILTER_ERROR.new(attribute: "last_updated_from_3i", full_message: I18n.t("document.index.errors.date.range.invalid"))
     end
 
     raise InvalidFiltersError, @errors if @errors.any?
@@ -37,13 +38,21 @@ private
 
   attr_reader :valid_schemas, :filters
 
+  def validate_lead_organisation
+    return if filters[:lead_organisation].blank? ||
+      filters[:lead_organisation].empty? ||
+      filters[:lead_organisation] =~ Patterns::UUID
+
+    @errors << FILTER_ERROR.new(attribute: "lead_organisation", full_message: I18n.t("document.index.errors.lead_organisation.invalid"))
+  end
+
   def validate_date(key)
     return unless is_date_present?(key)
 
     date = date_from_filters(key)
     Time.zone.local(date[:year], date[:month], date[:day])
   rescue ArgumentError, TypeError, NoMethodError, RangeError
-    @errors << FILTER_ERROR.new(attribute: key.to_s, full_message: I18n.t("document.index.errors.date.invalid", attribute: key.to_s.humanize))
+    @errors << FILTER_ERROR.new(attribute: "#{key}_3i", full_message: I18n.t("document.index.errors.date.invalid", attribute: key.to_s.humanize))
     nil
   end
 

@@ -1,18 +1,20 @@
 class DocumentsController < BaseController
   include SchemaHelper
 
+  rescue_from ActiveRecord::StatementInvalid, with: :show_generic_error_message
+
   def index
     if params_filters.any?
-      filter = Document::DocumentFilter.new(valid_schemas:)
+      @filter = Document::DocumentFilter.new(valid_schemas:)
 
       begin
         @filters = params_filters
-        @documents = filter.call(@filters)
+        @documents = @filter.call(@filters).load # eagerly load so we can handle any exceptions raised
         render :index
       rescue Document::DocumentFilter::InvalidFiltersError => e
-        @documents = filter.call({})
+        @documents = @filter.call({})
         @errors = e.errors
-        @error_summary_errors = @errors.map { |error| { text: error.full_message, href: "##{error.attribute}_3i" } }
+        @error_summary_errors = @errors.map { |error| { text: error.full_message, href: "##{error.attribute}" } }
         render :index
       end
     else
@@ -73,5 +75,13 @@ private
 
   def default_filters
     { lead_organisation: "" }
+  end
+
+  def show_generic_error_message(error)
+    @documents = @filter.call({})
+    @error_summary_errors = [{ text: I18n.t("document.index.errors.request.invalid") }]
+    Rails.logger.error(error.message)
+    GovukError.notify(error)
+    render :index
   end
 end
