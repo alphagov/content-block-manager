@@ -16,6 +16,9 @@ private
 
   def processed_fields(fields, collection)
     fields.each do |field|
+      collection[field.name] = process_time_field(field, collection) if field.format.time?
+      collection[field.name] = process_date_field(field, collection) if field.format.date?
+
       next unless collection[field.name]
 
       if conditional_object_field?(field)
@@ -27,6 +30,21 @@ private
       end
     end
     collection
+  end
+
+  def process_date_field(field, collection)
+    year = get_and_remove_date_time_part_from_collection(field, "year", collection)
+    month = get_and_remove_date_time_part_from_collection(field, "month", collection).rjust(2, "0")
+    day = get_and_remove_date_time_part_from_collection(field, "day", collection).rjust(2, "0")
+
+    "#{year}-#{month}-#{day}"
+  end
+
+  def process_time_field(field, collection)
+    hour = get_and_remove_date_time_part_from_collection(field, "hour", collection).rjust(2, "0")
+    minute = get_and_remove_date_time_part_from_collection(field, "minute", collection).rjust(2, "0")
+
+    "#{hour}:#{minute}"
   end
 
   def conditional_object_field?(field)
@@ -44,5 +62,10 @@ private
 
   def cast_to_boolean(value)
     ActiveRecord::Type::Boolean.new.cast(value) || false
+  end
+
+  def get_and_remove_date_time_part_from_collection(field, part, collection)
+    index = %w[year month day hour minute].index(part) + 1
+    collection.delete("#{field.name}(#{index}i)") || ""
   end
 end

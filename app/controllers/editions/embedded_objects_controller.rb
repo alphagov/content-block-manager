@@ -31,7 +31,7 @@ class Editions::EmbeddedObjectsController < BaseController
 
   def create
     @schema, @subschema = get_schema_and_subschema(@edition.document.block_type, params[:object_type])
-    @object = object_params(@subschema).dig(:details, @subschema.block_type)
+    @object = object_params(@subschema)[@subschema.block_type]
     @edition.add_object_to_details(@subschema.block_type, @object)
     @back_link = embedded_objects_path
 
@@ -65,7 +65,7 @@ class Editions::EmbeddedObjectsController < BaseController
 
   def update
     @schema, @subschema = get_schema_and_subschema(@edition.document.block_type, params[:object_type])
-    @object = object_params(@subschema).dig(:details, @subschema.block_type)
+    @object = object_params(@subschema)[@subschema.block_type]
     @redirect_url = params[:redirect_url]
     @object_title = params[:object_title]
 

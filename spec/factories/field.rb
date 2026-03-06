@@ -8,6 +8,7 @@ FactoryBot.define do
       default_value { nil }
       array_items { nil }
       type { "text" }
+      format { "" }
       enum_values { nil }
       govspeak_enabled? { false }
       nested_fields { nil }
@@ -30,6 +31,7 @@ FactoryBot.define do
       allow(field).to receive(:default_value).and_return(evaluator.default_value)
       allow(field).to receive(:array_items).and_return(evaluator.array_items)
       allow(field).to receive(:type).and_return(evaluator.type.inquiry)
+      allow(field).to receive(:format).and_return(evaluator.format.inquiry)
       allow(field).to receive(:enum_values).and_return(evaluator.enum_values)
       allow(field).to receive(:govspeak_enabled?).and_return(evaluator.govspeak_enabled?)
       allow(field).to receive(:nested_fields).and_return(evaluator.nested_fields)

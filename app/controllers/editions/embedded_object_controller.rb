@@ -16,9 +16,7 @@ class Editions::EmbeddedObjectController < BaseController
   end
 
   def create
-    details = object_params(@subschema)[:details]
-    details = date_range_from_params(details) if details["date_range"]
-    @object = details[@subschema.block_type]
+    @object = object_params(@subschema)[@subschema.block_type]
 
     @edition.store_sole_object_in_details(@subschema.block_type, @object)
     @back_link = review_path
@@ -43,9 +41,7 @@ class Editions::EmbeddedObjectController < BaseController
   end
 
   def update
-    details = object_params(@subschema)[:details]
-    details = date_range_from_params(details) if details["date_range"]
-    @object = details[@subschema.block_type]
+    @object = object_params(@subschema)[@subschema.block_type]
 
     @redirect_url = params[:redirect_url]
     @edition.store_sole_object_in_details(params[:object_type], @object)

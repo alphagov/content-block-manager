@@ -143,12 +143,6 @@ class Schema
         { name => [*nested_fields.map(&:permitted_params), "_destroy"] || [] }
       elsif type.array?
         { name => [*array_items["properties"]&.keys, "_destroy"] || [] }
-      elsif format.date?
-        (1..3).map { |i| "(#{i}i)" }
-      elsif format.time?
-        (4..5).map { |i| "(#{i}i)" }
-      elsif properties["x-custom-format"] == "datetime"
-        nested_fields.flat_map(&:permitted_params).map { |field| "#{name}#{field}" }
       elsif nested_fields.present?
         { name => nested_fields.map(&:permitted_params) }
       else

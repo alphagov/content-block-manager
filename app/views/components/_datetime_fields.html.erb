@@ -2,7 +2,7 @@
   prefix ||= nil
   field_name ||= nil
   id = id
-  date_id = "#{id}_date"
+  date_id = date_id || "#{id}_date"
   date_only ||= false
   date_heading ||= nil
 
@@ -81,7 +81,8 @@
             <%= select_hour hour_value,
                             {
                               include_blank: true,
-                              prefix: prefix,
+                              prefix: hour[:name] ? hour[:name] : prefix,
+                              discard_type: hour[:name].present?,
                               field_name: "#{field_name}(4i)",
                             },
                             {
@@ -103,7 +104,8 @@
             <%= select_minute minute_value,
                               {
                                 include_blank: true,
-                                prefix: prefix,
+                                prefix: minute[:name] ? minute[:name] : prefix,
+                                discard_type: minute[:name].present?,
                                 field_name: "#{field_name}(5i)",
                               },
                               {

@@ -34,6 +34,23 @@ module TimePeriodHelpers
     })
   end
 
+  def invalid_details
+    OpenStruct.new({
+      "date_range" => {
+        "start" => {
+          "date" => "99999-111-235",
+          "time" => "00:00",
+        },
+        "end" => {
+          "date" => "AAA-BB-CCC",
+          "time" => "23:59",
+        },
+      },
+      "description" => "Initial description",
+      "note" => "Initial note",
+    })
+  end
+
   def changed_details
     OpenStruct.new({
       "date_range" => {
@@ -129,6 +146,10 @@ When("I supply the time periods with the end date before the start date") do
   time_period.fill_time_period_fields(details: time_period.incorrect_details, page: page)
 end
 
+When("I supply the time periods with invalid dates") do
+  time_period.fill_time_period_fields(details: time_period.invalid_details, page: page)
+end
+
 When("I supply the changed values of the time period") do
   click_button("Save and continue")
 
@@ -166,6 +187,36 @@ Then("I should see an error message telling me that the end date cannot be befor
                   text: I18n.t("activerecord.errors.models.edition.minimum",
                                attribute: "Date",
                                minimum_date: "Start date")
+end
+
+Then(/I should see an error message telling me that the (start|end) date is invalid/) do |field|
+  expect(page).to have_selector("a[href='#edition_details_date_range_#{field}_date']"),
+                  text: I18n.t("activerecord.errors.models.edition.invalid",
+                               attribute: "Date")
+end
+
+Then("the date and time fields should be populated with the invalid values") do
+  start_year, start_month, start_day = time_period.invalid_details.date_range.dig("start", "date").split("-")
+  start_hour, start_minute = time_period.invalid_details.date_range.dig("start", "time").split(":")
+
+  end_year, end_month, end_day = time_period.invalid_details.date_range.dig("end", "date").split("-")
+  end_hour, end_minute = time_period.invalid_details.date_range.dig("end", "time").split(":")
+
+  aggregate_failures do
+    expect(page).to have_field("edition[details][date_range][start][date(3i)]", with: start_day)
+    expect(page).to have_field("edition[details][date_range][start][date(2i)]", with: start_month)
+    expect(page).to have_field("edition[details][date_range][start][date(1i)]", with: start_year)
+
+    expect(page).to have_field("edition[details][date_range][start][time(4i)]", with: start_hour)
+    expect(page).to have_field("edition[details][date_range][start][time(5i)]", with: start_minute)
+
+    expect(page).to have_field("edition[details][date_range][end][date(3i)]", with: end_day)
+    expect(page).to have_field("edition[details][date_range][end][date(2i)]", with: end_month)
+    expect(page).to have_field("edition[details][date_range][end][date(1i)]", with: end_year)
+
+    expect(page).to have_field("edition[details][date_range][end][time(4i)]", with: end_hour)
+    expect(page).to have_field("edition[details][date_range][end][time(5i)]", with: end_minute)
+  end
 end
 
 Then("I see embed codes for the time period date and time values") do
