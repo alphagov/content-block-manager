@@ -43,6 +43,9 @@ describe('GOVUK.Modules.Ga4FormSetup', function () {
     expect(form.hasAttribute('data-ga4-form-split-response-text')).toBe(true)
     expect(form.hasAttribute('data-ga4-form-include-text')).toBe(true)
     expect(form.hasAttribute('data-ga4-form-no-answer-undefined')).toBe(true)
+    expect(form.getAttribute('data-module')).toContain(
+      'ga4-form-change-tracker'
+    )
   })
 
   describe('on a form with one input', () => {
