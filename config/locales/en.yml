@@ -39,6 +39,7 @@ en:
       edition/document:
         title:
           default: Title
+          one: Title
           contact: Contact name
           tax: Tax name
           time_period: Time period name
@@ -57,6 +58,8 @@ en:
           invalid: "Lead Organisation is not valid"
         request:
           invalid: Invalid request
+        title:
+          missing_valid_chars: "must contain at least one letter or number"
 
   edition:
     new:
