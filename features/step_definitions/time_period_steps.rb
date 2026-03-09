@@ -178,6 +178,10 @@ Then("I see the initial time period represented clearly") do
   time_period.should_see_time_period_represented_clearly(details: time_period.initial_details, page: page)
 end
 
+Then("I should see the description of the time period block") do
+  expect(page).to have_content(time_period.initial_details.description)
+end
+
 Then("I should see an error message telling me that the end date cannot be before the start date") do
   expect(page).to have_selector("a[href='#edition_details_date_range_end_date']"),
                   text: I18n.t("activerecord.errors.models.edition.minimum",

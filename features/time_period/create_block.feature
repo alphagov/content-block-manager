@@ -41,3 +41,9 @@ Feature: Create "Time period" content block
     And I confirm I have checked the content
     Then I should see the edited time period values have been saved
 
+  Scenario: Editor can view a draft time period before date range added
+    Given a draft time period block exists without a date range
+    When I am viewing the draft edition
+    Then I should see the description of the time period block
+
+
