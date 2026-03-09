@@ -120,7 +120,7 @@ RSpec.describe Document::Index::FilterOptionsComponent, type: :component do
 
     expect(page).to have_css "form", count: 1
 
-    expect(page).to have_css "form[data-module='ga4-search-tracker']"
+    expect(page).to have_css "form[data-module='ga4-search-tracker ga4-form-change-tracker']"
     expect(page).to have_css "form[data-ga4-search-type='index-documents']"
     expect(page).to have_css "form[data-ga4-search-url='#{helper_mock.documents_path}']"
     expect(page).to have_css "form[data-ga4-search-section='#{I18n.t('document.index.filter_options.heading')}']"
