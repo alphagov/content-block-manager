@@ -37,16 +37,34 @@ private
   end
 
   def value_for_row(field, value)
-    content = content_tag(:p, render_govspeak_if_enabled_for_field(
-                                field:,
-                                value: translated_value(field.name, value),
-                              ), class: "app-c-embedded-objects-blocks-component__content govspeak")
+    content = content_for_row(field, value)
     if edition.show_embed_codes?
       content << content_tag(:p,
                              document.embed_code_for_field(embed_code_identifier(embed_code_prefix, items_counter, field.name)),
                              class: "app-c-embedded-objects-blocks-component__embed-code")
     end
     content
+  end
+
+  def content_for_row(field, value)
+    return rendered_block_for_nested_field(field) if field.schema.embeddable_as_block?
+
+    content_tag(:p, render_govspeak_if_enabled_for_field(
+                      field:,
+                      value: translated_value(field.name, value),
+                    ), class: "app-c-embedded-objects-blocks-component__content govspeak")
+  end
+
+  def rendered_block_for_nested_field(field)
+    embed_code_identifier = embed_code_identifier(
+      embed_code_prefix,
+      items_counter,
+      field.name,
+    )
+
+    full_embed_code_to_field = document.embed_code_for_field(embed_code_identifier)
+
+    edition.render(full_embed_code_to_field)
   end
 
   def render_govspeak_if_enabled_for_field(field:, value:)

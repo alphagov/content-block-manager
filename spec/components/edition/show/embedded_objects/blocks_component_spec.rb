@@ -453,21 +453,117 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         end
       end
     end
+
+    context "when the block type is in a 1:1 relationship (has no 'object_title' identifier)" do
+      let(:document) { build(:document, :time_period) }
+      let(:edition) { build(:edition, :time_period, :published, document: document) }
+
+      let(:items) do
+        {
+          "start" => { "date" => "2025-04-06", "time" => "00:00" },
+        }
+      end
+
+      let(:component) do
+        described_class.new(
+          items:,
+          object_type: "date_range",
+          schema_name: "time_period",
+          object_title: nil,
+          edition: edition,
+        )
+      end
+
+      let(:start_field) { build(:field, name: "start", label: "Start") }
+      let(:date_field) { build(:field, name: "date", label: "Date") }
+      let(:time_field) { build(:field, name: "time", label: "Time") }
+
+      let(:schema) { double("schema", block_type: "time_period") }
+      let(:subschema) do
+        double("date_range subschema",
+               embeddable_as_block?: embeddable_as_block,
+               block_type: "date_range")
+      end
+
+      before do
+        allow(edition).to receive(:render).and_return("DATE_RANGE_BLOCK_RESPONSE")
+        allow(schema).to receive(:subschema).with("date_range").and_return(subschema)
+        allow(subschema).to receive(:field).with("start").and_return(start_field)
+        allow(start_field).to receive(:nested_field).with("date").and_return(date_field)
+        allow(start_field).to receive(:nested_field).with("time").and_return(time_field)
+      end
+
+      describe "overall object representation" do
+        it "obtains block representation of object from Edition#render(embed_code_for_date_range)" do
+          render_inline component
+
+          expect(edition).to have_received(:render).with(
+            "{{embed:content_block_time_period:/date_range/}}",
+          )
+        end
+
+        it "renders the block representation of the embedded object" do
+          render_inline component
+
+          expect_summary_list_row(
+            test_id: "date_range",
+            key: "Date range",
+            value: "DATE_RANGE_BLOCK_RESPONSE",
+            embed_code: "{{embed:content_block_time_period:/date_range/}}",
+            visible: true,
+            parent_container: page,
+          )
+        end
+      end
+
+      describe "individual nested fields as 'All date range attributes'" do
+        it "shows the individual nested field labels and values" do
+          render_inline component
+
+          expect(page).to have_css("details[title='All date range attributes']") do |details|
+            expect_summary_list_row(
+              test_id: "date_range/start/date",
+              key: "Date",
+              value: "2025-04-06",
+              embed_code: "{{embed:content_block_time_period:/date_range/start/date}}",
+              visible: false,
+              parent_container: details,
+            )
+
+            expect_summary_list_row(
+              test_id: "date_range/start/time",
+              key: "Time",
+              value: "00:00",
+              embed_code: "{{embed:content_block_time_period:/date_range/start/time}}",
+              visible: false,
+              parent_container: details,
+            )
+          end
+        end
+      end
+    end
   end
 
   def expect_summary_list_row(
     test_id:,
     key:,
     value:,
+    embed_code: nil,
     embed_code_suffix: nil,
     visible: true,
     parent_container: page
   )
+    expected_embed_code = embed_code ||
+      document
+        .embed_code_for_field([object_type, object_title, embed_code_suffix]
+        .compact
+        .join("/"))
+
     expect(parent_container).to have_css "[data-testid='#{test_id}']", visible: visible do |row|
       expect(row).to have_css ".govuk-summary-list__key", text: key, visible: visible
       expect(row).to have_css ".govuk-summary-list__value", visible: visible do |col|
         expect(col).to have_css ".app-c-embedded-objects-blocks-component__content.govspeak", text: value, visible: visible
-        expect(col).to have_css ".app-c-embedded-objects-blocks-component__embed-code", text: document.embed_code_for_field([object_type, object_title, embed_code_suffix].compact.join("/")), visible: visible
+        expect(col).to have_css ".app-c-embedded-objects-blocks-component__embed-code", text: expected_embed_code, visible: visible
       end
     end
   end

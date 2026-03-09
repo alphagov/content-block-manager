@@ -9,14 +9,17 @@ schemas:
         govspeak_enabled: true
     subschemas:
       date_range:
+        embeddable_as_block: true
         block_display_fields:
           - start
           - end
         fields:
           start:
             component: date_time
+            embeddable_as_block: true
           end:
             component: date_time
+            embeddable_as_block: true
         field_order:
           - start
           - end

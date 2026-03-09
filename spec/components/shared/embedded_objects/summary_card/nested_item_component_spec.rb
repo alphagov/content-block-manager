@@ -79,6 +79,74 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCard::NestedItemComponent, type: 
     end
   end
 
+  describe "when the fields' schema is configured to be embeddable_as_block?" do
+    let(:edition) { build(:edition, :time_period) }
+
+    let(:embedded_schema) do
+      double(
+        "embedded_schema",
+        embeddable_as_block?: true,
+      )
+    end
+
+    let(:nested_items) do
+      { "date" => "2025-04-06", "time" => "00:00" }
+    end
+
+    let(:date_field) do
+      build(
+        :field,
+        name: "date",
+        title: "Date",
+        schema: embedded_schema,
+      )
+    end
+
+    let(:time_field) do
+      build(
+        :field,
+        name: "time",
+        title: "Time",
+        schema: embedded_schema,
+      )
+    end
+
+    let(:start_field) do
+      build(
+        :field,
+        name: "start",
+        title: "Start",
+        nested_fields: [date_field, time_field],
+        schema: double("embedded_schema", id: "date_range"),
+      )
+    end
+
+    let(:component) do
+      Shared::EmbeddedObjects::SummaryCard::NestedItemComponent.new(
+        items: nested_items,
+        field: start_field,
+        edition: edition,
+      )
+    end
+
+    before do
+      allow(start_field.schema).to receive(:embeddable_as_block?).and_return(true)
+      allow(edition).to receive(:render).and_return("RENDERED_FIELD")
+    end
+
+    it "obtains the field as a rendered block using Edition#render(embed_code_for_field)" do
+      render_inline component
+
+      expect(edition).to have_received(:render).with(
+        "{{embed:content_block_time_period:/date_range/start/date}}",
+      )
+
+      expect(edition).to have_received(:render).with(
+        "{{embed:content_block_time_period:/date_range/start/time}}",
+      )
+    end
+  end
+
   describe "when the nested field is an object" do
     let(:name_field) { build(:field, name: "name", label: "Name") }
     let(:email_field) { build(:field, name: "email", label: "Email") }
