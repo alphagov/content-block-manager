@@ -1,3 +1,4 @@
+//= require govuk_publishing_components/analytics-ga4/ga4-form-change-tracker
 //= require govuk_publishing_components/dependencies
 //= require govuk_publishing_components/components/accordion
 //= require govuk_publishing_components/components/add-another
