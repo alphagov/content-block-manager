@@ -58,7 +58,7 @@ RSpec.describe EditionForm do
         end
 
         it "removes the error from the object" do
-          expect(result.edition.errors.count).to eq(1)
+          expect(result.edition.errors.count).to eq(2)
           expect(result.edition.errors.map(&:attribute)).not_to include("document.sluggable_string".to_sym)
         end
       end
@@ -108,7 +108,7 @@ RSpec.describe EditionForm do
         end
 
         it "removes the error from the object" do
-          expect(result.edition.errors.count).to eq(1)
+          expect(result.edition.errors.count).to eq(2)
           expect(result.edition.errors.map(&:attribute)).not_to include("document.sluggable_string".to_sym)
         end
       end
@@ -184,7 +184,7 @@ RSpec.describe EditionForm do
       end
 
       it "removes the error from the object" do
-        expect(result.edition.errors.count).to eq(1)
+        expect(result.edition.errors.count).to eq(2)
         expect(result.edition.errors.map(&:attribute)).not_to include("document.sluggable_string".to_sym)
       end
     end

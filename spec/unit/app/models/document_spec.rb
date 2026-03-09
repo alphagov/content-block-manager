@@ -185,6 +185,13 @@ RSpec.describe Document, type: :model do
 
       expect(document.content_id_alias).to eq("this-is-a-title")
     end
+
+    it "ensures the sluggable string must contain some letters or numbers" do
+      document = build(:document, sluggable_string: "💯💯💯")
+
+      expect(document.valid?).to be(false)
+      expect(document.errors[:title]).to include(I18n.t("document.index.errors.title.missing_valid_chars"))
+    end
   end
 
   describe "title" do

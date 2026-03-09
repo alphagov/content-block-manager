@@ -18,6 +18,8 @@ class Document < ApplicationRecord
 
   validates :block_type, :sluggable_string, presence: true
 
+  validate :sluggable_string_contains_alphanumeric_chars
+
   has_many :domain_events
   has_many :versions, through: :editions, source: :versions
 
@@ -61,5 +63,11 @@ private
 
   def embed_code_prefix
     "{{embed:content_block_#{block_type}:#{content_id_alias}"
+  end
+
+  def sluggable_string_contains_alphanumeric_chars
+    if sluggable_string !~ /[a-z0-9]+/i
+      errors.add(:title, I18n.t("document.index.errors.title.missing_valid_chars"))
+    end
   end
 end
