@@ -16,7 +16,7 @@ private
 
   def data_attributes
     {
-      module: "ga4-search-tracker",
+      module: "ga4-search-tracker ga4-form-change-tracker",
       ga4_search_type: "index-documents",
       ga4_search_url: helpers.documents_path,
       ga4_search_section: heading,
