@@ -51,23 +51,6 @@ Given("a draft contact edition exists") do
   @schema = Schema.find_by_block_type("contact")
 end
 
-Given("a contact content block has been created") do
-  @content_blocks ||= []
-  @content_block = create(
-    :edition,
-    :contact,
-    details: { description: "Some text" },
-    creator: @user,
-    lead_organisation_id: @organisation.id,
-    title: "My contact",
-  )
-  Edition::HasAuditTrail.acting_as(@user) do
-    @content_block.publish!
-  end
-  @content_blocks.push(@content_block)
-  @schema = Schema.find_by_block_type("contact")
-end
-
 Given(/^([^"]*) content blocks of type ([^"]*) have been created with the fields:$/) do |count, block_type, table|
   fields = table.rows_hash
   organisation_name = fields.delete("organisation")
@@ -203,6 +186,7 @@ def create_published_contact_edition
     @content_block.publish!
   end
   @content_blocks.push(@content_block)
+  @content_block
 end
 
 def organisation_id
