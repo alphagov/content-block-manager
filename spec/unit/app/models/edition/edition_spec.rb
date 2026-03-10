@@ -700,7 +700,7 @@ RSpec.describe Edition, type: :model do
       ]
     end
     let(:schema) { double(:schema, subschemas: subschemas, body: {}) }
-    let(:document) { build(:document, schema:) }
+    let(:document) { build(:document) }
 
     before do
       allow(document).to receive(:schema).and_return(schema)

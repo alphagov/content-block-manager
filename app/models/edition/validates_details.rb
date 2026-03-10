@@ -16,10 +16,6 @@ module Edition::ValidatesDetails
     end
   end
 
-  def schema
-    @schema ||= Schema.find_by_block_type(block_type)
-  end
-
   # When an error is raised about a field within the details hash
   # we have to prefix it. This overrides the default `read_attribute_for_validation`
   # method, and reads it from the details hash if the attribute name

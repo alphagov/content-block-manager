@@ -38,12 +38,13 @@ RSpec.describe Shared::EmbeddedObject::SummaryCardComponent, type: :component do
     let(:subschema) { Schema::EmbeddedSchema.new(subschema_id, body, parent_schema) }
     let(:schema) { double(:schema, block_type: "schema") }
 
-    let(:document) { build(:document, :pension, schema:) }
+    let(:document) { build(:document, :pension) }
     let(:edition) { build_stubbed(:edition, :pension, details:, document:) }
 
     let(:component) { described_class.new(edition:, object_type: "date_range") }
 
     before do
+      allow(document).to receive(:schema).and_return(schema)
       allow(subschema).to receive(:block_display_fields).and_return(%w[start end])
       allow(schema).to receive(:subschema).and_return(subschema)
 

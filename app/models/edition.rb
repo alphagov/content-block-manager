@@ -16,6 +16,8 @@ class Edition < ApplicationRecord
   has_one :fact_check_outcome, dependent: :destroy
   has_many :domain_events
 
+  delegate :schema, to: :document
+
   scope :current_versions, lambda {
     published
   }

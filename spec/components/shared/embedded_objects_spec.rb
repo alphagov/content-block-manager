@@ -26,7 +26,7 @@ RSpec.describe Shared::EmbeddedObjects, type: :component do
     ]
   end
   let(:subschema) { double(:subschema, block_type: "embedded-objects", name: "Embedded objects", fields:) }
-  let(:document) { build(:document, :pension, schema:) }
+  let(:document) { build(:document, :pension) }
   let(:edition) { build_stubbed(:edition, :pension, details:, document:) }
   let(:redirect_url) { "https://example.com" }
 
@@ -39,6 +39,7 @@ RSpec.describe Shared::EmbeddedObjects, type: :component do
   end
 
   before do
+    allow(document).to receive(:schema).and_return(schema)
     allow(schema).to receive(:subschema).and_return(subschema)
   end
 

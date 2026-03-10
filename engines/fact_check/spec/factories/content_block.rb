@@ -4,7 +4,7 @@ FactoryBot.define do
 
     transient do
       schema { build(:schema) }
-      document { build(:document, schema:) }
+      document { build(:document) }
       id { "123" }
     end
 
