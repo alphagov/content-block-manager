@@ -70,7 +70,7 @@
   </div>
 </div>
 
-<% if @schema.embeddable_as_block? %>
+<% if @schema.embeddable_as_block? && @edition.any_embedded_objects_to_show? %>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <%= render(

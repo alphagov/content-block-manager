@@ -23,6 +23,14 @@ Given("a draft time period block exists") do
   @schema = Schema.find_by_block_type("time_period")
 end
 
+Given("a draft time period block exists without a date range") do
+  create_time_period_edition(
+    state: :draft,
+    details: { "description" => time_period.initial_details.description },
+  )
+  @schema = Schema.find_by_block_type("time_period")
+end
+
 Given("a published time period content block exists") do
   create_time_period_edition(state: :published)
   @schema = Schema.find_by_block_type("time_period")
@@ -40,23 +48,6 @@ end
 
 Given("a draft contact edition exists") do
   create_draft_contact_edition
-  @schema = Schema.find_by_block_type("contact")
-end
-
-Given("a contact content block has been created") do
-  @content_blocks ||= []
-  @content_block = create(
-    :edition,
-    :contact,
-    details: { description: "Some text" },
-    creator: @user,
-    lead_organisation_id: @organisation.id,
-    title: "My contact",
-  )
-  Edition::HasAuditTrail.acting_as(@user) do
-    @content_block.publish!
-  end
-  @content_blocks.push(@content_block)
   @schema = Schema.find_by_block_type("contact")
 end
 
@@ -123,14 +114,14 @@ def create_draft_contact_edition
   )
 end
 
-def create_time_period_edition(state:)
+def create_time_period_edition(state:, details: nil)
   @content_blocks ||= []
   @content_block = create(
     :edition,
     :time_period,
     state.to_sym,
     document: time_period_document,
-    details: time_period.initial_details.to_h.stringify_keys,
+    details: details || time_period.initial_details.to_h.stringify_keys,
     creator: @user,
     lead_organisation_id: organisation_id,
     title: "Tax year",
@@ -195,6 +186,7 @@ def create_published_contact_edition
     @content_block.publish!
   end
   @content_blocks.push(@content_block)
+  @content_block
 end
 
 def organisation_id

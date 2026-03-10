@@ -6,7 +6,7 @@ Feature: View a content object
     And that pension has a rate with the following fields:
       | title   | amount  | frequency |
       | My rate | £123.45 | a week    |
-    And a contact content block has been created
+    And a published contact edition exists
 
   Scenario: GDS Editor views a content object
     When I visit the Content Block Manager home page
@@ -46,7 +46,7 @@ Feature: View a content object
   @javascript
   Scenario: Editor can copy embed code for default contact block
     When I visit the Content Block Manager home page
-    And I click to view the document with title "My contact"
+    And I am viewing the published edition
     Then I should not see the contact default block embed code displayed
     And there should be no accessibility errors
 
@@ -57,6 +57,6 @@ Feature: View a content object
 
   Scenario: Editor without javascript can see embed code for default contact block
     When I visit the Content Block Manager home page
-    And I click to view the document with title "My contact"
+    And I am viewing the published edition
     Then the contact default block embed code should be visible
 

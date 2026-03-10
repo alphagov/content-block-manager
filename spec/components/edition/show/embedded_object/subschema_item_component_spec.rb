@@ -38,7 +38,7 @@ RSpec.describe Edition::Show::EmbeddedObject::SubschemaItemComponent, type: :com
     allow(subschema).to receive(:field_ordering_rule).with("title").and_return(3)
 
     expect(component).to receive(:render).with(metadata_response).and_return(metadata_response)
-    expect(component).to receive(:render).with(block_response).and_return(block_response)
+    allow(component).to receive(:render).with(block_response).and_return(block_response)
   end
 
   it "renders non-blank fields apart from 'block_display_fields' with the MetadataComponent" do
@@ -69,5 +69,23 @@ RSpec.describe Edition::Show::EmbeddedObject::SubschemaItemComponent, type: :com
     render_inline component
 
     expect(page).to have_text block_response
+  end
+
+  context "when there is no data present in 'details' for the embedded object" do
+    let(:details) do
+      {
+        "description" => "This describes the block",
+      }
+    end
+
+    before do
+      allow(Edition::Show::EmbeddedObjects::MetadataComponent).to receive(:new).and_return(metadata_response)
+    end
+
+    it "does not render the BlocksComponent" do
+      expect(Edition::Show::EmbeddedObjects::BlocksComponent).not_to receive(:new)
+
+      render_inline component
+    end
   end
 end
