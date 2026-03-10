@@ -407,6 +407,60 @@ RSpec.describe Edition, type: :model do
     end
   end
 
+  describe "#any_embedded_objects_to_show?" do
+    let(:edition) { build(:edition, :contact) }
+
+    before do
+      allow(edition.document).to receive(:schema).and_call_original
+    end
+
+    context "when there are no embedded objects present in the details" do
+      before do
+        edition.details = { description: "Contact details for the main office" }
+      end
+
+      it "returns false" do
+        expect(edition.any_embedded_objects_to_show?).to be false
+      end
+    end
+
+    context "when more than one embedded object is present in the details" do
+      before do
+        edition.details = {
+          "email_addresses" => {
+            "main_email" => { "title" => "Main email", "email_address" => "email@example.com" },
+          },
+          "telephones" => {
+            "telephone-1" => {
+              "title" => "Telephone 1",
+              "telephone_numbers" => [
+                { "label" => "General enquiries", "telephone_number" => "0300 123 123" },
+              ],
+            },
+          },
+        }
+      end
+
+      it "returns true" do
+        expect(edition.any_embedded_objects_to_show?).to be true
+      end
+    end
+
+    context "when one embedded object is present in the details" do
+      before do
+        edition.details = {
+          "email_addresses" => {
+            "main_email" => { "title" => "Main email", "email_address" => "email@example.com" },
+          },
+        }
+      end
+
+      it "returns true" do
+        expect(edition.any_embedded_objects_to_show?).to be true
+      end
+    end
+  end
+
   describe "#show_embed_codes?" do
     %i[published scheduled].each do |state|
       context "when in the '#{state}' state" do

@@ -45,6 +45,12 @@ class Edition < ApplicationRecord
     published? || scheduled?
   end
 
+  def any_embedded_objects_to_show?
+    document.schema.subschemas.map(&:id).any? do |subschema_id|
+      details[subschema_id].present?
+    end
+  end
+
   def render(embed_code = document.embed_code)
     ContentBlockTools::ContentBlock.new(
       document_type: "content_block_#{block_type}",
