@@ -1,7 +1,7 @@
 RSpec.describe Edition::ValidatesDetails do
   describe "schema" do
     it "returns a schema" do
-      edition = build(:edition, schema: nil)
+      edition = build(:edition)
       schema = build(:schema)
 
       allow(Schema).to receive(:find_by_block_type).with(edition.block_type).and_return(schema)

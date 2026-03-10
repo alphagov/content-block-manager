@@ -6,10 +6,6 @@ module Edition::ValidatesDetails
   included do
     validates_with DetailsValidator
 
-    # Only used in tests, so we can easily add a schema to an edition, without
-    # having to resort to mocks, which are difficult to setup/clean between tests
-    attr_writer :schema
-
     def self.human_attribute_name(attr, options = {})
       if attr.starts_with?(DETAILS_PREFIX)
         key = attr.to_s.delete_prefix(DETAILS_PREFIX)

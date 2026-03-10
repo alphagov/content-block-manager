@@ -1,9 +1,6 @@
 RSpec.describe DetailsValidator do
   describe "time period schema" do
-    let(:schema_body) { JSON.parse(File.read(Rails.root.join("app/models/schema/definitions/time_period.json"))) }
-    let(:schema) { Schema.new("content_block_time_period", schema_body) }
-
-    let(:document) { build(:document, schema:) }
+    let(:document) { build(:document, :time_period) }
 
     let(:details) do
       {
@@ -32,7 +29,7 @@ RSpec.describe DetailsValidator do
       }
     end
 
-    subject { build(:edition, schema: schema, details:, document:) }
+    subject { build(:edition, :time_period, details:, document:) }
 
     before do
       subject.valid?

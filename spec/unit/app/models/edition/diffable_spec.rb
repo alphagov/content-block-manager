@@ -70,9 +70,11 @@ RSpec.describe Edition::Diffable do
           "rates" => {
             "rate-1" => {
               "amount" => "£124.55",
+              "frequency" => "a week",
             },
             "other-rate" => {
               "amount" => "£5",
+              "frequency" => "a week",
             },
           },
         }
@@ -82,9 +84,11 @@ RSpec.describe Edition::Diffable do
           "rates" => {
             "rate-1" => {
               "amount" => "£124.22",
+              "frequency" => "a week",
             },
             "rate-2" => {
               "amount" => "£99.50",
+              "frequency" => "a week",
             },
           },
         }
@@ -98,10 +102,15 @@ RSpec.describe Edition::Diffable do
                   previous_value: "£124.55",
                   new_value: "£124.22",
                 ),
+
               },
               "other-rate" => {
                 "amount" => DiffItem.new(
                   previous_value: "£5",
+                  new_value: nil,
+                ),
+                "frequency" => DiffItem.new(
+                  previous_value: "a week",
                   new_value: nil,
                 ),
               },
@@ -110,12 +119,16 @@ RSpec.describe Edition::Diffable do
                   previous_value: nil,
                   new_value: "£99.50",
                 ),
+                "frequency" => DiffItem.new(
+                  previous_value: nil,
+                  new_value: "a week",
+                ),
               },
             },
           },
         }
 
-        expect(expected_diffs).to eq(edition.generate_diff)
+        expect(edition.generate_diff).to eq(expected_diffs)
       end
 
       it "returns a diff if the organisation has changed" do
