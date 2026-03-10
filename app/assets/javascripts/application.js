@@ -15,6 +15,7 @@
 
 //= require ./modules/copy-embed-code
 //= require ./modules/ga4-form-setup
+//= require ./modules/unsaved-changes-prompt
 
 'use strict'
 window.GOVUK.approveAllCookieTypes()
