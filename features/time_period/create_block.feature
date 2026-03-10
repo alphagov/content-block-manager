@@ -46,5 +46,6 @@ Feature: Create "Time period" content block
     When I am viewing the draft edition
     Then I should see the description of the time period block
     And the default block should not be shown
+    And the time period's date range block should not be shown
 
 

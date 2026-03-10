@@ -182,6 +182,10 @@ Then("I should see the description of the time period block") do
   expect(page).to have_content(time_period.initial_details.description)
 end
 
+Then("the time period's date range block should not be shown") do
+  expect(page).to have_no_css(".app-c-embedded-objects-blocks-component", text: "Date range")
+end
+
 Then("I should see an error message telling me that the end date cannot be before the start date") do
   expect(page).to have_selector("a[href='#edition_details_date_range_end_date']"),
                   text: I18n.t("activerecord.errors.models.edition.minimum",

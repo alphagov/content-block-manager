@@ -13,4 +13,8 @@ private
   def schema
     @schema ||= edition.document.schema.subschema(object_type)
   end
+
+  def embedded_object_present?
+    edition.details[object_type].present?
+  end
 end
