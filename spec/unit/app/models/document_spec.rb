@@ -234,11 +234,6 @@ RSpec.describe Document, type: :model do
     let(:document) { build(:document, :pension) }
     let(:schema) { build(:schema) }
 
-    before do
-      # remove the stubbing set in factory
-      allow(document).to receive(:schema).and_call_original
-    end
-
     it "returns a schema object" do
       allow(Schema).to receive(:find_by_block_type)
         .with(document.block_type)
