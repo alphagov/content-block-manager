@@ -74,7 +74,7 @@
             url: workflow_path(@edition, step: :review),
             method: :put,
             id: "review",
-            **form_data_attributes,
+            **ga4_data_attributes(edition: @edition),
             ) do %>
         <% if !pre_release_features? %>
           <%= render "govuk_publishing_components/components/checkboxes", {

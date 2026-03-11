@@ -12,7 +12,7 @@
     <%= form_with url: workflow_path(
       @edition,
       step: @step_name,
-      ), method: :put, id: "embedded_objects", **form_data_attributes do %>
+      ), method: :put, id: "embedded_objects", **ga4_data_attributes(edition: @edition) do %>
 
       <% if @edition.details[@subschema.block_type] %>
         <%= render Shared::EmbeddedObjects::SummaryCardComponent.with_collection(
