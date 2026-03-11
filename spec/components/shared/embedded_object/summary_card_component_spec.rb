@@ -1,7 +1,7 @@
 RSpec.describe Shared::EmbeddedObject::SummaryCardComponent, type: :component do
   include Rails.application.routes.url_helpers
 
-  context "when the embedded object has nested fields" do
+  context "when the embedded object has nested fields, as within TimePeriod#date_range" do
     let(:details) do
       {
         "date_range" => {
@@ -11,43 +11,12 @@ RSpec.describe Shared::EmbeddedObject::SummaryCardComponent, type: :component do
       }
     end
 
-    let(:subschema_id) { "date_range" }
-    let(:parent_schema) { double("parent_schema", id: "content_block_time_period", block_type: "time_period") }
-    let(:body) do
-      {
-        "type" => "object",
-        "properties" => {
-          "start" => {
-            "type" => "object",
-            "properties" => {
-              "date" => { "type" => "string" },
-              "time" => { "type" => "string" },
-            },
-          },
-          "end" => {
-            "type" => "object",
-            "properties" => {
-              "date" => { "type" => "string" },
-              "time" => { "type" => "string" },
-            },
-          },
-        },
-      }
-    end
-
-    let(:subschema) { Schema::EmbeddedSchema.new(subschema_id, body, parent_schema) }
-    let(:schema) { double(:schema, block_type: "schema") }
-
-    let(:document) { build(:document, :pension) }
-    let(:edition) { build_stubbed(:edition, :pension, details:, document:) }
+    let(:document) { build(:document, :time_period) }
+    let(:edition) { build_stubbed(:edition, :time_period, details:, document:) }
 
     let(:component) { described_class.new(edition:, object_type: "date_range") }
 
     before do
-      allow(document).to receive(:schema).and_return(schema)
-      allow(subschema).to receive(:block_display_fields).and_return(%w[start end])
-      allow(schema).to receive(:subschema).and_return(subschema)
-
       %w[
         date_range/start/date
         date_range/start/time
