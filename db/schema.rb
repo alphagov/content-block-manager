@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_11_175427) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_11_175854) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_11_175427) do
     t.datetime "updated_at", null: false
     t.index ["block_document_id"], name: "index_block_editions_on_block_document_id"
     t.index ["type"], name: "index_block_editions_on_type"
+  end
+
+  create_table "block_time_period_date_ranges", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "edition_id", null: false
+    t.datetime "end", null: false
+    t.datetime "start", null: false
+    t.datetime "updated_at", null: false
+    t.index ["edition_id"], name: "index_block_time_period_date_ranges_on_edition_id"
   end
 
   create_table "documents", force: :cascade do |t|
@@ -149,6 +158,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_11_175427) do
   end
 
   add_foreign_key "block_editions", "block_documents"
+  add_foreign_key "block_time_period_date_ranges", "block_editions", column: "edition_id"
   add_foreign_key "domain_events", "documents"
   add_foreign_key "domain_events", "editions"
   add_foreign_key "domain_events", "users"
