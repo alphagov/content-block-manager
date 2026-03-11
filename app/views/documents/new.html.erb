@@ -6,28 +6,18 @@
     ) %>
 <% end %>
 
-<% if @schemas %>
-  <% content_for :back_link do %>
-    <%= render "govuk_publishing_components/components/back_link", {
-      href: documents_path,
+<% content_for :back_link do %>
+  <%= render "govuk_publishing_components/components/back_link", {
+    href: documents_path,
     } %>
-  <% end %>
-
-  <% content_for :title, I18n.t("document.new.title") %>
-  <% content_for :title_margin_bottom, 3 %>
-
-  <%= render Edition::New::SelectSchemaComponent.new(
-    heading: content_for(:page_title),
-    heading_caption: content_for(:context),
-    error_message: flash[:error],
-    schemas: @schemas,
-    ) %>
-<% else %>
-  <% content_for :back_link do %>
-    <%= render "govuk_publishing_components/components/back_link", {
-      href: new_document_path,
-    } %>
-  <% end %>
-  <% content_for :title,  @form.title %>
-  <%= render partial: "shared/form", locals: { form: @form } %>
 <% end %>
+
+<% content_for :title, I18n.t("document.new.title") %>
+<% content_for :title_margin_bottom, 3 %>
+
+<%= render Edition::New::SelectSchemaComponent.new(
+  heading: content_for(:page_title),
+  heading_caption: content_for(:context),
+  error_message: flash[:error],
+  schemas: @schemas,
+  ) %>
