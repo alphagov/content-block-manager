@@ -61,6 +61,31 @@ RSpec.describe FormHelper, type: :helper do
     end
   end
 
+  describe "#data_attributes_for_forms_with_text_fields" do
+    let(:document) { double(block_type: "email_address", is_new_block?: false) }
+    let(:edition) { double(document: document) }
+
+    describe "when the ga4 'modules' already contains values" do
+      before do
+        allow(helper).to receive(:ga4_data_attributes).and_return({ foo: "bar", module: "track-user alert" })
+      end
+
+      it "should append the 'unsaved-changes-prompt' module to the existing ga4 attributes" do
+        expect(helper.data_attributes_for_forms_with_text_fields(edition:)).to eq({ foo: "bar", module: "track-user alert unsaved-changes-prompt" })
+      end
+    end
+
+    describe "when the ga4 attributes *do not* already contain values" do
+      before do
+        allow(helper).to receive(:ga4_data_attributes).and_return({ foo: "bar" })
+      end
+
+      it "should only contain the 'unsaved-changes-prompt' module" do
+        expect(helper.data_attributes_for_forms_with_text_fields(edition:)).to eq({ foo: "bar", module: " unsaved-changes-prompt" })
+      end
+    end
+  end
+
   describe "#event_name_for_edition" do
     let(:edition) { double(document: document) }
 

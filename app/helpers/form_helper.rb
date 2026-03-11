@@ -7,6 +7,12 @@ module FormHelper
     }
   end
 
+  def data_attributes_for_forms_with_text_fields(edition:, block_type: nil)
+    base_attributes = ga4_data_attributes(edition:, block_type:)
+
+    add_unsaved_changes_prompt(base_attributes)
+  end
+
   def ga4_form_tracking?
     Flipflop.enabled?("ga4_form_tracking".to_sym)
   end
@@ -24,5 +30,14 @@ module FormHelper
 
   def component_for_field(field, context)
     field.component_class.new(context)
+  end
+
+private
+
+  def add_unsaved_changes_prompt(attributes)
+    {
+      **attributes,
+      module: "#{attributes[:module]} unsaved-changes-prompt",
+    }
   end
 end
