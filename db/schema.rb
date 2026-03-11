@@ -10,9 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_05_112726) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_11_174532) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "block_documents", force: :cascade do |t|
+    t.string "block_type", null: false
+    t.uuid "content_id", null: false
+    t.string "content_id_alias"
+    t.datetime "created_at", null: false
+    t.datetime "deleted_at"
+    t.string "embed_code"
+    t.string "sluggable_string", null: false
+    t.boolean "testing_artefact", default: false, null: false
+    t.datetime "updated_at", null: false
+    t.index ["content_id"], name: "index_block_documents_on_content_id", unique: true
+    t.index ["content_id_alias"], name: "index_block_documents_on_content_id_alias", unique: true
+    t.index ["sluggable_string"], name: "index_block_documents_on_sluggable_string", unique: true
+  end
 
   create_table "documents", force: :cascade do |t|
     t.text "content_id"
