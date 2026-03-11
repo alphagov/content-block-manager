@@ -12,20 +12,20 @@ RSpec.describe FormHelper, type: :helper do
     end
 
     it "returns correctly structured data attributes with edition and section" do
-      expect(result[:data][:module]).to eq("ga4-form-tracker")
-      expect(result[:data][:ga4_action]).to eq("update")
-      expect(result[:data][:ga4_tool_name]).to eq("email_address")
+      expect(result[:module]).to eq("ga4-form-tracker")
+      expect(result[:ga4_action]).to eq("update")
+      expect(result[:ga4_tool_name]).to eq("email_address")
     end
 
     describe "when an edition's document is nil" do
       let(:document) { nil }
 
       it "returns event_name as 'create'" do
-        expect(result[:data][:ga4_action]).to eq("create")
+        expect(result[:ga4_action]).to eq("create")
       end
 
       it "returns nil for tool_name" do
-        expect(result[:data][:ga4_tool_name]).to be_nil
+        expect(result[:ga4_tool_name]).to be_nil
       end
 
       describe "when a block_type is given" do
@@ -33,7 +33,7 @@ RSpec.describe FormHelper, type: :helper do
         let(:result) { ga4_data_attributes(edition: edition, block_type: block_type) }
 
         it "the block type as the tool_name" do
-          expect(result[:data][:ga4_tool_name]).to eq("contact_information")
+          expect(result[:ga4_tool_name]).to eq("contact_information")
         end
       end
     end
@@ -42,11 +42,11 @@ RSpec.describe FormHelper, type: :helper do
       let(:edition) { nil }
 
       it "returns event_name as 'create'" do
-        expect(result[:data][:ga4_action]).to eq("create")
+        expect(result[:ga4_action]).to eq("create")
       end
 
       it "returns nil for tool_name" do
-        expect(result[:data][:ga4_tool_name]).to be_nil
+        expect(result[:ga4_tool_name]).to be_nil
       end
     end
 
@@ -56,7 +56,7 @@ RSpec.describe FormHelper, type: :helper do
       it "returns event_name as 'create'" do
         result = ga4_data_attributes(edition: edition)
 
-        expect(result[:data][:ga4_action]).to eq("create")
+        expect(result[:ga4_action]).to eq("create")
       end
     end
   end

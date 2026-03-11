@@ -1,6 +1,6 @@
 <%= form_with url: new_document_options_redirect_documents_path,
               method: :post,
-              **data_attributes do %>
+              data: data_attributes do %>
   <%= hidden_field_tag :block_type, "" %>
 
   <%= render "govuk_publishing_components/components/radio", {

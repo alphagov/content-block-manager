@@ -23,7 +23,7 @@
       <%= form_with url: workflow_path(
         @edition,
         step: @step_name,
-        ), method: :put, id: @step_name, **ga4_data_attributes(edition: @edition) do %>
+        ), method: :put, id: @step_name, data: ga4_data_attributes(edition: @edition) do %>
         <%= render Edition::Workflow::GroupComponent.new(
           edition: @edition,
           subschemas: @subschemas,
