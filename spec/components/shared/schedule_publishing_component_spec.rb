@@ -100,7 +100,7 @@ RSpec.describe Shared::SchedulePublishingComponent, type: :component do
         back_link:,
         form_url:,
         is_rescheduling: false,
-        data_attributes: { data: { test: "test" } },
+        data_attributes: { test: "test" },
       )
     end
 

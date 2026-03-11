@@ -20,7 +20,7 @@
           ),
         id: "review_links",
         method: :put,
-        **ga4_data_attributes(edition: @edition),
+        data: ga4_data_attributes(edition: @edition),
         ) do %>
           <%= render(
                 Shared::HostEditionsTableComponent.new(
