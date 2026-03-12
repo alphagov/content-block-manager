@@ -2,7 +2,7 @@ module Block
   class TimePeriodDateRange < ApplicationRecord
     self.table_name = "block_time_period_date_ranges"
 
-    belongs_to :edition, class_name: "Block::TimePeriodEdition"
+    belongs_to :edition, class_name: "Block::TimePeriodEdition", inverse_of: :date_range
 
     validates :start, presence: true
     validates :end, presence: true

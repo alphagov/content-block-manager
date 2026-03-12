@@ -2,7 +2,11 @@ module Block
   class Document < ApplicationRecord
     self.table_name = "block_documents"
 
-    has_many :editions, class_name: "Block::Edition", foreign_key: :block_document_id, dependent: :destroy
+    has_many :editions,
+             class_name: "Block::Edition",
+             foreign_key: :block_document_id,
+             dependent: :destroy,
+             inverse_of: :document
 
     before_validation :generate_content_id, on: :create
     before_validation :generate_embed_code, on: :create
