@@ -106,6 +106,13 @@ RSpec.describe "EmbeddedObjectController requests", type: :request do
 
         expect(response).to render_template(:new)
       end
+
+      it "should enable the unsaved-changes-prompt JS module" do
+        get new_sole_embedded_object_edition_path(edition, :date_range)
+
+        doc = Nokogiri::HTML(response.body)
+        expect(doc.css("form[data-module~='unsaved-changes-prompt']")).to be_present
+      end
     end
 
     describe "#create" do
@@ -172,6 +179,12 @@ RSpec.describe "EmbeddedObjectController requests", type: :request do
             "end" => { "date" => "2026-04-05", "time" => "23:52" },
           }
           edition.save!
+        end
+
+        it "should enable the unsaved-changes-prompt JS module" do
+          get edit_sole_embedded_object_edition_path(edition, :date_range)
+          doc = Nokogiri::HTML(response.body)
+          expect(doc.css("form[data-module~='unsaved-changes-prompt']")).to be_present
         end
 
         it "sets the @subschema according to the given object_type" do
