@@ -8,6 +8,13 @@ module Block
              dependent: :destroy,
              inverse_of: :document
 
+    has_many :time_period_editions,
+             -> { where(type: "Block::TimePeriodEdition") },
+             class_name: "Block::TimePeriodEdition",
+             foreign_key: :block_document_id,
+             dependent: :destroy,
+             inverse_of: :document
+
     before_validation :generate_content_id, on: :create
     before_validation :generate_embed_code, on: :create
 

@@ -2,12 +2,12 @@ module Block
   class TimePeriodsController < ApplicationController
     def new
       @document = Block::Document.new(block_type: "time_period")
-      @edition = @document.editions.build(type: "Block::TimePeriodEdition")
+      @edition = @document.time_period_editions.build
     end
 
     def create
       @document = Block::Document.new(document_params)
-      @edition = @document.editions.build(edition_params.merge(type: "Block::TimePeriodEdition"))
+      @edition = @document.time_period_editions.build(edition_params)
 
       if @document.save
         redirect_to block_time_period_path(@edition), notice: "Time period was successfully created."

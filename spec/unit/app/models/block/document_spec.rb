@@ -1,4 +1,27 @@
 RSpec.describe Block::Document, type: :model do
+  describe "associations" do
+    describe "#time_period_editions" do
+      it "builds a TimePeriodEdition with the correct type" do
+        document = build(:block_document, block_type: "time_period")
+        edition = document.time_period_editions.build(title: "Test")
+
+        expect(edition).to be_a(Block::TimePeriodEdition)
+        expect(edition.type).to eq("Block::TimePeriodEdition")
+      end
+
+      it "only returns TimePeriodEdition instances" do
+        document = create(:block_document, block_type: "time_period")
+        time_period = create(:time_period_edition, document: document)
+        other = create(:other_edition, document: document)
+
+        expect(document.editions.count).to eq(2)
+        expect(document.time_period_editions.count).to eq(1)
+        expect(document.time_period_editions.first).to eq(time_period)
+        expect(document.time_period_editions).not_to include(other)
+      end
+    end
+  end
+
   describe "callbacks" do
     describe "generate_content_id" do
       it "generates a UUID for content_id before validation on create" do
