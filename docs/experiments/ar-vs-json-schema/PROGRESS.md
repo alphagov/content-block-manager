@@ -117,47 +117,112 @@ Instead of `@document.editions.build(type: "Block::TimePeriodEdition")`, using e
 
 ### Phase 4: Refining the API ✅
 
-**2026-03-12** - Added type-specific associations to Document:
+**2026-03-12 Morning** - Added type-specific associations to Document:
 
 - Added `has_many :time_period_editions` scoped by STI type
-- Simplified controller to use explicit associations (`time_period_editions.build`)
+- Simplified controller to use explicit associations
+  (`time_period_editions.build`)
 - Created `Block::OtherEdition` stub for testing STI scoping
 - Improved test coverage for association filtering
 
 **Tests:** 39 total specs passing (21 request + 10 routing + 8 document model)
 
+### Phase 5: GOV.UK Forms Implementation 🔄 (In Progress)
+
+**2026-03-12 Afternoon** - Implementing proper GOV.UK Design System forms:
+
+**Completed:**
+
+- Replaced non-existent `title` component with proper `heading` component
+  - Uses `heading_level: 1` and `font_size: "xl"` for page titles
+- Implemented datetime inputs using Rails multiparameter attributes:
+  - Date fields: day/month/year using `date_input` component
+  - Time fields: hour/minute using `select_hour`/`select_minute` helpers
+  - Convention: `field_name(1i)` through `field_name(5i)` for year, month,
+    day, hour, minute
+  - Separate fieldsets for START and END datetime values
+- Created comprehensive `_form.html.erb` partial (245 lines):
+  - Character count component for title (255 char limit)
+  - Textarea component for description
+  - Complex nested datetime inputs for date range
+  - Proper GOV.UK component integration throughout
+- Updated all three views (new, edit, show) with proper layouts:
+  - Page headings, back links, grid layouts
+  - Summary list on show page
+  - Consistent GOV.UK styling
+- Modified controller to handle datetime multiparameter attributes
+
+**Current Status:**
+
+- View rendering: ✅ PASSING (verified for new action)
+- Full test suite: ⚠️ NOT VERIFIED (likely failing due to parameter
+  structure mismatch)
+- Main issue: Tests expect `block_time_period_edition` params but form
+  submits `edition` params
+
+**Discoveries:**
+
+- GOV.UK components use `heading` not `title`
+- Existing app has reusable datetime patterns in
+  `app/components/edition/details/fields/date_time_component.html.erb`
+- Component guide at https://components.publishing.service.gov.uk/
+  component-guide is essential reference
+- `select_hour` and `select_minute` need careful parameter structure
+  with `prefix` and `field_name` options
+
+**Next Tasks:**
+
+- [ ] Decide: Update tests to match form OR update form to match tests
+- [ ] Get all 21 request specs passing
+- [ ] Consider extracting datetime fields into reusable partial
+      (lots of duplication)
+- [ ] Replace inline styles with proper CSS classes
+- [ ] Test forms manually in browser
+
 ## Current State
 
 **Working directory:** `/Users/ed/govuk/govuk-content-block-manager`  
 **Branch:** `exp/use-ar-rather-than-json-schema`  
-**Last commit:** `ab378842` - Add type-specific edition associations to Block::Document  
-**All tests passing:** ✅ 39 specs
+**Last commit:** Add type-specific edition associations (forms WIP unstaged)
+**Tests status:**
 
-### Files Modified/Created (Phase 4)
+- Phase 1-4 tests: ✅ 39 specs passing
+- Phase 5 tests: ⚠️ Unknown (forms in WIP state)
 
-- `app/models/block/document.rb` - Added type-specific associations
-- `app/models/block/other_edition.rb` - NEW: Stub for testing STI
-- `app/controllers/block/time_periods_controller.rb` - Uses explicit associations
-- `spec/factories/block/other_editions.rb` - NEW: Factory for test stub
-- `spec/unit/app/models/block/document_spec.rb` - Improved STI scoping tests
+### Files Modified/Created (Phase 5 - Staged)
+
+- `app/controllers/block/time_periods_controller.rb` - Updated for
+  datetime params, form structure
+- `app/views/block/time_periods/_form.html.erb` - NEW: Comprehensive
+  GOV.UK form (245 lines)
+- `app/views/block/time_periods/new.html.erb` - Proper heading, layout
+- `app/views/block/time_periods/edit.html.erb` - Proper heading, layout
+- `app/views/block/time_periods/show.html.erb` - Summary list, proper
+  display
 
 ## Next Steps
 
-### Immediate Options
+### Immediate (Phase 5 Completion)
 
-1. **Flesh out views** - Create proper forms with GOV.UK components for new/edit actions
-2. **Add second block type** - Implement Tax block to validate the pattern scales
+1. **Fix parameter structure** - Align form params with test expectations
+   or update tests
+2. **Get all specs passing** - Verify full test suite (21 request +
+   10 routing + 8 model specs)
 3. **Test in browser** - Manual testing via Rails server
-4. **Run cucumber features** - See what passes with @wip tags
-5. **Add validation** - Business logic for date ranges, required fields, etc.
-6. **Add index action** - List all time periods
+4. **Refactor datetime fields** - Consider extracting into reusable
+   partial/component
+5. **Replace inline styles** - Use proper CSS classes for datetime layout
 
-### Future Work
+### Future Phases
 
-- Add workflow/state machine (complexity deferred from Phase 1)
-- Test with more complex Edition subclass
-- Performance evaluation vs JSON schema approach
-- Developer experience assessment
+1. **Add second block type** - Implement Tax block to validate pattern
+   scales
+2. **Run cucumber features** - See what passes with @wip tags
+3. **Add validation** - Business logic for date ranges, required fields
+4. **Add index action** - List all time periods
+5. **Add workflow/state machine** - Complexity deferred from Phase 1
+6. **Performance evaluation** - Compare with JSON schema approach
+7. **Developer experience assessment** - Document learnings
 
 ## References
 
