@@ -46,7 +46,7 @@ RSpec.describe PublishEditionService do
       presented_hash = double(hash: {})
       expect(PublishingApi::ContentBlockPresenter).to receive(:new)
                                                   .with(
-                                                    schema_id: schema.id,
+                                                    document_type: schema.id,
                                                     content_id_alias: "some-edition-title",
                                                     edition: edition,
                                                   )

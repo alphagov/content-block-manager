@@ -436,7 +436,7 @@ Then("the block should have been sent to the Publishing API") do
   @edition ||= Edition.last
 
   payload = PublishingApi::ContentBlockPresenter.new(
-    schema_id: @schema.id,
+    document_type: @schema.id,
     content_id_alias: @edition.document.content_id_alias,
     edition: @edition.reload,
   ).present

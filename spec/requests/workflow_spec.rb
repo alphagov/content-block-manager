@@ -808,7 +808,7 @@ def assert_edition_is_published(&block)
     double("http_response", code: 200, body: {}),
   )
 
-  payload = PublishingApi::ContentBlockPresenter.new(schema_id: "content_block_type", content_id_alias: "some-slug", edition: edition).present
+  payload = PublishingApi::ContentBlockPresenter.new(document_type: "content_block_type", content_id_alias: "some-slug", edition: edition).present
 
   expect(Public::Services.publishing_api).to receive(:put_content).with(@content_id, payload).and_return(fake_put_content_response)
   expect(Public::Services.publishing_api).to receive(:publish).with(@content_id).and_return(fake_publish_content_response)

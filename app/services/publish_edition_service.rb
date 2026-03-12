@@ -18,7 +18,7 @@ private
     create_publishing_api_edition(
       content_id:,
       content_id_alias:,
-      schema_id: schema.id,
+      document_type: schema.id,
       edition:,
     )
     dequeue_all_previously_queued_editions(edition)
@@ -30,15 +30,15 @@ private
     raise e
   end
 
-  def create_publishing_api_edition(content_id:, content_id_alias:, schema_id:, edition:)
+  def create_publishing_api_edition(content_id:, content_id_alias:, document_type:, edition:)
     Public::Services.publishing_api.put_content(
       content_id,
-      publishing_api_payload(schema_id, content_id_alias, edition),
+      publishing_api_payload(document_type, content_id_alias, edition),
     )
   end
 
-  def publishing_api_payload(schema_id, content_id_alias, edition)
-    PublishingApi::ContentBlockPresenter.new(schema_id:, content_id_alias:, edition:).present
+  def publishing_api_payload(document_type, content_id_alias, edition)
+    PublishingApi::ContentBlockPresenter.new(document_type:, content_id_alias:, edition:).present
   end
 
   def publish_publishing_api_edition(content_id:)

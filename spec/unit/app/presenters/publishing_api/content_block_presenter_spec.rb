@@ -10,7 +10,7 @@ RSpec.describe PublishingApi::ContentBlockPresenter do
   end
   let(:change_note) { "Some change note" }
 
-  let(:schema_id) { "content_block_foo" }
+  let(:document_type) { "content_block_foo" }
   let(:content_id_alias) { "foo" }
   let(:edition) { build(:edition, title:, instructions_to_publishers:, details:, change_note:) }
 
@@ -18,20 +18,20 @@ RSpec.describe PublishingApi::ContentBlockPresenter do
     allow(edition).to receive(:lead_organisation).and_return(lead_organisation)
   end
 
-  let(:presenter) { described_class.new(schema_id:, content_id_alias:, edition:) }
+  let(:presenter) { described_class.new(document_type:, content_id_alias:, edition:) }
 
   describe "#present" do
     let(:result) { presenter.present }
 
     it "returns a hash" do
       expect(result).to eq({
-        schema_name: schema_id,
-        document_type: schema_id,
+        schema_name: "content_block",
+        document_type:,
         publishing_app: ContentBlockManager::PublishingApp::CONTENT_BLOCK_MANAGER,
         title:,
         instructions_to_publishers:,
         content_id_alias:,
-        base_path: "/content-blocks/#{schema_id}/#{content_id_alias}",
+        base_path: "/content-blocks/#{document_type}/#{content_id_alias}",
         change_note:,
         details:,
         update_type: "major",
@@ -40,7 +40,7 @@ RSpec.describe PublishingApi::ContentBlockPresenter do
         },
         routes: [
           {
-            path: "/content-blocks/#{schema_id}/#{content_id_alias}",
+            path: "/content-blocks/#{document_type}/#{content_id_alias}",
             type: "exact",
           },
         ],
@@ -72,16 +72,6 @@ RSpec.describe PublishingApi::ContentBlockPresenter do
 
       it "does not include the change note" do
         expect(result[:change_note]).to be_nil
-      end
-    end
-
-    PublishingApi::ContentBlockPresenter::LOCAL_SCHEMAS.each do |schema|
-      context "when the schema is #{schema}" do
-        let(:schema_id) { schema }
-
-        it "returns the generic schema name" do
-          expect(result[:schema_name]).to eq("content_block")
-        end
       end
     end
   end
