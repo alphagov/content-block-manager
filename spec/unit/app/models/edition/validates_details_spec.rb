@@ -1,10 +1,10 @@
 RSpec.describe Edition::ValidatesDetails do
   describe "schema" do
-    it "returns a schema" do
-      edition = build(:edition, schema: nil)
+    it "returns the schema, delegated from #document" do
+      edition = build(:edition)
       schema = build(:schema)
 
-      allow(Schema).to receive(:find_by_block_type).with(edition.block_type).and_return(schema)
+      allow(edition.document).to receive(:schema).and_return(schema)
 
       expect(edition.schema).to eq(schema)
     end

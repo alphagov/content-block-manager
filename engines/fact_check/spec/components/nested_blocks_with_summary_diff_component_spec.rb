@@ -27,13 +27,14 @@ RSpec.describe FactCheck::NestedBlocksWithSummaryDiffComponent, type: :component
   let(:object_title) { "address-1" }
 
   let(:schema) { build(:schema, body: SchemaHelpers::MINIMAL_CONTACT_SCHEMA_BODY) }
-  let(:document) { create(:document, :contact, schema:) }
+  let(:document) { create(:document, :contact) }
   let(:pub_edition) { build(:edition, :contact, :published, document:, details: published_details) }
   let(:edition) { build(:edition, :contact, :awaiting_factcheck, document:, details: new_details) }
   let(:block) { build(:content_block, edition:) }
   let(:component) { described_class.new(items:, object_type:, object_title:, block:) }
 
   before do
+    allow(document).to receive(:schema).and_return(schema)
     allow(document).to receive(:latest_published_edition).and_return(pub_edition)
     render_inline(component)
   end

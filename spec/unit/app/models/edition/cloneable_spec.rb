@@ -72,9 +72,13 @@ RSpec.describe Edition::Cloneable do
   describe "#clone_without_blocks" do
     let(:subschema) { double(id: "subschema") }
     let(:schema) { double(subschemas: [subschema]) }
-    let(:document) { build(:document, schema:) }
+    let(:document) { build(:document) }
     let(:details) { { "title" => "something", "subschema" => { "content" => "test content" } } }
     let(:edition) { build(:edition, details:, document:) }
+
+    before do
+      allow(document).to receive(:schema).and_return(schema)
+    end
 
     it "creates a copy without subschema blocks" do
       cloned = edition.clone_without_blocks

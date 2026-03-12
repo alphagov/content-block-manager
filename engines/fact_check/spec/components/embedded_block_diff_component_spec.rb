@@ -10,9 +10,13 @@ RSpec.describe FactCheck::EmbeddedBlockDiffComponent, type: :component do
 
   let(:schema) { double(:schema) }
 
-  let(:document) { build(:document, schema:) }
+  let(:document) { build(:document) }
 
   let(:items) { CombinedEditionDetails.new(published_details: items_published, new_details: items_new).content }
+
+  before do
+    allow(document).to receive(:schema).and_return(schema)
+  end
 
   describe "when there is no data to render" do
     before do

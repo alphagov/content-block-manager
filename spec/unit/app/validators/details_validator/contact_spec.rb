@@ -1,9 +1,6 @@
 RSpec.describe DetailsValidator do
   describe "contact schema" do
-    let(:schema_body) { JSON.parse(File.read(Rails.root.join("app/models/schema/definitions/contact.json"))) }
-    let(:schema) { Schema.new("content_block_contact", schema_body) }
-
-    let(:document) { build(:document, schema:) }
+    let(:document) { build(:document, :contact) }
 
     let(:email_address) { "test@example.com" }
 
@@ -59,7 +56,7 @@ RSpec.describe DetailsValidator do
       }
     end
 
-    subject { build(:edition, schema:, details:, document:) }
+    subject { build(:edition, :contact, details:, document:) }
 
     before do
       subject.valid?

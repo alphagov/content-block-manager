@@ -37,6 +37,10 @@ RSpec.describe DetailsValidator do
 
   let(:schema) { build(:schema, body:) }
 
+  before do
+    allow_any_instance_of(Edition).to receive(:schema).and_return(schema)
+  end
+
   it "validates the presence of fields" do
     edition = build(
       :edition,
@@ -45,7 +49,6 @@ RSpec.describe DetailsValidator do
         foo: "",
         bar: "",
       },
-      schema:,
     )
 
     expect(edition).to be_invalid
@@ -64,7 +67,6 @@ RSpec.describe DetailsValidator do
         foo: "dddd",
         bar: "ffff",
       },
-      schema:,
     )
 
     expect(edition).to be_invalid
@@ -89,7 +91,6 @@ RSpec.describe DetailsValidator do
           },
         },
       },
-      schema:,
     )
 
     expect(edition).to be_invalid
@@ -112,7 +113,6 @@ RSpec.describe DetailsValidator do
           },
         },
       },
-      schema:,
     )
 
     expect(edition).to be_invalid
@@ -143,7 +143,6 @@ RSpec.describe DetailsValidator do
         details: {
           foo: "1234",
         },
-        schema:,
       )
 
       expect(edition).to be_invalid
@@ -211,7 +210,6 @@ RSpec.describe DetailsValidator do
             },
           },
         },
-        schema:,
       )
 
       expect(edition).to be_invalid
@@ -242,7 +240,6 @@ RSpec.describe DetailsValidator do
             },
           },
         },
-        schema:,
       )
 
       expect(edition).to be_invalid

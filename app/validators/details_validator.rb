@@ -5,6 +5,9 @@ class DetailsValidator < ActiveModel::Validator
 
   def validate(edition)
     @edition = edition
+
+    return false if block_type_blank?
+
     errors = validate_with_schema(edition)
     errors.each do |e|
       if e["type"] == "required"
@@ -102,6 +105,10 @@ class DetailsValidator < ActiveModel::Validator
   end
 
 private
+
+  def block_type_blank?
+    @edition.errors.attribute_names.include?(:"document.block_type")
+  end
 
   def generate_prefix(error)
     keys = error["data_pointer"].split("/")[1..]

@@ -1,6 +1,4 @@
 RSpec.describe DetailsValidator::CustomValidators do
-  let(:schema) { build(:schema, body:) }
-
   describe "validating with a minimum date" do
     let(:body) do
       {
@@ -16,6 +14,12 @@ RSpec.describe DetailsValidator::CustomValidators do
       }
     end
 
+    let(:schema) { build(:schema, body:) }
+
+    before do
+      allow_any_instance_of(Edition).to receive(:schema).and_return(schema)
+    end
+
     it "validates the minimum value of a date field" do
       edition = build(
         :edition,
@@ -23,7 +27,6 @@ RSpec.describe DetailsValidator::CustomValidators do
         details: {
           date: "2000-01-01",
         },
-        schema:,
       )
 
       expect(edition).to be_invalid
@@ -43,7 +46,6 @@ RSpec.describe DetailsValidator::CustomValidators do
         details: {
           date: "2023-01-01",
         },
-        schema:,
       )
 
       expect(edition).to be_valid
@@ -56,7 +58,6 @@ RSpec.describe DetailsValidator::CustomValidators do
         details: {
           date: "INVALID",
         },
-        schema:,
       )
 
       expect(edition).to be_invalid
@@ -103,7 +104,6 @@ RSpec.describe DetailsValidator::CustomValidators do
             start_date: "2025-01-01",
             end_date: "2024-01-01",
           },
-          schema:,
         )
 
         expect(edition).to be_invalid
@@ -124,7 +124,6 @@ RSpec.describe DetailsValidator::CustomValidators do
             start_date: "2025-01-01",
             end_date: "2024-01-01",
           },
-          schema:,
         )
 
         translated_date = "Translated date"
@@ -155,7 +154,6 @@ RSpec.describe DetailsValidator::CustomValidators do
             start_date: "2025-01-01",
             end_date: "2026-01-01",
           },
-          schema:,
         )
 
         expect(edition).to be_valid

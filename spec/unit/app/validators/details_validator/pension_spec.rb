@@ -1,9 +1,6 @@
 RSpec.describe DetailsValidator do
   describe "pension schema" do
-    let(:schema_body) { JSON.parse(File.read(Rails.root.join("app/models/schema/definitions/pension.json"))) }
-    let(:schema) { Schema.new("content_block_pension", schema_body) }
-
-    let(:document) { build(:document, schema:) }
+    let(:document) { build(:document, :pension) }
 
     let(:amount) { "£320.00" }
     let(:frequency) { "a week" }
@@ -26,7 +23,7 @@ RSpec.describe DetailsValidator do
       }
     end
 
-    subject { build(:edition, schema: schema, details:, document:) }
+    subject { build(:edition, :pension, details:, document:) }
 
     before do
       subject.valid?

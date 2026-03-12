@@ -33,7 +33,6 @@ RSpec.describe Edition, type: :model do
 
   before do
     allow_any_instance_of(Edition).to receive(:create_random_id).and_return(new_content_id)
-    allow(edition).to receive(:schema).and_return(build(:schema))
     allow(Organisation).to receive(:all).and_return([organisation])
   end
 
@@ -410,10 +409,6 @@ RSpec.describe Edition, type: :model do
   describe "#any_embedded_objects_to_show?" do
     let(:edition) { build(:edition, :contact) }
 
-    before do
-      allow(edition.document).to receive(:schema).and_call_original
-    end
-
     context "when there are no embedded objects present in the details" do
       before do
         edition.details = { description: "Contact details for the main office" }
@@ -700,7 +695,7 @@ RSpec.describe Edition, type: :model do
       ]
     end
     let(:schema) { double(:schema, subschemas: subschemas, body: {}) }
-    let(:document) { build(:document, schema:) }
+    let(:document) { build(:document) }
 
     before do
       allow(document).to receive(:schema).and_return(schema)

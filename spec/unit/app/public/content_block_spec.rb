@@ -1,5 +1,5 @@
 RSpec.describe ContentBlock do
-  let(:document) { build(:document, schema: schema) }
+  let(:document) { build(:document) }
   let(:edition) { build(:edition, document: document) }
   let(:schema) { build(:schema) }
 
@@ -38,6 +38,7 @@ RSpec.describe ContentBlock do
 
   describe "#embeddable_as_block?" do
     before do
+      allow(document).to receive(:schema).and_return(schema)
       allow(schema).to receive(:embeddable_as_block?).and_return(embeddable_as_block)
     end
 

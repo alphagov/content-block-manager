@@ -1,7 +1,4 @@
 RSpec.describe Edition::Show::EmbeddedObject::SubschemaItemComponent, type: :component do
-  let(:schema) { double("schema: time period") }
-  let(:subschema) { double("subschema: date_range") }
-
   let(:details) do
     {
       "date_range" => {
@@ -13,15 +10,13 @@ RSpec.describe Edition::Show::EmbeddedObject::SubschemaItemComponent, type: :com
     }
   end
 
-  let(:edition) { build(:edition, :pension, details: details) }
-  let(:object_type) { "date_range" }
-  let(:schema_name) { "date_range" }
+  let(:edition_with_sole_date_range_object) { build(:edition, :time_period, details: details) }
 
   let(:component) do
     described_class.new(
-      edition:,
-      object_type:,
-      schema_name:,
+      edition: edition_with_sole_date_range_object,
+      object_type: "date_range",
+      schema_name: "date_range",
     )
   end
 
@@ -29,24 +24,18 @@ RSpec.describe Edition::Show::EmbeddedObject::SubschemaItemComponent, type: :com
   let(:block_response) { "BLOCKS" }
 
   before do
-    allow(edition.document).to receive(:schema).and_return(schema)
-    allow(schema).to receive(:subschema).with(object_type).and_return(subschema)
-    allow(subschema).to receive(:id).and_return(object_type)
-    allow(subschema).to receive(:block_display_fields).and_return(%w[start end])
-    allow(subschema).to receive(:field_ordering_rule).with("start").and_return(1)
-    allow(subschema).to receive(:field_ordering_rule).with("end").and_return(2)
-    allow(subschema).to receive(:field_ordering_rule).with("title").and_return(3)
-
     expect(component).to receive(:render).with(metadata_response).and_return(metadata_response)
     allow(component).to receive(:render).with(block_response).and_return(block_response)
   end
 
   it "renders non-blank fields apart from 'block_display_fields' with the MetadataComponent" do
+    expected_subschema = edition_with_sole_date_range_object.schema.subschema("date_range")
+
     allow(Edition::Show::EmbeddedObjects::BlocksComponent).to receive(:new).and_return(block_response)
 
     expect(Edition::Show::EmbeddedObjects::MetadataComponent).to receive(:new).with(
       items: { "other_field" => "Other value" },
-      schema: subschema,
+      schema: expected_subschema,
     ).and_return(metadata_response)
 
     render_inline component
@@ -63,7 +52,7 @@ RSpec.describe Edition::Show::EmbeddedObject::SubschemaItemComponent, type: :com
       object_type: "date_range",
       object_title: nil,
       schema_name: "date_range",
-      edition: edition,
+      edition: edition_with_sole_date_range_object,
     ).and_return(block_response)
 
     render_inline component

@@ -8,7 +8,7 @@ RSpec.describe FactCheck::UngroupedSubschemaDiffComponent, type: :component do
                            } })
   end
   let(:schema) { build(:schema) }
-  let(:document) { build(:document, schema:) }
+  let(:document) { build(:document) }
   let(:display_fields) { %w[amount] }
   let(:edition) do
     build(:edition,
@@ -30,6 +30,7 @@ RSpec.describe FactCheck::UngroupedSubschemaDiffComponent, type: :component do
   let(:component) { described_class.new(block:, subschema:) }
 
   before do
+    allow(document).to receive(:schema).and_return(schema)
     allow(schema).to receive(:subschema).with("content_block_block_type").and_return(subschema)
     allow(subschema).to receive(:block_display_fields).and_return(display_fields)
   end

@@ -2,7 +2,7 @@ RSpec.describe BlockContent do
   context "when used with an *object_title* to identify a particular object" do
     let(:subschema) { build(:schema) }
     let(:schema) { build(:schema) }
-    let(:document) { build(:document, schema:) }
+    let(:document) { build(:document) }
     let(:display_fields) { %w[amount] }
     let(:edition) do
       build(:edition,
@@ -21,6 +21,7 @@ RSpec.describe BlockContent do
     let(:block_content) { described_class.new(content_block, subschema) }
 
     before do
+      allow(document).to receive(:schema).and_return(schema)
       allow(schema).to receive(:subschema).with("content_block_block_type").and_return(subschema)
       allow(subschema).to receive(:block_display_fields).and_return(display_fields)
     end

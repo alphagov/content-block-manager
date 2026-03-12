@@ -32,10 +32,11 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
     )
   end
 
-  let(:document) { build(:document, :pension, schema:) }
+  let(:document) { build(:document, :pension) }
   let(:edition) { build_stubbed(:edition, :pension, details:, document:) }
 
   before do
+    allow(document).to receive(:schema).and_return(schema)
     allow(schema).to receive(:subschema).and_return(subschema)
     fields.each do |field|
       allow(schema).to receive(:field).with(field.name).and_return(field)

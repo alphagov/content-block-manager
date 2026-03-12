@@ -134,7 +134,7 @@ def create_published_tax_edition
     :edition,
     :tax,
     document: tax_document,
-    details: { description: "Some text" },
+    details: { tax_type: "Tax", description: "Some text" },
     creator: @user,
     lead_organisation_id: organisation_id,
     title: "My tax",
