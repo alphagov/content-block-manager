@@ -1,1 +1,18 @@
-<h1>New Time Period</h1>
+<% content_for :title, "Create time period block" %>
+<% content_for :back_link, 
+   render("govuk_publishing_components/components/back_link", {
+     href: "#", # TODO: Link to time periods index
+   }) %>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <%= render "govuk_publishing_components/components/heading", {
+      text: "Create time period block",
+      heading_level: 1,
+      font_size: "xl",
+      margin_bottom: 8,
+    } %>
+
+    <%= render "form" %>
+  </div>
+</div>

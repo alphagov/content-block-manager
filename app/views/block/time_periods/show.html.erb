@@ -1,1 +1,45 @@
-<h1>Time Period</h1>
+<% content_for :title, @edition.title %>
+<% content_for :back_link, 
+   render("govuk_publishing_components/components/back_link", {
+     href: "#", # TODO: Link to time periods index
+   }) %>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <%= render "govuk_publishing_components/components/heading", {
+      text: @edition.title,
+      heading_level: 1,
+      font_size: "xl",
+      margin_bottom: 8,
+    } %>
+
+    <%= render "govuk_publishing_components/components/summary_list", {
+      title: "Block details",
+      items: [
+        {
+          field: "Description",
+          value: @edition.description || "No description provided",
+        },
+        {
+          field: "Start date",
+          value: @edition.date_range&.start || "Not set",
+        },
+        {
+          field: "End date",
+          value: @edition.date_range&.end || "Ongoing",
+        },
+        {
+          field: "Embed code",
+          value: "<code>#{@document.embed_code}</code>".html_safe,
+        },
+      ]
+    } %>
+
+    <div class="govuk-button-group">
+      <%= render "govuk_publishing_components/components/button", {
+        text: "Edit",
+        href: edit_block_time_period_path(@edition),
+      } %>
+    </div>
+  </div>
+</div>
