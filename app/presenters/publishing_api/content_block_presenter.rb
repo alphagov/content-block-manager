@@ -1,20 +1,15 @@
 module PublishingApi
   class ContentBlockPresenter
-    LOCAL_SCHEMAS = %w[
-      content_block_time_period
-      content_block_tax
-    ].freeze
-
-    def initialize(schema_id:, content_id_alias:, edition:)
-      @schema_id = schema_id
+    def initialize(document_type:, content_id_alias:, edition:)
+      @document_type = document_type
       @content_id_alias = content_id_alias
       @edition = edition
     end
 
     def present
       {
-        schema_name:,
-        document_type: schema_id,
+        schema_name: "content_block",
+        document_type:,
         publishing_app: ContentBlockManager::PublishingApp::CONTENT_BLOCK_MANAGER,
         title: edition.title,
         instructions_to_publishers: edition.instructions_to_publishers,
@@ -30,11 +25,7 @@ module PublishingApi
 
   private
 
-    attr_reader :schema_id, :content_id_alias, :edition
-
-    def schema_name
-      schema_id.in?(LOCAL_SCHEMAS) ? "content_block" : schema_id
-    end
+    attr_reader :document_type, :content_id_alias, :edition
 
     def links
       {
@@ -53,7 +44,7 @@ module PublishingApi
     end
 
     def base_path
-      "/content-blocks/#{schema_id}/#{content_id_alias}"
+      "/content-blocks/#{document_type}/#{content_id_alias}"
     end
 
     def routes
