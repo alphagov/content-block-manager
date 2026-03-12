@@ -24,6 +24,11 @@ Rails.application.routes.draw do
 
   resources :users, only: %i[show]
 
+  # Block namespace - experimental ActiveRecord architecture
+  namespace :block do
+    resources :time_periods, only: %i[new create edit update show]
+  end
+
   get "content-id/:content_id", to: "documents#content_id", as: :content_id
   resources :documents, only: %i[index show new], path_names: { new: "(:block_type)/new" }, path: "" do
     collection do
