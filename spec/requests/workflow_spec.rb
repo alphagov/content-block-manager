@@ -436,6 +436,13 @@ RSpec.describe "Workflow", type: :request do
 
           expect(response).to render_template("editions/workflow/internal_note")
         end
+
+        it "should enable the unsaved-changes-prompt JS module" do
+          get workflow_path(id: edition.id, step:)
+
+          doc = Nokogiri::HTML(response.body)
+          expect(doc.css("form[data-module~='unsaved-changes-prompt']")).to be_present
+        end
       end
 
       describe "#update" do
@@ -464,6 +471,13 @@ RSpec.describe "Workflow", type: :request do
           get workflow_path(id: edition.id, step:)
 
           expect(response).to render_template("editions/workflow/change_note")
+        end
+
+        it "should enable the unsaved-changes-prompt JS module" do
+          get workflow_path(id: edition.id, step:)
+
+          doc = Nokogiri::HTML(response.body)
+          expect(doc.css("form[data-module~='unsaved-changes-prompt']")).to be_present
         end
       end
 
@@ -680,6 +694,13 @@ RSpec.describe "Workflow", type: :request do
 
           expect(response).to render_template("editions/workflow/schedule_publishing")
           expect(assigns(:document)).to eq(document)
+        end
+
+        it "should enable the unsaved-changes-prompt JS module" do
+          get workflow_path(id: edition.id, step:)
+
+          doc = Nokogiri::HTML(response.body)
+          expect(doc.css("form[data-module~='unsaved-changes-prompt']")).to be_present
         end
       end
 

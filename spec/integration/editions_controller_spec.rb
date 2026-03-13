@@ -245,6 +245,24 @@ RSpec.describe EditionsController, type: :request do
     end
   end
 
+  describe "#new" do
+    let(:user) { create(:user) }
+    let(:document) { create(:document, :pension) }
+    let(:organisation) { build(:organisation) }
+
+    before do
+      login_as(user)
+      allow(Organisation).to receive(:all).and_return([organisation])
+    end
+
+    it "should enable the unsaved-changes-prompt JS module" do
+      get "/editions/pension/new"
+
+      doc = Nokogiri::HTML(response.body)
+      expect(doc.css("form[data-module~='unsaved-changes-prompt']")).to be_present
+    end
+  end
+
   def renders_errors(&block)
     edition = build(:edition, :pension, document: document)
     allow_any_instance_of(CreateEditionService).to receive(:call).and_raise(ActiveRecord::RecordInvalid, edition)

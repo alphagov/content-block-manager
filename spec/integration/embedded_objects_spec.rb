@@ -58,6 +58,16 @@ RSpec.describe EmbeddedObjects, type: :request do
 
         assert_template :new
       end
+
+      it "should enable the unsaved-changes-prompt JS module" do
+        get new_embedded_object_edition_path(
+          edition,
+          object_type,
+        )
+
+        doc = Nokogiri::HTML(response.body)
+        expect(doc.css("form[data-module~='unsaved-changes-prompt']")).to be_present
+      end
     end
 
     describe "when no object type is provided" do
@@ -272,6 +282,17 @@ RSpec.describe EmbeddedObjects, type: :request do
       )
 
       expect(response.status).to eq(404)
+    end
+
+    it "should enable the unsaved-changes-prompt JS module" do
+      get edit_embedded_object_edition_path(
+        edition,
+        object_type:,
+        object_title: "embedded",
+      )
+
+      doc = Nokogiri::HTML(response.body)
+      expect(doc.css("form[data-module~='unsaved-changes-prompt']")).to be_present
     end
   end
 
