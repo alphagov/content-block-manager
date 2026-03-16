@@ -10,33 +10,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_05_112726) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_05_112726) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "documents", force: :cascade do |t|
-    t.text "content_id"
-    t.text "sluggable_string"
     t.text "block_type"
+    t.text "content_id"
     t.string "content_id_alias"
-    t.datetime "deleted_at"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "testing_artefact", default: false, null: false
+    t.datetime "deleted_at"
     t.text "embed_code"
+    t.text "sluggable_string"
+    t.boolean "testing_artefact", default: false, null: false
+    t.datetime "updated_at", null: false
     t.index ["content_id_alias"], name: "index_documents_on_content_id_alias", unique: true
     t.index ["embed_code"], name: "index_documents_on_embed_code", unique: true
   end
 
   create_table "domain_events", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "edition_id"
-    t.integer "document_id"
-    t.string "name", null: false
-    t.jsonb "metadata"
-    t.integer "version_id"
     t.datetime "created_at", null: false
+    t.integer "document_id"
+    t.integer "edition_id"
+    t.jsonb "metadata"
+    t.string "name", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.integer "version_id"
     t.index ["document_id"], name: "index_domain_events_on_document_id"
     t.index ["edition_id"], name: "index_domain_events_on_edition_id"
     t.index ["name"], name: "index_domain_events_on_name"
@@ -45,77 +45,77 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_05_112726) do
   end
 
   create_table "edition_authors", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "edition_id", null: false
     t.datetime "created_at", null: false
+    t.integer "edition_id", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
     t.index ["edition_id"], name: "index_edition_authors_on_edition_id"
     t.index ["user_id"], name: "index_edition_authors_on_user_id"
   end
 
   create_table "editions", force: :cascade do |t|
+    t.string "auth_bypass_id"
+    t.text "change_note"
+    t.datetime "created_at", null: false
     t.json "details", null: false
     t.integer "document_id", null: false
-    t.text "state", default: "draft", null: false
-    t.datetime "scheduled_publication"
     t.text "instructions_to_publishers"
-    t.text "title", default: "", null: false
     t.text "internal_change_note"
-    t.text "change_note"
-    t.boolean "major_change"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.uuid "lead_organisation_id"
-    t.string "auth_bypass_id"
+    t.boolean "major_change"
+    t.datetime "scheduled_publication"
+    t.text "state", default: "draft", null: false
+    t.text "title", default: "", null: false
+    t.datetime "updated_at", null: false
     t.datetime "workflow_completed_at", precision: nil
     t.index ["document_id"], name: "index_editions_on_document_id"
     t.index ["title"], name: "index_editions_on_title"
   end
 
   create_table "flipflop_features", force: :cascade do |t|
-    t.text "key", null: false
-    t.boolean "enabled", default: false, null: false
     t.datetime "created_at", null: false
+    t.boolean "enabled", default: false, null: false
+    t.text "key", null: false
     t.datetime "updated_at", null: false
     t.index ["key"], name: "index_flipflop_features_on_key"
   end
 
   create_table "outcomes", force: :cascade do |t|
-    t.bigint "edition_id", null: false
-    t.string "type"
-    t.boolean "skipped"
-    t.string "performer"
-    t.bigint "creator_id", null: false
     t.datetime "created_at", null: false
+    t.bigint "creator_id", null: false
+    t.bigint "edition_id", null: false
+    t.string "performer"
+    t.boolean "skipped"
+    t.string "type"
     t.datetime "updated_at", null: false
     t.index ["creator_id"], name: "index_outcomes_on_creator_id"
     t.index ["edition_id"], name: "index_outcomes_on_edition_id"
   end
 
   create_table "users", force: :cascade do |t|
-    t.text "name", null: false
-    t.text "uid"
-    t.text "email"
-    t.boolean "disabled", default: false
-    t.boolean "remotely_signed_out", default: false
-    t.text "permissions"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "organisation_slug"
+    t.boolean "disabled", default: false
+    t.text "email"
+    t.text "name", null: false
     t.string "organisation_content_id"
+    t.string "organisation_slug"
+    t.text "permissions"
+    t.boolean "remotely_signed_out", default: false
+    t.text "uid"
+    t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email"
     t.index ["uid"], name: "index_users_on_uid"
   end
 
   create_table "versions", force: :cascade do |t|
-    t.text "item_type", null: false
-    t.integer "item_id", null: false
-    t.integer "event", null: false
-    t.text "whodunnit"
-    t.text "state"
-    t.json "field_diffs"
     t.datetime "created_at", null: false
+    t.integer "event", null: false
+    t.json "field_diffs"
+    t.integer "item_id", null: false
+    t.text "item_type", null: false
+    t.text "state"
     t.datetime "updated_at", null: false
+    t.text "whodunnit"
     t.index ["item_id"], name: "index_versions_on_item_id"
     t.index ["item_type"], name: "index_versions_on_item_type"
   end
