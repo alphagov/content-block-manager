@@ -7,8 +7,9 @@ class Outcome < ApplicationRecord
   validates :type, presence: true
   belongs_to :edition
   belongs_to :creator, class_name: "User"
+  belongs_to :domain_event, optional: true
 
-  after_commit :create_domain_event
+  before_create :create_domain_event
 
   def result
     skipped ? "skipped" : "performed"
@@ -22,7 +23,7 @@ private
 
   def create_domain_event
     metadata = result == "performed" ? { performer: } : {}
-    DomainEvent.record(
+    self.domain_event = DomainEvent.record(
       document: edition.document,
       user: creator,
       name: event_name,

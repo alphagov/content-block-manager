@@ -7,7 +7,7 @@ RSpec.shared_examples "an outcome" do |event_scope:|
     it "creates a domain event when the outcome is saved" do
       expect { outcome.save! }.to change { DomainEvent.count }.by(1)
 
-      domain_event = DomainEvent.last
+      domain_event = outcome.reload.domain_event
       expect(domain_event.document).to eq(outcome.edition.document)
       expect(domain_event.user).to eq(outcome.creator)
       expect(domain_event.name).to eq("edition.#{outcome.event_scope}.#{outcome.result}")
