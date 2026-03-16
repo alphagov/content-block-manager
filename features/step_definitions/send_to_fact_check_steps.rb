@@ -49,6 +49,11 @@ Given("the edition has been put into the awaiting_factcheck state by another pro
   edition.update_column(:state, :awaiting_factcheck)
 end
 
+Then("a domain event for the review should have been created") do
+  domain_event = edition.domain_events.where(name: "edition.review.skipped").last
+  expect(domain_event).to be_present
+end
+
 def edition
   @edition ||= Edition.last
 end
