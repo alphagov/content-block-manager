@@ -25,7 +25,7 @@ Feature: Create "Time period" content block
     When I click to view the content block
     Then I should see the details for the time_period content block
 
-  Scenario: Time period validates correctly
+  Scenario: Time period validates the end date is after the start date
     When I fill the form with the following fields:
       | title            | description      | organisation        | instructions_to_publishers |
       | Current Tax Year | Some description | Ministry of Example | This is important          |
@@ -33,6 +33,27 @@ Feature: Create "Time period" content block
     When I supply the time periods with the end date before the start date
     And I save and continue
     Then I should see an error message telling me that the end date cannot be before the start date
+
+  Scenario: Time period shows an error for invalid dates
+    When I fill the form with the following fields:
+      | title            | description      | organisation        | instructions_to_publishers |
+      | Current Tax Year | Some description | Ministry of Example | This is important          |
+    And I proceed to add a date range for the Time period
+    When I supply the time periods with invalid dates
+    And I save and continue
+    Then I should see an error message telling me that the start date is invalid
+    And I should see an error message telling me that the end date is invalid
+    And the date and time fields should be populated with the invalid values
+
+  Scenario: Time period shows an error for non-leap year end date
+    When I fill the form with the following fields:
+      | title            | description      | organisation        | instructions_to_publishers |
+      | Current Tax Year | Some description | Ministry of Example | This is important          |
+    And I proceed to add a date range for the Time period
+    When I supply the time periods with an end date of 29th February in a non-leap year
+    And I save and continue
+    Then I should see an error message telling me that the end date is invalid
+    And the date and time fields should be populated with the invalid values
 
   Scenario: Editor can edit a draft time period block
     Given a draft time period block exists
