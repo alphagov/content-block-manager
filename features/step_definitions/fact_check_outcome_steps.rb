@@ -40,7 +40,8 @@ Then("I am required to provide the subject matter expert") do
 end
 
 When("I provide the subject matter expert") do
-  fill_in I18n.t("edition.outcomes.performer.label.fact_check"), with: "Jane Doe"
+  @fact_checker = "Jane Doe"
+  fill_in I18n.t("edition.outcomes.performer.label.fact_check"), with: @fact_checker
   click_button("Publish")
 end
 
@@ -58,4 +59,10 @@ end
 Given("the edition has been put into the published state by another process") do
   # e.g. a race condition...
   edition.update_column(:state, :published)
+end
+
+Then("a domain event for the fact check should have been created") do
+  domain_event = edition.domain_events.where(name: "edition.fact_check.performed").last
+  expect(domain_event).to be_present
+  expect(domain_event.metadata).to eq({ "performer" => @fact_checker })
 end

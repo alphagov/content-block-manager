@@ -21,6 +21,7 @@ Feature: Editor records fact check outcome and publishes edition
     And I should see the pension created event on the timeline
     And the calls to action are suited to the published state
     And the block should have been sent to the Publishing API
+    And a domain event for the fact check should have been created
 
   Scenario: Attempt to publish the edition without supplying fact check outcome
     Given I am viewing the edition awaiting fact check

@@ -6,6 +6,10 @@ class DomainEvent < ApplicationRecord
 
   EVENT_NAMES = %w[
     edition.state_transition.succeeded
+    edition.fact_check.performed
+    edition.fact_check.skipped
+    edition.review.performed
+    edition.review.skipped
   ].freeze
 
   validates :name, presence: true

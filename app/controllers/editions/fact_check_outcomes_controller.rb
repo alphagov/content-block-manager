@@ -9,11 +9,15 @@ class Editions::FactCheckOutcomesController < BaseController
     @edition = Edition.find(params[:id])
     return form_validation_error unless fact_check_outcome_supplied?
 
-    record_fact_check_outcome
-
-    return finalise_edition if fact_check_skipped?
-
-    redirect_to identify_performer_fact_check_outcome_edition_path(@edition)
+    if fact_check_skipped?
+      @edition.create_fact_check_outcome!(
+        "skipped" => true,
+        "creator" => Current.user,
+      )
+      finalise_edition
+    else
+      redirect_to identify_performer_fact_check_outcome_edition_path(@edition)
+    end
   end
 
   def identify_performer
@@ -26,7 +30,11 @@ class Editions::FactCheckOutcomesController < BaseController
     @edition = Edition.find(params[:id])
 
     begin
-      update_fact_check_performer
+      @edition.create_fact_check_outcome!(
+        "skipped" => false,
+        "creator" => Current.user,
+        "performer" => fact_check_performer,
+      )
     rescue ActionController::ParameterMissing
       return handle_missing_fact_check_performer
     end
@@ -46,12 +54,6 @@ private
     redirect_to(document_path(@edition.document))
   rescue Transitions::InvalidTransition => e
     handle_other_transition_error(e)
-  end
-
-  def update_fact_check_performer
-    @edition.fact_check_outcome.update!(
-      "performer" => fact_check_performer,
-    )
   end
 
   def fact_check_performer

@@ -88,11 +88,8 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
             }
           end
 
-          it "saves the fact check outcome details" do
-            expect(edition).to have_received(:create_fact_check_outcome!).with(
-              "skipped" => false,
-              "creator" => current_user,
-            )
+          it "does not save the fact check outcome details" do
+            expect(edition).to_not have_received(:create_fact_check_outcome!)
           end
         end
       end
@@ -174,6 +171,8 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
     let(:fact_check_outcome) { spy(FactCheckOutcome) }
 
     before do
+      allow(edition).to receive(:create_fact_check_outcome!)
+
       allow(Time).to receive(:current).and_return(time_now)
       allow(Current).to receive(:user).and_return(current_user)
       allow(edition).to receive(:update)
@@ -188,8 +187,12 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
         }
       end
 
-      it "should update the edition with the Subject Matter Expert" do
-        expect(edition.fact_check_outcome).to have_received(:update!).with({ "performer" => "Alice" })
+      it "should create the outcome with the Subject Matter Expert" do
+        expect(edition).to have_received(:create_fact_check_outcome!).with(
+          "skipped" => false,
+          "creator" => current_user,
+          "performer" => "Alice",
+        )
       end
     end
 
@@ -239,7 +242,8 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
     end
 
     context "when the edition is due to be scheduled" do
-      let(:edition) { Edition.new(id: 123, document: document, scheduled_publication: Time.zone.now) }
+      let(:edition) { create(:edition, :pension, id: 123, document: document, scheduled_publication: Time.zone.now) }
+
       before do
         put :update, params: {
           id: 123,

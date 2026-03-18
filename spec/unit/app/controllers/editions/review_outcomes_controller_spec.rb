@@ -64,11 +64,8 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
             }
           end
 
-          it "saves the Review outcome details" do
-            expect(edition).to have_received(:create_review_outcome!).with(
-              "skipped" => false,
-              "creator" => current_user,
-            )
+          it "does not save the Review outcome details" do
+            expect(edition).not_to have_received(:create_review_outcome!)
           end
         end
       end
@@ -135,14 +132,20 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
 
     context "when the request is valid" do
       before do
+        allow(edition).to receive(:create_review_outcome!)
+
         put :update, params: {
           id: 123,
           "review_outcome" => { "review_performer" => "Alice" },
         }
       end
 
-      it "should update the edition with the 2i reviewer" do
-        expect(edition.review_outcome).to have_received(:update!).with({ "performer" => "Alice" })
+      it "should create the review outcome with the 2i reviewer" do
+        expect(edition).to have_received(:create_review_outcome!).with(
+          "skipped" => false,
+          "creator" => current_user,
+          "performer" => "Alice",
+        )
       end
     end
 
@@ -193,8 +196,9 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
     end
 
     context "when updating the outcome with the performer" do
-      let(:edition) { Edition.new(id: 123, document: document) }
       before do
+        allow(edition).to receive(:create_review_outcome!)
+
         put :update, params: {
           id: 123,
           "review_outcome" => { "review_performer" => "Alice" },
@@ -230,6 +234,7 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
       let(:error) { Transitions::InvalidTransition.new(error_message) }
 
       before do
+        allow(edition).to receive(:create_review_outcome!)
         allow(edition).to receive(:ready_for_factcheck!).and_raise(error)
 
         allow(Edition::StateTransitionErrorReport).to receive(:new).and_return(error_report)

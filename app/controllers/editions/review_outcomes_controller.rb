@@ -9,11 +9,15 @@ class Editions::ReviewOutcomesController < BaseController
     @edition = Edition.find(params[:id])
     return form_validation_error unless review_outcome_supplied?
 
-    record_review_outcome
-
-    return transition_edition_and_redirect if review_skipped?
-
-    redirect_to identify_performer_review_outcome_edition_path(@edition)
+    if review_skipped?
+      @edition.create_review_outcome!(
+        "skipped" => true,
+        "creator" => Current.user,
+      )
+      transition_edition_and_redirect
+    else
+      redirect_to identify_performer_review_outcome_edition_path(@edition)
+    end
   end
 
   def identify_performer
@@ -22,7 +26,11 @@ class Editions::ReviewOutcomesController < BaseController
 
   def update
     begin
-      update_review_performer
+      @edition.create_review_outcome!(
+        "skipped" => false,
+        "creator" => Current.user,
+        "performer" => review_performer,
+      )
     rescue ActionController::ParameterMissing
       return handle_missing_review_performer
     end
@@ -44,12 +52,6 @@ private
     handle_other_transition_error(e)
   end
 
-  def update_review_performer
-    @edition.review_outcome.update!(
-      "performer" => review_performer,
-    )
-  end
-
   def review_performer
     if outcome_params["review_performer"].blank?
       raise ActionController::ParameterMissing, I18n.t("edition.outcomes.errors.missing_performer.review")
@@ -61,13 +63,6 @@ private
   def form_validation_error
     flash.now.alert = I18n.t("edition.outcomes.errors.missing_outcome.review")
     render :new
-  end
-
-  def record_review_outcome
-    @edition.create_review_outcome!(
-      "skipped" => review_skipped?,
-      "creator" => Current.user,
-    )
   end
 
   def transition_to_awaiting_factcheck_state
