@@ -1,4 +1,5 @@
 class Editions::WorkflowController < BaseController
+  include FormHelper
   include SchedulingValidator
 
   include Workflow::HasSteps
@@ -31,11 +32,6 @@ class Editions::WorkflowController < BaseController
     I18n.t("edition.workflow.steps.#{step}.title", **args)
   end
   helper_method :page_title
-
-  def form_data_attributes
-    helpers.ga4_data_attributes(edition: @edition)
-  end
-  helper_method :form_data_attributes
 
 private
 

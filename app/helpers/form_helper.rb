@@ -1,12 +1,16 @@
 module FormHelper
   def ga4_data_attributes(edition:, block_type: nil)
     {
-      data: {
-        module: "ga4-form-tracker",
-        ga4_action: event_name_for_edition(edition),
-        ga4_tool_name: edition&.document&.block_type || block_type,
-      },
+      module: "ga4-form-tracker",
+      ga4_action: event_name_for_edition(edition),
+      ga4_tool_name: edition&.document&.block_type || block_type,
     }
+  end
+
+  def data_attributes_for_forms_with_text_fields(edition:, block_type: nil)
+    base_attributes = ga4_data_attributes(edition:, block_type:)
+
+    add_unsaved_changes_prompt(base_attributes)
   end
 
   def ga4_form_tracking?
@@ -26,5 +30,14 @@ module FormHelper
 
   def component_for_field(field, context)
     field.component_class.new(context)
+  end
+
+private
+
+  def add_unsaved_changes_prompt(attributes)
+    {
+      **attributes,
+      module: "#{attributes[:module]} unsaved-changes-prompt",
+    }
   end
 end

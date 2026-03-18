@@ -10,7 +10,7 @@
       url: create_sole_embedded_object_edition_path(
         @edition,
         object_type: @subschema.block_type,
-      ), method: :post, **ga4_data_attributes(edition: @edition)) do |form| %>
+      ), method: :post, data: data_attributes_for_forms_with_text_fields(edition: @edition)) do |form| %>
   <%= form.hidden_field :step, value: "embedded_#{@subschema.block_type}" %>
   <%= render partial: "editions/embedded_objects/shared/form", locals: { form:, is_new_record: true } %>
 <% end %>
