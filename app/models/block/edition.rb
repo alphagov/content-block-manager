@@ -17,6 +17,14 @@ module Block
       raise NotImplementedError, "Subclasses must implement #details method"
     end
 
+    def state
+      :draft
+    end
+
+    def creator
+      User.first
+    end
+
   private
 
     def set_document_sluggable_string
