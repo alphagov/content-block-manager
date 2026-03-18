@@ -64,7 +64,7 @@ class DocumentsController < BaseController
 private
 
   def add_important_notice
-    flash[:notice] = I18n.t("edition.states.important_notice.#{@edition.state}")
+    flash.now[:notice] = I18n.t("edition.states.important_notice.#{@edition.state}")
   end
 
   def params_filters
