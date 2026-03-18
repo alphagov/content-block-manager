@@ -13,6 +13,13 @@ module ApplicationHelper
     false
   end
 
+  def schemaless_experiment_enabled?
+    return true if current_user&.has_permission?(User::Permissions::SCHEMALESS_EXPERIMENT_PERMISSION)
+    return true if params[:schemaless_experiment] == "true"
+
+    false
+  end
+
   def get_content_id(edition)
     return if edition.nil?
 
