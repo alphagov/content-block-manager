@@ -56,6 +56,7 @@ RSpec.describe BlockPreview::PreviewHtml do
       block: block_to_preview,
       base_path: host_base_path,
       locale: "en",
+      state: "published",
     ).to_s
 
     parsed_content = Nokogiri::HTML.parse(actual_content)
@@ -70,6 +71,7 @@ RSpec.describe BlockPreview::PreviewHtml do
       block: block_to_preview,
       base_path: host_base_path,
       locale: "en",
+      state: "published",
     ).to_s
 
     parsed_content = Nokogiri::HTML.parse(actual_content)
@@ -92,6 +94,7 @@ RSpec.describe BlockPreview::PreviewHtml do
         block: block_to_preview,
         base_path: host_base_path,
         locale: "en",
+        state: "published",
       ).to_s
 
       expect(actual_content).to eq(expected_content)
@@ -113,6 +116,7 @@ RSpec.describe BlockPreview::PreviewHtml do
         block: block_to_preview,
         base_path: host_base_path,
         locale: "en",
+        state: "published",
       ).to_s
 
       url = host_content_preview_path(edition_id: block_to_preview.id, host_content_id:)
@@ -150,6 +154,7 @@ RSpec.describe BlockPreview::PreviewHtml do
         block: block_to_preview,
         base_path: host_base_path,
         locale: "en",
+        state: "published",
       ).to_s
 
       parsed_content = Nokogiri::HTML.parse(actual_content)
@@ -188,12 +193,61 @@ RSpec.describe BlockPreview::PreviewHtml do
         block: block_to_preview,
         base_path: host_base_path,
         locale: "en",
+        state: "published",
       ).to_s
 
       parsed_content = Nokogiri::HTML.parse(actual_content)
 
       expect(parsed_content.at_css("body.gem-c-layout-for-public--draft")).to be_present
       expect(parsed_content.at_css('div.content-embed__content_block_contact[style="background-color: yellow;"]')).to be_present
+    end
+  end
+
+  describe "when the state is draft" do
+    before do
+      allow(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for('draft-origin')}#{host_base_path}")).and_return(fake_frontend_response)
+    end
+
+    it "makes a request to the draft origin" do
+      expect(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for('draft-origin')}#{host_base_path}")).and_return(fake_frontend_response)
+
+      BlockPreview::PreviewHtml.new(
+        content_id: host_content_id,
+        block: block_to_preview,
+        base_path: host_base_path,
+        locale: "en",
+        state: "draft",
+      ).to_s
+    end
+
+    it "still returns the preview html" do
+      actual_content = BlockPreview::PreviewHtml.new(
+        content_id: host_content_id,
+        block: block_to_preview,
+        base_path: host_base_path,
+        locale: "en",
+        state: "draft",
+      ).to_s
+
+      parsed_content = Nokogiri::HTML.parse(actual_content)
+
+      expect(parsed_content.at_css("body.gem-c-layout-for-public--draft")).to be_present
+      expect(parsed_content.at_css('span.content-embed__content_block_contact[style="background-color: yellow;"]')).to be_present
+    end
+
+    it "appends the draft-origin base path to the CSS and JS references" do
+      actual_content = BlockPreview::PreviewHtml.new(
+        content_id: host_content_id,
+        block: block_to_preview,
+        base_path: host_base_path,
+        locale: "en",
+        state: "draft",
+      ).to_s
+
+      parsed_content = Nokogiri::HTML.parse(actual_content)
+
+      expect(parsed_content.at_css("link[href='#{Plek.external_url_for('draft-origin')}/assets/application.css']")).to be_present
+      expect(parsed_content.at_css("script[src='#{Plek.external_url_for('draft-origin')}/assets/application.js']")).to be_present
     end
   end
 
@@ -219,6 +273,7 @@ RSpec.describe BlockPreview::PreviewHtml do
         block: block_to_preview,
         base_path: host_base_path,
         locale: "en",
+        state: "published",
       ).to_s
     end
 
@@ -237,6 +292,7 @@ RSpec.describe BlockPreview::PreviewHtml do
           block: block_to_preview,
           base_path: host_base_path,
           locale: "en",
+          state: "published",
         ).to_s
       end
     end
@@ -252,7 +308,58 @@ RSpec.describe BlockPreview::PreviewHtml do
           block: block_to_preview,
           base_path: host_base_path,
           locale: "en",
+          state: "published",
         ).to_s
+      end
+    end
+
+    describe "when the state is draft" do
+      it "prepends `draft` to the rendering app" do
+        expect(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for("draft-#{rendering_app}")}#{host_base_path}")).and_return(fake_frontend_response)
+
+        BlockPreview::PreviewHtml.new(
+          content_id: host_content_id,
+          block: block_to_preview,
+          base_path: host_base_path,
+          locale: "en",
+          state: "draft",
+        ).to_s
+      end
+
+      describe "when the frontend app is smart answers" do
+        let(:rendering_app) { "smartanswers" }
+
+        it "makes a request to smart-answers" do
+          expect(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for('smart-answers')}#{host_base_path}")).and_return(fake_frontend_response)
+
+          BlockPreview::PreviewHtml.new(
+            content_id: host_content_id,
+            block: block_to_preview,
+            base_path: host_base_path,
+            locale: "en",
+            state: "draft",
+          ).to_s
+        end
+      end
+
+      describe "when the Publishing API does not report a rendering app" do
+        let(:publishing_api_response) do
+          {
+            "foo" => "bar",
+          }
+        end
+
+        it "defaults to draft-frontend" do
+          expect(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for('draft-frontend')}#{host_base_path}")).and_return(fake_frontend_response)
+
+          BlockPreview::PreviewHtml.new(
+            content_id: host_content_id,
+            block: block_to_preview,
+            base_path: host_base_path,
+            locale: "en",
+            state: "draft",
+          ).to_s
+        end
       end
     end
   end
