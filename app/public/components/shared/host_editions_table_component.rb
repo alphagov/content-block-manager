@@ -132,7 +132,12 @@ private
   end
 
   def preview_path(content_item)
-    BlockPreview::Engine.routes.url_helpers.host_content_preview_path(edition_id: edition.id, host_content_id: content_item.host_content_id, locale: content_item.host_locale)
+    BlockPreview::Engine.routes.url_helpers.host_content_preview_path(
+      edition_id: edition.id,
+      host_content_id: content_item.host_content_id,
+      locale: content_item.host_locale,
+      state: content_item.state,
+    )
   end
 
   def preview_link(content_item)

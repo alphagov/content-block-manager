@@ -387,9 +387,7 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
 
       expect(columns.count).to eq(7)
 
-      expect(columns[0]).to have_no_css ".govuk-link" do |link|
-      end
-
+      expect(columns[0]).to have_no_css ".govuk-link"
       expect(columns[1]).to have_text host_content_item.document_type.humanize
       expect(columns[2]).to have_text "1"
       expect(columns[3]).to have_text "1.2m"
@@ -407,6 +405,27 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
       expect(columns[6]).to have_css "a.govuk-link" do |link|
         expect(link.text).to eq("Preview #{host_content_item.title} (opens in new tab)")
         expect(link[:href]).to include("/preview")
+        expect(link[:href]).to include("state=#{host_content_item.state}")
+      end
+    end
+
+    context "when the content item has a draft state" do
+      let(:state) { "draft" }
+
+      it "includes the content item state in the preview link" do
+        render_inline(
+          described_class.new(
+            caption:,
+            host_content_items:,
+            edition: in_progress_edition,
+          ),
+        )
+
+        columns = page.find_all(".govuk-table__cell")
+
+        expect(columns[6]).to have_css "a.govuk-link" do |link|
+          expect(link[:href]).to include("state=draft")
+        end
       end
     end
   end
