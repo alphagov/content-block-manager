@@ -1,10 +1,15 @@
 module BlockPreview
   class PreviewContent
-    def initialize(content_id:, block:, base_path: nil, locale: "en")
+    VALID_STATES = %w[published draft].freeze
+
+    attr_reader :state
+
+    def initialize(content_id:, block:, base_path: nil, locale: "en", state: "published")
       @content_id = content_id
       @block = block
       @base_path = base_path
       @locale = locale
+      @state = validated_state(state)
     end
 
     def title
@@ -17,6 +22,7 @@ module BlockPreview
         block:,
         base_path: base_path || content_item["base_path"],
         locale:,
+        state:,
       ).to_s
     end
 
@@ -27,6 +33,12 @@ module BlockPreview
   private
 
     attr_reader :content_id, :block, :base_path, :locale
+
+    def validated_state(state)
+      return state if VALID_STATES.include?(state)
+
+      raise ArgumentError, "state must be one of: #{VALID_STATES.join(', ')}"
+    end
 
     def content_item
       @content_item ||= Public::Services.publishing_api.get_content(content_id, { locale: }).parsed_content

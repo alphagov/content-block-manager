@@ -1,106 +1,165 @@
 RSpec.describe BlockPreview::PreviewContent do
-  let(:title) { "Ministry of Example" }
-  let(:html) { "<p>Ministry of Example</p>" }
-  let(:instances_count) { "2" }
-  let(:preview_content) { double(:preview_content, title:, instances_count:, html:) }
+  let(:host_content_id) { SecureRandom.uuid }
+  let(:preview_content_id) { SecureRandom.uuid }
+  let(:host_title) { "Test" }
+  let(:host_base_path) { "/test" }
+  let(:locale) { "en" }
+  let(:state) { "published" }
+  let(:base_path) { nil }
+  let(:html) { "SOME_HTML" }
+  let(:instances_count) { 2 }
 
-  it "returns title, html and instances count" do
-    expect(title).to eq(preview_content.title)
-    expect(html).to eq(preview_content.html)
-    expect(instances_count).to eq(preview_content.instances_count)
+  let(:document) do
+    build(:document, :pension, content_id: preview_content_id)
   end
 
-  describe ".for_content_id" do
-    let(:host_content_id) { SecureRandom.uuid }
-    let(:preview_content_id) { SecureRandom.uuid }
-    let(:host_title) { "Test" }
-    let(:host_base_path) { "/test" }
-    let(:document) do
-      build(:document, :pension, content_id: preview_content_id)
-    end
-    let(:edition) do
-      build(:edition, :pension, document:, details: { "email_address" => "new@new.com" }, id: 1)
-    end
-    let(:block_to_preview) do
-      build(:content_block, edition:)
-    end
-    let(:metadata_response) do
-      double(:response, parsed_content: { "instances" => 2 })
-    end
-    let(:preview_response) { double(:preview_response, to_s: html) }
-    let(:html) { "SOME_HTML" }
+  let(:edition) do
+    build(:edition, :pension, document:, details: { "email_address" => "new@new.com" }, id: 1)
+  end
 
-    describe "when a locale is not provided" do
-      before do
-        stub_publishing_api_has_item(content_id: host_content_id, title: host_title, base_path: host_base_path)
-        allow(Public::Services.publishing_api).to receive(:get_host_content_item_for_content_id)
-                .with(block_to_preview.document.content_id, host_content_id, { locale: "en" })
-                .and_return(metadata_response)
+  let(:block_to_preview) do
+    build(:content_block, edition:)
+  end
+
+  let(:content_item_response) do
+    instance_double(GdsApi::Response, parsed_content: { "title" => host_title, "base_path" => host_base_path })
+  end
+
+  let(:metadata_response) do
+    instance_double(GdsApi::Response, parsed_content: { "instances" => instances_count })
+  end
+
+  let(:preview_html_response) { instance_double(BlockPreview::PreviewHtml, to_s: html) }
+
+  subject(:preview_content) do
+    described_class.new(
+      content_id: host_content_id,
+      block: block_to_preview,
+      base_path:,
+      locale:,
+      state:,
+    )
+  end
+
+  before do
+    allow(Public::Services.publishing_api).to receive(:get_content)
+      .with(host_content_id, { locale: })
+      .and_return(content_item_response)
+
+    allow(Public::Services.publishing_api).to receive(:get_host_content_item_for_content_id)
+      .with(block_to_preview.content_id, host_content_id, { locale: })
+      .and_return(metadata_response)
+  end
+
+  describe "#state" do
+    it "is publicly readable" do
+      expect(preview_content.state).to eq("published")
+    end
+
+    context "when the state is draft" do
+      let(:state) { "draft" }
+
+      it "returns the normalized state" do
+        expect(preview_content.state).to eq("draft")
       end
+    end
 
-      it "returns the title of host document" do
-        expect(BlockPreview::PreviewHtml).to receive(:new)
-                                         .with(content_id: host_content_id,
-                                               block: block_to_preview,
-                                               base_path: host_base_path,
-                                               locale: "en")
-                                         .and_return(preview_response)
+    context "when the state is invalid" do
+      let(:state) { "archived" }
 
-        preview_content = BlockPreview::PreviewContent.new(
+      it "raises an ArgumentError" do
+        expect { preview_content }.to raise_error(ArgumentError, "state must be one of: published, draft")
+      end
+    end
+
+    context "when the state is nil" do
+      let(:state) { nil }
+
+      it "raises an ArgumentError" do
+        expect { preview_content }.to raise_error(ArgumentError, "state must be one of: published, draft")
+      end
+    end
+  end
+
+  describe "#title" do
+    it "returns the title from the host content item" do
+      expect(preview_content.title).to eq(host_title)
+    end
+
+    it "memoizes the fetched content item" do
+      2.times { preview_content.title }
+
+      expect(Public::Services.publishing_api).to have_received(:get_content).once
+    end
+  end
+
+  describe "#instances_count" do
+    it "returns the number of host content item instances" do
+      expect(preview_content.instances_count).to eq(instances_count)
+    end
+
+    it "memoizes the fetched metadata" do
+      2.times { preview_content.instances_count }
+
+      expect(Public::Services.publishing_api).to have_received(:get_host_content_item_for_content_id).once
+    end
+  end
+
+  describe "#html" do
+    before do
+      allow(BlockPreview::PreviewHtml).to receive(:new).and_return(preview_html_response)
+    end
+
+    it "builds preview html using the host content base path by default" do
+      expect(preview_content.html).to eq(html)
+
+      expect(BlockPreview::PreviewHtml).to have_received(:new).with(
+        content_id: host_content_id,
+        block: block_to_preview,
+        base_path: host_base_path,
+        locale: "en",
+        state: "published",
+      )
+    end
+
+    context "when a base path is provided" do
+      let(:base_path) { "/something/different" }
+
+      it "prefers the provided base path" do
+        preview_content.html
+
+        expect(BlockPreview::PreviewHtml).to have_received(:new).with(
           content_id: host_content_id,
           block: block_to_preview,
+          base_path: base_path,
+          locale: "en",
+          state: "published",
         )
-
-        expect(preview_content.title).to eq(host_title)
-        expect(preview_content.instances_count).to eq(2)
-        expect(preview_content.html).to eq(html)
-      end
-
-      it "allows a base_path to be provided" do
-        base_path = "/something/different"
-
-        expect(BlockPreview::PreviewHtml).to receive(:new)
-                                         .with(content_id: host_content_id,
-                                               block: block_to_preview,
-                                               base_path:,
-                                               locale: "en")
-                                         .and_return(preview_response)
-
-        BlockPreview::PreviewContent.new(
-          content_id: host_content_id,
-          block: block_to_preview,
-          base_path:,
-        ).html
       end
     end
 
-    describe "when a locale is provided" do
-      before do
-        stub_publishing_api_has_item(content_id: host_content_id, title: host_title, base_path: host_base_path, locale: "cy")
-        allow(Public::Services.publishing_api).to receive(:get_host_content_item_for_content_id)
-                .with(block_to_preview.document.content_id, host_content_id, { locale: "cy" })
-                .and_return(metadata_response)
-      end
+    context "when a locale and state are provided" do
+      let(:locale) { "cy" }
+      let(:state) { "draft" }
 
-      it "returns the title of host document" do
-        expect(BlockPreview::PreviewHtml).to receive(:new)
-                                         .with(content_id: host_content_id,
-                                               block: block_to_preview,
-                                               base_path: host_base_path,
-                                               locale: "cy")
-                                         .and_return(preview_response)
+      it "forwards them to the preview renderer" do
+        preview_content.html
 
-        preview_content = BlockPreview::PreviewContent.new(
+        expect(BlockPreview::PreviewHtml).to have_received(:new).with(
           content_id: host_content_id,
           block: block_to_preview,
-          base_path: nil,
+          base_path: host_base_path,
           locale: "cy",
+          state: "draft",
         )
-
-        expect(preview_content.title).to eq(host_title)
-        expect(preview_content.instances_count).to eq(2)
-        expect(preview_content.html).to eq(html)
       end
+    end
+
+    it "memoizes the rendered html" do
+      2.times { preview_content.html }
+
+      expect(BlockPreview::PreviewHtml).to have_received(:new).once
+      expect(Public::Services.publishing_api).to have_received(:get_content).once
     end
   end
 end

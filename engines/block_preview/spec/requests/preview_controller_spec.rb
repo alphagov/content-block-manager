@@ -2,7 +2,7 @@ RSpec.describe BlockPreview::PreviewController, type: :request do
   include BlockPreview::Engine.routes.url_helpers
 
   let(:block) { build(:content_block, id: "123") }
-  let(:mock_preview_content) { instance_double(BlockPreview::PreviewContent, title: "Test", html: "<p>Test</p>", instances_count: 2) }
+  let(:mock_preview_content) { instance_double(BlockPreview::PreviewContent, title: "Test", html: "<p>Test</p>", instances_count: 2, state: "published") }
 
   let(:edition_id) { "123" }
   let(:host_content_id) { "content-id-abc" }
