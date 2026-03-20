@@ -11,6 +11,7 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
     }
   end
   let(:unique_pageviews) { 1_200_000 }
+  let(:state) { "published" }
 
   let(:last_edited_by_editor) { build(:signon_user) }
   let(:host_content_item) do
@@ -26,6 +27,7 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
       "host_content_id" => SecureRandom.uuid,
       "host_locale" => "en",
       "instances" => 1,
+      "state" => state,
     )
   end
   let(:host_content_items) do
@@ -102,6 +104,10 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
         expect(link[:target]).to eq("_blank")
       end
 
+      expect(columns[0]).to have_css "strong.govuk-tag" do |tag|
+        expect(tag.text.strip).to eq("Published")
+      end
+
       expect(columns[1]).to have_text host_content_item.document_type.humanize
       expect(columns[2]).to have_text "1"
       expect(columns[3]).to have_text "1.2m"
@@ -143,6 +149,26 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
       it_returns_unknown_user
     end
 
+    context "when the state is draft" do
+      let(:state) { "draft" }
+
+      it "shows the draft tag" do
+        render_inline(
+          described_class.new(
+            caption:,
+            host_content_items:,
+            edition:,
+          ),
+        )
+
+        columns = page.find_all(".govuk-table__cell")
+
+        expect(columns[0]).to have_css "strong.govuk-tag" do |tag|
+          expect(tag.text.strip).to eq("Draft")
+        end
+      end
+    end
+
     context "when unique pageviews can't be found" do
       let(:unique_pageviews) { nil }
 
@@ -173,6 +199,7 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
           "host_content_id" => SecureRandom.uuid,
           "host_locale" => "en",
           "instances" => 1,
+          "state" => "published",
         )
       end
 

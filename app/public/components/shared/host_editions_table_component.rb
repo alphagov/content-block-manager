@@ -148,15 +148,24 @@ private
   end
 
   def title_row(content_item)
-    if edition.state == "published"
-      {
-        text: content_link(content_item),
-      }
-    else
-      {
-        text: content_item.title,
-      }
-    end
+    {
+      text: content_tag(:ul, class: "govuk-list") do
+        [
+          content_tag(:li,
+                      edition.state == "published" ? content_link(content_item) : content_item.title,
+                      class: "govuk-!-padding-bottom-1"),
+          content_tag(:li, status_tag(content_item)),
+        ].join.html_safe
+      end,
+    }
+  end
+
+  def status_tag(content_item)
+    render(
+      Shared::DocumentStatusTagComponent.new(
+        state: content_item.state,
+      ),
+    )
   end
 
   def content_link_text(content_item)
