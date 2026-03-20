@@ -28,7 +28,6 @@ class DocumentsController < BaseController
     add_important_notice if @edition.awaiting_review? || @edition.awaiting_factcheck?
     @schema = Schema.find_by_block_type(@document.block_type)
     @subschemas = SubschemaCollection.new(@schema.subschemas)
-    @content_block_versions = @document.versions
     @order = params[:order]
     @page = params[:page]
 
