@@ -12,17 +12,17 @@ class Shared::DocumentStatusTagComponent < ViewComponent::Base
     deleted: "red",
   }.freeze
 
-  def initialize(edition:)
-    @edition = edition
+  def initialize(state:)
+    @state = state
   end
 
   def status
-    I18n.t("edition.states.label.#{@edition.state}")
+    I18n.t("edition.states.label.#{@state}")
   end
 
   def colour
-    COLOURS.fetch(@edition.state.to_sym) do
-      raise UnexpectedStatusError, "No colour mapped for state '#{@edition.state}'"
+    COLOURS.fetch(@state.to_sym) do
+      raise UnexpectedStatusError, "No colour mapped for state '#{@state}'"
     end
   end
 end

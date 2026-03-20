@@ -10,7 +10,7 @@
 
     <%= render(
           Shared::DocumentStatusTagComponent.new(
-            edition: @block,
+            state: @block.state,
             ),
           ) %>
   </div>

@@ -15,7 +15,7 @@
 
     <%= render(
         Shared::DocumentStatusTagComponent.new(
-          edition: @edition,
+          state: @edition.state,
         ),
       ) %>
   </div>
