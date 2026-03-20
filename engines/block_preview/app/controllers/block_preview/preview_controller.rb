@@ -9,6 +9,7 @@ class BlockPreview::PreviewController < BlockPreview::ApplicationController
       block: @block,
       base_path: params[:base_path],
       locale: params[:locale],
+      state: params[:state].presence || "published",
     )
   end
 
