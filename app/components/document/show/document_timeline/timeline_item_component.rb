@@ -3,8 +3,8 @@ require "record_tag_helper/helper"
 class Document::Show::DocumentTimeline::TimelineItemComponent < ViewComponent::Base
   include ActionView::Helpers::RecordTagHelper
 
-  def initialize(version:, schema:, is_first_published_version:, is_latest:)
-    @version = version
+  def initialize(domain_event:, schema:, is_first_published_version:, is_latest:)
+    @domain_event = domain_event
     @schema = schema
     @is_first_published_version = is_first_published_version
     @is_latest = is_latest
@@ -12,7 +12,11 @@ class Document::Show::DocumentTimeline::TimelineItemComponent < ViewComponent::B
 
 private
 
-  attr_reader :version, :schema, :is_first_published_version, :is_latest
+  attr_reader :domain_event, :schema, :is_first_published_version, :is_latest
+
+  def version
+    domain_event.version
+  end
 
   def title
     case version.state

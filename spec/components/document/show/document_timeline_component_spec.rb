@@ -65,7 +65,7 @@ RSpec.describe Document::Show::DocumentTimelineComponent, type: :component do
 
     expect(Document::Show::DocumentTimeline::TimelineItemComponent).to receive(:new)
       .with(
-        version: version_4,
+        domain_event: domain_event_4,
         schema:,
         is_first_published_version: false,
         is_latest: true,
@@ -73,7 +73,7 @@ RSpec.describe Document::Show::DocumentTimelineComponent, type: :component do
 
     expect(Document::Show::DocumentTimeline::TimelineItemComponent).to receive(:new)
       .with(
-        version: version_3,
+        domain_event: domain_event_3,
         schema:,
         is_first_published_version: false,
         is_latest: false,
@@ -81,7 +81,7 @@ RSpec.describe Document::Show::DocumentTimelineComponent, type: :component do
 
     expect(Document::Show::DocumentTimeline::TimelineItemComponent).to receive(:new)
       .with(
-        version: version_2,
+        domain_event: domain_event_2,
         schema:,
         is_first_published_version: true,
         is_latest: false,
