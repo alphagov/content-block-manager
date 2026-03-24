@@ -88,15 +88,15 @@ private
 
   def date
     tag.time(
-      version&.created_at&.to_fs(:long_ordinal_with_at),
+      domain_event.created_at.to_fs(:long_ordinal_with_at),
       class: "date",
-      datetime: version&.created_at&.iso8601,
+      datetime: domain_event.created_at.iso8601,
       lang: "en",
     )
   end
 
   def byline
-    User.find_by_id(version&.whodunnit)&.then { |user| helpers.linked_author(user, { class: "govuk-link" }) } || "unknown user"
+    User.find_by_id(domain_event.user_id)&.then { |user| helpers.linked_author(user, { class: "govuk-link" }) } || "unknown user"
   end
 
   def internal_change_note
