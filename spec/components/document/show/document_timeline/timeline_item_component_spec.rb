@@ -26,7 +26,7 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
     )
   end
 
-  let(:event) { build(:domain_event, version:, created_at: version.created_at) }
+  let(:domain_event) { build(:domain_event, edition:, user:, version:, created_at: version.created_at) }
 
   let(:is_latest) { false }
   let(:is_first_published_version) { false }

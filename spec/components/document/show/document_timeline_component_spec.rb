@@ -129,7 +129,7 @@ RSpec.describe Document::Show::DocumentTimelineComponent, type: :component do
 
     let(:domain_events) do
       versions.map do |version|
-        build_stubbed(:domain_event, version:, created_at: version.created_at)
+        build_stubbed(:domain_event, edition: item, version:, created_at: version.created_at)
       end
     end
 

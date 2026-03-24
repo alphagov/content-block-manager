@@ -18,6 +18,10 @@ private
     domain_event.version
   end
 
+  def edition
+    domain_event.edition
+  end
+
   def title
     case version.state
     when "published"
@@ -73,11 +77,11 @@ private
   end
 
   def internal_change_note
-    version.item.internal_change_note
+    edition.internal_change_note
   end
 
   def change_note
-    version.item.change_note
+    edition.change_note
   end
 
   def embedded_object_diffs
