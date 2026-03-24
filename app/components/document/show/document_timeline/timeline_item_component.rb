@@ -88,10 +88,6 @@ private
     }.flatten.compact
   end
 
-  def show_details_of_changes?
-    details_of_changes.present?
-  end
-
   def details_of_changes
     @details_of_changes ||= begin
       return "" if version.field_diffs.blank?
