@@ -2,12 +2,13 @@ RSpec.describe BlockPreview::PreviewController, type: :request do
   include BlockPreview::Engine.routes.url_helpers
 
   let(:block) { build(:content_block, id: "123") }
-  let(:mock_preview_content) { instance_double(BlockPreview::PreviewContent, title: "Test", html: "<p>Test</p>", instances_count: 2) }
+  let(:mock_preview_content) { instance_double(BlockPreview::PreviewContent, title: "Test", html: "<p>Test</p>", instances_count: 2, state: "published") }
 
   let(:edition_id) { "123" }
   let(:host_content_id) { "content-id-abc" }
   let(:base_path) { "/government/base-path" }
   let(:locale) { "en" }
+  let(:state) { "draft" }
 
   before do
     allow(ContentBlock).to receive(:from_edition_id).and_return(block)
@@ -19,10 +20,64 @@ RSpec.describe BlockPreview::PreviewController, type: :request do
       host_content_preview_path(edition_id: edition_id,
                                 host_content_id: host_content_id,
                                 base_path: base_path,
-                                locale: locale)
+                                locale: locale,
+                                state: state)
     end
 
     include_examples "allows authentication with a JWT"
+
+    it "forwards the state param to PreviewContent when using a valid JWT" do
+      ClimateControl.modify("GDS_SSO_MOCK_INVALID" => "1", "JWT_AUTH_SECRET" => "secret") do
+        valid_token = JWT.encode(
+          { sub: block.auth_bypass_id },
+          ENV.fetch("JWT_AUTH_SECRET"),
+          "HS256",
+        )
+
+        get host_content_preview_path(
+          edition_id: edition_id,
+          host_content_id: host_content_id,
+          base_path: base_path,
+          locale: locale,
+          state: state,
+          token: valid_token,
+        )
+
+        expect(BlockPreview::PreviewContent).to have_received(:new).with(
+          content_id: host_content_id,
+          block: block,
+          base_path: base_path,
+          locale: locale,
+          state: state,
+        )
+      end
+    end
+
+    it "defaults the state param to published when it is omitted" do
+      ClimateControl.modify("GDS_SSO_MOCK_INVALID" => "1", "JWT_AUTH_SECRET" => "secret") do
+        valid_token = JWT.encode(
+          { sub: block.auth_bypass_id },
+          ENV.fetch("JWT_AUTH_SECRET"),
+          "HS256",
+        )
+
+        get host_content_preview_path(
+          edition_id: edition_id,
+          host_content_id: host_content_id,
+          base_path: base_path,
+          locale: locale,
+          token: valid_token,
+        )
+
+        expect(BlockPreview::PreviewContent).to have_received(:new).with(
+          content_id: host_content_id,
+          block: block,
+          base_path: base_path,
+          locale: locale,
+          state: "published",
+        )
+      end
+    end
   end
 
   describe "POST #form_handler" do

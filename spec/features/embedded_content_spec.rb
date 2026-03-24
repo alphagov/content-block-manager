@@ -15,6 +15,7 @@ RSpec.describe "Embedded content", type: :feature do
             "title" => "Organisation #{i}",
             "base_path" => "/organisation/#{i}",
           },
+          "state" => "published",
         }
       end
     end

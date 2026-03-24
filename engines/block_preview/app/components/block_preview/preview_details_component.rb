@@ -9,7 +9,7 @@ private
   attr_reader :block, :preview_content
 
   def list_items
-    [*details_items.compact, instances_item]
+    [*details_items.compact, instances_item, status_item]
   end
 
   def details_items
@@ -22,5 +22,9 @@ private
 
   def instances_item
     { key: "Instances", value: preview_content.instances_count }
+  end
+
+  def status_item
+    { key: "Status", value: render(Shared::DocumentStatusTagComponent.new(state: preview_content.state)) }
   end
 end

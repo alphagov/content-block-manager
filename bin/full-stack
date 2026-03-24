@@ -1,6 +1,14 @@
 #!/bin/bash -e
 # Runs Content Block Manager with all major publishing apps and frontends
 
+services=(
+  content-block-manager-app
+  whitehall-app
+  publisher-app
+  frontend-app
+  frontend-app-draft
+)
+
 # Create the `published_documents` RabbitMQ Exchange
 govuk-docker run publishing-api-lite bundle exec rake setup_exchange
 
@@ -11,4 +19,9 @@ govuk-docker run search-api-lite env SEARCH_INDEX=all rake search:create_all_ind
 govuk-docker run whitehall-lite rails taxonomy:populate_end_to_end_test_data
 govuk-docker run whitehall-lite rails taxonomy:rebuild_cache
 
-govuk-docker up content-block-manager-app whitehall-app publisher-app frontend-app government-frontend-app
+for service in "${services[@]}"; do
+  # Remove any existing PID files to prevent startup issues
+  govuk-docker run "$service" sh -lc 'find ./tmp/pids -type f -name "*.pid" -delete >/dev/null 2>&1' >/dev/null 2>&1 || true
+done
+
+govuk-docker up "${services[@]}"

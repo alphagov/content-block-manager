@@ -6,6 +6,7 @@ RSpec.describe BlockPreview::PreviewController, type: :controller do
     let(:host_content_id) { "content-id-abc" }
     let(:base_path) { "/government/base-path" }
     let(:locale) { "en" }
+    let(:state) { "draft" }
 
     let(:mock_block) { instance_double("ContentBlock", auth_bypass_id: "auth-bypass-id") }
     let(:mock_preview_content) { instance_double(BlockPreview::PreviewContent) }
@@ -19,6 +20,7 @@ RSpec.describe BlockPreview::PreviewController, type: :controller do
         host_content_id: host_content_id,
         base_path: base_path,
         locale: locale,
+        state: state,
       }
     end
 
@@ -36,6 +38,7 @@ RSpec.describe BlockPreview::PreviewController, type: :controller do
         block: mock_block,
         base_path: base_path,
         locale: locale,
+        state: state,
       )
     end
 
@@ -45,6 +48,27 @@ RSpec.describe BlockPreview::PreviewController, type: :controller do
 
     it "assigns the @preview_content instance variable" do
       expect(assigns(:preview_content)).to eq(mock_preview_content)
+    end
+
+    context "when the state param is omitted" do
+      before do
+        get :show, params: {
+          edition_id: edition_id,
+          host_content_id: host_content_id,
+          base_path: base_path,
+          locale: locale,
+        }
+      end
+
+      it "defaults the preview content state to published" do
+        expect(BlockPreview::PreviewContent).to have_received(:new).with(
+          content_id: host_content_id,
+          block: mock_block,
+          base_path: base_path,
+          locale: locale,
+          state: "published",
+        )
+      end
     end
   end
 

@@ -1,11 +1,13 @@
-Given("there is a host document with a link") do
+def create_host_document(state)
   @current_host_document = @dependent_content.first
   embed_code = "{{embed:#{@current_host_document['block_type']}:#{@current_host_document['content_id']}}}"
+  website_root = state == "published" ? Plek.website_root : Plek.new.external_url_for("draft-origin")
+  content_store = state == "published" ? "live" : "draft"
 
   stub_request(
     :get,
     "#{Plek.find('publishing-api')}/v2/content/#{@current_host_document['host_content_id']}",
-  ).with(query: { locale: "en" }).to_return(
+  ).with(query: { locale: "en", content_store: }).to_return(
     status: 200,
     body: {
       details: {
@@ -20,7 +22,7 @@ Given("there is a host document with a link") do
 
   stub_request(
     :get,
-    "#{Plek.website_root}#{@current_host_document['base_path']}",
+    "#{website_root}#{@current_host_document['base_path']}",
   ).to_return(
     status: 200,
     body: "<head></head><body><h1>#{@current_host_document['title']}</h1><p>iframe preview <a href=\"/other-page\">Link to other page</a></p>#{@content_block.render(embed_code)}</body>",
@@ -28,11 +30,16 @@ Given("there is a host document with a link") do
 
   stub_request(
     :get,
-    "#{Plek.website_root}/other-page",
+    "#{website_root}/other-page",
   ).to_return(
     status: 200,
     body: "<head></head><body><h1>#{@current_host_document['title']}</h1><p>other page</p>#{@content_block.render(embed_code)}</body>",
   )
+end
+
+Given(/^there is a (draft|published) host document with a link$/) do |host_type|
+  create_host_document(host_type)
+  stub_publishing_api_has_embedded_content_details(@dependent_content.first, "en", host_type)
 end
 
 Given("there is a host document that is a smart answer") do
@@ -42,7 +49,7 @@ Given("there is a host document that is a smart answer") do
   stub_request(
     :get,
     "#{Plek.find('publishing-api')}/v2/content/#{@current_host_document['host_content_id']}",
-  ).with(query: { locale: "en" }).to_return(
+  ).with(query: { locale: "en", content_store: "live" }).to_return(
     status: 200,
     body: {
       details: {

@@ -10,6 +10,7 @@ class HostContentItem < Data.define(
   :instances,
   :host_content_id,
   :host_locale,
+  :state,
 )
   DEFAULT_ORDER = "-unique_pageviews".freeze
 
@@ -74,6 +75,7 @@ class HostContentItem < Data.define(
         instances: record["instances"],
         host_content_id: record["host_content_id"],
         host_locale: record["host_locale"],
+        state: record["state"] || "published", ## TODO: remove this default when Publishing API is updated
       )
     end
   end

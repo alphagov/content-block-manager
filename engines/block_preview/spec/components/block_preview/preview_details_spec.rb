@@ -1,7 +1,7 @@
 RSpec.describe BlockPreview::PreviewDetailsComponent, type: :component do
   let(:edition) { build(:edition, :pension, details: { "email_address": "example@example.com" }) }
   let(:block) { build(:content_block, edition:) }
-  let(:preview_content) { double(:preview_content, instances_count: 2) }
+  let(:preview_content) { double(:preview_content, instances_count: 2, state: "published") }
 
   it "returns a list of details for preview content" do
     render_inline(
@@ -11,9 +11,29 @@ RSpec.describe BlockPreview::PreviewDetailsComponent, type: :component do
       ),
     )
 
-    expect(page).to have_css "li", count: 2
+    expect(page).to have_css "li", count: 3
     expect(page).to have_css "li", text: "Email address: example@example.com"
     expect(page).to have_css "li", text: "Instances: 2"
+    expect(page).to have_css "li", text: /Status/ do |list_item|
+      expect(list_item).to have_css "strong.govuk-tag", text: "Published"
+    end
+  end
+
+  context "when the preview content is draft" do
+    let(:preview_content) { double(:preview_content, instances_count: 2, state: "draft") }
+
+    it "renders a draft status tag" do
+      render_inline(
+        described_class.new(
+          block:,
+          preview_content:,
+        ),
+      )
+
+      expect(page).to have_css "li", text: /Status/ do |list_item|
+        expect(list_item).to have_css "strong.govuk-tag", text: "Draft"
+      end
+    end
   end
 
   context "when there are subschemas in the edition's details" do
@@ -28,6 +48,7 @@ RSpec.describe BlockPreview::PreviewDetailsComponent, type: :component do
         },
       })
     end
+
     it "returns a list of details for preview content" do
       render_inline(
         described_class.new(
@@ -36,7 +57,7 @@ RSpec.describe BlockPreview::PreviewDetailsComponent, type: :component do
         ),
       )
 
-      expect(page).to have_css "li", count: 2
+      expect(page).to have_css "li", count: 3
       expect(page).to have_css "li", text: "Description: Basic state pension"
       expect(page).to have_css "li", text: "Instances: 2"
     end
