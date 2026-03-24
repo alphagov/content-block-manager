@@ -43,11 +43,9 @@ RSpec.describe BlockPreview::PreviewContent do
 
   before do
     allow(Public::Services.publishing_api).to receive(:get_content)
-      .with(host_content_id, { locale: })
       .and_return(content_item_response)
 
     allow(Public::Services.publishing_api).to receive(:get_host_content_item_for_content_id)
-      .with(block_to_preview.content_id, host_content_id, { locale: })
       .and_return(metadata_response)
   end
 
@@ -91,6 +89,22 @@ RSpec.describe BlockPreview::PreviewContent do
 
       expect(Public::Services.publishing_api).to have_received(:get_content).once
     end
+
+    it "makes a request for content from the live content store" do
+      preview_content.title
+
+      expect(Public::Services.publishing_api).to have_received(:get_content).with(host_content_id, { locale:, content_store: "live" })
+    end
+
+    context "when locale and state are provided" do
+      let(:locale) { "cy" }
+      let(:state) { "draft" }
+
+      it "makes a request for content from the draft content store" do
+        preview_content.title
+        expect(Public::Services.publishing_api).to have_received(:get_content).with(host_content_id, { locale:, content_store: "draft" })
+      end
+    end
   end
 
   describe "#instances_count" do
@@ -102,6 +116,23 @@ RSpec.describe BlockPreview::PreviewContent do
       2.times { preview_content.instances_count }
 
       expect(Public::Services.publishing_api).to have_received(:get_host_content_item_for_content_id).once
+    end
+
+    it "makes a request for published content" do
+      preview_content.instances_count
+
+      expect(Public::Services.publishing_api).to have_received(:get_host_content_item_for_content_id).with(block_to_preview.content_id, host_content_id, { locale: "en", state: "published" })
+    end
+
+    context "when `locale` is `cy` and `state` is `draft`" do
+      let(:locale) { "cy" }
+      let(:state) { "draft" }
+
+      it "makes a request for `draft` content in the `cy` locale" do
+        preview_content.instances_count
+
+        expect(Public::Services.publishing_api).to have_received(:get_host_content_item_for_content_id).with(block_to_preview.content_id, host_content_id, { locale: "cy", state: "draft" })
+      end
     end
   end
 

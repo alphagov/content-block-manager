@@ -41,15 +41,19 @@ module BlockPreview
     end
 
     def content_item
-      @content_item ||= Public::Services.publishing_api.get_content(content_id, { locale: }).parsed_content
+      @content_item ||= Public::Services.publishing_api.get_content(content_id, { locale:, content_store: }).parsed_content
     end
 
     def metadata
       @metadata ||= Public::Services.publishing_api.get_host_content_item_for_content_id(
         block.content_id,
         content_id,
-        { locale: },
+        { locale:, state: },
       ).parsed_content
+    end
+
+    def content_store
+      state == "draft" ? "draft" : "live"
     end
   end
 end
