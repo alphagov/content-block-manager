@@ -484,4 +484,26 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
       end
     end
   end
+
+  context "when the domain event does not have a version" do
+    let(:version) { nil }
+    let(:domain_event) do
+      build(:domain_event,
+            edition:,
+            name: "edition.review.performed",
+            user:,
+            version:,
+            created_at: 4.days.ago)
+    end
+
+    it "should not throw an error" do
+      expect { render_inline component }.not_to raise_error
+    end
+
+    it "should show the title based on the domain event" do
+      render_inline component
+
+      expect(page).to have_css(".timeline__title", text: I18n.t("domain_event.title.#{domain_event.name}"))
+    end
+  end
 end

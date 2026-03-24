@@ -23,6 +23,8 @@ private
   end
 
   def title
+    return I18n.t("domain_event.title.#{domain_event.name}") unless version
+
     case version.state
     when "published"
       if is_first_published_version
@@ -44,7 +46,7 @@ private
   end
 
   def outcome
-    case version.state
+    case version&.state
     when "awaiting_factcheck"
       version.item.review_outcome
     when "published"
@@ -65,15 +67,15 @@ private
 
   def date
     tag.time(
-      version.created_at.to_fs(:long_ordinal_with_at),
+      version&.created_at&.to_fs(:long_ordinal_with_at),
       class: "date",
-      datetime: version.created_at.iso8601,
+      datetime: version&.created_at&.iso8601,
       lang: "en",
     )
   end
 
   def byline
-    User.find_by_id(version.whodunnit)&.then { |user| helpers.linked_author(user, { class: "govuk-link" }) } || "unknown user"
+    User.find_by_id(version&.whodunnit)&.then { |user| helpers.linked_author(user, { class: "govuk-link" }) } || "unknown user"
   end
 
   def internal_change_note
@@ -86,7 +88,7 @@ private
 
   def embedded_object_diffs
     schema.subschemas.map { |subschema|
-      version.field_diffs.dig("details", subschema.id)&.map do |object_id, field_diff|
+      version&.field_diffs&.dig("details", subschema.id)&.map do |object_id, field_diff|
         { object_id:, field_diff:, subschema_id: subschema.id }
       end
     }.flatten.compact
@@ -94,7 +96,7 @@ private
 
   def details_of_changes
     @details_of_changes ||= begin
-      return "" if version.field_diffs.blank?
+      return "" if version&.field_diffs.blank?
 
       [
         main_object_field_changes,
