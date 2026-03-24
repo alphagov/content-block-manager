@@ -46,7 +46,15 @@ private
   end
 
   def outcome
-    case version&.state
+    version ? version_outcome : domain_event_outcome
+  end
+
+  def outcome_resolution
+    version ? version_outcome_resolution : domain_event_outcome_resolution
+  end
+
+  def version_outcome
+    case version.state
     when "awaiting_factcheck"
       version.item.review_outcome
     when "published"
@@ -54,7 +62,7 @@ private
     end
   end
 
-  def outcome_resolution
+  def version_outcome_resolution
     review_name = I18n.t("timeline_item.outcome.name.review")
     fact_check_name = I18n.t("timeline_item.outcome.name.fact_check")
 
@@ -63,6 +71,19 @@ private
     performer = outcome.performer ? " by #{outcome.performer.try(:name) || outcome.performer}" : ""
 
     "#{review_type} #{skipped_or_performed}#{performer}"
+  end
+
+  def domain_event_outcome
+    %w[
+      edition.review.performed
+      edition.review.skipped
+      edition.fact_check.performed
+      edition.fact_check.skipped
+    ].include?(domain_event.name)
+  end
+
+  def domain_event_outcome_resolution
+    I18n.t("domain_event.body.#{domain_event.name}", performer: domain_event.metadata["performer"])
   end
 
   def date

@@ -70,6 +70,15 @@ en:
         fact_check:
           performed: Fact check performed
           skipped: Fact check skipped
+    body:
+      edition:
+        fact_check:
+          performed: "Fact check performed by %{performer}"
+          skipped: Fact check skipped
+        review:
+          performed: "2i review performed by %{performer}"
+          skipped: 2i review skipped
+
   edition:
     new:
       general_field_notice:

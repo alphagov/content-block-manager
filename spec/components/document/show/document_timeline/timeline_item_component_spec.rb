@@ -505,5 +505,50 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
 
       expect(page).to have_css(".timeline__title", text: I18n.t("domain_event.title.#{domain_event.name}"))
     end
+
+    context "and the domain event is a review outcome" do
+      context "and the review was actually performed" do
+        %w[edition.review.performed edition.fact_check.performed].each do |event_name|
+          let(:domain_event) do
+            build(:domain_event,
+                  edition:,
+                  name: event_name,
+                  user:,
+                  version: nil,
+                  metadata: { "performer" => "dave" },
+                  created_at: 4.days.ago)
+          end
+
+          it "should show the review outcome with the performer" do
+            render_inline component
+
+            expect(page).to have_css(".timeline__review-outcome .govuk-body") do |element|
+              expect(element).to have_content(I18n.t("domain_event.body.#{domain_event.name}", performer: "dave"))
+            end
+          end
+        end
+      end
+
+      context "and the review was skipped" do
+        %w[edition.review.skipped edition.fact_check.skipped].each do |event_name|
+          let(:domain_event) do
+            build(:domain_event,
+                  edition:,
+                  name: event_name,
+                  user:,
+                  version: nil,
+                  created_at: 4.days.ago)
+          end
+
+          it "should show the review outcome with no reference to the performer" do
+            render_inline component
+
+            expect(page).to have_css(".timeline__review-outcome .govuk-body") do |element|
+              expect(element).to have_content(I18n.t("domain_event.body.#{domain_event.name}"))
+            end
+          end
+        end
+      end
+    end
   end
 end
