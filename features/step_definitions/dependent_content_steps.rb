@@ -21,6 +21,7 @@ When(/^dependent content exists for a content block$/) do
   @dependent_content = 10.times.map do |i|
     {
       "title" => "Content #{i}",
+      "state" => "published",
       "document_type" => "document",
       "base_path" => "/host-content-path-#{i}",
       "content_id" => SecureRandom.uuid,

@@ -19,6 +19,7 @@ RSpec.describe HostContentItem do
         "results" => [
           {
             "title" => "foo",
+            "state" => "draft",
             "base_path" => "/foo",
             "document_type" => "something",
             "publishing_app" => "publisher",
@@ -104,6 +105,7 @@ RSpec.describe HostContentItem do
       expect(rollup.organisations).to eq(result.rollup.organisations)
 
       expect(response_body["results"][0]["title"]).to eq(result[0].title)
+      expect(response_body["results"][0]["state"]).to eq(result[0].state)
       expect(response_body["results"][0]["base_path"]).to eq(result[0].base_path)
       expect(response_body["results"][0]["document_type"]).to eq(result[0].document_type)
       expect(response_body["results"][0]["publishing_app"]).to eq(result[0].publishing_app)
@@ -115,6 +117,30 @@ RSpec.describe HostContentItem do
       expect(response_body["results"][0]["host_locale"]).to eq(result[0].host_locale)
 
       expect(expected_publishing_organisation).to eq(result.[](0).publishing_organisation)
+    end
+
+    describe "when state is missing" do
+      let(:response_body_without_state) do
+        response_body.deep_merge(
+          "results" => [
+            response_body["results"][0].except("state"),
+          ],
+        )
+      end
+
+      let(:fake_api_response) do
+        GdsApi::Response.new(
+          double("http_response", code: 200, body: response_body_without_state.to_json),
+        )
+      end
+
+      it "returns `published` for state" do
+        expect(publishing_api_mock).to receive(:get_host_content_for_content_id).and_return(fake_api_response)
+
+        result = described_class.for_document(document)
+
+        expect(result[0].state).to eq("published")
+      end
     end
 
     describe "when last_edited_by_editor_id is nil" do

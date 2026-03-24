@@ -11,6 +11,7 @@ FactoryBot.define do
     instances { 1 }
     host_content_id { SecureRandom.uuid }
     host_locale { "en" }
+    state { "published" }
 
     initialize_with do
       new(title:,
@@ -23,7 +24,8 @@ FactoryBot.define do
           unique_pageviews:,
           host_content_id:,
           host_locale:,
-          instances:)
+          instances:,
+          state:)
     end
   end
 end
