@@ -110,29 +110,67 @@ RSpec.describe BlockPreview::PreviewHtml do
       "
     end
 
-    it "updates any link paths" do
-      actual_content = BlockPreview::PreviewHtml.new(
+    let(:actual_content) do
+      BlockPreview::PreviewHtml.new(
         content_id: host_content_id,
         block: block_to_preview,
         base_path: host_base_path,
         locale: "en",
-        state: "published",
+        state:,
       ).to_s
+    end
 
-      url = host_content_preview_path(edition_id: block_to_preview.id, host_content_id:)
+    let(:parsed_content) { Nokogiri::HTML.parse(actual_content) }
+    let(:preview_path) { host_content_preview_path(edition_id: block_to_preview.id, host_content_id:) }
 
-      parsed_content = Nokogiri::HTML.parse(actual_content)
+    let(:internal_link) { parsed_content.xpath("//a")[0] }
+    let(:internal_link_url) { URI.parse(internal_link.attribute("href").to_s) }
+    let(:internal_link_query_hash) { Rack::Utils.parse_query(internal_link_url.query) }
 
-      internal_link = parsed_content.xpath("//a")[0]
-      external_link = parsed_content.xpath("//a")[1]
-      protocol_relative_link = parsed_content.xpath("//a")[2]
+    context "when the state is published" do
+      let(:state) { "published" }
 
-      expect("#{url}?locale=en&base_path=/foo").to eq(internal_link.attribute("href").to_s)
-      expect("_parent").to eq(internal_link.attribute("target").to_s)
+      describe "internal links" do
+        it "updates the internal link path to include the preview path" do
+          expect(internal_link_url.path).to eq(preview_path)
+        end
 
-      expect("https://example.com").to eq(external_link.attribute("href").to_s)
+        it "represents the target state with url param" do
+          expect(internal_link_query_hash["state"]).to eq("published")
+        end
 
-      expect("//example.com").to eq(protocol_relative_link.attribute("href").to_s)
+        it "represents the target locale with url param" do
+          expect(internal_link_query_hash["locale"]).to eq("en")
+        end
+
+        it "represents the target base path with url param" do
+          expect(internal_link_query_hash["base_path"]).to eq("/foo")
+        end
+
+        it "updates the target attribute to _parent" do
+          expect(internal_link.attribute("target").to_s).to eq("_parent")
+        end
+      end
+
+      it "leaves external link paths untouched" do
+        external_link = parsed_content.xpath("//a")[1]
+        protocol_relative_link = parsed_content.xpath("//a")[2]
+
+        expect(external_link.attribute("href").to_s).to eq("https://example.com")
+        expect(protocol_relative_link.attribute("href").to_s).to eq("//example.com")
+      end
+    end
+
+    context "when the state is draft" do
+      let(:state) { "draft" }
+
+      before do
+        allow(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for('draft-origin')}#{host_base_path}")).and_return(fake_frontend_response)
+      end
+
+      it "represents the target state with url param" do
+        expect(internal_link_query_hash["state"]).to eq("draft")
+      end
     end
   end
 

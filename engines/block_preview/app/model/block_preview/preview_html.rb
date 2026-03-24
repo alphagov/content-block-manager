@@ -78,7 +78,7 @@ module BlockPreview
     end
 
     def update_local_link_paths(nokogiri_html)
-      url = host_content_preview_path(edition_id: block.id, host_content_id: content_id, locale:)
+      url = host_content_preview_path(edition_id: block.id, host_content_id: content_id, locale:, state:)
       nokogiri_html.css("a").each do |link|
         next if link[:href].start_with?("//") || link[:href].start_with?("http")
 
