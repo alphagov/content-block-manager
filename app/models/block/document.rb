@@ -5,7 +5,18 @@ module Block
     extend FriendlyId
     friendly_id :sluggable_string, use: :slugged, slug_column: :content_id_alias, routes: :default
 
-    has_many :editions, class_name: "Block::Edition", foreign_key: :block_document_id, dependent: :destroy
+    has_many :editions,
+             class_name: "Block::Edition",
+             foreign_key: :block_document_id,
+             dependent: :destroy,
+             inverse_of: :document
+
+    has_many :time_period_editions,
+             -> { where(type: "Block::TimePeriodEdition") },
+             class_name: "Block::TimePeriodEdition",
+             foreign_key: :block_document_id,
+             dependent: :destroy,
+             inverse_of: :document
 
     before_validation :generate_content_id, on: :create
     after_validation :set_content_id_alias_and_embed_code, on: :create
