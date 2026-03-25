@@ -13,7 +13,10 @@ module Block
       @edition.build_document(block_type: "time_period") unless @edition.document
 
       if @edition.save
-        redirect_to block_time_period_edition_path(@edition)
+        redirect_to edit_block_document_time_period_date_range_path(
+          @edition.document,
+          @edition,
+        )
       else
         render :new, status: :unprocessable_entity
       end

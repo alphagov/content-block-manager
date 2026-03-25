@@ -67,12 +67,15 @@ RSpec.describe "Block::TimePeriodEditions", type: :request do
         expect(edition.document.sluggable_string).to eq("Tax Year 2025/26")
       end
 
-      it "redirects to the created edition" do
+      it "redirects to the date range form" do
         post block_time_period_editions_path,
              params: valid_attributes
         edition = Block::TimePeriodEdition.last
         expect(response).to redirect_to(
-          block_time_period_edition_path(edition),
+          edit_block_document_time_period_date_range_path(
+            edition.document,
+            edition,
+          ),
         )
       end
     end
