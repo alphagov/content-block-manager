@@ -9,11 +9,7 @@ module Block
 
     def update
       if @edition.update(edition_params)
-        redirect_to block_document_time_period_date_range_path(
-          @document,
-          @edition,
-        ),
-                    notice: "Time period was successfully updated."
+        redirect_to block_time_period_edition_path(@edition)
       else
         render :edit, status: :unprocessable_entity
       end

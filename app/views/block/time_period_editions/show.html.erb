@@ -1,8 +1,56 @@
-<% content_for :title, "Time period edition" %>
+<% content_for :title, @edition.title %>
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-l"><%= @edition.title %></h1>
-    <p class="govuk-body">Edition created. Next step: add the date range.</p>
+    <%= render "govuk_publishing_components/components/summary_list", {
+      items: [
+        {
+          field: "Title",
+          value: @edition.title,
+        },
+        {
+          field: "Description",
+          value: @edition.description,
+        },
+        {
+          field: "Instructions to publishers",
+          value: @edition.instructions_to_publishers,
+        },
+        {
+          field: "Embed code",
+          value: "<code>#{@edition.document.embed_code}</code>".html_safe,
+        },
+      ].compact,
+    } %>
+
+    <% if @edition.date_range %>
+      <%= render "govuk_publishing_components/components/summary_list", {
+        title: "Date range",
+        items: [
+          {
+            field: "Start date",
+            value: ContentBlockTools::Presenters::FieldPresenters::TimePeriod::DatePresenter.new(
+                      @edition.date_range.start.to_s,
+                    ).render,
+          },
+          {
+            field: "End date",
+            value: ContentBlockTools::Presenters::FieldPresenters::TimePeriod::DatePresenter.new(
+                      @edition.date_range.end.to_s,
+                    ).render,
+          },
+        ],
+      } %>
+    <% end %>
+
+    <div class="govuk-button-group">
+      <%= render "govuk_publishing_components/components/button", {
+        text: "Edit time period",
+        href: edit_block_document_time_period_date_range_path(
+          @edition.document,
+          @edition,
+        ),
+      } %>
+    </div>
   </div>
 </div>

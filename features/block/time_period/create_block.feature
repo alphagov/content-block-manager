@@ -1,4 +1,3 @@
-@wip
 Feature: Create "Time period" content block (Block architecture)
   - So that I can publish a block representing a time period
   - As an editor
@@ -15,3 +14,7 @@ Feature: Create "Time period" content block (Block architecture)
     And I supply the initial new-style time periods correctly
     And I save and continue
     Then I see the initial new-style time period represented clearly
+
+  Scenario: Editor must supply valid edition details
+    When I submit the new-style time period form incorrectly
+    Then I see the errors messages describing the problems with the new-style edition

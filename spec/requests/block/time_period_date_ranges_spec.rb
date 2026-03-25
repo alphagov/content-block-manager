@@ -85,14 +85,8 @@ RSpec.describe "Block::TimePeriodDateRanges", type: :request do
         patch block_document_time_period_date_range_path(document, edition),
               params: valid_date_range_attributes
         expect(response).to redirect_to(
-          block_document_time_period_date_range_path(document, edition),
+          block_time_period_edition_path(edition),
         )
-      end
-
-      it "sets a notice flash message" do
-        patch block_document_time_period_date_range_path(document, edition),
-              params: valid_date_range_attributes
-        expect(flash[:notice]).to eq("Time period was successfully updated.")
       end
     end
 
