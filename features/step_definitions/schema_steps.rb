@@ -25,12 +25,12 @@ end
 
 And("the schema {string} is an alpha schema") do |block_type|
   schema = Schema.find_by_block_type(block_type)
-  schema.stubs(:live?).returns(false)
+  allow(schema).to receive(:live?).and_return(false)
 end
 
 And("the schema {string} is a live schema") do |block_type|
   schema = Schema.find_by_block_type(block_type)
-  schema.stubs(:live?).returns(true)
+  allow(schema).to receive(:live?).and_return(true)
 end
 
 And("a schema {string} exists:") do |block_type, json|
@@ -38,8 +38,8 @@ And("a schema {string} exists:") do |block_type, json|
   body = JSON.parse(json)
   @schema = build(:schema, block_type:, body:)
   @schemas[block_type] = @schema
-  Schema.stubs(:all).returns(@schemas.values)
-  Schema.stubs(:find_by_block_type).with(block_type).returns(@schema)
+  allow(Schema).to receive(:all).and_return(@schemas.values)
+  allow(Schema).to receive(:find_by_block_type).with(block_type).and_return(@schema)
 end
 
 And("the schema has a subschema {string}:") do |subschema_name, json|
@@ -53,5 +53,5 @@ And("the schema has a subschema {string}:") do |subschema_name, json|
   }
   @schema = build(:schema, block_type: @schema.block_type, body: @schema.body)
   @schemas[@schema.block_type] = @schema
-  Schema.stubs(:all).returns(@schemas.values)
+  allow(Schema).to receive(:all).and_return(@schemas.values)
 end
