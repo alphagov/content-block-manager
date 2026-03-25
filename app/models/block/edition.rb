@@ -2,10 +2,11 @@ module Block
   class Edition < ApplicationRecord
     self.table_name = "block_editions"
 
+    include ::Edition::HasLeadOrganisation
+
     belongs_to :document, class_name: "Block::Document", foreign_key: :block_document_id, inverse_of: :editions
 
     validates :title, presence: true
-    validates :lead_organisation_id, presence: true
     validate :title_contains_alphanumeric_chars
 
     before_validation :set_document_sluggable_string, on: :create
