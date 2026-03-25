@@ -1,0 +1,11 @@
+<% content_for :title, "Edit time period block" %>
+<% content_for :back_link,
+   render("govuk_publishing_components/components/back_link", {
+     href: block_document_time_period_date_range_path(@document, @edition),
+   }) %>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <%= render "form" %>
+  </div>
+</div>
