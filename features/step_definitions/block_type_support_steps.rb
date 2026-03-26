@@ -1,5 +1,5 @@
 Given(/^the show_all_content_block_types feature flag is( not)? turned on$/) do |negated|
-  Flipflop.stubs(:show_all_content_block_types?).returns(negated.nil?)
+  allow(Flipflop).to receive(:show_all_content_block_types?).and_return(negated.nil?)
 end
 
 Then(/^I should( not)? see the (.+) blocks listed$/) do |negated, block_type|

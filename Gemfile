@@ -58,7 +58,6 @@ group :test do
   gem "equivalent-xml"
   gem "factory_bot"
   gem "govuk_schemas"
-  gem "mocha"
   gem "rails-controller-testing"
   gem "shoulda-matchers"
   gem "simplecov"

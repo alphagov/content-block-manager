@@ -385,8 +385,6 @@ GEM
     minitest (6.0.2)
       drb (~> 2.0)
       prism (~> 1.5)
-    mocha (3.1.0)
-      ruby2_keywords (>= 0.0.5)
     msgpack (1.8.0)
     multi_test (1.1.0)
     multi_xml (0.8.1)
@@ -800,7 +798,6 @@ GEM
       lint_roller (~> 1.1)
       rubocop (~> 1.81)
     ruby-progressbar (1.13.0)
-    ruby2_keywords (0.0.5)
     rubyzip (3.0.1)
     sanitize (7.0.0)
       crass (~> 1.0.2)
@@ -971,7 +968,6 @@ DEPENDENCIES
   json_schemer
   kaminari
   launchy
-  mocha
   nokodiff
   packwerk
   packwerk-extensions
@@ -1131,7 +1127,6 @@ CHECKSUMS
   mime-types-data (3.2026.0317) sha256=77f078a4d8631d52b842ba77099734b06eddb7ad339d792e746d2272b67e511b
   mini_mime (1.1.5) sha256=8681b7e2e4215f2a159f9400b5816d85e9d8c6c6b491e96a12797e798f8bccef
   minitest (6.0.2) sha256=db6e57956f6ecc6134683b4c87467d6dd792323c7f0eea7b93f66bd284adbc3d
-  mocha (3.1.0) sha256=75f42d69ebfb1f10b32489dff8f8431d37a418120ecdfc07afe3bc183d4e1d56
   msgpack (1.8.0) sha256=e64ce0212000d016809f5048b48eb3a65ffb169db22238fb4b72472fecb2d732
   multi_test (1.1.0) sha256=e9e550cdd863fb72becfe344aefdcd4cbd26ebf307847f4a6c039a4082324d10
   multi_xml (0.8.1) sha256=addba0290bac34e9088bfe73dc4878530297a82a7bbd66cb44dcd0a4b86edf5a
@@ -1272,7 +1267,6 @@ CHECKSUMS
   rubocop-rake (0.7.1) sha256=3797f2b6810c3e9df7376c26d5f44f3475eda59eb1adc38e6f62ecf027cbae4d
   rubocop-rspec (3.9.0) sha256=8fa70a3619408237d789aeecfb9beef40576acc855173e60939d63332fdb55e2
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
-  ruby2_keywords (0.0.5) sha256=ffd13740c573b7301cf7a2e61fc857b2a8e3d3aff32545d6f8300d8bae10e3ef
   rubyzip (3.0.1) sha256=8bbbf32ff93db9a156ce2626820e748e2913352e6df80d764d0eea1ed1f5b8a7
   sanitize (7.0.0) sha256=269d1b9d7326e69307723af5643ec032ff86ad616e72a3b36d301ac75a273984
   sass-embedded (1.90.0-aarch64-linux-gnu) sha256=e8ce5d2b026a63564a07691b50f1481849ed46afa3e92c3b760150efb6aebab8
