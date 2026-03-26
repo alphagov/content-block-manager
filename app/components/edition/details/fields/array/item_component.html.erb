@@ -11,6 +11,20 @@
     heading_size: "m",
     classes: "app-c-content-block-manager-array-item-component__fieldset",
   } do %>
+
+      <% unless index == 0 %>
+        <%= render "govuk_publishing_components/components/button", {
+          text: I18n.t("buttons.reorder.up"),
+          href: move_path(index, "telephones.telephone-1[#{index}]", :up),
+          name: "move_up",
+          secondary_solid: false,
+          data_attributes: {
+            # frame_id:,
+            turbo: true,
+          },
+          } %>
+      <% end %>
+
     <%= fields %>
   <% end %>
 <% end %>

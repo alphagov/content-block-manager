@@ -80,6 +80,8 @@ Rails.application.routes.draw do
       get "embedded-object/:object_type/edit", to: "editions/embedded_object#edit", as: :edit_sole_embedded_object
       put "embedded-object/:object_type/", to: "editions/embedded_object#update", as: :sole_embedded_object
 
+      get "embedded-objects/:object_type/:object_title/order", to: "editions/embedded_objects#order", as: :order_embedded_objects
+
       # Reorder actions
       get :order, to: "editions/order#edit", as: :order_edit
       put :order, to: "editions/order#update", as: :order_update

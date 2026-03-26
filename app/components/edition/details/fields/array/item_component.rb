@@ -10,6 +10,7 @@ class Edition::Details::Fields::Array::ItemComponent < ViewComponent::Base
     @can_be_deleted = can_be_deleted
     @hints = hints || {}
     @parent_indexes = parent_indexes
+    puts "--- field name: #{field.name}"
   end
 
 private
@@ -50,5 +51,11 @@ private
     else
       hidden_field_tag(field_name, 0)
     end
+  end
+
+  def move_path(position, item, direction)
+    path = "/editions/#{edition.id}/embedded-objects/telephones/telephone-1/order?order[]=telephones.telephone-1[1]&order[]=telephones.telephone-1[0]&redirect_path=#{request.fullpath}&move=#{field.name_attribute}.#{index}&direction=#{direction}"
+    puts "--- move path: #{path}"
+    path
   end
 end

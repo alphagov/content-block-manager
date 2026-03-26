@@ -90,6 +90,18 @@ class Editions::EmbeddedObjectsController < BaseController
     render :edit
   end
 
+  def order
+    @redirect_path = params[:redirect_path] || request.referer
+    @order = params[:order] || @edition.details["order"] || @edition.default_order
+
+    @schema, @subschema = get_schema_and_subschema(@edition.document.block_type, params[:object_type])
+    @redirect_url = params[:redirect_url]
+    @object_title = params[:object_title]
+    @object = @edition.details.dig(params[:object_type], params[:object_title])
+
+    render :edit
+  end
+
   def new_embedded_objects_options_redirect
     group = params.require(:group)
     if params[:object_type].present?
