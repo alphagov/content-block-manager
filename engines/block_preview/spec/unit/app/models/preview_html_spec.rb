@@ -290,7 +290,7 @@ RSpec.describe BlockPreview::PreviewHtml do
   end
 
   describe "when in development mode" do
-    let(:rendering_app) { "government-frontend" }
+    let(:rendering_app) { "frontend" }
     let(:publishing_api_response) do
       {
         "foo" => "bar",
