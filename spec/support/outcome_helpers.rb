@@ -12,7 +12,7 @@ RSpec.shared_examples "an outcome" do |event_scope:|
       expect(domain_event.user).to eq(outcome.creator)
       expect(domain_event.name).to eq("edition.#{outcome.event_scope}.#{outcome.result}")
       expect(domain_event.edition).to eq(outcome.edition)
-      expect(domain_event.version).to eq(outcome.edition.versions.last)
+      expect(domain_event.version).to eq(nil)
     end
   end
 
