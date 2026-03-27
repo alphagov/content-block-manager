@@ -2,24 +2,28 @@ require "record_tag_helper/helper"
 
 class Document::Show::DocumentTimelineComponent < ViewComponent::Base
   include ActionView::Helpers::RecordTagHelper
-  def initialize(content_block_versions:, schema:)
-    @content_block_versions = content_block_versions
+  def initialize(document_domain_events:, schema:)
+    @document_domain_events = document_domain_events || []
     @schema = schema
   end
 
 private
 
-  attr_reader :content_block_versions, :schema
+  attr_reader :document_domain_events, :schema
 
   def versions
-    content_block_versions.reject { |version| hide_from_user?(version) }
+    domain_events.map(&:version).compact
   end
 
-  def hide_from_user?(version)
-    version.state.nil? || version.state == "superseded"
+  def domain_events
+    document_domain_events.reject { |domain_event| hide_from_user?(domain_event) }
+  end
+
+  def hide_from_user?(domain_event)
+    domain_event.version.present? && (domain_event.version.state.nil? || domain_event.version.state == "superseded")
   end
 
   def first_published_version
-    @first_published_version ||= content_block_versions.filter { |v| v.state == "published" }.min_by(&:created_at)
+    @first_published_version ||= versions.filter { |v| v.state == "published" }.min_by(&:created_at)
   end
 end

@@ -20,7 +20,7 @@ class Document < ApplicationRecord
 
   validate :sluggable_string_contains_alphanumeric_chars
 
-  has_many :domain_events
+  has_many :domain_events, -> { order(created_at: :desc) }
   has_many :versions, through: :editions, source: :versions
 
   has_one :latest_published_edition,

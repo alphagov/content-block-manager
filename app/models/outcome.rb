@@ -28,7 +28,7 @@ private
       user: creator,
       name: event_name,
       edition: edition,
-      version: edition.versions.last,
+      version: nil,
       metadata:,
     )
   end

@@ -133,7 +133,7 @@
   <div class="govuk-grid-column-full">
     <%= render(
           Document::Show::DocumentTimelineComponent.new(
-            content_block_versions: @content_block_versions,
+            document_domain_events: @document.domain_events,
             schema: @schema,
           ),
         ) %>
