@@ -89,4 +89,22 @@ private
       app-c-content-block-manager-array-component--#{field.name}
     ]
   end
+
+  def order_input(index)
+    tag.input(
+      class: "gem-c-input govuk-input govuk-input--width-2",
+      id: "sortable_#{field.name}_#{index}_order",
+      name: "#{field.name}[#{index}]order",
+      value: index,
+    )
+  end
+
+  def items
+    components.map.with_index do |component, index|
+      {
+        fields: render(component),
+        order_input: order_input(index),
+      }
+    end
+  end
 end

@@ -1,23 +1,11 @@
 <%= tag.div class: wrapper_classes, data: { ga4_section: label, module: "array-component" } do %>
   <%= helpers.turbo_frame_tag frame_id do %>
-    <% components.each do |component| %>
-      <%= render component %>
-    <% end %>
-
-    <% if adding_another? %>
-      <%= render empty_component %>
-    <% end %>
-
-    <%= render "govuk_publishing_components/components/button", {
-      text: button_text,
-      name: "add_another",
-      value: field.name,
-      type: "submit",
-      secondary_solid: true,
-      data_attributes: {
-        frame_id:,
-        add_another_text: I18n.t("buttons.add_another", item: label.downcase),
-      },
-    } %>
+    <%= render "govuk_publishing_components/components/add_another", {
+      fieldset_legend: label,
+      add_button_text: I18n.t("buttons.add_another", item: label.downcase),
+      sortable: true,
+      items:,
+      empty: render(empty_component),
+      } %>
   <% end %>
 <% end %>

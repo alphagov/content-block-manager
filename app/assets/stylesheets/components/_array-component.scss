@@ -44,4 +44,9 @@
       @extend .gem-c-button--secondary-quiet; // stylelint-disable-line scss/at-extend-no-missing-placeholder
     }
   }
+
+  .gem-c-add-another__move-button-wrapper {
+    top: govuk-spacing(6);
+    right: govuk-spacing(3);
+  }
 }
