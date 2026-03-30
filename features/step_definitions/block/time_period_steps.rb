@@ -59,3 +59,23 @@ Then("I see the initial new-style time period represented clearly") do
     ).render,
   )
 end
+
+When("I supply an invalid date for the date range") do
+  # Start date with invalid month (23)
+  fill_in "edition[date_range_attributes][start(3i)]", with: "6"
+  fill_in "edition[date_range_attributes][start(2i)]", with: "23"
+  fill_in "edition[date_range_attributes][start(1i)]", with: "2025"
+  select "09", from: "start_hour"
+  select "00", from: "start_minute"
+
+  # Valid end date
+  fill_in "edition[date_range_attributes][end(3i)]", with: "5"
+  fill_in "edition[date_range_attributes][end(2i)]", with: "4"
+  fill_in "edition[date_range_attributes][end(1i)]", with: "2026"
+  select "17", from: "end_hour"
+  select "30", from: "end_minute"
+end
+
+Then("I see the error message for the invalid date") do
+  expect(page).to have_content("Start date is not a valid date")
+end

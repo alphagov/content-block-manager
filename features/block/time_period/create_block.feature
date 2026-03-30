@@ -18,3 +18,10 @@ Feature: Create "Time period" content block (Block architecture)
   Scenario: Editor must supply valid edition details
     When I submit the new-style time period form incorrectly
     Then I see the errors messages describing the problems with the new-style edition
+
+  Scenario: Editor must supply valid date range dates
+    When I fill the new-style time period form correctly
+    And I proceed to add a date range for the new-style Time period
+    And I supply an invalid date for the date range
+    And I save and continue
+    Then I see the error message for the invalid date

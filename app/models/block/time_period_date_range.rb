@@ -2,6 +2,9 @@ module Block
   class TimePeriodDateRange < ApplicationRecord
     self.table_name = "block_time_period_date_ranges"
 
+    include DateValidation
+    date_attributes :start, :end
+
     belongs_to :edition, class_name: "Block::TimePeriodEdition"
 
     validates :start, presence: true
