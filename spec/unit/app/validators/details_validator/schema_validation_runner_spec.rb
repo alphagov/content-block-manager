@@ -70,6 +70,45 @@ RSpec.describe DetailsValidator::SchemaValidationRunner do
         end
       end
     end
+
+    describe "datetime" do
+      let(:schema_body) do
+        {
+          "type" => "object",
+          "required" => %w[starts_at],
+          "additionalProperties" => false,
+          "properties" => {
+            "starts_at" => { "type" => "string", "format" => "datetime" },
+          },
+        }
+      end
+
+      context "with invalid values" do
+        let(:details) do
+          {
+            starts_at: "not-a-datetime",
+          }
+        end
+
+        it "returns format errors" do
+          errors = runner.call
+
+          expect(errors).to include(include("type" => "format", "data_pointer" => "/starts_at"))
+        end
+      end
+
+      context "with valid values" do
+        let(:details) do
+          {
+            starts_at: "2024-02-03T11:22:33Z",
+          }
+        end
+
+        it "returns no errors" do
+          expect(runner.call.to_a).to be_empty
+        end
+      end
+    end
   end
 
   describe "keywords" do

@@ -20,6 +20,7 @@ private
       },
       formats: {
         "time" => ->(instance, _format) { valid_time?(instance) },
+        "datetime" => ->(instance, _format) { valid_datetime?(instance) },
       },
     )
   end
@@ -57,5 +58,11 @@ private
 
   def valid_time?(instance)
     instance.match?(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/)
+  end
+
+  def valid_datetime?(instance)
+    Time.iso8601(instance)
+  rescue StandardError
+    false
   end
 end
