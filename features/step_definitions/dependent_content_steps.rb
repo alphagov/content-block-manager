@@ -35,6 +35,7 @@ When(/^dependent content exists for a content block$/) do
         "title" => "Organisation #{i}",
         "base_path" => "/organisation/#{i}",
       },
+      "publishing_app" => "publisher",
     }
   end
 

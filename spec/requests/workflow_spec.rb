@@ -374,6 +374,7 @@ RSpec.describe "Workflow", type: :request do
                   "base_path" => "/organisation/#{i}",
                 },
                 "state" => "draft",
+                "publishing_app" => "publisher",
               }
             end
           end
