@@ -35,6 +35,11 @@ private
         sort_direction: sort_direction("title"),
       },
       {
+        text: "Publishing app",
+        href: sort_link("publishing_app"),
+        sort_direction: sort_direction("publishing_app"),
+      },
+      {
         text: "Type",
         href: sort_link("document_type"),
         sort_direction: sort_direction("document_type"),
@@ -74,6 +79,9 @@ private
   def row_for_content_item(content_item)
     [
       title_row(content_item),
+      {
+        text: content_item.publishing_app.humanize,
+      },
       {
         text: content_item.document_type.humanize,
       },
