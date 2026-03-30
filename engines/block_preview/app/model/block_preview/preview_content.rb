@@ -23,6 +23,7 @@ module BlockPreview
         base_path: base_path || content_item["base_path"],
         locale:,
         state:,
+        auth_bypass_id: content_item["auth_bypass_ids"]&.first,
       ).to_s
     end
 

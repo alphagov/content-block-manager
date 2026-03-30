@@ -21,8 +21,10 @@ RSpec.describe BlockPreview::PreviewContent do
     build(:content_block, edition:)
   end
 
+  let(:auth_bypass_id) { SecureRandom.uuid }
+
   let(:content_item_response) do
-    instance_double(GdsApi::Response, parsed_content: { "title" => host_title, "base_path" => host_base_path })
+    instance_double(GdsApi::Response, parsed_content: { "title" => host_title, "base_path" => host_base_path, "auth_bypass_ids" => [auth_bypass_id] })
   end
 
   let(:metadata_response) do
@@ -150,6 +152,7 @@ RSpec.describe BlockPreview::PreviewContent do
         base_path: host_base_path,
         locale: "en",
         state: "published",
+        auth_bypass_id:,
       )
     end
 
@@ -165,6 +168,7 @@ RSpec.describe BlockPreview::PreviewContent do
           base_path: base_path,
           locale: "en",
           state: "published",
+          auth_bypass_id:,
         )
       end
     end
@@ -182,6 +186,7 @@ RSpec.describe BlockPreview::PreviewContent do
           base_path: host_base_path,
           locale: "cy",
           state: "draft",
+          auth_bypass_id:,
         )
       end
     end

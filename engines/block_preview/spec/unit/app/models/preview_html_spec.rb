@@ -45,9 +45,44 @@ RSpec.describe BlockPreview::PreviewHtml do
     build(:content_block, edition: build_stubbed(:edition, document:))
   end
 
+  let(:auth_bypass_id) { SecureRandom.uuid }
+  let(:token) { "token" }
+
   before do
-    allow(Net::HTTP).to receive(:get).with(URI("#{Plek.website_root}#{host_base_path}")).and_return(fake_frontend_response)
+    allow(JWT).to receive(:encode).and_return(token)
+    allow(Net::HTTP).to receive(:get).and_return(fake_frontend_response)
     allow(block_to_preview).to receive(:render).and_return(block_render)
+  end
+
+  it "makes a request to the frontend" do
+    BlockPreview::PreviewHtml.new(
+      content_id: host_content_id,
+      block: block_to_preview,
+      base_path: host_base_path,
+      locale: "en",
+      state: "published",
+      auth_bypass_id:,
+    ).to_s
+
+    expect(Net::HTTP).to have_received(:get) do |url|
+      expect(url.host).to eq(Plek.website_root.sub("http://", ""))
+      expect(url.path).to eq(host_base_path)
+    end
+  end
+
+  it "does not append a token to the url" do
+    BlockPreview::PreviewHtml.new(
+      content_id: host_content_id,
+      block: block_to_preview,
+      base_path: host_base_path,
+      locale: "en",
+      state: "published",
+      auth_bypass_id:,
+    ).to_s
+
+    expect(Net::HTTP).to have_received(:get) do |url|
+      expect(url.query_values).to be_nil
+    end
   end
 
   it "returns the preview html" do
@@ -57,6 +92,7 @@ RSpec.describe BlockPreview::PreviewHtml do
       base_path: host_base_path,
       locale: "en",
       state: "published",
+      auth_bypass_id:,
     ).to_s
 
     parsed_content = Nokogiri::HTML.parse(actual_content)
@@ -72,6 +108,7 @@ RSpec.describe BlockPreview::PreviewHtml do
       base_path: host_base_path,
       locale: "en",
       state: "published",
+      auth_bypass_id:,
     ).to_s
 
     parsed_content = Nokogiri::HTML.parse(actual_content)
@@ -83,7 +120,7 @@ RSpec.describe BlockPreview::PreviewHtml do
   describe "when the frontend throws an error" do
     before do
       exception = StandardError.new("Something went wrong")
-      expect(Net::HTTP).to receive(:get).with(URI("#{Plek.website_root}#{host_base_path}")).and_raise(exception)
+      allow(Net::HTTP).to receive(:get).and_raise(exception)
     end
 
     it "shows an error template" do
@@ -95,6 +132,7 @@ RSpec.describe BlockPreview::PreviewHtml do
         base_path: host_base_path,
         locale: "en",
         state: "published",
+        auth_bypass_id:,
       ).to_s
 
       expect(actual_content).to eq(expected_content)
@@ -117,6 +155,7 @@ RSpec.describe BlockPreview::PreviewHtml do
         base_path: host_base_path,
         locale: "en",
         state:,
+        auth_bypass_id:,
       ).to_s
     end
 
@@ -164,10 +203,6 @@ RSpec.describe BlockPreview::PreviewHtml do
     context "when the state is draft" do
       let(:state) { "draft" }
 
-      before do
-        allow(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for('draft-origin')}#{host_base_path}")).and_return(fake_frontend_response)
-      end
-
       it "represents the target state with url param" do
         expect(internal_link_query_hash["state"]).to eq("draft")
       end
@@ -193,6 +228,7 @@ RSpec.describe BlockPreview::PreviewHtml do
         base_path: host_base_path,
         locale: "en",
         state: "published",
+        auth_bypass_id:,
       ).to_s
 
       parsed_content = Nokogiri::HTML.parse(actual_content)
@@ -232,6 +268,7 @@ RSpec.describe BlockPreview::PreviewHtml do
         base_path: host_base_path,
         locale: "en",
         state: "published",
+        auth_bypass_id:,
       ).to_s
 
       parsed_content = Nokogiri::HTML.parse(actual_content)
@@ -242,31 +279,53 @@ RSpec.describe BlockPreview::PreviewHtml do
   end
 
   describe "when the state is draft" do
-    before do
-      allow(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for('draft-origin')}#{host_base_path}")).and_return(fake_frontend_response)
-    end
+    let(:secret) { "some_jwt_secret" }
 
-    it "makes a request to the draft origin" do
-      expect(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for('draft-origin')}#{host_base_path}")).and_return(fake_frontend_response)
-
+    let!(:actual_content) do
       BlockPreview::PreviewHtml.new(
         content_id: host_content_id,
         block: block_to_preview,
         base_path: host_base_path,
         locale: "en",
         state: "draft",
+        auth_bypass_id:,
       ).to_s
     end
 
-    it "still returns the preview html" do
-      actual_content = BlockPreview::PreviewHtml.new(
-        content_id: host_content_id,
-        block: block_to_preview,
-        base_path: host_base_path,
-        locale: "en",
-        state: "draft",
-      ).to_s
+    around do |example|
+      ClimateControl.modify AUTHENTICATING_PROXY_JWT_AUTH_SECRET: secret do
+        example.run
+      end
+    end
 
+    it "makes a request to the draft origin" do
+      expect(Net::HTTP).to have_received(:get) do |url|
+        host_with_scheme = "#{url.scheme}://#{url.host}"
+        expect(host_with_scheme).to eq(Plek.external_url_for("draft-origin"))
+        expect(url.path).to eq(host_base_path)
+      end
+    end
+
+    it "passes the correct arguments to the token generator" do
+      expect(JWT).to have_received(:encode).with(
+        {
+          "sub" => auth_bypass_id,
+          "content_id" => host_content_id,
+          "iat" => Time.zone.now.to_i,
+          "exp" => 7.days.from_now.to_i,
+        },
+        secret,
+        "HS256",
+      )
+    end
+
+    it "appends the token to the url" do
+      expect(Net::HTTP).to have_received(:get) do |url|
+        expect(url.query_values).to eq({ "token" => token })
+      end
+    end
+
+    it "still returns the preview html" do
       parsed_content = Nokogiri::HTML.parse(actual_content)
 
       expect(parsed_content.at_css("body.gem-c-layout-for-public--draft")).to be_present
@@ -274,14 +333,6 @@ RSpec.describe BlockPreview::PreviewHtml do
     end
 
     it "appends the draft-origin base path to the CSS and JS references" do
-      actual_content = BlockPreview::PreviewHtml.new(
-        content_id: host_content_id,
-        block: block_to_preview,
-        base_path: host_base_path,
-        locale: "en",
-        state: "draft",
-      ).to_s
-
       parsed_content = Nokogiri::HTML.parse(actual_content)
 
       expect(parsed_content.at_css("link[href='#{Plek.external_url_for('draft-origin')}/assets/application.css']")).to be_present
@@ -304,15 +355,19 @@ RSpec.describe BlockPreview::PreviewHtml do
     end
 
     it "makes a request to the rendering app as reported by the Publishing API" do
-      expect(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for(rendering_app)}#{host_base_path}")).and_return(fake_frontend_response)
-
       BlockPreview::PreviewHtml.new(
         content_id: host_content_id,
         block: block_to_preview,
         base_path: host_base_path,
         locale: "en",
         state: "published",
+        auth_bypass_id:,
       ).to_s
+
+      expect(Net::HTTP).to have_received(:get) do |url|
+        expect(url.host).to eq(Plek.external_url_for(rendering_app).sub("http://", ""))
+        expect(url.path).to eq(host_base_path)
+      end
     end
 
     describe "when the Publishing API does not report a rendering app" do
@@ -323,15 +378,19 @@ RSpec.describe BlockPreview::PreviewHtml do
       end
 
       it "defaults to frontend" do
-        expect(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for('frontend')}#{host_base_path}")).and_return(fake_frontend_response)
-
         BlockPreview::PreviewHtml.new(
           content_id: host_content_id,
           block: block_to_preview,
           base_path: host_base_path,
           locale: "en",
           state: "published",
+          auth_bypass_id:,
         ).to_s
+
+        expect(Net::HTTP).to have_received(:get) do |url|
+          expect(url.host).to eq(Plek.external_url_for("frontend").sub("http://", ""))
+          expect(url.path).to eq(host_base_path)
+        end
       end
     end
 
@@ -339,44 +398,55 @@ RSpec.describe BlockPreview::PreviewHtml do
       let(:rendering_app) { "smartanswers" }
 
       it "makes a request to smart-answers" do
-        expect(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for('smart-answers')}#{host_base_path}")).and_return(fake_frontend_response)
-
         BlockPreview::PreviewHtml.new(
           content_id: host_content_id,
           block: block_to_preview,
           base_path: host_base_path,
           locale: "en",
           state: "published",
+          auth_bypass_id:,
         ).to_s
+
+        expect(Net::HTTP).to have_received(:get) do |url|
+          expect(url.host).to eq(Plek.external_url_for("smart-answers").sub("http://", ""))
+          expect(url.path).to eq(host_base_path)
+        end
       end
     end
 
     describe "when the state is draft" do
       it "prepends `draft` to the rendering app" do
-        expect(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for("draft-#{rendering_app}")}#{host_base_path}")).and_return(fake_frontend_response)
-
         BlockPreview::PreviewHtml.new(
           content_id: host_content_id,
           block: block_to_preview,
           base_path: host_base_path,
           locale: "en",
           state: "draft",
+          auth_bypass_id:,
         ).to_s
+
+        expect(Net::HTTP).to have_received(:get) do |url|
+          expect(url.host).to eq(Plek.external_url_for("draft-#{rendering_app}").sub("http://", ""))
+        end
       end
 
       describe "when the frontend app is smart answers" do
         let(:rendering_app) { "smartanswers" }
 
         it "makes a request to smart-answers" do
-          expect(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for('smart-answers')}#{host_base_path}")).and_return(fake_frontend_response)
-
           BlockPreview::PreviewHtml.new(
             content_id: host_content_id,
             block: block_to_preview,
             base_path: host_base_path,
             locale: "en",
             state: "draft",
+            auth_bypass_id:,
           ).to_s
+
+          expect(Net::HTTP).to have_received(:get) do |url|
+            expect(url.host).to eq(Plek.external_url_for("smart-answers").sub("http://", ""))
+            expect(url.path).to eq(host_base_path)
+          end
         end
       end
 
@@ -388,15 +458,19 @@ RSpec.describe BlockPreview::PreviewHtml do
         end
 
         it "defaults to draft-frontend" do
-          expect(Net::HTTP).to receive(:get).with(URI("#{Plek.external_url_for('draft-frontend')}#{host_base_path}")).and_return(fake_frontend_response)
-
           BlockPreview::PreviewHtml.new(
             content_id: host_content_id,
             block: block_to_preview,
             base_path: host_base_path,
             locale: "en",
             state: "draft",
+            auth_bypass_id:,
           ).to_s
+
+          expect(Net::HTTP).to have_received(:get) do |url|
+            expect(url.host).to eq(Plek.external_url_for("draft-frontend").sub("http://", ""))
+            expect(url.path).to eq(host_base_path)
+          end
         end
       end
     end

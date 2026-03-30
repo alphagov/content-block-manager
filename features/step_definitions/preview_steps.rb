@@ -3,6 +3,8 @@ def create_host_document(state)
   embed_code = "{{embed:#{@current_host_document['block_type']}:#{@current_host_document['content_id']}}}"
   website_root = state == "published" ? Plek.website_root : Plek.new.external_url_for("draft-origin")
   content_store = state == "published" ? "live" : "draft"
+  token = state == "published" ? nil : "token"
+  allow(JWT).to receive(:encode).and_return(token)
 
   stub_request(
     :get,
@@ -23,7 +25,7 @@ def create_host_document(state)
   stub_request(
     :get,
     "#{website_root}#{@current_host_document['base_path']}",
-  ).to_return(
+  ).with(query: { token: }.compact).to_return(
     status: 200,
     body: "<head></head><body><h1>#{@current_host_document['title']}</h1><p>iframe preview <a href=\"/other-page\">Link to other page</a></p>#{@content_block.render(embed_code)}</body>",
   )
@@ -31,7 +33,7 @@ def create_host_document(state)
   stub_request(
     :get,
     "#{website_root}/other-page",
-  ).to_return(
+  ).with(query: { token: }.compact).to_return(
     status: 200,
     body: "<head></head><body><h1>#{@current_host_document['title']}</h1><p>other page</p>#{@content_block.render(embed_code)}</body>",
   )

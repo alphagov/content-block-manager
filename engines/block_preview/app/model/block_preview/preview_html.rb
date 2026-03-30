@@ -6,16 +6,17 @@ module BlockPreview
   class PreviewHtml
     include BlockPreview::Engine.routes.url_helpers
 
-    def initialize(content_id:, block:, base_path:, locale:, state:)
+    def initialize(content_id:, block:, base_path:, locale:, state:, auth_bypass_id:)
       @content_id = content_id
       @block = block
       @base_path = base_path
       @state = state
       @locale = locale
+      @auth_bypass_id = auth_bypass_id
     end
 
     def to_s
-      uri = URI(frontend_path)
+      uri = Addressable::URI.parse(frontend_path)
       nokogiri_html = html_snapshot_from_frontend(uri)
       update_local_link_paths(nokogiri_html)
       update_local_form_actions(nokogiri_html, uri.scheme, uri.host)
@@ -30,7 +31,7 @@ module BlockPreview
     BLOCK_STYLE = "background-color: yellow;".freeze
     ERROR_HTML = "<html><head></head><body><p>Preview not found</p></body></html>".freeze
 
-    attr_reader :block, :content_id, :base_path, :locale, :state
+    attr_reader :block, :content_id, :base_path, :locale, :state, :auth_bypass_id
 
     def frontend_path
       frontend_base_path + base_path
@@ -49,7 +50,7 @@ module BlockPreview
     # the base path that way.
     def development_base_path
       @development_base_path ||= begin
-        publishing_api_response = Public::Services.publishing_api.get_content(content_id)
+        publishing_api_response ||= Public::Services.publishing_api.get_content(content_id)
         Plek.external_url_for(rendering_app(publishing_api_response))
       end
     end
@@ -70,11 +71,17 @@ module BlockPreview
 
     def html_snapshot_from_frontend(uri)
       begin
+        uri = add_auth_bypass_token_to_uri(uri) if draft?
         raw_html = Net::HTTP.get(uri)
       rescue StandardError
         raw_html = ERROR_HTML
       end
       Nokogiri::HTML.parse(raw_html)
+    end
+
+    def add_auth_bypass_token_to_uri(uri)
+      uri.query_values = (uri.query_values || {}).merge({ token: auth_bypass_token })
+      uri
     end
 
     def update_local_link_paths(nokogiri_html)
@@ -148,6 +155,23 @@ module BlockPreview
 
     def content_block_wrappers(nokogiri_html)
       nokogiri_html.css("[data-content-id=\"#{block.content_id}\"]")
+    end
+
+    def auth_bypass_token
+      JWT.encode(
+        {
+          "sub" => auth_bypass_id,
+          "content_id" => content_id,
+          "iat" => Time.zone.now.to_i,
+          "exp" => bypass_token_expiry_date.to_i,
+        },
+        ENV["AUTHENTICATING_PROXY_JWT_AUTH_SECRET"],
+        "HS256",
+      )
+    end
+
+    def bypass_token_expiry_date
+      7.days.from_now
     end
   end
 end
