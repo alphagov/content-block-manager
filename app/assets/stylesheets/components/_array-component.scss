@@ -45,5 +45,12 @@
       @extend .gem-c-button--secondary-quiet; // stylelint-disable-line scss/at-extend-no-missing-placeholder
     }
   }
+
+  &--sortable {
+    .gem-c-add-another__move-button-wrapper {
+      top: govuk-spacing(6);
+      right: govuk-spacing(3);
+    }
+  }
   // stylelint-enable selector-no-qualifying-type
 }
