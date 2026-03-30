@@ -144,6 +144,7 @@ schemas:
                 component: textarea
                 govspeak_enabled: true
           telephone_numbers:
+            component: sortable_array
             field_order:
               - type
               - label

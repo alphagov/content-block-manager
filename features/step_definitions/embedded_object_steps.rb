@@ -38,7 +38,7 @@ And("I add the following {string} to the form:") do |item_type, table|
     field_prefix = "edition[details][#{@object_type.pluralize}][#{item_type}][]"
 
     row.each do |key, value|
-      within all(".app-c-content-block-manager-array-item-component").last do
+      within all(".app-c-content-block-manager-array-component fieldset").last do
         field = page.all(:css, "[name='#{field_prefix}[#{key}]']").last
         if field.tag_name == "select"
           select value, from: field[:id]
