@@ -10,35 +10,13 @@
       "additionalProperties": false,
       "properties": {
         "start": {
-          "type": "object",
-          "x-custom-format": "datetime",
-          "additionalProperties": false,
-          "properties": {
-            "date": {
-              "type": "string",
-              "format": "date"
-            },
-            "time": {
-              "type": "string",
-              "format": "time"
-            }
-          }
+          "type": "string",
+          "format": "datetime"
         },
         "end": {
-          "type": "object",
-          "x-custom-format": "datetime",
-          "additionalProperties": false,
-          "properties": {
-            "date": {
-              "type": "string",
-              "format": "date",
-              "formatMinimum": { "$ref": "#/date_range/start/date" }
-            },
-            "time": {
-              "type": "string",
-              "format": "time"
-            }
-          }
+          "type": "string",
+          "format": "datetime",
+          "formatMinimum": { "$ref": "#/date_range/start" }
         }
       }
     }

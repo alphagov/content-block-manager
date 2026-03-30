@@ -10,22 +10,13 @@ RSpec.describe DetailsValidator do
       }
     end
 
-    let(:start_date) { "2025-04-06" }
-    let(:start_time) { "00:00" }
-
-    let(:end_date) { "2026-04-05" }
-    let(:end_time) { "23:59" }
+    let(:start_date_time) { "2025-04-06T00:00:00Z" }
+    let(:end_date_time) { "2026-04-05T23:59:00Z" }
 
     let(:date_range) do
       {
-        start: {
-          date: start_date,
-          time: start_time,
-        },
-        end: {
-          date: end_date,
-          time: end_time,
-        },
+        start: start_date_time,
+        end: end_date_time,
       }
     end
 
@@ -41,53 +32,33 @@ RSpec.describe DetailsValidator do
       it { is_expected.to be_valid }
     end
 
-    describe "when the start date is invalid" do
-      let(:start_date) { "INVALID DATE" }
+    describe "when the start is invalid" do
+      let(:start_date_time) { "INVALID" }
+
+      it { is_expected.not_to be_valid }
+
+      it "adds an error to the start field" do
+        expect(errors[:details_date_range_start]).to include("Start date/time is invalid")
+      end
+    end
+
+    describe "when the end is invalid" do
+      let(:end_date_time) { "INVALID" }
+
+      it { is_expected.not_to be_valid }
+
+      it "adds an error to the end field" do
+        expect(errors[:details_date_range_end]).to include("End date/time is invalid")
+      end
+    end
+
+    describe "when the end is before the start" do
+      let(:end_date_time) { "2023-04-06T00:00:00Z" }
 
       it { is_expected.not_to be_valid }
 
       it "adds an error to the start date field" do
-        expect(errors[:details_date_range_start_date]).to include("Invalid Date")
-      end
-    end
-
-    describe "when the start time is invalid" do
-      let(:start_time) { "INVALID TIME" }
-
-      it { is_expected.not_to be_valid }
-
-      it "adds an error to the start date field" do
-        expect(errors[:details_date_range_start_time]).to include("Invalid Time")
-      end
-    end
-
-    describe "when the end date is invalid" do
-      let(:end_date) { "INVALID DATE" }
-
-      it { is_expected.not_to be_valid }
-
-      it "adds an error to the end date field" do
-        expect(errors[:details_date_range_end_date]).to include("Invalid Date")
-      end
-    end
-
-    describe "when the end time is before the start date" do
-      let(:end_date) { "2023-04-06" }
-
-      it { is_expected.not_to be_valid }
-
-      it "adds an error to the start date field" do
-        expect(errors[:details_date_range_end_date]).to include("Date must be after date range start date")
-      end
-    end
-
-    describe "when the end time is invalid" do
-      let(:end_time) { "INVALID TIME" }
-
-      it { is_expected.not_to be_valid }
-
-      it "adds an error to the start date field" do
-        expect(errors[:details_date_range_end_time]).to include("Invalid Time")
+        expect(errors[:details_date_range_end]).to include("End must be after date range start")
       end
     end
   end
