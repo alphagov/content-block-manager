@@ -1,6 +1,4 @@
 class DetailsValidator < ActiveModel::Validator
-  include CustomValidators
-
   attr_reader :edition
 
   def validate(edition)
@@ -67,19 +65,10 @@ class DetailsValidator < ActiveModel::Validator
   end
 
   def validate_with_schema(edition)
-    # Fetch the details and remove any blank fields (JSONSchema classes an empty string as valid,
-    # unless a specific format has been specified)
-    details = compact_nested(edition.details)
-    schemer = JSONSchemer.schema(
-      edition.schema.body,
-      keywords: {
-        "formatMinimum" => format_date_minimum(details),
-      },
-      formats: {
-        "time" => ->(instance, _format) { instance.match?(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/) },
-      },
-    )
-    schemer.validate(details)
+    DetailsValidator::SchemaValidationRunner.new(
+      schema_body: edition.schema.body,
+      details: edition.details,
+    ).call
   end
 
   def key_with_optional_prefix(error, key)
@@ -125,13 +114,5 @@ private
 
   def error_is_for_embedded_object?(error)
     error["schema_pointer"]&.include?("patternProperties")
-  end
-
-  def compact_nested(object)
-    return object unless object.respond_to?(:compact_blank!)
-
-    object.compact_blank!
-    object.each { |o| compact_nested(o) }
-    object
   end
 end
