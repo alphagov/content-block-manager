@@ -29,7 +29,40 @@ RSpec.describe Block::Edition, type: :model do
   describe "validations" do
     subject { concrete_edition_class.new(title: "Other Type Title") }
 
+    let(:document) { Block::Document.create!(sluggable_string: "test-block", block_type: "time_period") }
+
     it { is_expected.to validate_presence_of(:title) }
+
+    describe "title alphanumeric validation" do
+      it "is valid when title contains letters" do
+        edition = concrete_edition_class.new(title: "Valid Title", lead_organisation_id: SecureRandom.uuid, document:)
+        expect(edition).to be_valid
+      end
+
+      it "is valid when title contains numbers" do
+        edition = concrete_edition_class.new(title: "2024", lead_organisation_id: SecureRandom.uuid, document:)
+        expect(edition).to be_valid
+      end
+
+      it "is invalid when title contains only special characters" do
+        edition = concrete_edition_class.new(title: "---", lead_organisation_id: SecureRandom.uuid, document:)
+        edition.valid?
+        expect(edition.errors[:title]).to include("must contain at least one letter or number")
+      end
+    end
+
+    describe "lead_organisation_id presence validation" do
+      it "is invalid when lead_organisation_id is blank" do
+        edition = concrete_edition_class.new(title: "Valid Title", lead_organisation_id: nil, document:)
+        edition.valid?
+        expect(edition.errors[:lead_organisation_id]).to include("cannot be blank")
+      end
+
+      it "is valid when lead_organisation_id is present" do
+        edition = concrete_edition_class.new(title: "Valid Title", lead_organisation_id: SecureRandom.uuid, document:)
+        expect(edition).to be_valid
+      end
+    end
   end
 
   describe "#details" do
