@@ -67,7 +67,7 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
   end
 
   describe "table component" do
-    it "renders embedded editions" do
+    before do
       render_inline(
         described_class.new(
           caption:,
@@ -75,27 +75,32 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
           edition:,
         ),
       )
+    end
 
+    it "renders the correct headers" do
       expect(page).to have_css ".govuk-table__caption", text: caption
 
       headers = page.find_all(".govuk-table__header")
 
-      expect(headers.count).to eq(6)
+      expect(headers.count).to eq(7)
 
       expect(headers[0]).to have_text "Title"
-      expect(headers[1]).to have_text "Type"
-      expect(headers[2]).to have_text "Instances"
-      expect(headers[3]).to have_text "Views (30 days)"
-      expect(headers[4]).to have_text "Lead organisation"
-      expect(headers[5]).to have_text "Last updated"
+      expect(headers[1]).to have_text "Publishing app"
+      expect(headers[2]).to have_text "Type"
+      expect(headers[3]).to have_text "Instances"
+      expect(headers[4]).to have_text "Views (30 days)"
+      expect(headers[5]).to have_text "Lead organisation"
+      expect(headers[6]).to have_text "Last updated"
+    end
 
+    it "renders the correct row data" do
       rows = page.find_all("tbody .govuk-table__row")
 
       expect(rows.count).to eq(1)
 
       columns = rows[0].find_all(".govuk-table__cell")
 
-      expect(columns.count).to eq(6)
+      expect(columns.count).to eq(7)
 
       expect(columns[0]).to have_css ".govuk-link" do |link|
         expect(link.text).to eq("#{host_content_item.title} (opens in new tab)")
@@ -108,14 +113,15 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
         expect(tag.text.strip).to eq("Published")
       end
 
-      expect(columns[1]).to have_text host_content_item.document_type.humanize
-      expect(columns[2]).to have_text "1"
-      expect(columns[3]).to have_text "1.2m"
-      expect(columns[4]).to have_text host_content_item.publishing_organisation["title"]
+      expect(columns[1]).to have_text "Publisher"
+      expect(columns[2]).to have_text host_content_item.document_type.humanize
+      expect(columns[3]).to have_text "1"
+      expect(columns[4]).to have_text "1.2m"
+      expect(columns[5]).to have_text host_content_item.publishing_organisation["title"]
 
-      expect(columns[5]).to have_text "#{time_ago_in_words(host_content_item.last_edited_at)} ago by #{last_edited_by_editor.name}"
+      expect(columns[6]).to have_text "#{time_ago_in_words(host_content_item.last_edited_at)} ago by #{last_edited_by_editor.name}"
 
-      expect(columns[5]).to have_css "a.govuk-link" do |link|
+      expect(columns[6]).to have_css "a.govuk-link" do |link|
         expect(link.text).to eq(last_edited_by_editor.name)
         expect(link[:href]).to eq(user_path(last_edited_by_editor.uid))
       end
@@ -131,14 +137,6 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
       end
 
       it "presents 'Not set'" do
-        render_inline(
-          described_class.new(
-            caption:,
-            host_content_items:,
-            edition:,
-          ),
-        )
-
         expect(page).to have_css "tbody .govuk-table__cell", text: "Not set"
       end
     end
@@ -153,14 +151,6 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
       let(:state) { "draft" }
 
       it "shows the draft tag" do
-        render_inline(
-          described_class.new(
-            caption:,
-            host_content_items:,
-            edition:,
-          ),
-        )
-
         columns = page.find_all(".govuk-table__cell")
 
         expect(columns[0]).to have_css "strong.govuk-tag" do |tag|
@@ -173,14 +163,6 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
       let(:unique_pageviews) { nil }
 
       it "displays a zero" do
-        render_inline(
-          described_class.new(
-            caption:,
-            host_content_items:,
-            edition:,
-          ),
-        )
-
         expect(page).to have_css "tbody .govuk-table__cell", text: "0"
       end
     end
@@ -204,14 +186,6 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
       end
 
       it "Does not render a link" do
-        render_inline(
-          described_class.new(
-            caption:,
-            host_content_items:,
-            edition:,
-          ),
-        )
-
         expect(page).to have_css "tbody" do |tbody|
           tbody.assert_no_selector ".govuk-link", text: host_content_item.title.to_s
         end
@@ -220,27 +194,12 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
 
     describe "sorting headers" do
       it "adds the table header as an anchor tag to each header" do
-        render_inline(
-          described_class.new(
-            caption:,
-            host_content_items:,
-            edition:,
-          ),
-        )
-
-        expect(page).to have_css "a.app-table__sort-link[href*='##{Shared::HostEditionsTableComponent::TABLE_ID}']", count: 6
+        expect(page).to have_css "a.app-table__sort-link[href*='##{Shared::HostEditionsTableComponent::TABLE_ID}']", count: 7
       end
 
       it "shows all the headers unordered by default" do
-        render_inline(
-          described_class.new(
-            caption:,
-            host_content_items:,
-            edition:,
-          ),
-        )
-
         expect(page).to have_css "a.app-table__sort-link[href*='order=title']", text: "Title"
+        expect(page).to have_css "a.app-table__sort-link[href*='order=publishing_app']", text: "Publishing app"
         expect(page).to have_css "a.app-table__sort-link[href*='order=document_type']", text: "Type"
         expect(page).to have_css "a.app-table__sort-link[href*='order=instances']", text: "Instances"
         expect(page).to have_css "a.app-table__sort-link[href*='order=unique_pageviews']", text: "Views (30 days)"
@@ -291,14 +250,6 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
         end
 
         it "does not show pagination" do
-          render_inline(
-            described_class.new(
-              caption:,
-              host_content_items:,
-              edition:,
-            ),
-          )
-
           expect(page).not_to have_css ".govuk-pagination__list"
         end
       end
@@ -314,27 +265,11 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
         end
 
         it "adds the table header as an anchor tag to each pagination link" do
-          render_inline(
-            described_class.new(
-              caption:,
-              host_content_items:,
-              edition:,
-            ),
-          )
-
           expect(page).to have_css "ul.govuk-pagination__list a.govuk-pagination__link[href*='##{Shared::HostEditionsTableComponent::TABLE_ID}']", count: 2
           expect(page).to have_css ".govuk-pagination__next a.govuk-pagination__link[href*='##{Shared::HostEditionsTableComponent::TABLE_ID}']"
         end
 
         it "shows the first page as selected by default" do
-          render_inline(
-            described_class.new(
-              caption:,
-              host_content_items:,
-              edition:,
-            ),
-          )
-
           expect(page).to have_css ".govuk-pagination__list"
           expect(page).to have_css "a.govuk-pagination__link[aria-current='page']", text: "1"
         end
@@ -356,7 +291,7 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
   end
 
   describe "in progress table component" do
-    it "renders embedded editions" do
+    before do
       render_inline(
         described_class.new(
           caption:,
@@ -364,45 +299,51 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
           edition: in_progress_edition,
         ),
       )
+    end
 
+    it "renders the correct headers" do
       expect(page).to have_css ".govuk-table__caption", text: caption
 
       headers = page.find_all(".govuk-table__header")
 
-      expect(headers.count).to eq(7)
+      expect(headers.count).to eq(8)
 
       expect(headers[0]).to have_text "Title"
-      expect(headers[1]).to have_text "Type"
-      expect(headers[2]).to have_text "Instances"
-      expect(headers[3]).to have_text "Views (30 days)"
-      expect(headers[4]).to have_text "Lead organisation"
-      expect(headers[5]).to have_text "Last updated"
-      expect(headers[6]).to have_text "Preview (opens in new tab)"
+      expect(headers[1]).to have_text "Publishing app"
+      expect(headers[2]).to have_text "Type"
+      expect(headers[3]).to have_text "Instances"
+      expect(headers[4]).to have_text "Views (30 days)"
+      expect(headers[5]).to have_text "Lead organisation"
+      expect(headers[6]).to have_text "Last updated"
+      expect(headers[7]).to have_text "Preview (opens in new tab)"
+    end
 
+    it "renders the correct row data" do
       rows = page.find_all("tbody .govuk-table__row")
 
       expect(rows.count).to eq(1)
 
       columns = rows[0].find_all(".govuk-table__cell")
 
-      expect(columns.count).to eq(7)
+      expect(columns.count).to eq(8)
 
       expect(columns[0]).to have_no_css ".govuk-link"
-      expect(columns[1]).to have_text host_content_item.document_type.humanize
-      expect(columns[2]).to have_text "1"
-      expect(columns[3]).to have_text "1.2m"
-      expect(columns[4]).to have_text host_content_item.publishing_organisation["title"]
+      expect(columns[1]).to have_text "Publisher"
+      expect(columns[2]).to have_text host_content_item.document_type.humanize
+      expect(columns[3]).to have_text "1"
+      expect(columns[4]).to have_text "1.2m"
+      expect(columns[5]).to have_text host_content_item.publishing_organisation["title"]
 
-      expect(columns[5]).to have_text "#{time_ago_in_words(host_content_item.last_edited_at)} ago by #{last_edited_by_editor.name}"
+      expect(columns[6]).to have_text "#{time_ago_in_words(host_content_item.last_edited_at)} ago by #{last_edited_by_editor.name}"
 
-      expect(columns[5]).to have_css "a.govuk-link" do |link|
+      expect(columns[6]).to have_css "a.govuk-link" do |link|
         expect(link.text).to eq(last_edited_by_editor.name)
         expect(link[:href]).to eq(user_path(last_edited_by_editor.uid))
       end
 
-      expect(columns[6]).to have_text "Preview #{host_content_item.title} (opens in new tab)"
+      expect(columns[7]).to have_text "Preview #{host_content_item.title} (opens in new tab)"
 
-      expect(columns[6]).to have_css "a.govuk-link" do |link|
+      expect(columns[7]).to have_css "a.govuk-link" do |link|
         expect(link.text).to eq("Preview #{host_content_item.title} (opens in new tab)")
         expect(link[:href]).to include("/preview")
         expect(link[:href]).to include("state=#{host_content_item.state}")
@@ -413,17 +354,9 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
       let(:state) { "draft" }
 
       it "includes the content item state in the preview link" do
-        render_inline(
-          described_class.new(
-            caption:,
-            host_content_items:,
-            edition: in_progress_edition,
-          ),
-        )
-
         columns = page.find_all(".govuk-table__cell")
 
-        expect(columns[6]).to have_css "a.govuk-link" do |link|
+        expect(columns[7]).to have_css "a.govuk-link" do |link|
           expect(link[:href]).to include("state=draft")
         end
       end
