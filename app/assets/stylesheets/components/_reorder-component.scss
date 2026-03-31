@@ -7,6 +7,7 @@
     position: relative;
   }
 
+  // stylelint-disable selector-no-qualifying-type
   &__buttons {
     position: absolute;
     right: 0;
@@ -17,4 +18,5 @@
       margin-right: govuk-spacing(2);
     }
   }
+  // stylelint-enable selector-no-qualifying-type
 }
