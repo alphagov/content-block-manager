@@ -288,7 +288,7 @@ GEM
     govuk_personalisation (1.1.0)
       plek (>= 1.9.0)
       rails (>= 6, < 9)
-    govuk_publishing_components (65.1.1)
+    govuk_publishing_components (65.2.0)
       govuk_app_config
       govuk_personalisation (>= 0.7.0)
       kramdown
@@ -1088,7 +1088,7 @@ CHECKSUMS
   govuk_app_config (9.23.7) sha256=5b33ebdfd4ff04f50265aaef46fed488cf29e0905d4988c112d34fdd0b2fd5ba
   govuk_frontend_toolkit (9.0.1) sha256=18fdae529c9003e023c3461d89a45ddaf5ac0df311705351743c9f1b7b48a2de
   govuk_personalisation (1.1.0) sha256=6e7a0dcfaec11570d95490160a95aff85150df5b667a586ecd7d5de04feac5dd
-  govuk_publishing_components (65.1.1) sha256=5be85215b7384d1fda93e24c0329c0ab02dcd2c31ed914ceb1d2630d292c568f
+  govuk_publishing_components (65.2.0) sha256=5d066c3b8e6ebe28de543e73aa75269e9b313705326a06987c49ebbff1450f72
   govuk_schemas (6.2.3) sha256=ad0311968ab411bf175d7f933ff9ea378cda06a14813a37a4916cc627f353d52
   govuk_sidekiq (11.0.1) sha256=491f907d2972342c62b322c454bd11cdadf1f2b325e7af017eb947ef6bde07c7
   govuk_test (4.1.2) sha256=ab0318c625d0e4b9358092bb7add4c852dd1bc69a3ff2edcfe4bfa1d156c9bb9
