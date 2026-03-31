@@ -15,6 +15,7 @@
     @include embed_codes.embed-code-flash;
   }
 
+  // stylelint-disable selector-no-qualifying-type
   &--with-block {
     .app-c-embedded-objects-blocks-component__main-summary-card-wrapper {
       // stylelint-disable-next-line max-nesting-depth
@@ -24,6 +25,7 @@
       }
     }
   }
+  // stylelint-enable selector-no-qualifying-type
 
   &--nested {
     margin-top: govuk-spacing(6);
@@ -36,6 +38,7 @@
     padding-left: govuk-spacing(4);
   }
 
+  // stylelint-disable selector-no-qualifying-type
   &__details-wrapper {
     // stylelint-disable-next-line scss/at-extend-no-missing-placeholder
     @extend .govuk-summary-card__content;
@@ -50,4 +53,5 @@
       padding: 0;
     }
   }
+  // stylelint-enable selector-no-qualifying-type
 }

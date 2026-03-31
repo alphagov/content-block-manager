@@ -20,6 +20,7 @@
     }
   }
 
+  // stylelint-disable selector-no-qualifying-type
   &--bands {
     margin-left: govuk-spacing(0);
     margin-right: govuk-spacing(3);
@@ -44,4 +45,5 @@
       @extend .gem-c-button--secondary-quiet; // stylelint-disable-line scss/at-extend-no-missing-placeholder
     }
   }
+  // stylelint-enable selector-no-qualifying-type
 }
