@@ -24,11 +24,11 @@ private
     fields = field.nested_fields || [field]
 
     fields.map do |item|
-      helpers.component_for_field(item, context(item))
+      helpers.component_for_field(item, context_for_field(item))
     end
   end
 
-  def context(field)
+  def context_for_field(field)
     Edition::Details::Fields::Context.new(
       edition:,
       field:,

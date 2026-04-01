@@ -1,0 +1,9 @@
+<%= tag.div class: wrapper_classes, data: { ga4_section: label, module: "array-component" } do %>
+  <%= render "govuk_publishing_components/components/add_another", {
+    fieldset_legend: label,
+    add_button_text: I18n.t("buttons.add_another", item: label.downcase),
+    sortable: true,
+    items:,
+    empty: render(empty_component),
+    } %>
+<% end %>

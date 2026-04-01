@@ -41,3 +41,18 @@ Then("I should see {string} in the ordered items") do |item_title|
     expect(item).to playwright_matchers.have_text(item_title)
   end
 end
+
+Then(/I reorder the (\d+)(?:st|nd|rd|th) item (up|down)$/) do |cardinality, direction|
+  rows = page.find_all(".js-add-another__fieldset")
+  button = rows[cardinality.to_i - 1].find("button[data-action='move-#{direction}']")
+  button.click
+end
+
+Then("I should see the items are in the order:") do |table|
+  cards = page.find_all(".gem-c-summary__block .govuk-summary-card")
+
+  table.hashes.each_with_index do |expected, index|
+    value_row = cards[index].find_all(".govuk-summary-list__value")[1]
+    expect(value_row).to have_text(expected["telephone_number"])
+  end
+end
