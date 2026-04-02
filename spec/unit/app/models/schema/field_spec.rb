@@ -326,6 +326,37 @@ RSpec.describe Schema::Field do
         assert_nil(field.nested_field("unknown_name"))
       end
     end
+
+    context "when the field does not support nesting" do
+      let(:body) do
+        {
+          "properties" => {
+            "start" => {
+              "type" => "string",
+            },
+          },
+        }
+      end
+
+      let(:field) { Schema::Field.new("start", Schema.new("test", body)) }
+
+      let(:expected_error_message) do
+        %~
+          Field 'start' (type: 'string') does not support nested fields.
+          Cannot look up nested field 'nested_field_name'.
+          Only fields with type 'object' or 'array' (of objects) have nested fields.
+          Schema properties: {"type" => "string"}
+        ~.gsub(/\s+/, " ").strip
+      end
+
+      it "raises a descriptive error" do
+        error = assert_raises(Schema::Field::NestedFieldNotSupportedError) do
+          field.nested_field("nested_field_name")
+        end
+
+        expect(error.message).to eq(expected_error_message)
+      end
+    end
   end
 
   describe "#array_items" do

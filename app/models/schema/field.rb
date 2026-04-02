@@ -1,5 +1,7 @@
 class Schema
   class Field
+    class NestedFieldNotSupportedError < StandardError; end
+
     attr_reader :name, :schema
 
     HIDDEN_FIELD_PROPERTY_KEY = "hidden_field".freeze
@@ -67,10 +69,12 @@ class Schema
       end
     end
 
-    def nested_field(name)
-      raise(ArgumentError, "Provide the name of a nested field") if name.blank?
+    def nested_field(nested_field_name)
+      raise(ArgumentError, "Provide the name of a nested field") if nested_field_name.blank?
 
-      nested_fields.find { |field| field.name == name }
+      raise_nested_field_not_supported_error_for(nested_field_name) if nested_fields.nil?
+
+      nested_fields.find { |field| field.name == nested_field_name }
     end
 
     def array_items
@@ -157,6 +161,18 @@ class Schema
     end
 
   private
+
+    def raise_nested_field_not_supported_error_for(nested_field_name)
+      error_message =
+        %~
+          Field '#{name}' (type: '#{type.presence || 'missing'}') does not support nested fields.
+          Cannot look up nested field '#{nested_field_name}'.
+          Only fields with type 'object' or 'array' (of objects) have nested fields.
+          Schema properties: #{properties}
+         ~.gsub(/\s+/, " ").strip
+
+      raise NestedFieldNotSupportedError, error_message
+    end
 
     def config_for_embedded_schema
       return schema.config.dig("subschemas", name) if schema.config["subschemas"]
