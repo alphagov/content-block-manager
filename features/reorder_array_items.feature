@@ -34,4 +34,3 @@ Feature: Editor is able to reorder their telephone number fields
       | Telephone 1 |                1 |
       | Telephone 4 |                4 |
       | Telephone 3 |                3 |
-    And I save and open the page
