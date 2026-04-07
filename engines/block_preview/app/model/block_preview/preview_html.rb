@@ -6,6 +6,8 @@ module BlockPreview
   class PreviewHtml
     include BlockPreview::Engine.routes.url_helpers
 
+    ERROR_HTML = "<html><head></head><body><p>Preview not found</p></body></html>".freeze
+
     def initialize(content_id:, block:, base_path:, locale:, state:, auth_bypass_id:)
       @content_id = content_id
       @block = block
@@ -18,18 +20,16 @@ module BlockPreview
     def to_s
       uri = Addressable::URI.parse(frontend_path)
       nokogiri_html = html_snapshot_from_frontend(uri)
-      update_local_link_paths(nokogiri_html)
-      update_local_form_actions(nokogiri_html, uri.scheme, uri.host)
       add_draft_style(nokogiri_html)
       update_css_hrefs(nokogiri_html)
       update_js_srcs(nokogiri_html)
-      replace_existing_content_blocks(nokogiri_html).to_s
+      nokogiri_html.at_css("[data-module=\"govspeak\"]").replace BlockPreview::ContentDiff.new(nokogiri_html, block).to_s
+      update_local_link_paths(nokogiri_html)
+      update_local_form_actions(nokogiri_html, uri.scheme, uri.host)
+      nokogiri_html.to_s
     end
 
   private
-
-    BLOCK_STYLE = "background-color: yellow;".freeze
-    ERROR_HTML = "<html><head></head><body><p>Preview not found</p></body></html>".freeze
 
     attr_reader :block, :content_id, :base_path, :locale, :state, :auth_bypass_id
 
@@ -134,27 +134,10 @@ module BlockPreview
       nokogiri_html
     end
 
-    def replace_existing_content_blocks(nokogiri_html)
-      replace_blocks(nokogiri_html)
-      style_blocks(nokogiri_html)
-      nokogiri_html
+
+
     end
 
-    def replace_blocks(nokogiri_html)
-      content_block_wrappers(nokogiri_html).each do |wrapper|
-        embed_code = wrapper["data-embed-code"]
-        wrapper.replace block.render(embed_code)
-      end
-    end
-
-    def style_blocks(nokogiri_html)
-      content_block_wrappers(nokogiri_html).each do |wrapper|
-        wrapper["style"] = BLOCK_STYLE
-      end
-    end
-
-    def content_block_wrappers(nokogiri_html)
-      nokogiri_html.css("[data-content-id=\"#{block.content_id}\"]")
     end
 
     def auth_bypass_token

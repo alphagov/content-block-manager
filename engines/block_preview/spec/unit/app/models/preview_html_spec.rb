@@ -9,7 +9,7 @@ RSpec.describe BlockPreview::PreviewHtml do
 
   let(:fake_body) do
     <<-HTML
-    <body class=\"govuk-body\">
+    <div class=\"govuk-body\">
         <p>test</p>
         <span
           class=\"content-embed content-embed__content_block_contact\"
@@ -17,7 +17,7 @@ RSpec.describe BlockPreview::PreviewHtml do
           data-document-type=\"content_block_contact\"
           data-embed-code=\"embed-code\"
           data-content-id=\"#{preview_content_id}\">example@example.com</span>
-      </body>
+    </div>
     HTML
   end
 
@@ -28,7 +28,9 @@ RSpec.describe BlockPreview::PreviewHtml do
         <script src="/assets/application.js"></script>/
       </head>
       <body class="govuk-body">
-        #{fake_body}
+        <div data-module=\"govspeak\">
+          #{fake_body}
+        </div>
       </body>
     HTML
   end
@@ -47,11 +49,12 @@ RSpec.describe BlockPreview::PreviewHtml do
 
   let(:auth_bypass_id) { SecureRandom.uuid }
   let(:token) { "token" }
+  let(:content_diff_spy) { double("BlockPreview::ContentDiff", to_s: fake_body) }
 
   before do
     allow(JWT).to receive(:encode).and_return(token)
     allow(Net::HTTP).to receive(:get).and_return(fake_frontend_response)
-    allow(block_to_preview).to receive(:render).and_return(block_render)
+    allow(BlockPreview::ContentDiff).to receive(:new).and_return(content_diff_spy)
   end
 
   it "makes a request to the frontend" do
@@ -98,7 +101,11 @@ RSpec.describe BlockPreview::PreviewHtml do
     parsed_content = Nokogiri::HTML.parse(actual_content)
 
     expect(parsed_content.at_css("body.gem-c-layout-for-public--draft")).to be_present
-    expect(parsed_content.at_css('span.content-embed__content_block_contact[style="background-color: yellow;"]')).to be_present
+    expect(BlockPreview::ContentDiff).to have_received(:new).with(
+      anything,
+      block_to_preview,
+    )
+    expect(content_diff_spy).to have_received(:to_s)
   end
 
   it "appends the base path to the CSS and JS references" do
@@ -124,8 +131,6 @@ RSpec.describe BlockPreview::PreviewHtml do
     end
 
     it "shows an error template" do
-      expected_content = Nokogiri::HTML.parse("<html><head></head><body class=\" gem-c-layout-for-public--draft\"><p>Preview not found</p></body></html>").to_s
-
       actual_content = BlockPreview::PreviewHtml.new(
         content_id: host_content_id,
         block: block_to_preview,
@@ -135,7 +140,7 @@ RSpec.describe BlockPreview::PreviewHtml do
         auth_bypass_id:,
       ).to_s
 
-      expect(actual_content).to eq(expected_content)
+      expect(actual_content).to eq(BlockPreview::PreviewHtml::ERROR_HTML)
     end
   end
 
@@ -274,7 +279,11 @@ RSpec.describe BlockPreview::PreviewHtml do
       parsed_content = Nokogiri::HTML.parse(actual_content)
 
       expect(parsed_content.at_css("body.gem-c-layout-for-public--draft")).to be_present
-      expect(parsed_content.at_css('div.content-embed__content_block_contact[style="background-color: yellow;"]')).to be_present
+      expect(BlockPreview::ContentDiff).to have_received(:new).with(
+        anything,
+        block_to_preview,
+      )
+      expect(content_diff_spy).to have_received(:to_s)
     end
   end
 
@@ -329,7 +338,11 @@ RSpec.describe BlockPreview::PreviewHtml do
       parsed_content = Nokogiri::HTML.parse(actual_content)
 
       expect(parsed_content.at_css("body.gem-c-layout-for-public--draft")).to be_present
-      expect(parsed_content.at_css('span.content-embed__content_block_contact[style="background-color: yellow;"]')).to be_present
+      expect(BlockPreview::ContentDiff).to have_received(:new).with(
+        anything,
+        block_to_preview,
+      )
+      expect(content_diff_spy).to have_received(:to_s)
     end
 
     it "appends the draft-origin base path to the CSS and JS references" do
