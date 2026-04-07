@@ -8,6 +8,8 @@ module BlockPreview
 
     ERROR_HTML = "<html><head></head><body><p>Preview not found</p></body></html>".freeze
 
+    class HtmlSnapshotError < StandardError; end
+
     def initialize(content_id:, block:, base_path:, locale:, state:, auth_bypass_id:)
       @content_id = content_id
       @block = block
@@ -28,6 +30,8 @@ module BlockPreview
       update_local_link_paths(nokogiri_html)
       update_local_form_actions(nokogiri_html, uri.scheme, uri.host)
       nokogiri_html.to_s
+    rescue HtmlSnapshotError
+      ERROR_HTML
     end
 
   private
@@ -71,13 +75,13 @@ module BlockPreview
     end
 
     def html_snapshot_from_frontend(uri)
-      begin
-        uri = add_auth_bypass_token_to_uri(uri) if draft?
-        raw_html = Net::HTTP.get(uri)
-      rescue StandardError
-        raw_html = ERROR_HTML
+      uri = add_auth_bypass_token_to_uri(uri) if draft?
+      response = Net::HTTP.get_response(uri)
+      if response.code == "200"
+        Nokogiri::HTML.parse(response.body)
+      else
+        raise HtmlSnapshotError
       end
-      Nokogiri::HTML.parse(raw_html)
     end
 
     def add_auth_bypass_token_to_uri(uri)
