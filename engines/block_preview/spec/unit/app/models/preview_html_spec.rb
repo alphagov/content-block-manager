@@ -124,6 +124,22 @@ RSpec.describe BlockPreview::PreviewHtml do
     expect(parsed_content.at_css("script[src='#{Plek.website_root}/assets/application.js']")).to be_present
   end
 
+  it "injects the nokodiff stylesheet from the local asset pipeline" do
+    actual_content = BlockPreview::PreviewHtml.new(
+      content_id: host_content_id,
+      block: block_to_preview,
+      base_path: host_base_path,
+      locale: "en",
+      state: "published",
+      auth_bypass_id:,
+    ).to_s
+
+    parsed_content = Nokogiri::HTML.parse(actual_content)
+    hrefs = parsed_content.css("head link[rel='stylesheet']").map { |link| link["href"] }
+
+    expect(hrefs).to include("/assets/content-block-manager/nokodiff.css")
+  end
+
   describe "when the frontend throws an error" do
     before do
       exception = StandardError.new("Something went wrong")

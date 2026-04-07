@@ -23,7 +23,8 @@ module BlockPreview
       add_draft_style(nokogiri_html)
       update_css_hrefs(nokogiri_html)
       update_js_srcs(nokogiri_html)
-      nokogiri_html.at_css("[data-module=\"govspeak\"]").replace BlockPreview::ContentDiff.new(nokogiri_html, block).to_s
+      add_nokodiff_stylesheet(nokogiri_html)
+      update_preview_with_diff(nokogiri_html)
       update_local_link_paths(nokogiri_html)
       update_local_form_actions(nokogiri_html, uri.scheme, uri.host)
       nokogiri_html.to_s
@@ -134,10 +135,28 @@ module BlockPreview
       nokogiri_html
     end
 
+    def update_preview_with_diff(nokogiri_html)
+      nokogiri_html.at_css("[data-module=\"govspeak\"]")
+                   .replace(
+                     BlockPreview::ContentDiff.new(nokogiri_html, block).to_s,
+                   )
 
-
+      nokogiri_html
     end
 
+    def add_nokodiff_stylesheet(nokogiri_html)
+      head = nokogiri_html.at_css("head")
+      return nokogiri_html unless head
+
+      href = nokodiff_stylesheet_href
+      return nokogiri_html if head.at_css("link[rel='stylesheet'][href='#{href}']")
+
+      head.add_child(Nokogiri::HTML::DocumentFragment.parse(%(<link rel="stylesheet" href="#{href}">)))
+      nokogiri_html
+    end
+
+    def nokodiff_stylesheet_href
+      ActionController::Base.helpers.asset_path("nokodiff.css")
     end
 
     def auth_bypass_token
