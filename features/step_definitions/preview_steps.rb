@@ -27,7 +27,7 @@ def create_host_document(state)
     "#{website_root}#{@current_host_document['base_path']}",
   ).with(query: { token: }.compact).to_return(
     status: 200,
-    body: "<head></head><body><h1>#{@current_host_document['title']}</h1><p>iframe preview <a href=\"/other-page\">Link to other page</a></p>#{@content_block.render(embed_code)}</body>",
+    body: "<head></head><body><div data-module=\"govspeak\"><h1>#{@current_host_document['title']}</h1><p>iframe preview <a href=\"/other-page\">Link to other page</a></p>#{@content_block.render(embed_code)}</div></body>",
   )
 
   stub_request(
@@ -35,7 +35,7 @@ def create_host_document(state)
     "#{website_root}/other-page",
   ).with(query: { token: }.compact).to_return(
     status: 200,
-    body: "<head></head><body><h1>#{@current_host_document['title']}</h1><p>other page</p>#{@content_block.render(embed_code)}</body>",
+    body: "<head></head><body><div data-module=\"govspeak\"><h1>#{@current_host_document['title']}</h1><p>other page</p>#{@content_block.render(embed_code)}</div></body>",
   )
 end
 
@@ -69,10 +69,12 @@ Given("there is a host document that is a smart answer") do
       <head></head>
       <body><h1>#{@current_host_document['title']}</h1>
       <main>
-        <form action="/smart-answer" method="post">
-          <input type="text" name="name" id="name" />
-          <button type="submit">Submit</button>
-        </form>
+        <div data-module="govspeak">
+          <form action="/smart-answer" method="post">
+            <input type="text" name="name" id="name" />
+            <button type="submit">Submit</button>
+          </form>
+        </div>
       </main>
       </body>
     </html>
@@ -94,7 +96,7 @@ Given("there is a host document that is a smart answer") do
     "#{Plek.website_root}/smart-answer/result",
   ).to_return(
     status: 200,
-    body: "<head></head><body><h1>#{@current_host_document['title']}</h1><p>other page</p>#{@content_block.render(embed_code)}</body>",
+    body: "<head></head><body><div data-module=\"govspeak\"><h1>#{@current_host_document['title']}</h1><p>other page</p>#{@content_block.render(embed_code)}</div></body>",
   )
 end
 
