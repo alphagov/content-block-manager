@@ -6,6 +6,10 @@ module BlockPreview
   class PreviewHtml
     include BlockPreview::Engine.routes.url_helpers
 
+    ERROR_HTML = "<html><head></head><body><p>Preview not found</p></body></html>".freeze
+
+    class HtmlSnapshotError < StandardError; end
+
     def initialize(content_id:, block:, base_path:, locale:, state:, auth_bypass_id:)
       @content_id = content_id
       @block = block
@@ -18,18 +22,19 @@ module BlockPreview
     def to_s
       uri = Addressable::URI.parse(frontend_path)
       nokogiri_html = html_snapshot_from_frontend(uri)
-      update_local_link_paths(nokogiri_html)
-      update_local_form_actions(nokogiri_html, uri.scheme, uri.host)
       add_draft_style(nokogiri_html)
       update_css_hrefs(nokogiri_html)
       update_js_srcs(nokogiri_html)
-      replace_existing_content_blocks(nokogiri_html).to_s
+      add_nokodiff_stylesheet(nokogiri_html)
+      update_preview_with_diff(nokogiri_html)
+      update_local_link_paths(nokogiri_html)
+      update_local_form_actions(nokogiri_html, uri.scheme, uri.host)
+      nokogiri_html.to_s
+    rescue HtmlSnapshotError
+      ERROR_HTML
     end
 
   private
-
-    BLOCK_STYLE = "background-color: yellow;".freeze
-    ERROR_HTML = "<html><head></head><body><p>Preview not found</p></body></html>".freeze
 
     attr_reader :block, :content_id, :base_path, :locale, :state, :auth_bypass_id
 
@@ -70,13 +75,13 @@ module BlockPreview
     end
 
     def html_snapshot_from_frontend(uri)
-      begin
-        uri = add_auth_bypass_token_to_uri(uri) if draft?
-        raw_html = Net::HTTP.get(uri)
-      rescue StandardError
-        raw_html = ERROR_HTML
+      uri = add_auth_bypass_token_to_uri(uri) if draft?
+      response = Net::HTTP.get_response(uri)
+      if response.code == "200"
+        Nokogiri::HTML.parse(response.body)
+      else
+        raise HtmlSnapshotError
       end
-      Nokogiri::HTML.parse(raw_html)
     end
 
     def add_auth_bypass_token_to_uri(uri)
@@ -134,27 +139,28 @@ module BlockPreview
       nokogiri_html
     end
 
-    def replace_existing_content_blocks(nokogiri_html)
-      replace_blocks(nokogiri_html)
-      style_blocks(nokogiri_html)
+    def update_preview_with_diff(nokogiri_html)
+      nokogiri_html.at_css("[data-module=\"govspeak\"]")
+                   .replace(
+                     BlockPreview::ContentDiff.new(nokogiri_html, block).to_s,
+                   )
+
       nokogiri_html
     end
 
-    def replace_blocks(nokogiri_html)
-      content_block_wrappers(nokogiri_html).each do |wrapper|
-        embed_code = wrapper["data-embed-code"]
-        wrapper.replace block.render(embed_code)
-      end
+    def add_nokodiff_stylesheet(nokogiri_html)
+      head = nokogiri_html.at_css("head")
+      return nokogiri_html unless head
+
+      href = nokodiff_stylesheet_href
+      return nokogiri_html if head.at_css("link[rel='stylesheet'][href='#{href}']")
+
+      head.add_child(Nokogiri::HTML::DocumentFragment.parse(%(<link rel="stylesheet" href="#{href}">)))
+      nokogiri_html
     end
 
-    def style_blocks(nokogiri_html)
-      content_block_wrappers(nokogiri_html).each do |wrapper|
-        wrapper["style"] = BLOCK_STYLE
-      end
-    end
-
-    def content_block_wrappers(nokogiri_html)
-      nokogiri_html.css("[data-content-id=\"#{block.content_id}\"]")
+    def nokodiff_stylesheet_href
+      ActionController::Base.helpers.asset_path("nokodiff.css")
     end
 
     def auth_bypass_token

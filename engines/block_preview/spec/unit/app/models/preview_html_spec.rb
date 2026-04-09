@@ -7,9 +7,9 @@ RSpec.describe BlockPreview::PreviewHtml do
   let(:host_base_path) { "/test" }
   let(:uri_mock) { double }
 
-  let(:fake_body) do
+  let(:fake_content) do
     <<-HTML
-    <body class=\"govuk-body\">
+    <div class=\"govuk-body\">
         <p>test</p>
         <span
           class=\"content-embed content-embed__content_block_contact\"
@@ -17,20 +17,30 @@ RSpec.describe BlockPreview::PreviewHtml do
           data-document-type=\"content_block_contact\"
           data-embed-code=\"embed-code\"
           data-content-id=\"#{preview_content_id}\">example@example.com</span>
-      </body>
+    </div>
     HTML
   end
 
-  let(:fake_frontend_response) do
+  let(:fake_body) do
     <<-HTML
       <head>
         <link rel="stylesheet" href="/assets/application.css">
         <script src="/assets/application.js"></script>/
       </head>
       <body class="govuk-body">
-        #{fake_body}
+        <div data-module=\"govspeak\">
+          #{fake_content}
+        </div>
       </body>
     HTML
+  end
+
+  let(:fake_frontend_response) do
+    instance_double(
+      "Net::HTTPResponse",
+      code: "200",
+      body: fake_body,
+    )
   end
 
   let(:block_render) do
@@ -47,11 +57,12 @@ RSpec.describe BlockPreview::PreviewHtml do
 
   let(:auth_bypass_id) { SecureRandom.uuid }
   let(:token) { "token" }
+  let(:content_diff_spy) { double("BlockPreview::ContentDiff", to_s: fake_content) }
 
   before do
     allow(JWT).to receive(:encode).and_return(token)
-    allow(Net::HTTP).to receive(:get).and_return(fake_frontend_response)
-    allow(block_to_preview).to receive(:render).and_return(block_render)
+    allow(Net::HTTP).to receive(:get_response).and_return(fake_frontend_response)
+    allow(BlockPreview::ContentDiff).to receive(:new).and_return(content_diff_spy)
   end
 
   it "makes a request to the frontend" do
@@ -64,7 +75,7 @@ RSpec.describe BlockPreview::PreviewHtml do
       auth_bypass_id:,
     ).to_s
 
-    expect(Net::HTTP).to have_received(:get) do |url|
+    expect(Net::HTTP).to have_received(:get_response) do |url|
       expect(url.host).to eq(Plek.website_root.sub("http://", ""))
       expect(url.path).to eq(host_base_path)
     end
@@ -80,7 +91,7 @@ RSpec.describe BlockPreview::PreviewHtml do
       auth_bypass_id:,
     ).to_s
 
-    expect(Net::HTTP).to have_received(:get) do |url|
+    expect(Net::HTTP).to have_received(:get_response) do |url|
       expect(url.query_values).to be_nil
     end
   end
@@ -98,7 +109,11 @@ RSpec.describe BlockPreview::PreviewHtml do
     parsed_content = Nokogiri::HTML.parse(actual_content)
 
     expect(parsed_content.at_css("body.gem-c-layout-for-public--draft")).to be_present
-    expect(parsed_content.at_css('span.content-embed__content_block_contact[style="background-color: yellow;"]')).to be_present
+    expect(BlockPreview::ContentDiff).to have_received(:new).with(
+      anything,
+      block_to_preview,
+    )
+    expect(content_diff_spy).to have_received(:to_s)
   end
 
   it "appends the base path to the CSS and JS references" do
@@ -117,15 +132,31 @@ RSpec.describe BlockPreview::PreviewHtml do
     expect(parsed_content.at_css("script[src='#{Plek.website_root}/assets/application.js']")).to be_present
   end
 
-  describe "when the frontend throws an error" do
-    before do
-      exception = StandardError.new("Something went wrong")
-      allow(Net::HTTP).to receive(:get).and_raise(exception)
+  it "injects the nokodiff stylesheet from the local asset pipeline" do
+    actual_content = BlockPreview::PreviewHtml.new(
+      content_id: host_content_id,
+      block: block_to_preview,
+      base_path: host_base_path,
+      locale: "en",
+      state: "published",
+      auth_bypass_id:,
+    ).to_s
+
+    parsed_content = Nokogiri::HTML.parse(actual_content)
+    hrefs = parsed_content.css("head link[rel='stylesheet']").map { |link| link["href"] }
+
+    expect(hrefs).to include("/assets/content-block-manager/nokodiff.css")
+  end
+
+  describe "when the frontend returns a non-200 response" do
+    let(:fake_frontend_response) do
+      instance_double(
+        "Net::HTTPResponse",
+        code: "500",
+      )
     end
 
     it "shows an error template" do
-      expected_content = Nokogiri::HTML.parse("<html><head></head><body class=\" gem-c-layout-for-public--draft\"><p>Preview not found</p></body></html>").to_s
-
       actual_content = BlockPreview::PreviewHtml.new(
         content_id: host_content_id,
         block: block_to_preview,
@@ -135,12 +166,12 @@ RSpec.describe BlockPreview::PreviewHtml do
         auth_bypass_id:,
       ).to_s
 
-      expect(actual_content).to eq(expected_content)
+      expect(actual_content).to eq(BlockPreview::PreviewHtml::ERROR_HTML)
     end
   end
 
   describe "when the frontend response contains links" do
-    let(:fake_body) do
+    let(:fake_content) do
       "
         <a href='/foo'>Internal link</a>
         <a href='https://example.com'>External link</a>
@@ -210,7 +241,7 @@ RSpec.describe BlockPreview::PreviewHtml do
   end
 
   describe "when the frontend response contains forms" do
-    let(:fake_body) do
+    let(:fake_content) do
       "
         <main>
           <form action='/foo' method='get'>
@@ -254,7 +285,7 @@ RSpec.describe BlockPreview::PreviewHtml do
   end
 
   describe "when the wrapper is a div" do
-    let(:fake_body) do
+    let(:fake_content) do
       "<p>test</p><div class=\"content-embed content-embed__content_block_contact\" data-content-block=\"\" data-document-type=\"content_block_contact\" data-embed-code=\"embed-code\" data-content-id=\"#{preview_content_id}\">example@example.com</div>"
     end
     let(:block_render) do
@@ -274,7 +305,11 @@ RSpec.describe BlockPreview::PreviewHtml do
       parsed_content = Nokogiri::HTML.parse(actual_content)
 
       expect(parsed_content.at_css("body.gem-c-layout-for-public--draft")).to be_present
-      expect(parsed_content.at_css('div.content-embed__content_block_contact[style="background-color: yellow;"]')).to be_present
+      expect(BlockPreview::ContentDiff).to have_received(:new).with(
+        anything,
+        block_to_preview,
+      )
+      expect(content_diff_spy).to have_received(:to_s)
     end
   end
 
@@ -299,7 +334,7 @@ RSpec.describe BlockPreview::PreviewHtml do
     end
 
     it "makes a request to the draft origin" do
-      expect(Net::HTTP).to have_received(:get) do |url|
+      expect(Net::HTTP).to have_received(:get_response) do |url|
         host_with_scheme = "#{url.scheme}://#{url.host}"
         expect(host_with_scheme).to eq(Plek.external_url_for("draft-origin"))
         expect(url.path).to eq(host_base_path)
@@ -320,7 +355,7 @@ RSpec.describe BlockPreview::PreviewHtml do
     end
 
     it "appends the token to the url" do
-      expect(Net::HTTP).to have_received(:get) do |url|
+      expect(Net::HTTP).to have_received(:get_response) do |url|
         expect(url.query_values).to eq({ "token" => token })
       end
     end
@@ -329,7 +364,11 @@ RSpec.describe BlockPreview::PreviewHtml do
       parsed_content = Nokogiri::HTML.parse(actual_content)
 
       expect(parsed_content.at_css("body.gem-c-layout-for-public--draft")).to be_present
-      expect(parsed_content.at_css('span.content-embed__content_block_contact[style="background-color: yellow;"]')).to be_present
+      expect(BlockPreview::ContentDiff).to have_received(:new).with(
+        anything,
+        block_to_preview,
+      )
+      expect(content_diff_spy).to have_received(:to_s)
     end
 
     it "appends the draft-origin base path to the CSS and JS references" do
@@ -364,7 +403,7 @@ RSpec.describe BlockPreview::PreviewHtml do
         auth_bypass_id:,
       ).to_s
 
-      expect(Net::HTTP).to have_received(:get) do |url|
+      expect(Net::HTTP).to have_received(:get_response) do |url|
         expect(url.host).to eq(Plek.external_url_for(rendering_app).sub("http://", ""))
         expect(url.path).to eq(host_base_path)
       end
@@ -387,7 +426,7 @@ RSpec.describe BlockPreview::PreviewHtml do
           auth_bypass_id:,
         ).to_s
 
-        expect(Net::HTTP).to have_received(:get) do |url|
+        expect(Net::HTTP).to have_received(:get_response) do |url|
           expect(url.host).to eq(Plek.external_url_for("frontend").sub("http://", ""))
           expect(url.path).to eq(host_base_path)
         end
@@ -407,7 +446,7 @@ RSpec.describe BlockPreview::PreviewHtml do
           auth_bypass_id:,
         ).to_s
 
-        expect(Net::HTTP).to have_received(:get) do |url|
+        expect(Net::HTTP).to have_received(:get_response) do |url|
           expect(url.host).to eq(Plek.external_url_for("smart-answers").sub("http://", ""))
           expect(url.path).to eq(host_base_path)
         end
@@ -425,7 +464,7 @@ RSpec.describe BlockPreview::PreviewHtml do
           auth_bypass_id:,
         ).to_s
 
-        expect(Net::HTTP).to have_received(:get) do |url|
+        expect(Net::HTTP).to have_received(:get_response) do |url|
           expect(url.host).to eq(Plek.external_url_for("draft-#{rendering_app}").sub("http://", ""))
         end
       end
@@ -443,7 +482,7 @@ RSpec.describe BlockPreview::PreviewHtml do
             auth_bypass_id:,
           ).to_s
 
-          expect(Net::HTTP).to have_received(:get) do |url|
+          expect(Net::HTTP).to have_received(:get_response) do |url|
             expect(url.host).to eq(Plek.external_url_for("smart-answers").sub("http://", ""))
             expect(url.path).to eq(host_base_path)
           end
@@ -467,7 +506,7 @@ RSpec.describe BlockPreview::PreviewHtml do
             auth_bypass_id:,
           ).to_s
 
-          expect(Net::HTTP).to have_received(:get) do |url|
+          expect(Net::HTTP).to have_received(:get_response) do |url|
             expect(url.host).to eq(Plek.external_url_for("draft-frontend").sub("http://", ""))
             expect(url.path).to eq(host_base_path)
           end
