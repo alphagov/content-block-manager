@@ -77,10 +77,10 @@ RSpec.describe Edition::Details::Fields::DateTimeComponent, type: :component do
     end
   end
 
-  describe "when there are existing values" do
-    let(:details) { { "date_range" => { "start" => { "date" => "2001-02-03", "time" => "04:05" } } } }
+  describe "when there are existing values in ISO 8601 format" do
+    let(:details) { { "date_range" => { "start" => "2001-02-03T04:05:00+00:00" } } }
 
-    it "should show existing values" do
+    it "populates the form fields from the ISO 8601 datetime" do
       inputs = page.find_all("input")
       expect(inputs[2].value).to eq("2001")
       expect(inputs[1].value).to eq("2")
@@ -89,6 +89,127 @@ RSpec.describe Edition::Details::Fields::DateTimeComponent, type: :component do
       selects = page.find_all("select")
       expect(selects[0].value).to eq("04")
       expect(selects[1].value).to eq("05")
+    end
+  end
+
+  describe "when there are existing values in legacy nested format" do
+    let(:details) { { "date_range" => { "start" => { "date" => "2001-02-03", "time" => "04:05" } } } }
+
+    it "populates the form fields from the nested hash" do
+      inputs = page.find_all("input")
+      expect(inputs[2].value).to eq("2001")
+      expect(inputs[1].value).to eq("2")
+      expect(inputs[0].value).to eq("3")
+
+      selects = page.find_all("select")
+      expect(selects[0].value).to eq("04")
+      expect(selects[1].value).to eq("05")
+    end
+  end
+
+  describe "when context.details contains Rails multiparameter format (validation failure re-render)" do
+    let(:context) do
+      Edition::Details::Fields::Context
+        .new(
+          edition:,
+          field: Schema::Field.new("start", schema),
+          schema:,
+          details: {
+            "start(1i)" => "2001",
+            "start(2i)" => "2",
+            "start(3i)" => "3",
+            "start(4i)" => "04",
+            "start(5i)" => "05",
+          },
+        )
+    end
+
+    it "populates the form fields from multiparameter params" do
+      inputs = page.find_all("input")
+      expect(inputs[2].value).to eq("2001")
+      expect(inputs[1].value).to eq("2")
+      expect(inputs[0].value).to eq("3")
+
+      selects = page.find_all("select")
+      expect(selects[0].value).to eq("04")
+      expect(selects[1].value).to eq("05")
+    end
+  end
+
+  describe "when re-rendering after validation failure" do
+    describe "with an invalid date (e.g., Feb 30)" do
+      let(:context) do
+        Edition::Details::Fields::Context
+          .new(
+            edition:,
+            field: Schema::Field.new("start", schema),
+            schema:,
+            details: {
+              "start(1i)" => "2025",
+              "start(2i)" => "2",
+              "start(3i)" => "30",
+              "start(4i)" => "09",
+              "start(5i)" => "30",
+            },
+          )
+      end
+
+      it "preserves the user's original day value without normalizing to March 2" do
+        inputs = page.find_all("input")
+        expect(inputs[0].value).to eq("30")
+      end
+    end
+
+    describe "with leading zeros in input" do
+      let(:context) do
+        Edition::Details::Fields::Context
+          .new(
+            edition:,
+            field: Schema::Field.new("start", schema),
+            schema:,
+            details: {
+              "start(1i)" => "2025",
+              "start(2i)" => "02",
+              "start(3i)" => "03",
+              "start(4i)" => "04",
+              "start(5i)" => "05",
+            },
+          )
+      end
+
+      it "preserves leading zeros in input values" do
+        inputs = page.find_all("input")
+        expect(inputs[2].value).to eq("2025")
+        expect(inputs[1].value).to eq("02")
+        expect(inputs[0].value).to eq("03")
+
+        selects = page.find_all("select")
+        expect(selects[0].value).to eq("04")
+        expect(selects[1].value).to eq("05")
+      end
+    end
+
+    describe "with non-numeric input" do
+      let(:context) do
+        Edition::Details::Fields::Context
+          .new(
+            edition:,
+            field: Schema::Field.new("start", schema),
+            schema:,
+            details: {
+              "start(1i)" => "abc",
+              "start(2i)" => "2",
+              "start(3i)" => "3",
+              "start(4i)" => "09",
+              "start(5i)" => "30",
+            },
+          )
+      end
+
+      it "preserves the invalid input for display" do
+        inputs = page.find_all("input")
+        expect(inputs[2].value).to eq("abc")
+      end
     end
   end
 end
