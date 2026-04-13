@@ -1,5 +1,5 @@
 class Editions::EmbeddedObjectsController < BaseController
-  include EmbeddedObjects
+  include HasSubschema
 
   before_action :initialize_edition
 
@@ -32,7 +32,8 @@ class Editions::EmbeddedObjectsController < BaseController
   def create
     @schema, @subschema = get_schema_and_subschema(@edition.document.block_type, params[:object_type])
     @object = object_params(@subschema).dig(:details, @subschema.block_type)
-    @edition.add_object_to_details(@subschema.block_type, @object)
+    converted_object = validate_and_convert_object(@object)
+    @edition.add_object_to_details(@subschema.block_type, converted_object)
     @back_link = embedded_objects_path
 
     if params[:add_another]
@@ -65,11 +66,12 @@ class Editions::EmbeddedObjectsController < BaseController
 
   def update
     @schema, @subschema = get_schema_and_subschema(@edition.document.block_type, params[:object_type])
-    @object = object_params(@subschema).dig(:details, @subschema.block_type)
     @redirect_url = params[:redirect_url]
     @object_title = params[:object_title]
+    @object = object_params(@subschema).dig(:details, @subschema.block_type)
+    converted_object = validate_and_convert_object(@object)
 
-    @edition.update_object_with_details(params[:object_type], params[:object_title], @object)
+    @edition.update_object_with_details(params[:object_type], params[:object_title], converted_object)
 
     if params[:add_another]
       render :edit
@@ -87,7 +89,7 @@ class Editions::EmbeddedObjectsController < BaseController
       redirect_to params[:redirect_url], allow_other_host: false
     end
   rescue ActiveRecord::RecordInvalid
-    render :edit
+    render :edit, status: :unprocessable_content
   end
 
   def new_embedded_objects_options_redirect

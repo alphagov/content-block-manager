@@ -152,15 +152,15 @@ RSpec.describe "EmbeddedObjectController requests", type: :request do
         end
       end
 
-      context "when the start date is invalid" do
+      context "when the start date is invalid (30 Feb)" do
         let(:invalid_params) do
           {
             "edition" =>
               { "details" => {
                 "date_range" => {
                   "start(1i)" => "2025",
-                  "start(2i)" => "13", # Invalid month
-                  "start(3i)" => "06",
+                  "start(2i)" => "02",
+                  "start(3i)" => "30",
                   "start(4i)" => "00",
                   "start(5i)" => "00",
                   "end(1i)" => "2026",
@@ -181,6 +181,17 @@ RSpec.describe "EmbeddedObjectController requests", type: :request do
 
           expect(response).to render_template(:new)
           expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it "preserves the raw submitted values in @object for form repopulation" do
+          post create_sole_embedded_object_edition_path(edition, object_type: :date_range),
+               params: invalid_params
+
+          object = assigns(:object)
+
+          expect(object["start(3i)"]).to eq("30")
+          expect(object["start(2i)"]).to eq("02")
+          expect(object["start(1i)"]).to eq("2025")
         end
       end
 
@@ -329,6 +340,49 @@ RSpec.describe "EmbeddedObjectController requests", type: :request do
               params: params
 
           expect(response).to render_template(:edit)
+        end
+      end
+
+      context "when the start date is invalid (30 Feb)" do
+        let(:invalid_params) do
+          {
+            "edition" =>
+              { "details" => {
+                "date_range" => {
+                  "start(1i)" => "2025",
+                  "start(2i)" => "02",
+                  "start(3i)" => "30",
+                  "start(4i)" => "00",
+                  "start(5i)" => "00",
+                  "end(1i)" => "2026",
+                  "end(2i)" => "04",
+                  "end(3i)" => "05",
+                  "end(4i)" => "23",
+                  "end(5i)" => "59",
+                },
+              } },
+            "id" => "123",
+            "step" => "embedded_date_range",
+          }
+        end
+
+        it "re-renders the form with validation errors" do
+          put sole_embedded_object_edition_path(edition, object_type: :date_range),
+              params: invalid_params
+
+          expect(response).to render_template(:edit)
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it "preserves the raw submitted values in @object for form repopulation" do
+          put sole_embedded_object_edition_path(edition, object_type: :date_range),
+              params: invalid_params
+
+          object = assigns(:object)
+
+          expect(object["start(3i)"]).to eq("30")
+          expect(object["start(2i)"]).to eq("02")
+          expect(object["start(1i)"]).to eq("2025")
         end
       end
     end

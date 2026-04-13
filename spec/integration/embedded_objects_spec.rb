@@ -1,6 +1,6 @@
 require "capybara/rails"
 
-RSpec.describe EmbeddedObjects, type: :request do
+RSpec.describe "EmbeddedObjectsController requests", type: :request do
   include Rails.application.routes.url_helpers
 
   let(:organisation) { build(:organisation) }
@@ -390,6 +390,252 @@ RSpec.describe EmbeddedObjects, type: :request do
 
       it "does not save the edition" do
         expect(edition).not_to have_received(:save!)
+      end
+    end
+  end
+
+  context "when a 1:N subschema has datetime fields requiring validation (e.g. Pension has many date_ranges)" do
+    let(:edition) do
+      create(:edition,
+             :pension,
+             details: {})
+    end
+
+    let(:parent_schema) { double(:schema, id: "content_block_pension", block_type: "pension") }
+    let(:object_type) { "date_range" }
+
+    let(:body) do
+      {
+        "type" => "object",
+        "patternProperties" => {
+          "^[a-z0-9-]+$" => {
+            "type" => "object",
+            "required" => %w[start end],
+            "properties" => {
+              "title" => {
+                "type" => "string",
+              },
+              "start" => {
+                "type" => "string",
+                "format" => "date-time",
+              },
+              "end" => {
+                "type" => "string",
+                "format" => "date-time",
+                "formatMinimum" => { "$ref" => "#/date_range/start" },
+              },
+            },
+          },
+        },
+      }
+    end
+
+    let(:date_ranges_schema) { double("schema", body: [], name: "Pension") }
+
+    let(:date_range_subschema) do
+      Schema::EmbeddedSchema.new(object_type, body, parent_schema)
+    end
+
+    before do
+      allow(Schema).to receive(:find_by_block_type).with(edition.document.block_type).and_return(date_ranges_schema)
+      allow(date_ranges_schema).to receive(:subschema).with("date_range").and_return(date_range_subschema)
+    end
+
+    describe "#create" do
+      let(:valid_params) do
+        {
+          "edition" =>
+            { "details" => {
+              "date_range" => {
+                "title" => "Tax Year 2025-26",
+                "start(1i)" => "2025",
+                "start(2i)" => "04",
+                "start(3i)" => "06",
+                "start(4i)" => "00",
+                "start(5i)" => "00",
+                "end(1i)" => "2026",
+                "end(2i)" => "04",
+                "end(3i)" => "05",
+                "end(4i)" => "23",
+                "end(5i)" => "59",
+              },
+            } },
+        }
+      end
+
+      it "converts datetime params to ISO 8601 and saves" do
+        post create_embedded_object_edition_path(edition, object_type: :date_range),
+             params: valid_params
+
+        updated_edition = edition.reload
+        date_range = updated_edition.details["date_range"]["tax-year-2025-26"]
+
+        expect(date_range["start"]).to eq("2025-04-06T00:00:00+01:00")
+        expect(date_range["end"]).to eq("2026-04-05T23:59:00+01:00")
+      end
+
+      context "when the start date is invalid (30 Feb)" do
+        let(:invalid_params) do
+          {
+            "edition" =>
+              { "details" => {
+                "date_range" => {
+                  "title" => "Invalid Range",
+                  "start(1i)" => "2025",
+                  "start(2i)" => "02",
+                  "start(3i)" => "30",
+                  "start(4i)" => "00",
+                  "start(5i)" => "00",
+                  "end(1i)" => "2026",
+                  "end(2i)" => "04",
+                  "end(3i)" => "05",
+                  "end(4i)" => "23",
+                  "end(5i)" => "59",
+                },
+              } },
+          }
+        end
+
+        it "re-renders the form with validation errors" do
+          post create_embedded_object_edition_path(edition, object_type: :date_range),
+               params: invalid_params
+
+          expect(response).to render_template(:new)
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it "preserves the raw submitted values in @object for form repopulation" do
+          post create_embedded_object_edition_path(edition, object_type: :date_range),
+               params: invalid_params
+
+          object = assigns(:object)
+
+          expect(object["start(3i)"]).to eq("30")
+          expect(object["start(2i)"]).to eq("02")
+          expect(object["start(1i)"]).to eq("2025")
+        end
+      end
+
+      context "when the end datetime is before the start datetime" do
+        let(:invalid_params) do
+          {
+            "edition" =>
+              { "details" => {
+                "date_range" => {
+                  "title" => "Backwards Range",
+                  "start(1i)" => "2026",
+                  "start(2i)" => "04",
+                  "start(3i)" => "06",
+                  "start(4i)" => "00",
+                  "start(5i)" => "00",
+                  "end(1i)" => "2025",
+                  "end(2i)" => "04",
+                  "end(3i)" => "05",
+                  "end(4i)" => "23",
+                  "end(5i)" => "59",
+                },
+              } },
+          }
+        end
+
+        it "re-renders the form with validation errors" do
+          post create_embedded_object_edition_path(edition, object_type: :date_range),
+               params: invalid_params
+
+          expect(response).to render_template(:new)
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+      end
+    end
+
+    describe "#update" do
+      let(:object_title) { "existing-range" }
+
+      before do
+        edition.details["date_range"] = {
+          object_title => {
+            "title" => "Existing Range",
+            "start" => "2024-04-06T00:00:00+01:00",
+            "end" => "2025-04-05T23:59:00+01:00",
+          },
+        }
+        edition.save!
+      end
+
+      let(:valid_params) do
+        {
+          redirect_url: documents_path,
+          "edition" =>
+            { "details" => {
+              "date_range" => {
+                "title" => "Existing Range",
+                "start(1i)" => "2025",
+                "start(2i)" => "04",
+                "start(3i)" => "06",
+                "start(4i)" => "00",
+                "start(5i)" => "00",
+                "end(1i)" => "2026",
+                "end(2i)" => "04",
+                "end(3i)" => "05",
+                "end(4i)" => "23",
+                "end(5i)" => "59",
+              },
+            } },
+        }
+      end
+
+      it "converts datetime params to ISO 8601 and saves" do
+        put embedded_object_edition_path(edition, object_type: :date_range, object_title:),
+            params: valid_params
+
+        updated_edition = edition.reload
+        date_range = updated_edition.details["date_range"][object_title]
+
+        expect(date_range["start"]).to eq("2025-04-06T00:00:00+01:00")
+        expect(date_range["end"]).to eq("2026-04-05T23:59:00+01:00")
+      end
+
+      context "when the start date is invalid (30 Feb)" do
+        let(:invalid_params) do
+          {
+            redirect_url: documents_path,
+            "edition" =>
+              { "details" => {
+                "date_range" => {
+                  "title" => "Existing Range",
+                  "start(1i)" => "2025",
+                  "start(2i)" => "02",
+                  "start(3i)" => "30",
+                  "start(4i)" => "00",
+                  "start(5i)" => "00",
+                  "end(1i)" => "2026",
+                  "end(2i)" => "04",
+                  "end(3i)" => "05",
+                  "end(4i)" => "23",
+                  "end(5i)" => "59",
+                },
+              } },
+          }
+        end
+
+        it "re-renders the form with validation errors" do
+          put embedded_object_edition_path(edition, object_type: :date_range, object_title:),
+              params: invalid_params
+
+          expect(response).to render_template(:edit)
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it "preserves the raw submitted values in @object for form repopulation" do
+          put embedded_object_edition_path(edition, object_type: :date_range, object_title:),
+              params: invalid_params
+
+          object = assigns(:object)
+
+          expect(object["start(3i)"]).to eq("30")
+          expect(object["start(2i)"]).to eq("02")
+          expect(object["start(1i)"]).to eq("2025")
+        end
       end
     end
   end

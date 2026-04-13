@@ -1,4 +1,4 @@
-module EmbeddedObjects
+module HasSubschema
   extend ActiveSupport::Concern
 
   def get_schema_and_subschema(block_type, object_type)
@@ -30,5 +30,16 @@ module EmbeddedObjects
       subschema,
     ).result
     params
+  end
+
+  def validate_and_convert_object(object_params)
+    validator_class = validator_for_subschema
+    return object_params unless validator_class
+
+    validator_class.new(@edition, object_params).validate_and_convert
+  end
+
+  def validator_for_subschema
+    "#{@subschema.block_type.camelize}Validator".safe_constantize
   end
 end
