@@ -1,4 +1,39 @@
 RSpec.describe DetailsValidator::CustomValidators do
+  describe "#format_date_minimum guard clauses" do
+    let(:validator_class) do
+      Class.new do
+        include DetailsValidator::CustomValidators
+      end
+    end
+
+    let(:validator) { validator_class.new }
+
+    describe "when the instance is not a string" do
+      it "does not raise LocalJumpError" do
+        validation_proc = validator.format_date_minimum({})
+        schema = { "format" => "date-time", "formatMinimum" => "2026-01-01T00:00:00Z" }
+
+        # nil value - would occur if a datetime field is optional and not provided
+        expect { validation_proc.call(nil, schema, "/some/path") }
+          .not_to raise_error
+
+        # integer value - defensive check against unexpected input
+        expect { validation_proc.call(123, schema, "/some/path") }
+          .not_to raise_error
+      end
+    end
+
+    describe "when formatMinimum is nil in the schema" do
+      it "does not raise LocalJumpError" do
+        validation_proc = validator.format_date_minimum({})
+        schema = { "format" => "date-time" }
+
+        expect { validation_proc.call("2026-04-06T09:00:00+01:00", schema, "/some/path") }
+          .not_to raise_error
+      end
+    end
+  end
+
   describe "validating with a minimum date" do
     let(:body) do
       {
