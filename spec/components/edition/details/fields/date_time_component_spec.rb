@@ -29,6 +29,36 @@ RSpec.describe Edition::Details::Fields::DateTimeComponent, type: :component do
     expect(page).to have_css("select", count: 2)
   end
 
+  describe "#id_for" do
+    it "returns the field name combined with the field part" do
+      expect(component.id_for(:year)).to eq("start_year")
+      expect(component.id_for(:month)).to eq("start_month")
+      expect(component.id_for(:day)).to eq("start_day")
+      expect(component.id_for(:hour)).to eq("start_hour")
+      expect(component.id_for(:minute)).to eq("start_minute")
+    end
+  end
+
+  describe "#name_for" do
+    it "returns the Rails multiparameter attribute format" do
+      expect(component.name_for(:year)).to eq("edition[details][date_range][start(1i)]")
+      expect(component.name_for(:month)).to eq("edition[details][date_range][start(2i)]")
+      expect(component.name_for(:day)).to eq("edition[details][date_range][start(3i)]")
+      expect(component.name_for(:hour)).to eq("edition[details][date_range][start(4i)]")
+      expect(component.name_for(:minute)).to eq("edition[details][date_range][start(5i)]")
+    end
+  end
+
+  describe "#label_for" do
+    it "returns the human-readable label for each field part" do
+      expect(component.label_for(:year)).to eq("Year")
+      expect(component.label_for(:month)).to eq("Month")
+      expect(component.label_for(:day)).to eq("Day")
+      expect(component.label_for(:hour)).to eq("Hour")
+      expect(component.label_for(:minute)).to eq("Minute")
+    end
+  end
+
   describe "the 'name' of the inputs" do
     context "when working on an Edition with a specific Schema" do
       let(:schema) { build(:embedded_schema, block_type: :travel_advice) }

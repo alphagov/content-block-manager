@@ -400,3 +400,12 @@ en:
   schema:
     title:
       things_taxed: thing the tax is paid on
+  date_time:
+    field_labels:
+      year: Year
+      month: Month
+      day: Day
+      hour: Hour
+      minute: Minute
+
+
