@@ -3,22 +3,27 @@ class DetailsValidator < ActiveModel::Validator
     def format_date_minimum(body)
       proc do |instance, schema, _instance_location|
         next true unless instance.is_a?(String)
-        next true unless schema["format"] == "date"
 
+        format = schema["format"]
         min_str = schema["formatMinimum"]
         next true if min_str.nil?
+
+        unless format == "date-time"
+          raise ArgumentError, "formatMinimum is only supported for date-time fields, got format: #{format.inspect}"
+        end
 
         if min_str.is_a?(Hash)
           lookup = min_str["$ref"].delete_prefix("#").split("/").compact_blank
           min_str = body.dig(*lookup)
         end
 
-        inst = Date.iso8601(instance)
-        min  = Date.iso8601(min_str)
+        inst = Time.iso8601(instance)
+        min  = Time.iso8601(min_str)
+        inst > min ? true : "formatMinimum"
+      rescue ArgumentError => e
+        raise e if e.message.include?("formatMinimum is only supported")
 
-        inst >= min ? true : "formatMinimum"
-      rescue Date::Error
-        true # If the date is invalid, this will have been caught by the date validator, so return true
+        true # If the datetime is invalid, this will have been caught by another validator
       end
     end
   end

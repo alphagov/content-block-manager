@@ -8,37 +8,18 @@
     "date_range": {
       "type": "object",
       "additionalProperties": false,
+      "required": ["start", "end"],
       "properties": {
         "start": {
-          "type": "object",
-          "x-custom-format": "datetime",
-          "additionalProperties": false,
-          "properties": {
-            "date": {
-              "type": "string",
-              "format": "date"
-            },
-            "time": {
-              "type": "string",
-              "format": "time"
-            }
-          }
+          "type": "string",
+          "format": "date-time",
+          "x-custom-format": "datetime"
         },
         "end": {
-          "type": "object",
+          "type": "string",
+          "format": "date-time",
           "x-custom-format": "datetime",
-          "additionalProperties": false,
-          "properties": {
-            "date": {
-              "type": "string",
-              "format": "date",
-              "formatMinimum": { "$ref": "#/date_range/start/date" }
-            },
-            "time": {
-              "type": "string",
-              "format": "time"
-            }
-          }
+          "formatMinimum": { "$ref": "#/date_range/start" }
         }
       }
     }

@@ -71,8 +71,8 @@ RSpec.describe "Workflow", type: :request do
         context "when the edition has a subschema in a 1:1 relationship" do
           let(:embedded_object_details) do
             {
-              "start" => { "date" => "2025-04-06", "time" => "00:00" },
-              "end" => { "date" => "2026-04-05", "time" => "23:52" },
+              "start" => "2025-04-06T00:00:00+01:00",
+              "end" => "2026-04-05T23:52:00+01:00",
             }
           end
 
