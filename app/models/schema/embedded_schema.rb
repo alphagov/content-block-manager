@@ -35,6 +35,10 @@ class Schema
       ActiveSupport::StringInquirer.new(@pattern_properties_present ? "one_to_many" : "one_to_one")
     end
 
+    def datetime_fields
+      fields.select(&:datetime_format?)
+    end
+
   private
 
     def field_names

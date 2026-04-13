@@ -47,12 +47,10 @@ RSpec.describe "EmbeddedObjectController requests", type: :request do
               "start" => {
                 "type" => "string",
                 "format" => "date-time",
-                "x-custom-format" => "datetime",
               },
               "end" => {
                 "type" => "string",
                 "format" => "date-time",
-                "x-custom-format" => "datetime",
                 "formatMinimum" => { "$ref" => "#/date_range/start" },
               },
             },

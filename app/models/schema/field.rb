@@ -43,8 +43,8 @@ class Schema
       @type ||= properties.fetch("type", "").inquiry
     end
 
-    def format
-      @format ||= properties.fetch("format", "").inquiry
+    def datetime_format?
+      properties["format"] == "date-time"
     end
 
     def enum_values
@@ -147,15 +147,7 @@ class Schema
         { name => [*nested_fields.map(&:permitted_params), "_destroy"] || [] }
       elsif type.array?
         { name => [*array_items["properties"]&.keys, "_destroy"] || [] }
-      elsif format.date?
-        (1..3).map { |i| "(#{i}i)" }
-      elsif format.time?
-        (4..5).map { |i| "(#{i}i)" }
-      elsif properties["x-custom-format"] == "datetime" && nested_fields.present?
-        # Old format: datetime object with nested date/time fields, to be removed
-        # once dual-running is no longer needed
-        nested_fields.flat_map(&:permitted_params).map { |field| "#{name}#{field}" }
-      elsif properties["x-custom-format"] == "datetime"
+      elsif datetime_format?
         (1..5).map { |i| "#{name}(#{i}i)" }
       elsif nested_fields.present?
         { name => nested_fields.map(&:permitted_params) }

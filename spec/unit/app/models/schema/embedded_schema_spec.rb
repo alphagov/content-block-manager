@@ -283,6 +283,53 @@ RSpec.describe Schema::EmbeddedSchema do
     end
   end
 
+  describe "#datetime_fields" do
+    describe "when some fields have format set to date-time" do
+      let(:properties) do
+        {
+          "title" => {
+            "type" => "string",
+          },
+          "start" => {
+            "type" => "string",
+            "format" => "date-time",
+          },
+          "end" => {
+            "type" => "string",
+            "format" => "date-time",
+          },
+          "description" => {
+            "type" => "string",
+          },
+        }
+      end
+
+      it "returns only the datetime fields" do
+        datetime_fields = schema.datetime_fields
+
+        expect(datetime_fields.map(&:name)).to eq(%w[start end])
+        expect(datetime_fields).to all(be_a(Schema::Field))
+      end
+    end
+
+    describe "when no fields have format set to date-time" do
+      let(:properties) do
+        {
+          "title" => {
+            "type" => "string",
+          },
+          "description" => {
+            "type" => "string",
+          },
+        }
+      end
+
+      it "returns an empty array" do
+        expect(schema.datetime_fields).to eq([])
+      end
+    end
+  end
+
   describe "#permitted_params" do
     it "returns permitted params" do
       expect(schema.permitted_params).to eq(%w[title amount description frequency])

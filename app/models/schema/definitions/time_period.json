@@ -12,13 +12,11 @@
       "properties": {
         "start": {
           "type": "string",
-          "format": "date-time",
-          "x-custom-format": "datetime"
+          "format": "date-time"
         },
         "end": {
           "type": "string",
           "format": "date-time",
-          "x-custom-format": "datetime",
           "formatMinimum": { "$ref": "#/date_range/start" }
         }
       }
