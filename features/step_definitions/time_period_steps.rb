@@ -224,7 +224,7 @@ When("I edit the draft time period entering the invalid value of 30 Feb") do
 end
 
 Then("I should see an error message telling me that the date range field is invalid") do
-  expect(page).to have_content("Invalid Start")
+  expect(page).to have_content("Start is invalid")
 end
 
 Then("the time period date range fields should be populated with the invalid values submitted") do

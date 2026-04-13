@@ -38,7 +38,7 @@ RSpec.describe DetailsValidator do
       it { is_expected.not_to be_valid }
 
       it "adds an error to the start field" do
-        expect(errors[:details_date_range_start]).to include("Invalid Start")
+        expect(errors[:details_date_range_start]).to include("Start is invalid")
       end
     end
 
@@ -48,7 +48,7 @@ RSpec.describe DetailsValidator do
       it { is_expected.not_to be_valid }
 
       it "adds an error to the end field" do
-        expect(errors[:details_date_range_end]).to include("Invalid End")
+        expect(errors[:details_date_range_end]).to include("End is invalid")
       end
     end
 

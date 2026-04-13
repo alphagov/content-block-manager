@@ -35,6 +35,10 @@ en:
             url:
               blank: "URL cannot be blank"
               invalid: "URL is invalid"
+            start:
+              invalid: "Start is invalid"
+            end:
+              invalid: "End is invalid"
     attributes:
       edition/document:
         title:
