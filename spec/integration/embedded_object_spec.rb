@@ -153,6 +153,70 @@ RSpec.describe "EmbeddedObjectController requests", type: :request do
           expect(response).to render_template(:new)
         end
       end
+
+      context "when the start date is invalid" do
+        let(:invalid_params) do
+          {
+            "edition" =>
+              { "details" => {
+                "date_range" => {
+                  "start(1i)" => "2025",
+                  "start(2i)" => "13", # Invalid month
+                  "start(3i)" => "06",
+                  "start(4i)" => "00",
+                  "start(5i)" => "00",
+                  "end(1i)" => "2026",
+                  "end(2i)" => "04",
+                  "end(3i)" => "05",
+                  "end(4i)" => "23",
+                  "end(5i)" => "59",
+                },
+              } },
+            "id" => "123",
+            "step" => "embedded_date_range",
+          }
+        end
+
+        it "re-renders the form with validation errors" do
+          post create_sole_embedded_object_edition_path(edition, object_type: :date_range),
+               params: invalid_params
+
+          expect(response).to render_template(:new)
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+      end
+
+      context "when the end datetime is before the start datetime" do
+        let(:invalid_params) do
+          {
+            "edition" =>
+              { "details" => {
+                "date_range" => {
+                  "start(1i)" => "2026",
+                  "start(2i)" => "04",
+                  "start(3i)" => "06",
+                  "start(4i)" => "00",
+                  "start(5i)" => "00",
+                  "end(1i)" => "2025", # End before start
+                  "end(2i)" => "04",
+                  "end(3i)" => "05",
+                  "end(4i)" => "23",
+                  "end(5i)" => "59",
+                },
+              } },
+            "id" => "123",
+            "step" => "embedded_date_range",
+          }
+        end
+
+        it "re-renders the form with validation errors" do
+          post create_sole_embedded_object_edition_path(edition, object_type: :date_range),
+               params: invalid_params
+
+          expect(response).to render_template(:new)
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+      end
     end
 
     describe "#edit" do

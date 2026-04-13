@@ -1,7 +1,6 @@
 class Editions::EmbeddedObjectController < BaseController
   include EmbeddedObjects
   include Workflow::HasSteps
-  include EditionHelper
 
   before_action :initialize_edition
   before_action :set_schema_and_subschema, only: %i[create edit update]
@@ -17,12 +16,10 @@ class Editions::EmbeddedObjectController < BaseController
 
   def create
     details = object_params(@subschema)[:details]
-    details = date_range_from_params(details) if details["date_range"]
-    @object = details[@subschema.block_type]
-
-    @edition.store_sole_object_in_details(@subschema.block_type, @object)
+    @object = build_object_from_params(details)
     @back_link = review_path
 
+    @edition.store_sole_object_in_details(@subschema.block_type, @object)
     @edition.save!
 
     flash[:success] = I18n.t(
@@ -44,8 +41,7 @@ class Editions::EmbeddedObjectController < BaseController
 
   def update
     details = object_params(@subschema)[:details]
-    details = date_range_from_params(details) if details["date_range"]
-    @object = details[@subschema.block_type]
+    @object = build_object_from_params(details)
 
     @redirect_url = params[:redirect_url]
     @edition.store_sole_object_in_details(params[:object_type], @object)
@@ -58,7 +54,7 @@ class Editions::EmbeddedObjectController < BaseController
 
     redirect_to workflow_path(@edition, step: next_step.name), allow_other_host: false
   rescue ActiveRecord::RecordInvalid
-    render :edit
+    render :edit, status: :unprocessable_content
   end
 
 private
@@ -72,6 +68,12 @@ private
       @edition.document.block_type,
       params[:object_type],
     )
+  end
+
+  def build_object_from_params(details)
+    raise ArgumentError, "Only date_range is supported" unless details["date_range"]
+
+    DateRangeValidator.new(@edition, details["date_range"]).validate_and_convert
   end
 
   def review_path
