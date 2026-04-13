@@ -847,6 +847,26 @@ RSpec.describe Schema::Field do
           expect(field.permitted_params).to eq(%w[my-custom-datetime(1i) my-custom-datetime(2i) my-custom-datetime(3i) my-custom-datetime(4i) my-custom-datetime(5i)])
         end
       end
+
+      context "and this field is a string type with date-time format (ISO 8601)" do
+        let(:datetime) do
+          {
+            "type" => "string",
+            "format" => "date-time",
+            "x-custom-format" => "datetime",
+          }
+        end
+
+        it "returns the params in the rails multiparameter attribute format (1i-5i)" do
+          expect(field.permitted_params).to eq(%w[
+            my-custom-datetime(1i)
+            my-custom-datetime(2i)
+            my-custom-datetime(3i)
+            my-custom-datetime(4i)
+            my-custom-datetime(5i)
+          ])
+        end
+      end
     end
   end
 end

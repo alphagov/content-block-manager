@@ -42,34 +42,18 @@ RSpec.describe "EmbeddedObjectController requests", type: :request do
         "properties" => {
           "date_range" => {
             "type" => "object",
+            "required" => %w[start end],
             "properties" => {
               "start" => {
-                "type" => "object",
+                "type" => "string",
+                "format" => "date-time",
                 "x-custom-format" => "datetime",
-                "properties" => {
-                  "date" => {
-                    "type" => "string",
-                    "format" => "date",
-                  },
-                  "time" => {
-                    "type" => "string",
-                    "format" => "time",
-                  },
-                },
               },
               "end" => {
-                "type" => "object",
+                "type" => "string",
+                "format" => "date-time",
                 "x-custom-format" => "datetime",
-                "properties" => {
-                  "date" => {
-                    "type" => "string",
-                    "format" => "date",
-                  },
-                  "time" => {
-                    "type" => "string",
-                    "format" => "time",
-                  },
-                },
+                "formatMinimum" => { "$ref" => "#/date_range/start" },
               },
             },
           },
@@ -175,8 +159,8 @@ RSpec.describe "EmbeddedObjectController requests", type: :request do
       context "when the expected sole embedded object exists" do
         before do
           edition.details[:date_range] = {
-            "start" => { "date" => "2025-04-06", "time" => "00:00" },
-            "end" => { "date" => "2026-04-05", "time" => "23:52" },
+            "start" => "2025-04-06T00:00:00+01:00",
+            "end" => "2026-04-05T23:52:00+01:00",
           }
           edition.save!
         end

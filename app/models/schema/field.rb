@@ -151,8 +151,12 @@ class Schema
         (1..3).map { |i| "(#{i}i)" }
       elsif format.time?
         (4..5).map { |i| "(#{i}i)" }
-      elsif properties["x-custom-format"] == "datetime"
+      elsif properties["x-custom-format"] == "datetime" && nested_fields.present?
+        # Old format: datetime object with nested date/time fields, to be removed
+        # once dual-running is no longer needed
         nested_fields.flat_map(&:permitted_params).map { |field| "#{name}#{field}" }
+      elsif properties["x-custom-format"] == "datetime"
+        (1..5).map { |i| "#{name}(#{i}i)" }
       elsif nested_fields.present?
         { name => nested_fields.map(&:permitted_params) }
       else
