@@ -109,8 +109,23 @@ private
 
   def embedded_object_diffs
     schema.subschemas.map { |subschema|
-      version&.field_diffs&.dig("details", subschema.id)&.map do |object_id, field_diff|
-        { object_id:, field_diff:, subschema_id: subschema.id }
+      subschema_diffs = version&.field_diffs&.dig("details", subschema.id)
+      next if subschema_diffs.blank?
+
+      if subschema.relationship_type.one_to_one?
+        [{
+          object_id: subschema.id,
+          field_diff: subschema_diffs,
+          subschema_id: subschema.id,
+        }]
+      else
+        subschema_diffs.map do |object_id, field_diff|
+          {
+            object_id: object_id,
+            field_diff: field_diff,
+            subschema_id: subschema.id,
+          }
+        end
       end
     }.flatten.compact
   end
