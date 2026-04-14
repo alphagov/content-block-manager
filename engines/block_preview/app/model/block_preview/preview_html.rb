@@ -76,7 +76,8 @@ module BlockPreview
 
     def html_snapshot_from_frontend(uri)
       uri = add_auth_bypass_token_to_uri(uri) if draft?
-      response = Net::HTTP.get_response(uri)
+      # Net::HTTP.get_response doesn't work with Addressable::URI, so we need to convert it to a standard URI
+      response = Net::HTTP.get_response(URI.parse(uri.to_s))
       if response.code == "200"
         Nokogiri::HTML.parse(response.body)
       else
