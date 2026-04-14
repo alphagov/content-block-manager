@@ -30,7 +30,7 @@
     "eslint-plugin-promise": "^7.2.1",
     "globals": "^17.5.0",
     "jasmine-browser-runner": "^4.0.0",
-    "jasmine-core": "^6.1.0",
+    "jasmine-core": "^6.2.0",
     "markdown-link-check": "^3.14.2",
     "markdownlint": "^0.40.0",
     "markdownlint-cli": "^0.48.0",
