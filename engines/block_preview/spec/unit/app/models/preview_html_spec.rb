@@ -92,7 +92,7 @@ RSpec.describe BlockPreview::PreviewHtml do
     ).to_s
 
     expect(Net::HTTP).to have_received(:get_response) do |url|
-      expect(url.query_values).to be_nil
+      expect(url.query).to be_nil
     end
   end
 
@@ -356,7 +356,7 @@ RSpec.describe BlockPreview::PreviewHtml do
 
     it "appends the token to the url" do
       expect(Net::HTTP).to have_received(:get_response) do |url|
-        expect(url.query_values).to eq({ "token" => token })
+        expect(url.query).to eq("token=#{token}")
       end
     end
 
