@@ -27,7 +27,13 @@ private
   end
 
   def rows
-    []
+    first_class_items(items).map do |field, value|
+      schema_field = schema.field(field.name)
+      {
+        key: schema_field.label,
+        value: rendered_value_for_field(field.name, value),
+      }
+    end
   end
 
   def object
@@ -55,14 +61,18 @@ private
     ]
   end
 
-  def wrapper_attributes
-    {
-      "class" => "govuk-summary-card",
-      **data_attributes,
-    }
-  end
-
   def data_attributes
     test_id_prefix.present? ? { "test-id" => [test_id_prefix, object_type].join("_") } : {}
+  end
+
+  def rendered_value_for_field(field_name, _value)
+    schema_field = schema.field(field_name)
+
+    unless schema_field.schema.embeddable_as_block?
+      raise ArgumentError, "Field '#{field_name}' must be embeddable"
+    end
+
+    embed_code = document.embed_code_for_field("#{object_type}/#{field_name}")
+    edition.render(embed_code)
   end
 end

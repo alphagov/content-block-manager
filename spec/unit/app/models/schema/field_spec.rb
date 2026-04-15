@@ -326,6 +326,37 @@ RSpec.describe Schema::Field do
         assert_nil(field.nested_field("unknown_name"))
       end
     end
+
+    context "when the field does not support nesting" do
+      let(:body) do
+        {
+          "properties" => {
+            "start" => {
+              "type" => "string",
+            },
+          },
+        }
+      end
+
+      let(:field) { Schema::Field.new("start", Schema.new("test", body)) }
+
+      let(:expected_error_message) do
+        %~
+          Field 'start' (type: 'string') does not support nested fields.
+          Cannot look up nested field 'nested_field_name'.
+          Only fields with type 'object' or 'array' (of objects) have nested fields.
+          Schema properties: {"type" => "string"}
+        ~.gsub(/\s+/, " ").strip
+      end
+
+      it "raises a descriptive error" do
+        error = assert_raises(Schema::Field::NestedFieldNotSupportedError) do
+          field.nested_field("nested_field_name")
+        end
+
+        expect(error.message).to eq(expected_error_message)
+      end
+    end
   end
 
   describe "#array_items" do
@@ -688,6 +719,38 @@ RSpec.describe Schema::Field do
     end
   end
 
+  describe "#datetime_format?" do
+    describe "when the field has format set to 'date-time'" do
+      let(:body) do
+        { "properties" => { "something" => { "type" => "string", "format" => "date-time" } } }
+      end
+
+      it "returns true" do
+        expect(field.datetime_format?).to be true
+      end
+    end
+
+    describe "when the field has format set to something else" do
+      let(:body) do
+        { "properties" => { "something" => { "type" => "string", "format" => "other" } } }
+      end
+
+      it "returns false" do
+        expect(field.datetime_format?).to be false
+      end
+    end
+
+    describe "when the field does not have format set" do
+      let(:body) do
+        { "properties" => { "something" => { "type" => "string" } } }
+      end
+
+      it "returns false" do
+        expect(field.datetime_format?).to be false
+      end
+    end
+  end
+
   describe "#id_attribute" do
     before do
       allow(field).to receive(:type).and_return("string")
@@ -767,54 +830,28 @@ RSpec.describe Schema::Field do
       end
     end
 
-    context "when the schema contains a custom 'datetime' format" do
-      let(:time) do
-        { "time" =>
-          { "format" => "time" } }
-      end
-      let(:date) do
-        { "date" =>
-          { "format" => "date" } }
-      end
+    context "when the schema contains a 'date-time' format" do
       let(:body) do
-        { "type" => "object", "properties" => { "my-custom-datetime" => datetime } }
+        {
+          "type" => "object",
+          "properties" => {
+            "my-datetime" => {
+              "type" => "string",
+              "format" => "date-time",
+            },
+          },
+        }
       end
-      let(:field) { Schema::Field.new("my-custom-datetime", schema) }
+      let(:field) { Schema::Field.new("my-datetime", schema) }
 
-      context "and this field contains a nested field with a custom 'time' format" do
-        let(:datetime) do
-          { "type" => "object",
-            "x-custom-format" => "datetime",
-            "properties" => time }
-        end
-
-        it "should return the params in the rails time array format" do
-          expect(field.permitted_params).to eq(%w[my-custom-datetime(4i) my-custom-datetime(5i)])
-        end
-      end
-
-      context "and this field contains a nested field with a custom 'date' format" do
-        let(:datetime) do
-          { "type" => "object",
-            "x-custom-format" => "datetime",
-            "properties" => date }
-        end
-
-        it "should return the params in the rails date array format" do
-          expect(field.permitted_params).to eq(%w[my-custom-datetime(1i) my-custom-datetime(2i) my-custom-datetime(3i)])
-        end
-      end
-
-      context "and this field contains a nested field with a custom 'date' format and one with a custom 'time' format" do
-        let(:datetime) do
-          { "type" => "object",
-            "x-custom-format" => "datetime",
-            "properties" => date.merge(time) }
-        end
-
-        it "should return the params in the rails date array format" do
-          expect(field.permitted_params).to eq(%w[my-custom-datetime(1i) my-custom-datetime(2i) my-custom-datetime(3i) my-custom-datetime(4i) my-custom-datetime(5i)])
-        end
+      it "returns the params in the rails multiparameter attribute format (1i-5i)" do
+        expect(field.permitted_params).to eq(%w[
+          my-datetime(1i)
+          my-datetime(2i)
+          my-datetime(3i)
+          my-datetime(4i)
+          my-datetime(5i)
+        ])
       end
     end
   end

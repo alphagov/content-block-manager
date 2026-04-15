@@ -1,7 +1,6 @@
 class Editions::EmbeddedObjectController < BaseController
-  include EmbeddedObjects
+  include HasSubschema
   include Workflow::HasSteps
-  include EditionHelper
 
   before_action :initialize_edition
   before_action :set_schema_and_subschema, only: %i[create edit update]
@@ -17,12 +16,11 @@ class Editions::EmbeddedObjectController < BaseController
 
   def create
     details = object_params(@subschema)[:details]
-    details = date_range_from_params(details) if details["date_range"]
-    @object = details[@subschema.block_type]
-
-    @edition.store_sole_object_in_details(@subschema.block_type, @object)
+    @object = details[@subschema.block_type.to_s]
+    converted_object = validate_and_convert_object(@object)
     @back_link = review_path
 
+    @edition.store_sole_object_in_details(@subschema.block_type, converted_object)
     @edition.save!
 
     flash[:success] = I18n.t(
@@ -44,11 +42,11 @@ class Editions::EmbeddedObjectController < BaseController
 
   def update
     details = object_params(@subschema)[:details]
-    details = date_range_from_params(details) if details["date_range"]
-    @object = details[@subschema.block_type]
+    @object = details[@subschema.block_type.to_s]
+    converted_object = validate_and_convert_object(@object)
 
     @redirect_url = params[:redirect_url]
-    @edition.store_sole_object_in_details(params[:object_type], @object)
+    @edition.store_sole_object_in_details(params[:object_type], converted_object)
 
     @edition.save!
     flash[:success] = I18n.t(
@@ -58,7 +56,7 @@ class Editions::EmbeddedObjectController < BaseController
 
     redirect_to workflow_path(@edition, step: next_step.name), allow_other_host: false
   rescue ActiveRecord::RecordInvalid
-    render :edit
+    render :edit, status: :unprocessable_content
   end
 
 private

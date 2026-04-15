@@ -200,20 +200,153 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
   end
 
   describe "when there are embedded objects" do
-    let(:subschema1) { double(:subschema, id: "embedded_schema") }
-    let(:subschema2) { double(:subschema, id: "other_embedded_schema") }
-    let(:schema) { double(:schema, subschemas: [subschema1, subschema2]) }
+    describe "with a 1:N relationship (e.g. Contact addresses)" do
+      let(:relationship_type) { double(:relationship_type, one_to_one?: false) }
+      let(:addresses_subschema) { double(:subschema, id: "addresses", relationship_type:) }
+      let(:schema) { double(:schema, subschemas: [addresses_subschema], fields: []) }
 
-    describe "when there are field diffs" do
+      let(:edition) do
+        build(:edition,
+              :contact,
+              details: {
+                "addresses" => {
+                  "home-address" => { "title" => "Home Address", "street" => "123 Main St" },
+                },
+              },
+              change_note: nil,
+              internal_change_note: nil,
+              review_outcome: ReviewOutcome.new,
+              fact_check_outcome: FactCheckOutcome.new)
+      end
+
+      describe "when there are field diffs" do
+        let(:field_diffs) do
+          {
+            "details" => {
+              "addresses" => {
+                "home-address" => {
+                  "street" => DiffItem.new(previous_value: "100 Old Road", new_value: "123 Main St"),
+                },
+              },
+            },
+          }
+        end
+
+        let(:version) do
+          build_stubbed(
+            :content_block_version,
+            event: "created",
+            whodunnit: user.id,
+            state: "published",
+            created_at: 4.days.ago,
+            item: edition,
+            field_diffs:,
+          )
+        end
+
+        it "renders a table for each changed object, using the object's title as caption" do
+          render_inline component
+
+          expect(page).to have_css("caption", text: "Home Address", visible: :all)
+
+          expect(page).to have_css("th", text: "Street", visible: :all)
+          expect(page).to have_css("td", text: "100 Old Road", visible: :all)
+          expect(page).to have_css("td", text: "123 Main St", visible: :all)
+        end
+
+        it "does not render tables for unchanged embedded objects" do
+          render_inline component
+
+          expect(page).to have_css("caption", count: 1, visible: :all)
+        end
+      end
+    end
+
+    describe "with a 1:1 relationship (e.g. TimePeriod date_range)" do
+      let(:relationship_type) { double(:relationship_type, one_to_one?: true) }
+      let(:date_range_subschema) { double(:subschema, id: "date_range", relationship_type:) }
+      let(:schema) { double(:schema, subschemas: [date_range_subschema], fields: []) }
+
+      let(:edition) do
+        build(:edition,
+              :time_period,
+              details: {
+                "date_range" => {
+                  "start" => "2025-02-01T09:00:00+00:00",
+                  "end" => "2025-12-31T18:00:00+00:00",
+                },
+              },
+              change_note: nil,
+              internal_change_note: nil,
+              review_outcome: ReviewOutcome.new,
+              fact_check_outcome: FactCheckOutcome.new)
+      end
+
+      describe "when there are field diffs" do
+        let(:field_diffs) do
+          {
+            "details" => {
+              "date_range" => {
+                "start" => DiffItem.new(
+                  previous_value: "2025-01-01T09:00:00+00:00",
+                  new_value: "2025-02-01T09:00:00+00:00",
+                ),
+                "end" => DiffItem.new(
+                  previous_value: "2025-12-31T17:00:00+00:00",
+                  new_value: "2025-12-31T18:00:00+00:00",
+                ),
+              },
+            },
+          }
+        end
+
+        let(:version) do
+          build_stubbed(
+            :content_block_version,
+            event: "created",
+            whodunnit: user.id,
+            state: "published",
+            created_at: 4.days.ago,
+            item: edition,
+            field_diffs:,
+          )
+        end
+
+        it "renders a single table with subschema id as caption (humanized)" do
+          render_inline component
+
+          expect(page).to have_css("caption", text: "Date range", visible: :all)
+        end
+
+        it "renders rows for each changed field with previous and new values" do
+          render_inline component
+
+          expect(page).to have_css("th", text: "Start", visible: :all)
+          expect(page).to have_css("td", text: "2025-01-01T09:00:00+00:00", visible: :all)
+          expect(page).to have_css("td", text: "2025-02-01T09:00:00+00:00", visible: :all)
+
+          expect(page).to have_css("th", text: "End", visible: :all)
+          expect(page).to have_css("td", text: "2025-12-31T17:00:00+00:00", visible: :all)
+          expect(page).to have_css("td", text: "2025-12-31T18:00:00+00:00", visible: :all)
+        end
+
+        it "does not render multiple tables for the same 1:1 object" do
+          render_inline component
+
+          expect(page).to have_css("caption", text: "Date range", count: 1, visible: :all)
+        end
+      end
+    end
+
+    describe "when there are no field diffs for the embedded object" do
+      let(:relationship_type) { double(:relationship_type, one_to_one?: false) }
+      let(:subschema1) { double(:subschema, id: "embedded_schema", relationship_type:) }
+      let(:subschema2) { double(:subschema, id: "other_embedded_schema", relationship_type:) }
+      let(:schema) { double(:schema, subschemas: [subschema1, subschema2], fields: %w[description]) }
       let(:field_diffs) do
         {
           "details" => {
-            "embedded_schema" => {
-              "something" => {
-                "field1" => DiffItem.new(previous_value: "before", new_value: "after"),
-                "field2" => DiffItem.new(previous_value: "before", new_value: "after"),
-              },
-            },
+            "description" => DiffItem.new(previous_value: "old description", new_value: "new description"),
           },
         }
       end
@@ -230,84 +363,15 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
         )
       end
 
-      it "renders the embedded table component" do
-        table_component = double("table_component")
-
-        expect(Document::Show::DocumentTimeline::EmbeddedObject::FieldChangesTableComponent)
-          .to receive(:new)
-          .with(
-            object_id: "something",
-            field_diff: {
-              "field1" => DiffItem.new(previous_value: "before", new_value: "after"),
-              "field2" => DiffItem.new(previous_value: "before", new_value: "after"),
-            },
-            subschema_id: "embedded_schema",
-            edition:,
-          )
-          .and_return(table_component)
-
-        expect(component)
-          .to receive(:render)
-          .with("govuk_publishing_components/components/details", { title: "Details of changes", open: false, summary_aria_attributes: { label: "Details of changes - Published" } })
-
-        expect(component)
-          .to receive(:render)
-          .with(table_component)
-          .once
-          .and_return("TABLE COMPONENT 1")
-
-        expect(component)
-          .to receive(:render)
-          .with(anything)
-          .once
-          .and_return("TABLE COMPONENT 2")
-
+      it "renders only the main object field changes, not embedded object tables" do
         render_inline component
 
-        # We expect the table component to only be rendered with the details component, not anywhere else.
-        expect(page).to_not have_content "TABLE COMPONENT 1"
-      end
-    end
+        expect(page).to have_css("th", text: "Description", visible: :all)
+        expect(page).to have_css("td", text: "old description", visible: :all)
+        expect(page).to have_css("td", text: "new description", visible: :all)
 
-    describe "when there are no field diffs for the embedded object" do
-      let(:field_diffs) { { "foo" => DiffItem.new(previous_value: "previous value", new_value: "new value") } }
-
-      let(:version) do
-        build_stubbed(
-          :content_block_version,
-          event: "created",
-          whodunnit: user.id,
-          state: "published",
-          created_at: 4.days.ago,
-          item: edition,
-          field_diffs:,
-        )
-      end
-
-      let!(:table_component) do
-        Document::Show::DocumentTimeline::FieldChangesTableComponent.new(
-          version:,
-          schema:,
-        )
-      end
-
-      it "renders the table component" do
-        expect(Document::Show::DocumentTimeline::FieldChangesTableComponent)
-          .to receive(:new)
-          .with(version:, schema:)
-          .and_return(table_component)
-
-        expect(component)
-          .to receive(:render)
-          .with(table_component)
-          .once
-          .and_return("TABLE COMPONENT")
-
-        expect(component)
-          .to receive(:render)
-          .with("govuk_publishing_components/components/details", { title: "Details of changes", open: false, summary_aria_attributes: { label: "Details of changes - Published" } })
-
-        render_inline component
+        expect(page).not_to have_css("caption", text: "Embedded schema", visible: :all)
+        expect(page).not_to have_css("caption", text: "Other embedded schema", visible: :all)
       end
     end
   end

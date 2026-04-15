@@ -460,7 +460,8 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
 
       let(:items) do
         {
-          "start" => { "date" => "2025-04-06", "time" => "00:00" },
+          "start" => "2025-04-06T00:00:00+01:00",
+          "end" => "2026-04-05T23:59:00+01:00",
         }
       end
 
@@ -475,8 +476,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
       end
 
       let(:start_field) { build(:field, name: "start", label: "Start") }
-      let(:date_field) { build(:field, name: "date", label: "Date") }
-      let(:time_field) { build(:field, name: "time", label: "Time") }
+      let(:end_field) { build(:field, name: "end", label: "End") }
 
       let(:schema) { double("schema", block_type: "time_period") }
       let(:subschema) do
@@ -489,8 +489,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
         allow(edition).to receive(:render).and_return("DATE_RANGE_BLOCK_RESPONSE")
         allow(schema).to receive(:subschema).with("date_range").and_return(subschema)
         allow(subschema).to receive(:field).with("start").and_return(start_field)
-        allow(start_field).to receive(:nested_field).with("date").and_return(date_field)
-        allow(start_field).to receive(:nested_field).with("time").and_return(time_field)
+        allow(subschema).to receive(:field).with("end").and_return(end_field)
       end
 
       describe "overall object representation" do
@@ -498,7 +497,7 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
           render_inline component
 
           expect(edition).to have_received(:render).with(
-            "{{embed:content_block_time_period:/date_range/}}",
+            "{{embed:content_block_time_period:/date_range}}",
           )
         end
 
@@ -509,32 +508,32 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
             test_id: "date_range",
             key: "Date range",
             value: "DATE_RANGE_BLOCK_RESPONSE",
-            embed_code: "{{embed:content_block_time_period:/date_range/}}",
+            embed_code: "{{embed:content_block_time_period:/date_range}}",
             visible: true,
             parent_container: page,
           )
         end
       end
 
-      describe "individual nested fields as 'All date range attributes'" do
-        it "shows the individual nested field labels and values" do
+      describe "individual ISO 8601 datetime fields as 'All date range attributes'" do
+        it "shows the individual datetime field labels and values" do
           render_inline component
 
           expect(page).to have_css("details[title='All date range attributes']") do |details|
             expect_summary_list_row(
-              test_id: "date_range/start/date",
-              key: "Date",
-              value: "2025-04-06",
-              embed_code: "{{embed:content_block_time_period:/date_range/start/date}}",
+              test_id: "date_range_start",
+              key: "Start",
+              value: "2025-04-06T00:00:00+01:00",
+              embed_code: "{{embed:content_block_time_period:/date_range/start}}",
               visible: false,
               parent_container: details,
             )
 
             expect_summary_list_row(
-              test_id: "date_range/start/time",
-              key: "Time",
-              value: "00:00",
-              embed_code: "{{embed:content_block_time_period:/date_range/start/time}}",
+              test_id: "date_range_end",
+              key: "End",
+              value: "2026-04-05T23:59:00+01:00",
+              embed_code: "{{embed:content_block_time_period:/date_range/end}}",
               visible: false,
               parent_container: details,
             )

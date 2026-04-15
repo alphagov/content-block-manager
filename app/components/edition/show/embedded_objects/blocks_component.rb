@@ -51,10 +51,6 @@ private
     end
   end
 
-  def block_title(key)
-    schema.field(key).title
-  end
-
   def all_attributes_preamble
     I18n.t("embedded_object.all_attributes", object_name: object_name)
   end
@@ -105,14 +101,14 @@ private
     content = content_tag(:p, value, class: "app-c-embedded-objects-blocks-component__content govspeak")
     if edition.show_embed_codes?
       content << content_tag(:p,
-                             document.embed_code_for_field("#{object_type}/#{object_title}/#{key}"),
+                             document.embed_code_for_field(embed_code_identifier(object_type, object_title, key)),
                              class: "app-c-embedded-objects-blocks-component__embed-code")
     end
     content
   end
 
   def data_attributes_for_row(key)
-    field_path = [object_type, object_title, key].join("/")
+    field_path = embed_code_identifier(object_type, object_title, key)
     {
       testid: test_id_for_row(key),
       **copy_embed_code_data_attributes(field_path, document),
@@ -121,11 +117,11 @@ private
 
   def content_for_block_row
     content = @block_content ||= content_tag(:div,
-                                             edition.render(document.embed_code_for_field("#{object_type}/#{object_title}")),
+                                             edition.render(document.embed_code_for_field(embed_code_identifier(object_type, object_title))),
                                              class: "app-c-embedded-objects-blocks-component__content govspeak")
     if edition.show_embed_codes?
       content << content_tag(:p,
-                             document.embed_code_for_field("#{object_type}/#{object_title}"),
+                             document.embed_code_for_field(embed_code_identifier(object_type, object_title)),
                              class: "app-c-embedded-objects-blocks-component__embed-code")
     end
     content
@@ -134,7 +130,7 @@ private
   def data_attributes_for_block_row
     {
       testid: test_id_for_row,
-      **copy_embed_code_data_attributes("#{object_type}/#{object_title}", document),
+      **copy_embed_code_data_attributes(embed_code_identifier(object_type, object_title), document),
     }
   end
 

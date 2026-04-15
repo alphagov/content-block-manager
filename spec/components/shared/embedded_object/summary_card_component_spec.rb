@@ -1,12 +1,56 @@
 RSpec.describe Shared::EmbeddedObject::SummaryCardComponent, type: :component do
   include Rails.application.routes.url_helpers
 
-  context "when the embedded object has nested fields, as within TimePeriod#date_range" do
+  context "when a field's schema is not configured to be embeddable as a block" do
+    let(:non_embeddable_field_schema) do
+      instance_double(Schema::EmbeddedSchema, embeddable_as_block?: false)
+    end
+
+    let(:non_embeddable_field) do
+      instance_double(
+        Schema::Field,
+        name: "plain_text",
+        label: "Plain text",
+        schema: non_embeddable_field_schema,
+      )
+    end
+
+    let(:subschema) do
+      instance_double(
+        Schema::EmbeddedSchema,
+        fields: [non_embeddable_field],
+        field: non_embeddable_field,
+      )
+    end
+
+    let(:root_schema) { instance_double(Schema) }
+    let(:document) { instance_double(Document, schema: root_schema) }
+    let(:edition) do
+      instance_double(
+        Edition,
+        details: { "test_object" => { "plain_text" => "value" } }, document:,
+      )
+    end
+
+    before do
+      allow(subschema).to receive(:field).with("plain_text").and_return(non_embeddable_field)
+      allow(root_schema).to receive(:subschema).with("test_object").and_return(subschema)
+    end
+
+    it "raises ArgumentError" do
+      component = described_class.new(edition:, object_type: "test_object")
+
+      expect { render_inline(component) }
+        .to raise_error(ArgumentError, "Field 'plain_text' must be embeddable")
+    end
+  end
+
+  context "when the embedded object has datetime string fields, as within TimePeriod#date_range" do
     let(:details) do
       {
         "date_range" => {
-          "start" => { "date" => "2025-04-06", "time" => "00:00" },
-          "end" => { "date" => "2026-04-05", "time" => "23:59" },
+          "start" => "2025-04-06T00:00:00+01:00",
+          "end" => "2026-04-05T23:59:00+01:00",
         },
       }
     end
@@ -17,45 +61,21 @@ RSpec.describe Shared::EmbeddedObject::SummaryCardComponent, type: :component do
     let(:component) { described_class.new(edition:, object_type: "date_range") }
 
     before do
-      %w[
-        date_range/start/date
-        date_range/start/time
-        date_range/end/date
-        date_range/end/time
-      ].each do |field_path|
+      %w[date_range/start date_range/end].each do |field_path|
         allow(edition).to receive(:render)
           .with(edition.document.embed_code_for_field(field_path))
-          .and_return("FORMATTED_DATE_OR_TIME")
+          .and_return("FORMATTED_DATETIME")
       end
     end
 
-    it "renders a summary card for each of the nested fields, with formatted dates and times" do
+    it "renders the datetime values as formatted strings" do
       render_inline component
 
       expect(page).to have_css ".govuk-summary-card__title", text: "Date range details"
 
-      expect(page).to have_css ".gem-c-summary-card[title='Start']" do
-        expect(page).to have_css ".govuk-summary-list__row[data-testid='date']" do
-          expect(page).to have_css ".govuk-summary-list__key", text: "Date"
-          expect(page).to have_css ".govuk-summary-list__value", text: "FORMATTED_DATE_OR_TIME"
-        end
-
-        expect(page).to have_css ".govuk-summary-list__row[data-testid='time']" do
-          expect(page).to have_css ".govuk-summary-list__key", text: "Time"
-          expect(page).to have_css ".govuk-summary-list__value", text: "FORMATTED_DATE_OR_TIME"
-        end
-      end
-
-      expect(page).to have_css ".gem-c-summary-card[title='End']" do
-        expect(page).to have_css ".govuk-summary-list__row[data-testid='date']" do
-          expect(page).to have_css ".govuk-summary-list__key", text: "Date"
-          expect(page).to have_css ".govuk-summary-list__value", text: "FORMATTED_DATE_OR_TIME"
-        end
-
-        expect(page).to have_css ".govuk-summary-list__row[data-testid='time']" do
-          expect(page).to have_css ".govuk-summary-list__key", text: "Time"
-          expect(page).to have_css ".govuk-summary-list__value", text: "FORMATTED_DATE_OR_TIME"
-        end
+      expect(page).to have_css(".govuk-summary-list") do |list|
+        expect(list).to have_summary_row.with_key("Start").with_value("FORMATTED_DATETIME")
+        expect(list).to have_summary_row.with_key("End").with_value("FORMATTED_DATETIME")
       end
     end
 

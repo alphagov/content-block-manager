@@ -9,7 +9,7 @@ Feature: Editor uses time period embed codes
     And the organisation "Ministry of Example" exists
     And a published time period content block exists
 
-  Scenario: Copy dates and times in '2025-04-06' and '00:00' format
+  Scenario: Copy datetime embed codes for start and end
     Given I am viewing the published edition
     Then I see embed codes for the time period date and time values
 

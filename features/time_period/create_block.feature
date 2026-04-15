@@ -33,6 +33,14 @@ Feature: Create "Time period" content block
     When I supply the time periods with the end date before the start date
     And I save and continue
     Then I should see an error message telling me that the end date cannot be before the start date
+    And the time period date range fields should be populated with the values submitted
+
+  Scenario: Time period date range validation is clear when editing branch
+    Given a draft time period block exists
+    When I am viewing the draft edition
+    And I edit the draft time period entering the invalid value of 30 Feb
+    Then I should see an error message telling me that the date range field is invalid
+    And the time period date range fields should be populated with the invalid values submitted
 
   Scenario: Editor can edit a draft time period block
     Given a draft time period block exists
@@ -47,5 +55,4 @@ Feature: Create "Time period" content block
     Then I should see the description of the time period block
     And the default block should not be shown
     And the time period's date range block should not be shown
-
 
