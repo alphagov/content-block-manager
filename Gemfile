@@ -39,6 +39,7 @@ gem "tzinfo-data", platforms: %i[windows jruby]
 gem "view_component"
 
 group :development, :test do
+  gem "benchmark"
   gem "brakeman", require: false
   gem "byebug"
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
