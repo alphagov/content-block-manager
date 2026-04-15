@@ -1,0 +1,211 @@
+<%= form_with(
+  model: @edition,
+  url: @edition.persisted? ?
+    block_document_time_period_date_range_path(@document, @edition) :
+    block_document_time_period_date_ranges_path(@document),
+  method: @edition.persisted? ? :patch : :post,
+) do |f| %>
+  <div class="govuk-form-group">
+    <fieldset class="govuk-fieldset">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+        <h2 class="govuk-fieldset__heading">Date range</h2>
+      </legend>
+
+      <%= f.fields_for :date_range,
+          @edition.date_range || @edition.build_date_range do |dr_fields| %>
+
+        <%# START datetime %>
+        <div class="govuk-form-group">
+          <%= render "govuk_publishing_components/components/fieldset", {
+            legend_text: "Start",
+            heading_level: 3,
+            heading_size: "s",
+          } do %>
+            <%= render "govuk_publishing_components/components/date_input", {
+              hint: "For example, 27 3 2025",
+              error_items: errors_for(
+                @edition.date_range&.errors || [],
+                :start,
+              ),
+              items: [
+                {
+                  label: "Day",
+                  name: "edition[date_range_attributes][start(3i)]",
+                  value: @edition.date_range&.start&.day,
+                  width: 2,
+                },
+                {
+                  label: "Month",
+                  name: "edition[date_range_attributes][start(2i)]",
+                  value: @edition.date_range&.start&.month,
+                  width: 2,
+                },
+                {
+                  label: "Year",
+                  name: "edition[date_range_attributes][start(1i)]",
+                  value: @edition.date_range&.start&.year,
+                  width: 4,
+                },
+              ],
+            } %>
+
+            <div class="govuk-form-group"
+                 style="margin-top: 20px;">
+              <%= render "govuk_publishing_components/components/fieldset", {
+                legend_text: "Time",
+                heading_level: 4,
+                heading_size: "s",
+              } do %>
+                <div class="govuk-hint">For example, 09:30 or 19:30</div>
+                <div style="display: flex;
+                            align-items: flex-end;
+                            gap: 10px;">
+                  <div>
+                    <%= render(
+                      "govuk_publishing_components/components/label", {
+                        text: "Hour",
+                        html_for: "start_hour",
+                      }
+                    ) %>
+                    <%= select_hour(
+                      @edition.date_range&.start&.hour,
+                      {
+                        include_blank: true,
+                        prefix: "edition[date_range_attributes]",
+                        field_name: "start(4i)",
+                      },
+                      {
+                        id: "start_hour",
+                        class: "govuk-select",
+                      },
+                    ) %>
+                  </div>
+                  <div style="padding-bottom: 5px;">:</div>
+                  <div>
+                    <%= render(
+                      "govuk_publishing_components/components/label", {
+                        text: "Minute",
+                        html_for: "start_minute",
+                      }
+                    ) %>
+                    <%= select_minute(
+                      @edition.date_range&.start&.min,
+                      {
+                        include_blank: true,
+                        prefix: "edition[date_range_attributes]",
+                        field_name: "start(5i)",
+                      },
+                      {
+                        id: "start_minute",
+                        class: "govuk-select",
+                      },
+                    ) %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+
+        <%# END datetime %>
+        <div class="govuk-form-group">
+          <%= render "govuk_publishing_components/components/fieldset", {
+            legend_text: "End",
+            heading_level: 3,
+            heading_size: "s",
+          } do %>
+            <%= render "govuk_publishing_components/components/date_input", {
+              hint: "For example, 31 3 2025",
+              error_items: errors_for(
+                @edition.date_range&.errors || [],
+                :end,
+              ),
+              items: [
+                {
+                  label: "Day",
+                  name: "edition[date_range_attributes][end(3i)]",
+                  value: @edition.date_range&.end&.day,
+                  width: 2,
+                },
+                {
+                  label: "Month",
+                  name: "edition[date_range_attributes][end(2i)]",
+                  value: @edition.date_range&.end&.month,
+                  width: 2,
+                },
+                {
+                  label: "Year",
+                  name: "edition[date_range_attributes][end(1i)]",
+                  value: @edition.date_range&.end&.year,
+                  width: 4,
+                },
+              ],
+            } %>
+
+            <div class="govuk-form-group"
+                 style="margin-top: 20px;">
+              <%= render "govuk_publishing_components/components/fieldset", {
+                legend_text: "Time",
+                heading_level: 4,
+                heading_size: "s",
+              } do %>
+                <div class="govuk-hint">For example, 09:30 or 19:30</div>
+                <div style="display: flex;
+                            align-items: flex-end;
+                            gap: 10px;">
+                  <div>
+                    <%= render(
+                      "govuk_publishing_components/components/label", {
+                        text: "Hour",
+                        html_for: "end_hour",
+                      }
+                    ) %>
+                    <%= select_hour(
+                      @edition.date_range&.end&.hour,
+                      {
+                        include_blank: true,
+                        prefix: "edition[date_range_attributes]",
+                        field_name: "end(4i)",
+                      },
+                      {
+                        id: "end_hour",
+                        class: "govuk-select",
+                      },
+                    ) %>
+                  </div>
+                  <div style="padding-bottom: 5px;">:</div>
+                  <div>
+                    <%= render(
+                      "govuk_publishing_components/components/label", {
+                        text: "Minute",
+                        html_for: "end_minute",
+                      }
+                    ) %>
+                    <%= select_minute(
+                      @edition.date_range&.end&.min,
+                      {
+                        include_blank: true,
+                        prefix: "edition[date_range_attributes]",
+                        field_name: "end(5i)",
+                      },
+                      {
+                        id: "end_minute",
+                        class: "govuk-select",
+                      },
+                    ) %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+
+      <% end %>
+    </fieldset>
+  </div>
+
+  <%= render "govuk_publishing_components/components/button", {
+    text: "Save and continue",
+    type: "submit",
+  } %>
+<% end %>

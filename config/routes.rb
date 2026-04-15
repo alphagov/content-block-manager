@@ -39,6 +39,17 @@ Rails.application.routes.draw do
     put "schedule", to: "documents/schedule#update", as: :update_schedule
     patch "schedule", to: "documents/schedule#update"
   end
+  # Block namespace - experimental ActiveRecord architecture
+  namespace :block do
+    resources :time_period_editions, only: %i[new create show edit update]
+
+    resources :documents, only: [:index] do
+      resources :time_period_date_ranges,
+                only: %i[edit update show],
+                path: "time-period-date-ranges"
+    end
+  end
+
   resources :editions, only: %i[new create destroy], path_names: { new: ":block_type/new" } do
     member do
       get :preview, to: "editions#preview"

@@ -7,8 +7,14 @@ module HeaderHelper
     }
   end
 
-  def navigation_items(current_user)
+  def navigation_items(current_user, schemaless_experiment_enabled: false)
     return [] if current_user.nil?
+
+    if schemaless_experiment_enabled
+      return [
+        main_nav_item("New-style blocks", block_documents_path),
+      ]
+    end
 
     [
       main_nav_item("Blocks", root_path),

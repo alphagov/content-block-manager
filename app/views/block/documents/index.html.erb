@@ -1,0 +1,42 @@
+<% content_for :page_title, "New-style blocks" %>
+
+<div class="govuk-grid-row content-block-manager-header">
+  <div class="govuk-grid-column-one-half">
+    <h1 class="govuk-heading-xl content-block-manager-header--heading">
+      New-style blocks
+    </h1>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <% @editions.each_with_index do |edition, index| %>
+      <div data-testid="homepage-item-<%= index %>">
+        <%= render "govuk_publishing_components/components/summary_card", {
+          title: edition.title,
+          rows: [
+            {
+              key: "Time period name",
+              value: edition.title,
+            },
+            {
+              key: "Lead organisation",
+              value: edition.lead_organisation.name,
+            },
+            {
+              key: "Status",
+              value: render(Shared::DocumentFullStatusComponent.new(edition: edition)),
+            },
+
+          ],
+          summary_card_actions: [
+            {
+              label: "View",
+              href: block_time_period_edition_path(edition),
+            },
+          ],
+        } %>
+      </div>
+    <% end %>
+  </div>
+</div>

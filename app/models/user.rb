@@ -20,6 +20,7 @@ class User < ApplicationRecord
   module Permissions
     SIGNIN = "signin".freeze
     PRE_RELEASE_FEATURES_PERMISSION = "pre_release_features".freeze
+    SCHEMALESS_EXPERIMENT_PERMISSION = "schemaless_experiment".freeze
     SHOW_ALL_CONTENT_BLOCK_TYPES = "show_all_content_block_types".freeze
   end
 

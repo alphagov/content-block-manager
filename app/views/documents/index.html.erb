@@ -19,12 +19,23 @@
       <p class="govuk-body">Create, edit and use standardised content across GOV.UK</p>
     </div>
     <div class="govuk-grid-column-one-half content-block-manager-header--column-right">
-      <div>
+      <ul class="govuk-list govuk-!-text-align-centre">
+        <li class="govuk-!-static-margin-bottom-3">
           <%= render "govuk_publishing_components/components/button", {
             text: "Create content block",
             href: new_document_path,
           } %>
-      </div>
+        </li>
+        <% if schemaless_experiment_enabled? %>
+          <li>
+            <%= render "govuk_publishing_components/components/button", {
+              text: "Create new-style block",
+              href: new_block_time_period_edition_path,
+              secondary_solid: true,
+            } %>
+          </li>
+      <% end %>
+      </ul>
     </div>
 </div>
 

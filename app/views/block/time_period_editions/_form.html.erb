@@ -1,0 +1,52 @@
+<% content_for :error_summary, render(Shared::ErrorSummaryComponent.new(object: @edition, parent_class: "edition")) %>
+
+<%= form_with(
+  model: @edition,
+  url: @edition.persisted? ?
+    block_time_period_edition_path(@edition) :
+    block_time_period_editions_path,
+  method: @edition.persisted? ? :patch : :post,
+) do |f| %>
+
+  <%= render "govuk_publishing_components/components/input", {
+    label: {
+      text: "Title",
+    },
+    name: "edition[title]",
+    value: @edition.title,
+    error_items: errors_for(@edition.errors, :title),
+  } %>
+
+  <%= render "govuk_publishing_components/components/textarea", {
+    label: {
+      text: "Description",
+    },
+    name: "edition[description]",
+    value: @edition.description,
+    error_items: errors_for(@edition.errors, :description),
+    rows: 3,
+  } %>
+
+  <%= render "govuk_publishing_components/components/select", {
+    id: "edition_lead_organisation_id",
+    name: "edition[lead_organisation_id]",
+    label: "Lead organisation",
+    options: @organisations,
+    error_items: errors_for(@edition.errors, :lead_organisation_id),
+  } %>
+
+  <%= render "govuk_publishing_components/components/textarea", {
+    label: {
+      text: "Instructions to publishers",
+    },
+    name: "edition[instructions_to_publishers]",
+    value: @edition.instructions_to_publishers,
+    error_items: errors_for(@edition.errors, :instructions_to_publishers),
+    rows: 3,
+  } %>
+
+  <%= render "govuk_publishing_components/components/button", {
+    text: "Save and continue",
+    type: "submit",
+  } %>
+<% end %>
