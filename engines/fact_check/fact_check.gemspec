@@ -5,7 +5,7 @@ Gem::Specification.new do |spec|
   spec.email   = ["govuk-dev@digital.cabinet-office.gov.uk"]
   spec.summary = "Rails engine for Fact Check."
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.4.5"
+  spec.required_ruby_version = ">= 4.0.2"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
     Dir["{app,config,db,lib}/**/*"]
