@@ -23,5 +23,9 @@ module.exports = defineConfig([
       }
     }
   },
-  globalIgnores(['app/assets/javascripts/vendor/', 'coverage/'])
+  globalIgnores([
+    'app/assets/javascripts/vendor/',
+    'coverage/',
+    'public/assets/content-block-manager/'
+  ])
 ])

@@ -5,7 +5,7 @@
   "author": "Government Digital Service",
   "license": "MIT",
   "scripts": {
-    "lint": "yarn run lint:js && yarn run lint:scss",
+    "lint": "yarn run lint:js && yarn run lint:prettier && yarn run lint:scss",
     "lint:js": "eslint --cache --cache-location .cache/eslint --color -- \"**/*.js\"",
     "lint:scss": "stylelint app/assets/stylesheets/",
     "lint:markdown": "markdownlint **/*.md",
