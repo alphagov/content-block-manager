@@ -5,6 +5,8 @@ FactoryBot.define do
     updated_at { Time.zone.now.utc }
     creator { build(:user) }
 
+    accept_risk_of_duplicate_title { nil }
+
     lead_organisation_id { SecureRandom.uuid }
 
     document_id { nil }
@@ -13,7 +15,7 @@ FactoryBot.define do
 
     instructions_to_publishers { nil }
 
-    title { "Factory Title for Edition" }
+    sequence(:title) { |n| "Factory Title for Edition #{n}" }
 
     internal_change_note { "Something changed" }
 

@@ -3,7 +3,7 @@ RSpec.describe EditionsController, type: :request do
     let(:title) { "Some Title" }
 
     let(:document) { create(:document, :pension) }
-    let!(:original_edition) { create(:edition, :pension, document: document, title:) }
+    let!(:original_edition) { create(:edition, :pension, document: document, title:, state: "published") }
 
     let(:document_attributes) do
       {
@@ -133,7 +133,7 @@ RSpec.describe EditionsController, type: :request do
           "edition": {
             document_attributes:,
             details:,
-            title:,
+            title: "Another title",
             lead_organisation_id: organisation.id,
           },
         }
@@ -143,7 +143,7 @@ RSpec.describe EditionsController, type: :request do
         author = EditionAuthor.last
         version = Version.last
 
-        expect(edition.title).to eq(title)
+        expect(edition.title).to eq("Another title")
         expect(document.block_type).to eq(document_attributes.[](:block_type))
         expect(edition.details).to eq(details)
 
