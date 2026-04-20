@@ -79,10 +79,12 @@ en:
     body:
       edition:
         fact_check:
-          performed: "Fact check performed by %{performer}"
+          performed: "Fact check performed"
+          performed_with_performer: "Fact check performed by %{performer}"
           skipped: Fact check skipped
         review:
-          performed: "2i review performed by %{performer}"
+          performed: "2i review performed"
+          performed_with_performer: "2i review performed by %{performer}"
           skipped: 2i review skipped
 
   edition:
