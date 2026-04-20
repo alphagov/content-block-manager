@@ -4,7 +4,7 @@
 
 All content block types are managed in the schemas within the [Schema definitions directory](https://github.com/alphagov/content-block-manager/tree/main/app/models/schema/definitions).
 
-Schemas are picked up by Content Block Manager via the [`Schema` class](https://github.com/alphagov/content-block-manager/blob/main/app/models/schema.rb).
+Schemas are picked up by Content Block Manager via the [`Schema` class](https://github.com/alphagov/content-block-manager/blob/main/app/public/models/schema.rb).
 
 When creating a new content block, we fetch all the supported schemas and give the user a list of valid block types to
 create. Once a block type is chosen the form is then populated using all the fields within a schema's `details` object

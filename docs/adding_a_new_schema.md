@@ -10,7 +10,7 @@ in a JSON schema format.
 This represents the shape of the data which will be stored in a content block's `details` field.
 
 Once the schema is defined, you must define it as a supported schema in the
-[`VALID_SCHEMAS` constant within the Schema class](https://github.com/alphagov/content-block-manager/blob/main/app/models/schema.rb#L4)
+[`VALID_SCHEMAS` constant within the Schema class](https://github.com/alphagov/content-block-manager/blob/main/app/public/models/schema.rb#L4)
 so that it can be used in Content Block Manager.
 
 Schemas can be defined as `live` or `alpha`. `live` schemas are visible in production, and can be accessed by anyone.
