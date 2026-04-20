@@ -83,6 +83,38 @@ RSpec.describe EditionsController, type: :request do
         end
       end
 
+      describe "when a block with the same title exists" do
+        let(:new_document) { create(:document, :pension) }
+
+        it "should render the template with an error" do
+          post document_editions_path(new_document), params: {
+            "edition": {
+              document_attributes:,
+              details:,
+              lead_organisation_id: organisation.id,
+              title:,
+            },
+          }
+
+          expect(response).to render_template("editions/new")
+          expect(response.body).to include(I18n.t("activerecord.errors.models.edition.title.not_unique"))
+        end
+
+        it "redirects to the review links step when accept_risk_of_duplicate_title is set" do
+          redirects_to_step(:review_links) do
+            post document_editions_path(new_document), params: {
+              "edition": {
+                document_attributes:,
+                details:,
+                lead_organisation_id: organisation.id,
+                accept_risk_of_duplicate_title: "1",
+                title:,
+              },
+            }
+          end
+        end
+      end
+
       describe "when subschemas are present" do
         let(:group) { nil }
         let(:subschemas) { [double("subschema", id: "my_subschema_name", group:)] }

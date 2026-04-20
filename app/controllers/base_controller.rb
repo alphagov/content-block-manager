@@ -22,6 +22,7 @@ class BaseController < ApplicationController
             :internal_change_note,
             :change_note,
             :major_change,
+            :accept_risk_of_duplicate_title,
             document_attributes: %w[block_type],
             details: @schema.permitted_params,
           )
