@@ -301,6 +301,9 @@ en:
       delete: Delete
       supersede: Supersede
     outcomes:
+      description:
+        review: The details you provide are recorded in the content block’s change history.
+        fact_check: The details you provide are recorded in the content block’s change history.
       heading:
         review: Was there a 2i review?
         fact_check: Was there a fact check?
@@ -313,8 +316,8 @@ en:
           performed: "Yes, outside Content Block Manager"
       performer:
         label:
-          review:    "Reviewer's name or email address"
-          fact_check: "Fact checker's name or email address"
+          review:    "Enter reviewer's email address (optional)"
+          fact_check: "Enter fact checker's email address (optional)"
       errors:
         missing_performer:
           review:    "Provide the email or name of the 2i reviewer"
