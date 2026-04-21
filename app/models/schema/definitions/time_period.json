@@ -1,6 +1,7 @@
 {
   "type": "object",
   "additionalProperties": false,
+  "x-embeddable-as-block": true,
   "properties": {
     "description": {
       "type": "string"
@@ -8,6 +9,7 @@
     "date_range": {
       "type": "object",
       "additionalProperties": false,
+      "x-embeddable-as-block": true,
       "required": ["start", "end"],
       "properties": {
         "start": {

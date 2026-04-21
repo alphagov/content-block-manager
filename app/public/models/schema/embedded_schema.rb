@@ -16,7 +16,7 @@ class Schema
     end
 
     def embeddable_as_block?
-      @embeddable_as_block ||= config["embeddable_as_block"].present?
+      @embeddable_as_block ||= @body["x-embeddable-as-block"].present?
     end
 
     def config

@@ -1,6 +1,7 @@
 {
   "type": "object",
   "additionalProperties": false,
+  "x-embeddable-as-block": true,
   "properties": {
     "addresses": {
       "type": "object",
@@ -9,6 +10,7 @@
         "^[a-z0-9]+(?:-[a-z0-9]+)*$": {
           "type": "object",
           "additionalProperties": false,
+          "x-embeddable-as-block": true,
           "properties": {
             "country": {
               "type": "string"
@@ -47,6 +49,7 @@
           "type": "object",
           "required": ["label", "url"],
           "additionalProperties": false,
+          "x-embeddable-as-block": true,
           "properties": {
             "description": {
               "type": "string"
@@ -72,11 +75,13 @@
     "email_addresses": {
       "type": "object",
       "additionalProperties": false,
+      "x-embeddable-as-block": true,
       "patternProperties": {
         "^[a-z0-9]+(?:-[a-z0-9]+)*$": {
           "type": "object",
           "required": ["email_address"],
           "additionalProperties": false,
+          "x-embeddable-as-block": true,
           "properties": {
             "body": {
               "type": "string"
@@ -114,6 +119,7 @@
           "type": "object",
           "required": ["telephone_numbers"],
           "additionalProperties": false,
+          "x-embeddable-as-block": true,
           "properties": {
             "bsl_guidance": {
               "type": "object",

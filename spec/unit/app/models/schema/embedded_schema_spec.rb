@@ -196,21 +196,18 @@ RSpec.describe Schema::EmbeddedSchema do
   end
 
   describe "#embeddable_as_block?" do
-    describe "when set in the config" do
-      before do
-        allow(Schema::EmbeddedSchema)
-          .to receive(:schema_settings)
-          .and_return({
-            "schemas" => {
-              parent_schema.id => {
-                "subschemas" => {
-                  schema_id => {
-                    "embeddable_as_block" => true,
-                  },
-                },
-              },
+    describe "when `x-embeddable-as-block` is set in the schema" do
+      let(:body) do
+        {
+          "type" => "object",
+          "patternProperties" => {
+            "*" => {
+              "type" => "object",
+              "x-embeddable-as-block" => true,
+              "properties" => properties,
             },
-          })
+          },
+        }
       end
 
       it "returns true" do
@@ -218,19 +215,18 @@ RSpec.describe Schema::EmbeddedSchema do
       end
     end
 
-    describe "when not set in the config" do
-      before do
-        allow(Schema::EmbeddedSchema)
-          .to receive(:schema_settings)
-          .and_return({
-            "schemas" => {
-              parent_schema.id => {
-                "subschemas" => {
-                  schema_id => {},
-                },
-              },
+    describe "when `x-embeddable-as-block` is not set in the schema" do
+      let(:body) do
+        {
+          "type" => "object",
+          "patternProperties" => {
+            "*" => {
+              "type" => "object",
+              "x-embeddable-as-block" => false,
+              "properties" => properties,
             },
-          })
+          },
+        }
       end
 
       it "returns false" do

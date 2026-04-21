@@ -407,17 +407,12 @@ RSpec.describe Schema do
   end
 
   describe "#embeddable_as_block?" do
-    describe "when the embeddable_as_block config value is set" do
-      before do
-        allow(Schema)
-          .to receive(:schema_settings)
-          .and_return({
-            "schemas" => {
-              schema.id => {
-                "embeddable_as_block" => true,
-              },
-            },
-          })
+    describe "when `x-embeddable-as-block` is set in the schema" do
+      let(:body) do
+        {
+          "x-embeddable-as-block" => true,
+          "properties" => {},
+        }
       end
 
       it "returns true" do
@@ -425,17 +420,7 @@ RSpec.describe Schema do
       end
     end
 
-    describe "when the embeddable_as_block config value is not set" do
-      before do
-        allow(Schema)
-          .to receive(:schema_settings)
-          .and_return({
-            "schemas" => {
-              schema.id => {},
-            },
-          })
-      end
-
+    describe "when `x-embeddable-as-block` is not set" do
       it "returns false" do
         assert_not schema.embeddable_as_block?
       end
