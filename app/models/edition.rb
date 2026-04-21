@@ -11,6 +11,7 @@ class Edition < ApplicationRecord
   include ValidatesDetails
   include HasLeadOrganisation
   include Workflow
+  include ValidatesUniquenessOfTitle
 
   has_one :review_outcome, dependent: :destroy
   has_one :fact_check_outcome, dependent: :destroy

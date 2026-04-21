@@ -205,14 +205,16 @@ RSpec.describe Document, type: :model do
   end
 
   describe "#is_new_block?" do
+    let(:document) { create(:document, :pension) }
+
     it "returns true when there is one associated edition" do
-      document = create(:document, :pension, editions: create_list(:edition, 1, :pension))
+      create(:edition, :pension, document:)
 
       expect(document.is_new_block?).to be true
     end
 
     it "returns false when there is more than one associated edition" do
-      document = create(:document, :pension, editions: create_list(:edition, 2, :pension))
+      2.times { create(:edition, :pension, document:) }
 
       expect(document.is_new_block?).to be false
     end

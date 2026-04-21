@@ -11,6 +11,10 @@
   <%= hidden_field_tag "edition[document_attributes][block_type]",
                        @form.schema.block_type %>
 
+  <% if @form.edition.errors[:title].include?(I18n.t("activerecord.errors.models.edition.title.not_unique")) %>
+    <%= hidden_field_tag "edition[accept_risk_of_duplicate_title]", "1" %>
+  <% end %>
+
   <p class="govuk-body">
     <%= I18n.t("edition.new.general_field_notice") %>
   </p>

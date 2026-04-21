@@ -40,7 +40,7 @@ def visit_new_contact_block_page
 end
 
 def create_contact_block
-  fill_in("Contact name", with: "Contact block title")
+  fill_in("Contact name", with: build(:edition).title)
   fill_in("Description", with: "Description of block")
   select("Ministry of Example")
   click_button "Save and continue"

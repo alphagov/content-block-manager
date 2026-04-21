@@ -65,6 +65,7 @@ Given(/^([^"]*) content blocks of type ([^"]*) have been created with the fields
       :edition,
       3,
       block_type.to_sym,
+      accept_risk_of_duplicate_title: "1",
       document:,
       state: "published",
       lead_organisation_id: organisation.id,

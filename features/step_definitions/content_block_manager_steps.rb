@@ -445,3 +445,11 @@ Then("the block should have been sent to the Publishing API") do
                        .with(body: payload)
   expect(WebMock).to have_requested(:post, "#{PUBLISHING_API_V2_ENDPOINT}/content/#{@edition.document.content_id}/publish")
 end
+
+Then(/^I should see an error message indicating that the title is not unique$/) do
+  expect(page).to have_content(I18n.t("activerecord.errors.models.edition.title.not_unique"))
+end
+
+Then(/^the duplicate title validation check will have been skipped$/) do
+  expect(page).to_not have_content(I18n.t("activerecord.errors.models.edition.title.not_unique"))
+end

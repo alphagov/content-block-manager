@@ -2,11 +2,11 @@ RSpec.describe Edition::Diffable do
   let(:document) { create(:document, :pension) }
 
   let(:organisation) { build(:organisation) }
-  let(:previous_edition) do
-    create(:edition, document:, created_at: Time.zone.now - 2.days, lead_organisation_id: organisation.id)
+  let!(:previous_edition) do
+    create(:edition, document:, created_at: Time.zone.now - 2.days, lead_organisation_id: organisation.id, title: "Something")
   end
-  let(:edition) do
-    create(:edition, document:, lead_organisation_id: organisation.id)
+  let!(:edition) do
+    create(:edition, document:, lead_organisation_id: organisation.id, title: "Something")
   end
 
   before do

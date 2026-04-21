@@ -10,6 +10,8 @@ en:
               contact_methods:
                 blank: Select a contact method
         edition:
+          title:
+            not_unique: "A content block with the same title already exists. If you continue, this block will not have a unique title."
           format: "%{message}"
           invalid: "Invalid %{attribute}"
           blank: "%{attribute} cannot be blank"
