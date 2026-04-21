@@ -172,29 +172,6 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
       end
     end
 
-    context "when the performer field is blank" do
-      before do
-        put :update, params: {
-          id: 123,
-          "review_outcome" => { "review_performer" => "" },
-        }
-        allow(edition).to receive(:ready_for_factcheck!)
-      end
-
-      it "redirects to the same page to prevent the user progressing" do
-        expect(response).to redirect_to("/editions/123/review_outcomes/identify_performer")
-      end
-
-      it "shows an error message" do
-        expected_message = I18n.t("edition.outcomes.errors.missing_performer.review")
-        expect(flash.alert).to eq(expected_message)
-      end
-
-      it "should not transition to the next state" do
-        expect(edition).not_to have_received(:ready_for_factcheck!)
-      end
-    end
-
     context "when updating the outcome with the performer" do
       before do
         allow(edition).to receive(:create_review_outcome!)

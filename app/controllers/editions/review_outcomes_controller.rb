@@ -53,11 +53,7 @@ private
   end
 
   def review_performer
-    if outcome_params["review_performer"].blank?
-      raise ActionController::ParameterMissing, I18n.t("edition.outcomes.errors.missing_performer.review")
-    end
-
-    outcome_params["review_performer"]
+    outcome_params["review_performer"].presence
   end
 
   def form_validation_error
