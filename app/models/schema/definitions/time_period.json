@@ -4,7 +4,8 @@
   "x-embeddable-as-block": true,
   "properties": {
     "description": {
-      "type": "string"
+      "type": "string",
+      "x-component-name": "textarea"
     },
     "date_range": {
       "type": "object",
@@ -14,12 +15,14 @@
       "properties": {
         "start": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "x-component-name": "date_time"
         },
         "end": {
           "type": "string",
           "format": "date-time",
-          "formatMinimum": { "$ref": "#/date_range/start" }
+          "formatMinimum": { "$ref": "#/date_range/start" },
+          "x-component-name": "date_time"
         }
       }
     }

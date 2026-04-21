@@ -38,8 +38,8 @@ RSpec.describe Schema::Field do
     end
 
     describe "when there is a custom component set" do
-      let(:config) do
-        { "fields" => { "something" => { "component" => "custom" } } }
+      let(:body) do
+        { "properties" => { "something" => { "type" => "string", "x-component-name" => "custom" } } }
       end
 
       it "returns the custom component name" do

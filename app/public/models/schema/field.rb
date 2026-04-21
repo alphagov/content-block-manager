@@ -177,7 +177,7 @@ class Schema
     end
 
     def custom_component
-      @custom_component ||= config["component"]
+      @custom_component ||= properties["x-component-name"]
     end
 
     def properties

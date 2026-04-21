@@ -13,10 +13,12 @@
           "x-embeddable-as-block": true,
           "properties": {
             "country": {
-              "type": "string"
+              "type": "string",
+              "x-component-name": "country"
             },
             "description": {
-              "type": "string"
+              "type": "string",
+              "x-component-name": "textarea"
             },
             "postal_code": {
               "type": "string"
@@ -28,7 +30,8 @@
               "type": "string"
             },
             "street_address": {
-              "type": "string"
+              "type": "string",
+              "x-component-name": "textarea"
             },
             "title": {
               "type": "string",
@@ -52,7 +55,8 @@
           "x-embeddable-as-block": true,
           "properties": {
             "description": {
-              "type": "string"
+              "type": "string",
+              "x-component-name": "textarea"
             },
             "label": {
               "type": "string"
@@ -70,7 +74,8 @@
       }
     },
     "description": {
-      "type": "string"
+      "type": "string",
+      "x-component-name": "textarea"
     },
     "email_addresses": {
       "type": "object",
@@ -84,10 +89,12 @@
           "x-embeddable-as-block": true,
           "properties": {
             "body": {
-              "type": "string"
+              "type": "string",
+              "x-component-name": "textarea"
             },
             "description": {
-              "type": "string"
+              "type": "string",
+              "x-component-name": "textarea"
             },
             "email_address": {
               "type": "string",
@@ -130,6 +137,7 @@
                 },
                 "value": {
                   "type": "string",
+                  "x-component-name": "textarea",
                   "default": "British Sign Language interpreter: [use video relay service](https://connect.interpreterslive.co.uk/vrs). Provider: [InterpretersLive!](https://www.interpreterslive.co.uk/)."
                 }
               }
@@ -165,7 +173,8 @@
               }
             },
             "description": {
-              "type": "string"
+              "type": "string",
+              "x-component-name": "textarea"
             },
             "opening_hours": {
               "type": "object",
@@ -182,6 +191,7 @@
               "properties": {
                 "opening_hours": {
                   "type": "string",
+                  "x-component-name": "textarea",
                   "default": "For example, ‘Monday to Friday, 9am to midday and 2pm to 4:30pm (closed on [bank holidays](https://www.gov.uk/bank-holidays))’ or ‘24-hour service’."
                 },
                 "show_opening_hours": {
@@ -195,6 +205,7 @@
             },
             "telephone_numbers": {
               "type": "array",
+              "x-component-name": "sortable_array",
               "items": {
                 "type": "object",
                 "required": ["label", "telephone_number"],
@@ -235,6 +246,7 @@
                 },
                 "source": {
                   "type": "string",
+                  "x-component-name": "textarea",
                   "default": "Provider: [Relay UK](https://www.relayuk.bt.com)"
                 },
                 "telephone_number": {
