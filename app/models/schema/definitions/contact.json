@@ -75,7 +75,8 @@
     },
     "description": {
       "type": "string",
-      "x-component-name": "textarea"
+      "x-component-name": "textarea",
+      "x-character-limit": 165
     },
     "email_addresses": {
       "type": "object",

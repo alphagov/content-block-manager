@@ -5,7 +5,8 @@
   "properties": {
     "description": {
       "type": "string",
-      "x-component-name": "textarea"
+      "x-component-name": "textarea",
+      "x-character-limit": 165
     },
     "date_range": {
       "type": "object",

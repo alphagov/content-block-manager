@@ -2,7 +2,6 @@ schemas:
   content_block_time_period:
     fields:
       description:
-        character_limit: 165
         govspeak_enabled: true
     subschemas:
       date_range:
@@ -15,7 +14,6 @@ schemas:
   content_block_pension:
     fields:
       description:
-        character_limit: 165
         govspeak_enabled: true
     subschemas:
       rates:
@@ -37,7 +35,6 @@ schemas:
       - contact_type
     fields:
       description:
-        character_limit: 165
         govspeak_enabled: true
 
     subschemas:
@@ -167,7 +164,6 @@ schemas:
       - note
     fields:
       description:
-        character_limit: 165
         govspeak_enabled: true
     subschemas:
       things_taxed:
