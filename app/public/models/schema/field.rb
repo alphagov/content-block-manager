@@ -6,6 +6,7 @@ class Schema
 
     HIDDEN_FIELD_PROPERTY_KEY = "hidden_field".freeze
     GOVSPEAK_ENABLED_PROPERTY_KEY = "govspeak_enabled".freeze
+    CHARACTER_LIMIT_PROPERTY_KEY = "character_limit".freeze
 
     include Schema::Field::Translations
 
@@ -101,6 +102,10 @@ class Schema
 
     def govspeak_enabled?
       @govspeak_enabled ||= config[GOVSPEAK_ENABLED_PROPERTY_KEY] == true
+    end
+
+    def character_limit
+      @character_limit ||= config[CHARACTER_LIMIT_PROPERTY_KEY]
     end
 
     def name_attribute(index = nil)

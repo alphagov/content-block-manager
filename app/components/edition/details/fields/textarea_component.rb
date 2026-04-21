@@ -14,7 +14,7 @@ private
   end
 
   def character_limit
-    field.config["character_limit"]
+    field.character_limit
   end
 
   def aria_described_by

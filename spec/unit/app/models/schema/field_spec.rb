@@ -855,4 +855,22 @@ RSpec.describe Schema::Field do
       end
     end
   end
+
+  describe "#character_limit" do
+    context "when the config includes a character limit" do
+      let(:config) do
+        { "fields" => { "something" => { "character_limit" => 123 } } }
+      end
+
+      it "returns a character limit" do
+        expect(field.character_limit).to eq(123)
+      end
+    end
+
+    context "when the config does not include a character limit" do
+      it "returns a character limit" do
+        expect(field.character_limit).to be_nil
+      end
+    end
+  end
 end
