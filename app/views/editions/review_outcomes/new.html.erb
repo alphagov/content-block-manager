@@ -17,6 +17,12 @@
       {
         value: "true",
         text: I18n.t("edition.outcomes.options.review.performed"),
+        conditional: render("govuk_publishing_components/components/input", {
+          label: {
+            text: I18n.t("edition.outcomes.performer.label.review"),
+          },
+          name: "review_outcome[review_performer]",
+        }),
       },
       {
         value: "false",
