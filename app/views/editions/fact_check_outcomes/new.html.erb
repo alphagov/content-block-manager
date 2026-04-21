@@ -19,6 +19,12 @@
       {
         value: "true",
         text: I18n.t("edition.outcomes.options.fact_check.performed"),
+        conditional: render("govuk_publishing_components/components/input", {
+          label: {
+            text: I18n.t("edition.outcomes.performer.label.fact_check"),
+          },
+          name: "fact_check_outcome[fact_check_performer]",
+        }),
       },
       {
         value: "false",
