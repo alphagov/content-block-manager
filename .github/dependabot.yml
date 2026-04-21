@@ -5,13 +5,23 @@ updates:
   schedule:
     interval: daily
   open-pull-requests-limit: 10
+  cooldown:
+    default-days: 3
+    exclude: # Exclude GDS-managed gems from the cooldown period
+      - govuk_*
+      - content_block_tools
+      - nokodiff
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
     interval: daily
   open-pull-requests-limit: 10
+  cooldown:
+    default-days: 3
 - package-ecosystem: npm
   directory: /
   schedule:
     interval: daily
   open-pull-requests-limit: 10
+  cooldown:
+    default-days: 3
