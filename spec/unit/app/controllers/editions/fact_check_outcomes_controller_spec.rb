@@ -218,29 +218,6 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
       end
     end
 
-    context "when the performer field is blank" do
-      before do
-        put :update, params: {
-          id: 123,
-          "fact_check_outcome" => { "fact_check_performer" => "" },
-        }
-      end
-
-      it "redirects to the same page to prevent the user progressing" do
-        expect(response).to redirect_to("/editions/123/fact_check_outcomes/identify_performer")
-      end
-
-      it "shows an error message" do
-        expected_message = I18n.t("edition.outcomes.errors.missing_performer.fact_check")
-        expect(flash.alert).to eq(expected_message)
-      end
-
-      it "should not transition to the next state" do
-        expect(schedule_edition_service).not_to have_received(:call).with(edition)
-        expect(publish_edition_service).not_to have_received(:call).with(edition)
-      end
-    end
-
     context "when the edition is due to be scheduled" do
       let(:edition) { create(:edition, :pension, id: 123, document: document, scheduled_publication: Time.zone.now) }
 

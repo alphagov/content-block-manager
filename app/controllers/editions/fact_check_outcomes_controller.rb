@@ -57,11 +57,7 @@ private
   end
 
   def fact_check_performer
-    if outcome_params["fact_check_performer"].blank?
-      raise ActionController::ParameterMissing, I18n.t("edition.outcomes.errors.missing_performer.fact_check")
-    end
-
-    outcome_params["fact_check_performer"]
+    outcome_params["fact_check_performer"].presence
   end
 
   def form_validation_error
