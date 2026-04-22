@@ -146,6 +146,10 @@ RSpec.describe Edition::Details::Fields::DateTimeComponent, type: :component do
     it "applies error styling to the datetime fields wrapper" do
       expect(page).to have_css(".app-c-datetime-fields.govuk-form-group--error")
     end
+
+    it "has an id matching the error summary link target" do
+      expect(page).to have_css(".app-c-datetime-fields#edition_details_date_range_start")
+    end
   end
 
   describe "when re-rendering after validation failure" do
