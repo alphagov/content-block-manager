@@ -4,7 +4,7 @@ class Schema
 
     attr_reader :name, :schema
 
-    HIDDEN_FIELD_PROPERTY_KEY = "hidden_field".freeze
+    HIDDEN_FIELD_PROPERTY_KEY = "x-hidden-field".freeze
     GOVSPEAK_ENABLED_PROPERTY_KEY = "x-govspeak-enabled".freeze
     CHARACTER_LIMIT_PROPERTY_KEY = "x-character-limit".freeze
     SHOW_FIELD_NAME_PROPERTY_KEY = "x-show-field-name".freeze
@@ -98,7 +98,7 @@ class Schema
     end
 
     def hidden?
-      @hidden ||= config[HIDDEN_FIELD_PROPERTY_KEY] == true
+      @hidden ||= properties[HIDDEN_FIELD_PROPERTY_KEY] == true
     end
 
     def govspeak_enabled?

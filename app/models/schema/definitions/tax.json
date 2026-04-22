@@ -75,6 +75,7 @@
                           "properties": {
                             "show": {
                               "type": "boolean",
+                              "x-hidden-field": true,
                               "default": false
                             },
                             "value": {
@@ -89,6 +90,7 @@
                           "properties": {
                             "show": {
                               "type": "boolean",
+                              "x-hidden-field": true,
                               "default": false
                             },
                             "value": {

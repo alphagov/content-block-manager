@@ -644,9 +644,9 @@ RSpec.describe Schema::Field do
   end
 
   describe "#hidden?" do
-    describe "when a config var is set to hide the field" do
-      let(:config) do
-        { "fields" => { "something" => { Schema::Field::HIDDEN_FIELD_PROPERTY_KEY => true } } }
+    describe "when the body includes an `x-hidden-field` property" do
+      let(:body) do
+        { "properties" => { "something" => { "type" => "boolean", "x-hidden-field" => true } } }
       end
 
       it "returns true" do
@@ -654,7 +654,7 @@ RSpec.describe Schema::Field do
       end
     end
 
-    describe "when a config var is not set" do
+    describe "when the body does not include an `x-hidden-field` property" do
       it "returns false" do
         expect(field.hidden?).to be_falsey
       end

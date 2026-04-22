@@ -25,35 +25,16 @@ schemas:
           opening_hours:
             fields:
               show_opening_hours:
-                hidden_field: true
           call_charges:
             fields:
               show_call_charges_info_url:
-                hidden_field: true
           bsl_guidance:
             fields:
               show:
-                hidden_field: true
           video_relay_service:
             fields:
               show:
-                hidden_field: true
           telephone_numbers:
       addresses:
       contact_links:
   content_block_tax:
-    subschemas:
-      things_taxed:
-        fields:
-          rates:
-            fields:
-              bands:
-                fields:
-                  lower_threshold:
-                    fields:
-                      show:
-                        hidden_field: true
-                  upper_threshold:
-                    fields:
-                      show:
-                        hidden_field: true
