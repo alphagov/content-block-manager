@@ -1,147 +1,79 @@
 # Configuration
 
-There is a config file within Content Block Manager, which allows us to configure how schemas and subschemas are
-handled and presented. The schema is defined as follows:
+Configuration for content blocks is stored in the schema definition files under `app/models/schema/definitions/*.json`.
 
-## `schemas`
+## Where configuration lives
 
-Made up of one or more schemas, as defined by [`schemas.<schema_name>`](#schemasschema_name)
+Each block type has a JSON schema file, for example:
 
-## `schemas.<schema_name>`
+- `app/models/schema/definitions/contact.json`
+- `app/models/schema/definitions/pension.json`
+- `app/models/schema/definitions/tax.json`
+- `app/models/schema/definitions/time_period.json`
 
-An object that defines a schema
+These files define both:
 
-### `schemas.<schema_name>.embeddable_as_block`
+- the JSON schema shape (`type`, `properties`, `required`, `patternProperties`, etc)
+- Content Block Manager UI metadata using `x-*` extension keys
 
-This defines if a subschema is embeddable as an entire block.
+## Supported schema metadata (`x-*` keys)
 
-### `schemas.<schema_name>.field_order`
+### Block/subschema-level keys
 
-An array of strings that defines the order in which:
+- `x-embeddable-as-block`: whether an object/subschema can be embedded as a standalone block
+- `x-block-display-fields`: fields omitted from metadata summary and displayed in the block body
+- `x-field-order`: field ordering for forms and summary metadata
+- `x-group`: logical group name for grouped subschemas (for example, contact methods)
+- `x-group-order`: ordering within a group
 
-- fields appear when rendering the form
-- properties are listed when viewing an embedded object in a summary list
+### Field-level keys
 
-### `schemas.<schema_name>.fields`
+- `x-component-name`: override the component used to render a field
+- `x-character-limit`: soft character limit shown in the UI (used with textarea-like components)
+- `x-govspeak-enabled`: enables Govspeak support for a field
+- `x-show-field-name`: nested toggle field used for conditional reveal of object fields
+- `x-hidden-field`: marks a field as hidden in the form
 
-An object that configures fields in a schema
+## Examples
 
-#### `schemas.<schema_name>.fields.<field_name>.component`
-
-Allows the component used for the field to be overridden. For example, when specifying:
-
-```yaml
-...
-fields:
-  my_field:
-    component:
-      boolean
-...
-```
-
-The [Boolean](https://github.com/alphagov/content-block-manager/blob/main/app/components/edition/details/fields/boolean_component.html.erb) component will be used.
-
-#### `schemas.<schema_name>.fields.<field_name>.character_limit`
-
-This defines the maximum number of characters a user will be allowed to enter into this field. Above this number, a
-warning is shown to the user informing them they are over the limit. This limit is not strictly enforced by the app in
-order to ensure that we don't impede anyone's usual workflow.
-
-This field is only available when using alongside the `textarea` component.
-
-#### `schemas.<schema_name>.fields.<field_name>.show_field_name`
-
-When a field is an object, this allows an attribute within that object to serve as a flag to specify if the rest of
-the fields should be shown/hidden using the Checkbox component's [Conditional reveal](https://components.publishing.service.gov.uk/component-guide/checkboxes#checkbox_items_with_conditional_reveal)
-functionality.
-
-For example, with a field with a JSON schema like so:
+### Component, character limit and Govspeak
 
 ```json
-{
-    "type": "object",
-    "properties": {
-        "show_the_object": {
-            "type": "boolean"
-        },
-        "field_1": {
-            "type": "string"
-        },
-        "field_2": {
-            "type": "string"
-        }
-    }
+"description": {
+  "type": "string",
+  "x-component-name": "textarea",
+  "x-character-limit": 165,
+  "x-govspeak-enabled": true
 }
 ```
 
-You can then specify to make `show_the_object` appear as a checkbox, with `field_1` and `field_2` conditionally showing
-like so:
+### Conditional reveal (`x-show-field-name`) and hidden toggle field (`x-hidden-field`)
 
-```yaml
-...
-fields:
-  my_field:
-    show_field_name: show_the_object
-...
+```json
+"opening_hours": {
+  "type": "object",
+  "x-show-field-name": "show_opening_hours",
+  "properties": {
+    "show_opening_hours": {
+      "type": "boolean",
+      "x-hidden-field": true,
+      "default": false
+    },
+    "opening_hours": {
+      "type": "string",
+      "x-component-name": "textarea"
+    }
+  }
+}
 ```
 
-#### `schemas.<schema_name>.fields.<field_name>.field_order`
+### Field ordering
 
-If thew field is an array of objects, specifies an array of strings that defines the order that fields appear in when
-rendering the subfields that can be contained in that field.
-
-#### `schemas.<schema_name>.fields.<field_name>.data_attributes`
-
-A key/value list of data attributes to return in the HTML that surrounds the component for a given field. This is
-useful for providing Javascript modules or custom selectors.
-
-### `schemas.<schema_name>.subschemas`
-
-A list of [subschemas](#schemasschema_namesubschemassubschema_name) for a specific object
-
-### `schemas.<schema_name>.subschemas.<subschema_name>`
-
-An object that defines a subschema.
-
-#### `schemas.<schema_name>.subschemas.<subschema_name>.block_display_fields`
-
-An array of strings that defines which fields will be:
-
-- omitted from the summary list of "metadata" and
-- consequently be included in the block which follows.
-
-In the example of a pension rate, we configure `amount` to be a `block_display_field` in
-`config/content_block_manager.yml`:
-
-```yml
-content_block_pension:
-  subschemas:
-    rates:
-      block_display_fields:
-        - amount
+```json
+"x-field-order": ["title", "description", "telephone_numbers", "video_relay_service"]
 ```
 
-In this way we cause `amount` to be left off the metadata summary list and included
-in the representation of the subschema block:
+## Notes
 
-![block_display_fields usage example](img/block_display_fields.png)
-
-#### `schemas.<schema_name>.subschemas.<subschema_name>.field_order`
-
-An array of strings that defines the order that fields appear in when rendering the form.
-
-#### `schemas.<schema_name>.subschemas.<subschema_name>.group`
-
-If provided, defines the "group" a subschema appears in when viewing a contact block. For example, if a subschema is in
-a "group" called "modes" alongside other subschemas, it will be rendered like so:
-
-![Subschema group example](img/group.png)
-
-There will also be a button rendered above the tabbed view, allowing the user to add an item of a particular type
-within that group. Taking the example above, clicking on "Add group" will show the following screen:
-
-![Add a group item example](img/add_group.png)
-
-#### `schemas.<schema_name>.subschemas.<subschema_name>.group_order`
-
-If provided, defines the order that a field is listed in when rendering a group.
+- Prefer adding or changing schema metadata in `app/models/schema/definitions/*.json`.
+- If a metadata key is missing, rendering falls back to default behavior in the model layer.
