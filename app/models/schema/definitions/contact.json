@@ -12,6 +12,8 @@
           "type": "object",
           "additionalProperties": false,
           "x-embeddable-as-block": true,
+          "x-group": "contact_methods",
+          "x-group-order": 1,
           "x-block-display-fields": ["title", "recipient", "street_address", "town_or_city", "state_or_county", "postal_code", "country", "description"],
           "x-field-order": ["title", "recipient", "street_address", "town_or_city", "state_or_county", "postal_code", "country", "description"],
           "properties": {
@@ -57,6 +59,8 @@
           "required": ["label", "url"],
           "additionalProperties": false,
           "x-embeddable-as-block": true,
+          "x-group": "contact_methods",
+          "x-group-order": 4,
           "x-block-display-fields": ["url", "label", "description", "title"],
           "x-field-order": ["title", "label", "url", "description"],
           "properties": {
@@ -96,6 +100,8 @@
           "required": ["email_address"],
           "additionalProperties": false,
           "x-embeddable-as-block": true,
+          "x-group": "contact_methods",
+          "x-group-order": 2,
           "x-block-display-fields": ["title", "email_address", "subject", "body", "description"],
           "x-field-order": ["title", "label", "email_address", "subject", "body", "description"],
           "properties": {
@@ -139,6 +145,8 @@
           "required": ["telephone_numbers"],
           "additionalProperties": false,
           "x-embeddable-as-block": true,
+          "x-group": "contact_methods",
+          "x-group-order": 3,
           "x-block-display-fields": ["title", "description", "telephone_numbers", "video_relay_service", "opening_hours", "call_charges", "bsl_guidance"],
           "x-field-order": ["title", "description", "telephone_numbers", "video_relay_service", "bsl_guidance", "opening_hours", "call_charges"],
           "properties": {

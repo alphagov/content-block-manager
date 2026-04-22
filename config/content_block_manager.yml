@@ -16,14 +16,10 @@ schemas:
 
     subschemas:
       email_addresses:
-        group: contact_methods
-        group_order: 2
         fields:
           description:
             govspeak_enabled: true
       telephones:
-        group: contact_methods
-        group_order: 3
         fields:
           description:
           opening_hours:
@@ -48,11 +44,7 @@ schemas:
                 hidden_field: true
           telephone_numbers:
       addresses:
-        group: contact_methods
-        group_order: 1
       contact_links:
-        group: contact_methods
-        group_order: 4
   content_block_tax:
     subschemas:
       things_taxed:

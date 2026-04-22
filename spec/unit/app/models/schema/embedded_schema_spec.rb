@@ -103,19 +103,18 @@ RSpec.describe Schema::EmbeddedSchema do
   end
 
   describe "#group" do
-    describe "when a group is given in config" do
-      before do
-        allow(Schema::EmbeddedSchema)
-          .to receive(:schema_settings)
-          .and_return({ "schemas" => {
-            parent_schema.id => {
-              "subschemas" => {
-                "bar" => {
-                  "group" => "a_group",
-                },
-              },
+    describe "when a group is given in the schema body" do
+      let(:body) do
+        {
+          "type" => "object",
+          "patternProperties" => {
+            "*" => {
+              "type" => "object",
+              "x-group" => "a_group",
+              "properties" => properties,
             },
-          } })
+          },
+        }
       end
 
       it "returns the subschemas default name" do
@@ -123,28 +122,25 @@ RSpec.describe Schema::EmbeddedSchema do
       end
     end
 
-    describe "when a group is not given in config" do
+    describe "when a group is not given in the schema body" do
       it "returns nil" do
         expect(schema.group).to be_nil
       end
     end
   end
 
-  describe "when an order is given in the config" do
-    before do
-      allow(Schema::EmbeddedSchema)
-        .to receive(:schema_settings)
-        .and_return({
-          "schemas" => {
-            parent_schema.id => {
-              "subschemas" => {
-                schema_id => {
-                  "field_order" => %w[frequency amount description title],
-                },
-              },
-            },
+  describe "when an order is given in the schema body" do
+    let(:body) do
+      {
+        "type" => "object",
+        "patternProperties" => {
+          "*" => {
+            "type" => "object",
+            "x-field-order" => %w[frequency amount description title],
+            "properties" => properties,
           },
-        })
+        },
+      }
     end
 
     it "orders fields" do
@@ -230,21 +226,18 @@ RSpec.describe Schema::EmbeddedSchema do
   end
 
   describe "#group_order" do
-    describe "when set in the config" do
-      before do
-        allow(Schema::EmbeddedSchema)
-          .to receive(:schema_settings)
-          .and_return({
-            "schemas" => {
-              parent_schema.id => {
-                "subschemas" => {
-                  schema_id => {
-                    "group_order" => "12",
-                  },
-                },
-              },
+    describe "when set in the schema body" do
+      let(:body) do
+        {
+          "type" => "object",
+          "patternProperties" => {
+            "*" => {
+              "type" => "object",
+              "x-group-order" => 12,
+              "properties" => properties,
             },
-          })
+          },
+        }
       end
 
       it "returns the group order as an integer" do
@@ -252,21 +245,7 @@ RSpec.describe Schema::EmbeddedSchema do
       end
     end
 
-    describe "when not set in the config" do
-      before do
-        allow(Schema::EmbeddedSchema)
-          .to receive(:schema_settings)
-          .and_return({
-            "schemas" => {
-              parent_schema.id => {
-                "subschemas" => {
-                  schema_id => {},
-                },
-              },
-            },
-          })
-      end
-
+    describe "when not set in the schema body" do
       it "returns infinity to put the item at the end of the group" do
         expect(Float::INFINITY).to eq(schema.group_order)
       end

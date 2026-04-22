@@ -24,11 +24,11 @@ class Schema
     end
 
     def group
-      @group ||= config["group"]
+      @group ||= @body["x-group"]
     end
 
     def group_order
-      @group_order ||= config["group_order"]&.to_i || Float::INFINITY
+      @group_order ||= @body["x-group-order"]&.to_i || Float::INFINITY
     end
 
     def relationship_type
