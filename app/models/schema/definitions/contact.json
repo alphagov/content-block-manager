@@ -2,6 +2,7 @@
   "type": "object",
   "additionalProperties": false,
   "x-embeddable-as-block": true,
+  "x-field-order": ["title", "description", "contact_type"],
   "properties": {
     "addresses": {
       "type": "object",
@@ -12,6 +13,7 @@
           "additionalProperties": false,
           "x-embeddable-as-block": true,
           "x-block-display-fields": ["title", "recipient", "street_address", "town_or_city", "state_or_county", "postal_code", "country", "description"],
+          "x-field-order": ["title", "recipient", "street_address", "town_or_city", "state_or_county", "postal_code", "country", "description"],
           "properties": {
             "country": {
               "type": "string",
@@ -56,6 +58,7 @@
           "additionalProperties": false,
           "x-embeddable-as-block": true,
           "x-block-display-fields": ["url", "label", "description", "title"],
+          "x-field-order": ["title", "label", "url", "description"],
           "properties": {
              "description": {
                "type": "string",
@@ -94,6 +97,7 @@
           "additionalProperties": false,
           "x-embeddable-as-block": true,
           "x-block-display-fields": ["title", "email_address", "subject", "body", "description"],
+          "x-field-order": ["title", "label", "email_address", "subject", "body", "description"],
           "properties": {
             "body": {
               "type": "string",
@@ -136,6 +140,7 @@
           "additionalProperties": false,
           "x-embeddable-as-block": true,
           "x-block-display-fields": ["title", "description", "telephone_numbers", "video_relay_service", "opening_hours", "call_charges", "bsl_guidance"],
+          "x-field-order": ["title", "description", "telephone_numbers", "video_relay_service", "bsl_guidance", "opening_hours", "call_charges"],
           "properties": {
             "bsl_guidance": {
               "type": "object",
@@ -221,6 +226,7 @@
               "items": {
                 "type": "object",
                 "required": ["label", "telephone_number"],
+                "x-field-order": ["type", "label", "telephone_number"],
                 "properties": {
                   "label": {
                     "type": "string"
@@ -237,6 +243,7 @@
             },
             "video_relay_service": {
               "type": "object",
+              "x-field-order": ["label", "telephone_number", "source"],
               "else": {
                 "required": []
               },

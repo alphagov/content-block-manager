@@ -15,23 +15,18 @@ RSpec.describe Schema do
   end
 
   describe "#fields" do
-    describe "when an order is not given in the config" do
+    describe "when an order is not given" do
       it "prioritises the title" do
         expect(%w[title foo bar]).to eq(schema.fields.map(&:name))
       end
     end
 
-    describe "when an order is given in the config" do
-      before do
-        allow(Schema)
-          .to receive(:schema_settings)
-          .and_return({
-            "schemas" => {
-              "content_block_pension" => {
-                "field_order" => %w[bar title foo],
-              },
-            },
-          })
+    describe "when an order is given in the schema body" do
+      let(:body) do
+        {
+          "x-field-order" => %w[bar title foo],
+          "properties" => { "foo" => {}, "bar" => {}, "title" => {} },
+        }
       end
 
       it "orders fields" do
@@ -39,16 +34,11 @@ RSpec.describe Schema do
       end
 
       describe "when a field is missing from the order" do
-        before do
-          allow(Schema)
-            .to receive(:schema_settings)
-            .and_return({
-              "schemas" => {
-                "content_block_pension" => {
-                  "field_order" => %w[bar foo],
-                },
-              },
-            })
+        let(:body) do
+          {
+            "x-field-order" => %w[bar foo],
+            "properties" => { "foo" => {}, "bar" => {}, "title" => {} },
+          }
         end
 
         it "puts the missing field at the end" do

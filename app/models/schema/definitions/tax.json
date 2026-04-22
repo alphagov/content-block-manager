@@ -2,6 +2,7 @@
   "type": "object",
   "required": ["tax_type"],
   "additionalProperties": false,
+  "x-field-order": ["title", "abbreviation", "synonym", "tax_type", "description", "note"],
   "properties": {
     "abbreviation": {
       "type": "string"
@@ -28,6 +29,7 @@
           "required": ["title", "type", "rates"],
           "additionalProperties": false,
           "x-block-display-fields": ["rates"],
+          "x-field-order": ["title", "type", "rates"],
           "properties": {
             "title": {
               "type": "string"
@@ -48,6 +50,7 @@
               "items": {
                 "type": "object",
                 "required": ["name", "value"],
+                "x-field-order": ["name", "value", "unit", "bands"],
                 "properties": {
                   "name": {
                     "type": "string"
@@ -60,6 +63,7 @@
                     "items": {
                       "type": "object",
                       "required": ["name"],
+                      "x-field-order": ["name", "lower_threshold", "upper_threshold"],
                       "properties": {
                         "name": {
                           "type": "string"

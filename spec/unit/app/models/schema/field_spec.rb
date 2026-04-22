@@ -186,21 +186,12 @@ RSpec.describe Schema::Field do
     end
 
     context "when the nested fields are a subschema and have a field order configured" do
-      let(:config) do
-        {
-          "subschemas" => {
-            "date_range" => {
-              "field_order" => %w[start end],
-            },
-          },
-        }
-      end
-
       let(:body) do
         {
           "properties" => {
             "date_range" => {
               "type" => "object",
+              "x-field-order" => %w[start end],
               "properties" => {
                 "end" => { "type" => "string" },
                 "other" => { "type" => "string" },
@@ -213,7 +204,7 @@ RSpec.describe Schema::Field do
 
       let(:field) { Schema::Field.new("date_range", schema) }
 
-      it "returns fields ordered according to the config" do
+      it "returns fields ordered according to the schema body" do
         nested_fields = field.nested_fields
 
         expect(nested_fields.map(&:name)).to eq(%w[start end other])
@@ -395,10 +386,20 @@ RSpec.describe Schema::Field do
       end
 
       describe "when an order is specified" do
-        let(:config) do
+        let(:body) do
           {
-            "fields" => {
-              "something" => { "field_order" => %w[bar foo] },
+            "properties" => {
+              "something" => {
+                "type" => "array",
+                "items" => {
+                  "type" => "object",
+                  "x-field-order" => %w[bar foo],
+                  "properties" => {
+                    "foo" => { "type" => "string" },
+                    "bar" => { "type" => "string", "enum" => %w[foo bar] },
+                  },
+                },
+              },
             },
           }
         end

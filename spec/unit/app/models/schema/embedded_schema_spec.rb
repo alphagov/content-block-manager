@@ -153,12 +153,6 @@ RSpec.describe Schema::EmbeddedSchema do
   end
 
   describe "when no order is given" do
-    before do
-      allow(Schema)
-        .to receive(:schema_settings)
-        .and_return({})
-    end
-
     it "prioritises the title" do
       expect(%w[title amount description frequency]).to eq(schema.fields.map(&:name))
     end

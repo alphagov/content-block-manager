@@ -190,7 +190,7 @@ class Schema
     end
 
     def field_ordering_rule
-      @field_ordering_rule ||= config["field_order"] || []
+      @field_ordering_rule ||= properties.dig("items", "x-field-order") || []
     end
 
     def root_schema

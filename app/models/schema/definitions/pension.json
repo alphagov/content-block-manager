@@ -17,6 +17,7 @@
           "required": ["amount", "frequency"],
           "additionalProperties": false,
           "x-block-display-fields": ["amount"],
+          "x-field-order": ["title", "amount", "frequency", "description"],
           "properties": {
             "amount": {
               "type": "string",

@@ -104,7 +104,7 @@ class Schema
 
   def field_ordering_rule(field)
     if field_order
-      # If a field order is found in the config, order by the index. If a field is not found, put it to the end
+      # If a field order is found in the schema body, order by index and keep unknown fields at the end
       field_order.index(field) || 99
     else
       # By default, order with title first
@@ -153,7 +153,7 @@ private
   end
 
   def field_order
-    @field_order ||= config["field_order"]
+    @field_order ||= @body["x-field-order"]
   end
 
   def embedded_objects
