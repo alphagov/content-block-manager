@@ -136,6 +136,18 @@ RSpec.describe Edition::Details::Fields::DateTimeComponent, type: :component do
     end
   end
 
+  describe "when there is a validation error on the field" do
+    let(:edition) do
+      build(:edition, :time_period, details:).tap do |e|
+        e.errors.add(:details_date_range_start, "Start is invalid")
+      end
+    end
+
+    it "applies error styling to the datetime fields wrapper" do
+      expect(page).to have_css(".app-c-datetime-fields.govuk-form-group--error")
+    end
+  end
+
   describe "when re-rendering after validation failure" do
     describe "with an invalid date (e.g., Feb 30)" do
       let(:context) do
