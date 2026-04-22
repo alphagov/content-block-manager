@@ -9,15 +9,13 @@ class Editions::ReviewOutcomesController < BaseController
     @edition = Edition.find(params[:id])
     return form_validation_error unless review_outcome_supplied?
 
-    if review_skipped?
-      @edition.create_review_outcome!(
-        "skipped" => true,
-        "creator" => Current.user,
-      )
-      transition_edition_and_redirect
-    else
-      redirect_to identify_performer_review_outcome_edition_path(@edition)
-    end
+    @edition.create_review_outcome!({
+      "skipped" => review_skipped?,
+      "creator" => Current.user,
+      "performer" => review_performer,
+    }.compact)
+
+    transition_edition_and_redirect
   end
 
   def identify_performer
