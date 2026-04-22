@@ -2,9 +2,8 @@ class Schema
   class EmbeddedSchema < Schema
     attr_reader :parent_schema
 
-    def initialize(id, body, parent_schema, config = nil, is_array: false)
+    def initialize(id, body, parent_schema, is_array: false)
       @parent_schema = parent_schema
-      @config = config
       @is_array = is_array
       @pattern_properties_present = body["patternProperties"].present?
       body = @pattern_properties_present ? body["patternProperties"].values.first : body
@@ -17,10 +16,6 @@ class Schema
 
     def embeddable_as_block?
       @embeddable_as_block ||= @body["x-embeddable-as-block"].present?
-    end
-
-    def config
-      @config ||= self.class.schema_settings.dig("schemas", parent_schema.id, "subschemas", @id) || {}
     end
 
     def group

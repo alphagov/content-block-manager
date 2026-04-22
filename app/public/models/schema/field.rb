@@ -37,10 +37,6 @@ class Schema
       raise("Component #{class_name} not found")
     end
 
-    def config
-      @config ||= schema.config.dig("fields", name) || {}
-    end
-
     def type
       @type ||= properties.fetch("type", "").inquiry
     end
@@ -63,10 +59,10 @@ class Schema
 
     def nested_fields
       if type.object?
-        embedded_schema = Schema::EmbeddedSchema.new(name, properties, schema, config_for_embedded_schema)
+        embedded_schema = Schema::EmbeddedSchema.new(name, properties, schema)
         embedded_schema.fields
       elsif type.array? && properties["items"]["type"] == "object"
-        embedded_schema = Schema::EmbeddedSchema.new(name, properties["items"], schema, config, is_array: true)
+        embedded_schema = Schema::EmbeddedSchema.new(name, properties["items"], schema, is_array: true)
         embedded_schema.fields
       end
     end
@@ -170,12 +166,6 @@ class Schema
          ~.gsub(/\s+/, " ").strip
 
       raise NestedFieldNotSupportedError, error_message
-    end
-
-    def config_for_embedded_schema
-      return schema.config.dig("subschemas", name) if schema.config["subschemas"]
-
-      config
     end
 
     def custom_component

@@ -6,8 +6,6 @@ class Schema
     live: %w[contact pension],
   }.freeze
 
-  CONFIG_PATH = Rails.root.join("config/content_block_manager.yml").to_s
-
   # Defines fields that are not used for display
   INTERNAL_PROPERTY_NAMES = %w[order].freeze
 
@@ -36,10 +34,6 @@ class Schema
 
     def is_valid_schema?(key)
       key.end_with?(*supported_block_types)
-    end
-
-    def schema_settings
-      @schema_settings ||= YAML.load_file(CONFIG_PATH)
     end
   end
 
@@ -96,10 +90,6 @@ class Schema
 
   def embeddable_as_block?
     @body["x-embeddable-as-block"].present?
-  end
-
-  def config
-    @config ||= self.class.schema_settings.dig("schemas", @id) || {}
   end
 
   def field_ordering_rule(field)

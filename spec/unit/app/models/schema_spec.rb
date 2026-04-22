@@ -279,28 +279,6 @@ RSpec.describe Schema do
     end
   end
 
-  describe ".schema_settings" do
-    let(:stub_schema) { double("schema_settings") }
-
-    before do
-      expect(YAML).to receive(:load_file)
-          .with(Schema::CONFIG_PATH)
-          .and_return(stub_schema)
-
-      # This removes any memoized schema_settings, so we can be sure the double gets returned
-      Schema.instance_variable_set("@schema_settings", nil)
-    end
-
-    after do
-      # Make sure we remove the stubbed schema_settings response after the tests in this block run
-      Schema.instance_variable_set("@schema_settings", nil)
-    end
-
-    it "should return the schema settings" do
-      expect(stub_schema).to eq(Schema.schema_settings)
-    end
-  end
-
   describe "when a schema has many embedded objects" do
     let(:body) do
       {
