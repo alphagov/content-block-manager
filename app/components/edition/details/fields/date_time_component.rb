@@ -11,6 +11,8 @@ class Edition::Details::Fields::DateTimeComponent < ViewComponent::Base
 
   attr_reader :context, :field_name, :name_prefix, :block_type, :date_time
 
+  delegate :error_items, :id, to: :context
+
   def id_for(field)
     "#{field_name}_#{field}"
   end

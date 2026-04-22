@@ -177,11 +177,14 @@ Then("the time period's date range block should not be shown") do
 end
 
 Then("I should see an error message telling me that the end date cannot be before the start date") do
-  expect(page).to have_selector(
-    "a[href='#edition_details_date_range_end']",
-    text: I18n.t("activerecord.errors.models.edition.minimum",
-                 attribute: "End",
-                 minimum_date: "Start"),
+  message = I18n.t(
+    "activerecord.errors.models.edition.minimum",
+    attribute: "End",
+    minimum_date: "Start",
+  )
+  has_error_message_linking_to_field_group(
+    message: message,
+    field_group_id: "#edition_details_date_range_end",
   )
 end
 
@@ -224,9 +227,19 @@ When("I edit the draft time period entering the invalid value of 30 Feb") do
 end
 
 Then("I should see an error message telling me that the date range field is invalid") do
-  expect(page).to have_content("Start is invalid")
+  has_error_message_linking_to_field_group(
+    message: "Start is invalid",
+    field_group_id: "#edition_details_date_range_start",
+  )
 end
 
 Then("the time period date range fields should be populated with the invalid values submitted") do
   time_period.should_see_raw_time_period_values_in_form(raw_values: time_period.invalid_date_raw_values, page: page)
+end
+
+def has_error_message_linking_to_field_group(message:, field_group_id:)
+  expect(page).to have_selector(
+    "a[href='#{field_group_id}']",
+    text: message,
+  )
 end
