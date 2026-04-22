@@ -1,5 +1,5 @@
 class Editions::ReviewOutcomesController < BaseController
-  before_action :set_edition_and_title, only: %i[new identify_performer update]
+  before_action :set_edition_and_title, only: %i[new]
 
   def new
     render :new
@@ -14,24 +14,6 @@ class Editions::ReviewOutcomesController < BaseController
       "creator" => Current.user,
       "performer" => review_performer,
     }.compact)
-
-    transition_edition_and_redirect
-  end
-
-  def identify_performer
-    render :identify_performer
-  end
-
-  def update
-    begin
-      @edition.create_review_outcome!(
-        "skipped" => false,
-        "creator" => Current.user,
-        "performer" => review_performer,
-      )
-    rescue ActionController::ParameterMissing
-      return handle_missing_review_performer
-    end
 
     transition_edition_and_redirect
   end
@@ -84,11 +66,6 @@ private
 
   def outcome_params
     params.require("review_outcome")
-  end
-
-  def handle_missing_review_performer
-    flash.alert = I18n.t("edition.outcomes.errors.missing_performer.review")
-    redirect_to identify_performer_review_outcome_edition_path(@edition)
   end
 
   def handle_other_transition_error(error)
