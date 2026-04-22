@@ -34,7 +34,6 @@ FactoryBot.define do
       allow(field).to receive(:govspeak_enabled?).and_return(evaluator.govspeak_enabled?)
       allow(field).to receive(:nested_fields).and_return(evaluator.nested_fields)
       allow(field).to receive(:component_name).and_return(evaluator.component_name)
-      allow(field).to receive(:data_attributes).and_return(evaluator.data_attributes)
       allow(field).to receive(:hidden?).and_return(evaluator.hidden?)
       allow(field).to receive(:component_class).and_return(evaluator.component_class)
       allow(field).to receive(:show_field).and_return(evaluator.show_field)

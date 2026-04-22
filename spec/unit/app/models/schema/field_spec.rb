@@ -450,24 +450,6 @@ RSpec.describe Schema::Field do
     end
   end
 
-  describe "#data_attributes" do
-    describe "when a `data_attributes` config var is set" do
-      let(:config) do
-        { "fields" => { "something" => { "data_attributes" => { "foo" => "bar" } } } }
-      end
-
-      it "returns the data attributes" do
-        expect({ "foo" => "bar" }).to eq(field.data_attributes)
-      end
-    end
-
-    describe "when a `data_attributes` config var is not set" do
-      it "returns an empty hash" do
-        expect({}).to eq(field.data_attributes)
-      end
-    end
-  end
-
   context "when the schema does not have a parent" do
     describe "#name_attribute" do
       it "returns the field name" do

@@ -93,10 +93,6 @@ class Schema
       schema.required_fields.include?(name)
     end
 
-    def data_attributes
-      @data_attributes ||= config["data_attributes"] || {}
-    end
-
     def hidden?
       @hidden ||= properties[HIDDEN_FIELD_PROPERTY_KEY] == true
     end
