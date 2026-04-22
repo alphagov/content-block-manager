@@ -2,9 +2,6 @@ schemas:
   content_block_time_period:
     subschemas:
       date_range:
-        block_display_fields:
-          - start
-          - end
         field_order:
           - start
           - end
@@ -13,8 +10,6 @@ schemas:
       description:
     subschemas:
       rates:
-        block_display_fields:
-          - amount
         field_order:
           - title
           - amount
@@ -35,12 +30,6 @@ schemas:
       email_addresses:
         group: contact_methods
         group_order: 2
-        block_display_fields:
-          - title
-          - email_address
-          - subject
-          - body
-          - description
         field_order:
           - title
           - label
@@ -54,14 +43,6 @@ schemas:
       telephones:
         group: contact_methods
         group_order: 3
-        block_display_fields:
-          - title
-          - description
-          - telephone_numbers
-          - video_relay_service
-          - opening_hours
-          - call_charges
-          - bsl_guidance
         field_order:
           - title
           - description
@@ -113,23 +94,9 @@ schemas:
           - postal_code
           - country
           - description
-        block_display_fields:
-          - title
-          - recipient
-          - street_address
-          - town_or_city
-          - state_or_county
-          - postal_code
-          - country
-          - description
       contact_links:
         group: contact_methods
         group_order: 4
-        block_display_fields:
-          - url
-          - label
-          - description
-          - title
         field_order:
           - title
           - label
@@ -145,8 +112,6 @@ schemas:
       - note
     subschemas:
       things_taxed:
-        block_display_fields:
-          - rates
         field_order:
           - title
           - type

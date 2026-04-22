@@ -27,6 +27,7 @@
           "type": "object",
           "required": ["title", "type", "rates"],
           "additionalProperties": false,
+          "x-block-display-fields": ["rates"],
           "properties": {
             "title": {
               "type": "string"

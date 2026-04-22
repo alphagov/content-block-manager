@@ -346,33 +346,29 @@ RSpec.describe Schema do
   end
 
   describe "#block_display_fields" do
-    describe "when config exists for a schema" do
-      before do
-        allow(Schema)
-          .to receive(:schema_settings)
-          .and_return({
-            "schemas" => {
-              schema.id => {
-                "block_display_fields" => %w[something else],
-              },
+    describe "when `x-block-display-fields` is set in the schema body" do
+      let(:body) do
+        {
+          "x-block-display-fields" => %w[title description],
+          "properties" => {
+            "title" => {
+              "type" => "string",
             },
-          })
+            "description" => {
+              "type" => "string",
+            },
+          },
+        }
       end
 
-      it "returns the config values" do
-        expect(%w[something else]).to eq(schema.block_display_fields)
+      it "returns the block display fields from the JSON body" do
+        expect(schema.block_display_fields).to eq(%w[title description])
       end
     end
 
-    describe "when config does not exist for a schema" do
-      before do
-        allow(Schema)
-          .to receive(:schema_settings)
-          .and_return({})
-      end
-
+    describe "when `x-block-display-fields` is not set in the schema body" do
       it "returns an empty array" do
-        expect([]).to eq(schema.block_display_fields)
+        expect(schema.block_display_fields).to eq([])
       end
     end
   end

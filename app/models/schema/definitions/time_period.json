@@ -13,6 +13,7 @@
       "type": "object",
       "additionalProperties": false,
       "x-embeddable-as-block": true,
+      "x-block-display-fields": ["start", "end"],
       "required": ["start", "end"],
       "properties": {
         "start": {

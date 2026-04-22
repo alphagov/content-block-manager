@@ -91,7 +91,7 @@ class Schema
   end
 
   def block_display_fields
-    config["block_display_fields"] || []
+    @body["x-block-display-fields"] || []
   end
 
   def embeddable_as_block?
