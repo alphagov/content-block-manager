@@ -4,11 +4,7 @@ class Schema
 
     attr_reader :name, :schema
 
-    HIDDEN_FIELD_PROPERTY_KEY = "x-hidden-field".freeze
-    GOVSPEAK_ENABLED_PROPERTY_KEY = "x-govspeak-enabled".freeze
-    CHARACTER_LIMIT_PROPERTY_KEY = "x-character-limit".freeze
-    SHOW_FIELD_NAME_PROPERTY_KEY = "x-show-field-name".freeze
-
+    include Schema::Field::Configuration
     include Schema::Field::Translations
 
     def initialize(name, schema)
@@ -18,16 +14,6 @@ class Schema
 
     def to_s
       name
-    end
-
-    def component_name
-      if custom_component
-        custom_component
-      elsif enum_values
-        "enum"
-      else
-        type
-      end
     end
 
     def component_class
@@ -51,10 +37,6 @@ class Schema
 
     def default_value
       @default_value ||= properties["default"]
-    end
-
-    def show_field
-      @show_field ||= properties[SHOW_FIELD_NAME_PROPERTY_KEY] ? nested_field(properties[SHOW_FIELD_NAME_PROPERTY_KEY]) : nil
     end
 
     def nested_fields
@@ -87,18 +69,6 @@ class Schema
 
     def is_required?
       schema.required_fields.include?(name)
-    end
-
-    def hidden?
-      @hidden ||= properties[HIDDEN_FIELD_PROPERTY_KEY] == true
-    end
-
-    def govspeak_enabled?
-      @govspeak_enabled ||= properties[GOVSPEAK_ENABLED_PROPERTY_KEY] == true
-    end
-
-    def character_limit
-      @character_limit ||= properties[CHARACTER_LIMIT_PROPERTY_KEY]
     end
 
     def name_attribute(index = nil)
@@ -168,16 +138,8 @@ class Schema
       raise NestedFieldNotSupportedError, error_message
     end
 
-    def custom_component
-      @custom_component ||= properties["x-component-name"]
-    end
-
     def properties
       @properties ||= schema.body.dig("properties", name) || {}
-    end
-
-    def field_ordering_rule
-      @field_ordering_rule ||= properties.dig("items", "x-field-order") || []
     end
 
     def root_schema

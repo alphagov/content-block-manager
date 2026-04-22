@@ -9,6 +9,8 @@ class Schema
   # Defines fields that are not used for display
   INTERNAL_PROPERTY_NAMES = %w[order].freeze
 
+  include Schema::Configuration
+
   class << self
     def supported_block_types
       VALID_SCHEMAS.values.flatten
@@ -84,14 +86,6 @@ class Schema
     @block_type ||= id.delete_prefix("#{SCHEMA_PREFIX}_")
   end
 
-  def block_display_fields
-    @body["x-block-display-fields"] || []
-  end
-
-  def embeddable_as_block?
-    @body["x-embeddable-as-block"].present?
-  end
-
   def field_ordering_rule(field)
     if field_order
       # If a field order is found in the schema body, order by index and keep unknown fields at the end
@@ -126,10 +120,6 @@ class Schema
     lookup_parts = [block_type]
     lookup_parts << index if is_array? && index.present?
     lookup_parts
-  end
-
-  def field_order
-    @field_order ||= @body["x-field-order"]
   end
 
 private

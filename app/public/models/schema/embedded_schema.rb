@@ -2,6 +2,8 @@ class Schema
   class EmbeddedSchema < Schema
     attr_reader :parent_schema
 
+    include Schema::EmbeddedSchema::Configuration
+
     def initialize(id, body, parent_schema, is_array: false)
       @parent_schema = parent_schema
       @is_array = is_array
@@ -12,18 +14,6 @@ class Schema
 
     def block_type
       @id
-    end
-
-    def embeddable_as_block?
-      @embeddable_as_block ||= @body["x-embeddable-as-block"].present?
-    end
-
-    def group
-      @group ||= @body["x-group"]
-    end
-
-    def group_order
-      @group_order ||= @body["x-group-order"]&.to_i || Float::INFINITY
     end
 
     def relationship_type
