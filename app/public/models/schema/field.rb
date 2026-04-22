@@ -5,7 +5,7 @@ class Schema
     attr_reader :name, :schema
 
     HIDDEN_FIELD_PROPERTY_KEY = "hidden_field".freeze
-    GOVSPEAK_ENABLED_PROPERTY_KEY = "govspeak_enabled".freeze
+    GOVSPEAK_ENABLED_PROPERTY_KEY = "x-govspeak-enabled".freeze
     CHARACTER_LIMIT_PROPERTY_KEY = "x-character-limit".freeze
 
     include Schema::Field::Translations
@@ -101,7 +101,7 @@ class Schema
     end
 
     def govspeak_enabled?
-      @govspeak_enabled ||= config[GOVSPEAK_ENABLED_PROPERTY_KEY] == true
+      @govspeak_enabled ||= properties[GOVSPEAK_ENABLED_PROPERTY_KEY] == true
     end
 
     def character_limit

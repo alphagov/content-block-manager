@@ -16,11 +16,12 @@
               "type": "string",
               "x-component-name": "country"
             },
-            "description": {
-              "type": "string",
-              "x-component-name": "textarea"
-            },
-            "postal_code": {
+             "description": {
+               "type": "string",
+               "x-component-name": "textarea",
+               "x-govspeak-enabled": true
+             },
+             "postal_code": {
               "type": "string"
             },
             "recipient": {
@@ -54,11 +55,12 @@
           "additionalProperties": false,
           "x-embeddable-as-block": true,
           "properties": {
-            "description": {
-              "type": "string",
-              "x-component-name": "textarea"
-            },
-            "label": {
+             "description": {
+               "type": "string",
+               "x-component-name": "textarea",
+               "x-govspeak-enabled": true
+             },
+             "label": {
               "type": "string"
             },
             "title": {
@@ -76,7 +78,8 @@
     "description": {
       "type": "string",
       "x-component-name": "textarea",
-      "x-character-limit": 165
+      "x-character-limit": 165,
+      "x-govspeak-enabled": true
     },
     "email_addresses": {
       "type": "object",
@@ -93,11 +96,12 @@
               "type": "string",
               "x-component-name": "textarea"
             },
-            "description": {
-              "type": "string",
-              "x-component-name": "textarea"
-            },
-            "email_address": {
+             "description": {
+               "type": "string",
+               "x-component-name": "textarea",
+               "x-govspeak-enabled": true
+             },
+             "email_address": {
               "type": "string",
               "format": "email"
             },
@@ -139,6 +143,7 @@
                 "value": {
                   "type": "string",
                   "x-component-name": "textarea",
+                  "x-govspeak-enabled": true,
                   "default": "British Sign Language interpreter: [use video relay service](https://connect.interpreterslive.co.uk/vrs). Provider: [InterpretersLive!](https://www.interpreterslive.co.uk/)."
                 }
               }
@@ -175,7 +180,8 @@
             },
             "description": {
               "type": "string",
-              "x-component-name": "textarea"
+              "x-component-name": "textarea",
+              "x-govspeak-enabled": true
             },
             "opening_hours": {
               "type": "object",
@@ -193,7 +199,8 @@
                 "opening_hours": {
                   "type": "string",
                   "x-component-name": "textarea",
-                  "default": "For example, ‘Monday to Friday, 9am to midday and 2pm to 4:30pm (closed on [bank holidays](https://www.gov.uk/bank-holidays))’ or ‘24-hour service’."
+                  "x-govspeak-enabled": true,
+                  "default": "For example, 'Monday to Friday, 9am to midday and 2pm to 4:30pm (closed on [bank holidays](https://www.gov.uk/bank-holidays))' or '24-hour service'."
                 },
                 "show_opening_hours": {
                   "type": "boolean",
@@ -248,6 +255,7 @@
                 "source": {
                   "type": "string",
                   "x-component-name": "textarea",
+                  "x-govspeak-enabled": true,
                   "default": "Provider: [Relay UK](https://www.relayuk.bt.com)"
                 },
                 "telephone_number": {

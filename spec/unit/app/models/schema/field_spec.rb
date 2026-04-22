@@ -661,9 +661,9 @@ RSpec.describe Schema::Field do
   end
 
   describe "#govspeak_enabled?" do
-    describe "when a config var is set to enable Govspeak" do
-      let(:config) do
-        { "fields" => { "something" => { Schema::Field::GOVSPEAK_ENABLED_PROPERTY_KEY => true } } }
+    context "when the body includes an `x-govspeak-enabled` property" do
+      let(:body) do
+        { "properties" => { "something" => { "type" => "string", "x-govspeak-enabled" => true } } }
       end
 
       it "returns true" do
@@ -671,7 +671,7 @@ RSpec.describe Schema::Field do
       end
     end
 
-    describe "when a config var is not set" do
+    context "when the body does not include an `x-govspeak-enabled` property" do
       it "returns false" do
         expect(field.govspeak_enabled?).to be_falsey
       end

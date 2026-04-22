@@ -6,7 +6,8 @@
     "description": {
       "type": "string",
       "x-component-name": "textarea",
-      "x-character-limit": 165
+      "x-character-limit": 165,
+      "x-govspeak-enabled": true
     },
     "date_range": {
       "type": "object",
