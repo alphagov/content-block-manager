@@ -68,6 +68,7 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
             expect(edition).to have_received(:create_fact_check_outcome!).with(
               "skipped" => true,
               "creator" => current_user,
+              "performer" => nil,
             )
           end
 
@@ -78,9 +79,54 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
           it "redirects to the document path" do
             expect(response).to redirect_to("/456")
           end
+
+          it "shows a success message" do
+            expected_success_message = Edition::StateTransitionMessage.new(
+              edition: edition,
+              state: :published,
+            ).to_s
+            expect(flash[:success]).to eq(expected_success_message)
+          end
+
+          it "should transition to the next state" do
+            expect(publish_edition_service).to have_received(:call).with(edition)
+          end
         end
 
         context "when the editor has indicated that the fact check was performed" do
+          before do
+            post :create, params: {
+              id: 123,
+              "fact_check_outcome" => { "fact_check_performed" => true, "fact_check_performer" => "alice@example.com" },
+            }
+          end
+
+          it "saves the fact check outcome details" do
+            expect(edition).to have_received(:create_fact_check_outcome!).with(
+              "skipped" => false,
+              "creator" => current_user,
+              "performer" => "alice@example.com",
+            )
+          end
+
+          it "redirects to the document path" do
+            expect(response).to redirect_to("/456")
+          end
+
+          it "shows a success message" do
+            expected_success_message = Edition::StateTransitionMessage.new(
+              edition: edition,
+              state: :published,
+            ).to_s
+            expect(flash[:success]).to eq(expected_success_message)
+          end
+
+          it "should transition to the next state" do
+            expect(publish_edition_service).to have_received(:call).with(edition)
+          end
+        end
+
+        context "when the fact check was performed but the editor has not provided the performer's identity" do
           before do
             post :create, params: {
               id: 123,
@@ -88,22 +134,29 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
             }
           end
 
-          it "does not save the fact check outcome details" do
-            expect(edition).to_not have_received(:create_fact_check_outcome!)
+          it "saves the fact check outcome details" do
+            expect(edition).to have_received(:create_fact_check_outcome!).with(
+              "skipped" => false,
+              "creator" => current_user,
+              "performer" => nil,
+            )
           end
-        end
-      end
 
-      describe "redirecting to the appropriate next step" do
-        before do
-          post :create, params: {
-            id: 123,
-            "fact_check_outcome" => { "fact_check_performed" => true },
-          }
-        end
+          it "redirects to the document path" do
+            expect(response).to redirect_to("/456")
+          end
 
-        it "should redirect the user to the identify_performer step of the fact check process" do
-          expect(response).to redirect_to("/editions/123/fact_check_outcomes/identify_performer")
+          it "shows a success message" do
+            expected_success_message = Edition::StateTransitionMessage.new(
+              edition: edition,
+              state: :published,
+            ).to_s
+            expect(flash[:success]).to eq(expected_success_message)
+          end
+
+          it "should transition to the next state" do
+            expect(publish_edition_service).to have_received(:call).with(edition)
+          end
         end
       end
     end
@@ -122,6 +175,72 @@ RSpec.describe Editions::FactCheckOutcomesController, type: :controller do
 
       it "sets an error message" do
         expect(flash.alert).to eq(I18n.t("edition.outcomes.errors.missing_outcome.fact_check"))
+      end
+    end
+
+    describe "when the transition fails" do
+      context "and the error was something else (e.g. unexpected state)" do
+        let(:error_message) do
+          "Can't fire event `publish!` in current state `draft` " \
+          "for `Edition` with ID 123  (Transitions::InvalidTransition)"
+        end
+
+        let(:error_report) { instance_double(Edition::StateTransitionErrorReport, call: nil) }
+        let(:error) { Transitions::InvalidTransition.new(error_message) }
+
+        before do
+          allow(publish_edition_service).to receive(:call).and_raise(error)
+          allow(edition).to receive(:create_fact_check_outcome!)
+
+          allow(Edition::StateTransitionErrorReport).to receive(:new).and_return(error_report)
+
+          post :create, params: {
+            id: 123,
+            "fact_check_outcome" => { "fact_check_performed" => true },
+          }
+        end
+
+        it "redirects to the document path" do
+          expect(response).to redirect_to("/456")
+        end
+
+        it "includes an error message" do
+          expect(flash.alert).to eq("Error: it was not possible to perform that action. The error has been logged.")
+        end
+
+        it "records the error details using StateTransitionErrorReport to facilitate remediation" do
+          expect(Edition::StateTransitionErrorReport).to have_received(:new).with(
+            error: error,
+            edition: edition,
+          )
+          expect(error_report).to have_received(:call)
+        end
+      end
+    end
+
+    describe "when the transition succeeds" do
+      before do
+        allow(edition).to receive(:create_fact_check_outcome!)
+        post :create, params: {
+          id: 123,
+          "fact_check_outcome" => { "fact_check_performed" => false },
+        }
+      end
+
+      context "and the edition is due to be scheduled" do
+        let(:edition) { create(:edition, :pension, id: 123, document: document, scheduled_publication: Time.zone.now) }
+
+        it "schedules the edition" do
+          expect(schedule_edition_service).to have_received(:call).with(edition)
+        end
+      end
+
+      context "and the edition is NOT due to be scheduled" do
+        let(:edition) { Edition.new(id: 123, document: document) }
+
+        it "publishes the edition" do
+          expect(publish_edition_service).to have_received(:call).with(edition)
+        end
       end
     end
   end

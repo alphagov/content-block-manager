@@ -2,6 +2,7 @@ class Editions::FactCheckOutcomesController < BaseController
   before_action :set_edition_and_title, only: %i[new identify_performer]
 
   def new
+    @transition = block_will_be_scheduled? ? "schedule" : "publish"
     render :new
   end
 
@@ -9,15 +10,12 @@ class Editions::FactCheckOutcomesController < BaseController
     @edition = Edition.find(params[:id])
     return form_validation_error unless fact_check_outcome_supplied?
 
-    if fact_check_skipped?
-      @edition.create_fact_check_outcome!(
-        "skipped" => true,
-        "creator" => Current.user,
-      )
-      finalise_edition
-    else
-      redirect_to identify_performer_fact_check_outcome_edition_path(@edition)
-    end
+    @edition.create_fact_check_outcome!(
+      "skipped" => fact_check_skipped?,
+      "creator" => Current.user,
+      "performer" => fact_check_performer,
+    )
+    finalise_edition
   end
 
   def identify_performer
