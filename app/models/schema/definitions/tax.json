@@ -70,6 +70,7 @@
                         },
                         "lower_threshold": {
                           "type": "object",
+                          "x-show-field-name": "show",
                           "required": ["value"],
                           "properties": {
                             "show": {
@@ -83,6 +84,7 @@
                         },
                         "upper_threshold": {
                           "type": "object",
+                          "x-show-field-name": "show",
                           "required": ["value"],
                           "properties": {
                             "show": {

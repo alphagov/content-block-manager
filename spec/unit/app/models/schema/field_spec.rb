@@ -694,21 +694,28 @@ RSpec.describe Schema::Field do
       }
     end
 
-    context "when the field does not have a show_field_name set in the config" do
-      let(:config) do
-        { "fields" => { "something" => {} } }
-      end
-
-      it "returns the field to conditionally reveal an object" do
+    context "when the field does not have an x-show-field-name property in the schema body" do
+      it "returns nil" do
         show_field = field.show_field
 
         expect(show_field).to be_nil
       end
     end
 
-    context "when the field does have a show_field_name set in the config" do
-      let(:config) do
-        { "fields" => { "something" => { "show_field_name" => "show_field" } } }
+    context "when the field has an x-show-field-name property in the schema body" do
+      let(:body) do
+        {
+          "properties" => {
+            "something" => {
+              "type" => "object",
+              "x-show-field-name" => "show_field",
+              "properties" => {
+                "show_field" => { "type" => "boolean" },
+                "text" => { "type" => "string" },
+              },
+            },
+          },
+        }
       end
 
       it "returns the field to conditionally reveal an object" do

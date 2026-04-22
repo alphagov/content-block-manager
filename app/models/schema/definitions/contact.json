@@ -152,6 +152,7 @@
           "properties": {
             "bsl_guidance": {
               "type": "object",
+              "x-show-field-name": "show",
               "properties": {
                 "show": {
                   "type": "boolean",
@@ -167,6 +168,7 @@
             },
             "call_charges": {
               "type": "object",
+              "x-show-field-name": "show_call_charges_info_url",
               "else": {
                 "required": []
               },
@@ -202,6 +204,7 @@
             },
             "opening_hours": {
               "type": "object",
+              "x-show-field-name": "show_opening_hours",
               "else": {
                 "required": []
               },
@@ -251,6 +254,7 @@
             },
             "video_relay_service": {
               "type": "object",
+              "x-show-field-name": "show",
               "x-field-order": ["label", "telephone_number", "source"],
               "else": {
                 "required": []

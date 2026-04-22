@@ -23,22 +23,18 @@ schemas:
         fields:
           description:
           opening_hours:
-            show_field_name: show_opening_hours
             fields:
               show_opening_hours:
                 hidden_field: true
           call_charges:
-            show_field_name: show_call_charges_info_url
             fields:
               show_call_charges_info_url:
                 hidden_field: true
           bsl_guidance:
-            show_field_name: show
             fields:
               show:
                 hidden_field: true
           video_relay_service:
-            show_field_name: show
             fields:
               show:
                 hidden_field: true
@@ -54,12 +50,10 @@ schemas:
               bands:
                 fields:
                   lower_threshold:
-                    show_field_name: show
                     fields:
                       show:
                         hidden_field: true
                   upper_threshold:
-                    show_field_name: show
                     fields:
                       show:
                         hidden_field: true

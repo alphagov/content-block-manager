@@ -7,6 +7,7 @@ class Schema
     HIDDEN_FIELD_PROPERTY_KEY = "hidden_field".freeze
     GOVSPEAK_ENABLED_PROPERTY_KEY = "x-govspeak-enabled".freeze
     CHARACTER_LIMIT_PROPERTY_KEY = "x-character-limit".freeze
+    SHOW_FIELD_NAME_PROPERTY_KEY = "x-show-field-name".freeze
 
     include Schema::Field::Translations
 
@@ -57,7 +58,7 @@ class Schema
     end
 
     def show_field
-      @show_field ||= config["show_field_name"] ? nested_field(config["show_field_name"]) : nil
+      @show_field ||= properties[SHOW_FIELD_NAME_PROPERTY_KEY] ? nested_field(properties[SHOW_FIELD_NAME_PROPERTY_KEY]) : nil
     end
 
     def nested_fields
