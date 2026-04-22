@@ -138,6 +138,10 @@ class Schema
     lookup_parts
   end
 
+  def field_order
+    @field_order ||= @body["x-field-order"]
+  end
+
 private
 
   def field_names
@@ -150,10 +154,6 @@ private
 
   def sort_fields(fields)
     fields.sort_by { |field| field_ordering_rule(field) }
-  end
-
-  def field_order
-    @field_order ||= @body["x-field-order"]
   end
 
   def embedded_objects

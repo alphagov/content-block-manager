@@ -124,10 +124,8 @@ RSpec.describe Edition::Show::EmbeddedObjects::MetadataComponent, type: :compone
   end
 
   context "when a field order IS defined" do
-    let(:schema_config) do
-      {
-        "field_order" => %w[fizz foo],
-      }
+    before do
+      allow(schema).to receive(:field_order).and_return(%w[fizz foo])
     end
 
     it "renders a summary list with the defined field ordering (case insensitive)" do
