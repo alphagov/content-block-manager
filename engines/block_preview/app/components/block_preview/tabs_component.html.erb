@@ -1,0 +1,21 @@
+<%= render "govuk_publishing_components/components/secondary_navigation", {
+  aria_label: "Preview navigation",
+  items: [
+    {
+      label: "Preview instances (#{snippet_count})",
+      current: current_tab != "preview",
+      href: url_for_tab("instances"),
+      data_attributes: {
+        gtm: "tab",
+      },
+    },
+    {
+      label: "Preview document",
+      current: current_tab == "preview",
+      href: url_for_tab("preview"),
+      data_attributes: {
+        gtm: "tab",
+      },
+    },
+  ],
+} %>
