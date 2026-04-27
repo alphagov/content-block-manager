@@ -16,6 +16,9 @@ describe('GOVUK.Modules.CopyEmbedCode', function () {
       <p class="app-c-content-block-manager-default-block__embed_code">
         {{embed:content_block_contact:block-name}}
       </p>
+      <p class="app-c-content-block-manager-format-block__embed_code">
+        {{embed:content_block_contact:block-name#my_format}}
+      </p>
       <dt class="govuk-summary-list__value">
         <div class="app-c-embedded-objects-blocks-component__content">
           <div data-embed-code="{{embed:content_block_contact:block-name}}">
@@ -66,6 +69,13 @@ describe('GOVUK.Modules.CopyEmbedCode', function () {
       it('should remove the visible code from the the default block', function () {
         const ele = fixture.querySelector(
           '.app-c-content-block-manager-default-block__embed_code'
+        )
+        expect(ele).not.toEqual(jasmine.anything())
+      })
+
+      it('should remove the visible code from the format block', function () {
+        const ele = fixture.querySelector(
+          '.app-c-content-block-manager-format-block__embed_code'
         )
         expect(ele).not.toEqual(jasmine.anything())
       })
