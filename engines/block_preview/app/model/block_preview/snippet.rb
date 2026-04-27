@@ -1,16 +1,19 @@
 class BlockPreview::Snippet
   class << self
     def for_content_id(content_id, state:, block:)
-      diff = BlockPreview::ContentDiff.new(html_snippet(content_id, state), block)
-      from_html(diff.to_s)
+      diff = BlockPreview::ContentDiff.new(
+        html_snippet(content_id, state),
+        block,
+      )
+      from_html(diff.to_s, block)
     end
 
-    def from_html(html)
+    def from_html(html, block)
       doc = Nokogiri::HTML(html)
       shown_element_paths = []
 
-      doc.css(".content-block").map { |block|
-        snippet = new(doc, block)
+      doc.css(%([data-content-id="#{block.content_id}"])).map { |content_block|
+        snippet = new(doc, content_block)
         next if shown_element_paths.include?(snippet.context_parent.path)
 
         preview_elements = snippet.context_elements.drop_while do |element|
@@ -21,7 +24,7 @@ class BlockPreview::Snippet
 
         shown_element_paths.concat(preview_elements.map(&:path))
 
-        new(doc, block, preview_elements:)
+        new(doc, content_block, preview_elements:)
       }.compact
     end
 

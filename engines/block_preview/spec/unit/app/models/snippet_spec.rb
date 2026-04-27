@@ -13,7 +13,7 @@ RSpec.describe BlockPreview::Snippet do
       allow(Public::Services.publishing_api).to receive(:get_content)
         .with(content_id)
         .and_return(publishing_api_response)
-      allow(described_class).to receive(:from_html).with(diff_output).and_return(snippets)
+      allow(described_class).to receive(:from_html).with(diff_output, block).and_return(snippets)
       allow(BlockPreview::ContentDiff).to receive(:new).and_return(diff)
     end
 
@@ -60,6 +60,9 @@ RSpec.describe BlockPreview::Snippet do
   end
 
   describe ".from_html" do
+    let(:target_content_id) { "target-content-id" }
+    let(:target_block) { instance_double("ContentBlock", content_id: target_content_id) }
+
     it "returns an empty array when there are no content blocks" do
       html = <<~HTML
         <main>
@@ -67,23 +70,23 @@ RSpec.describe BlockPreview::Snippet do
         </main>
       HTML
 
-      expect(described_class.from_html(html)).to eq([])
+      expect(described_class.from_html(html, target_block)).to eq([])
     end
 
     it "returns one snippet per content block when they are separate" do
       html = <<~HTML
         <main>
           <p>Lead paragraph</p>
-          <p><span class="content-block">A</span></p>
+          <p><span data-content-id="target-content-id">A</span></p>
           <p>Gap one</p>
           <p>Gap two</p>
           <p>Gap three</p>
-          <p><span class="content-block">B</span></p>
+          <p><span data-content-id="target-content-id">B</span></p>
           <p>Tail paragraph</p>
         </main>
       HTML
 
-      snippets = described_class.from_html(html)
+      snippets = described_class.from_html(html, target_block)
 
       expect(snippets.count).to eq(2)
       expect(snippets.map(&:to_html).join("\n")).to include("A")
@@ -95,14 +98,14 @@ RSpec.describe BlockPreview::Snippet do
         <main>
           <p>Lead paragraph</p>
           <p>
-            <span class="content-block">A</span>
-            <span class="content-block">B</span>
+            <span data-content-id="target-content-id">A</span>
+            <span data-content-id="target-content-id">B</span>
           </p>
           <p>Tail paragraph</p>
         </main>
       HTML
 
-      snippets = described_class.from_html(html)
+      snippets = described_class.from_html(html, target_block)
 
       expect(snippets.count).to eq(1)
       expect(snippets.first.to_html).to include("A")
@@ -115,7 +118,7 @@ RSpec.describe BlockPreview::Snippet do
           <p>Lead paragraph</p>
           <div class="diff">
             <ins>
-              The full rate is <span class="content-block">£122.55</span>
+               The full rate is <span data-content-id="target-content-id">£122.55</span>
             </ins>
           </div>
           <ul>
@@ -123,7 +126,7 @@ RSpec.describe BlockPreview::Snippet do
             <li>
               <div class="diff">
                 <ins>
-                  Something about the pension rate <span class="content-block">£122.55</span> in a list item
+                   Something about the pension rate <span data-content-id="target-content-id">£122.55</span> in a list item
                 </ins>
               </div>
             </li>
@@ -133,7 +136,7 @@ RSpec.describe BlockPreview::Snippet do
         </main>
       HTML
 
-      snippets = described_class.from_html(html)
+      snippets = described_class.from_html(html, target_block)
 
       expect(snippets.count).to eq(1)
       expect(snippets.first.to_html).to include("<ul>")
@@ -147,43 +150,43 @@ RSpec.describe BlockPreview::Snippet do
           <p>Check your State Pension forecast.</p>
           <div class="diff">
             <del>
-              <p>The full rate is <span class="content-block">£122.40</span>.</p>
+               <p>The full rate is <span data-content-id="target-content-id">£122.40</span>.</p>
             </del>
           </div>
           <div class="diff">
             <ins>
-              <p>The full rate is <span class="content-block">£122.55</span>.</p>
+               <p>The full rate is <span data-content-id="target-content-id">£122.55</span>.</p>
             </ins>
           </div>
           <ul>
             <li>if you were contracted out before 2016</li>
             <li>
               <div class="diff">
-                <del>Something about the pension rate <span class="content-block">£122.40</span> in a list item</del>
+                 <del>Something about the pension rate <span data-content-id="target-content-id">£122.40</span> in a list item</del>
               </div>
             </li>
             <li>
               <div class="diff">
-                <ins>Something about the pension rate <span class="content-block">£122.55</span> in a list item</ins>
+                 <ins>Something about the pension rate <span data-content-id="target-content-id">£122.55</span> in a list item</ins>
               </div>
             </li>
           </ul>
           <p>Find out what tax you might pay.</p>
           <div class="diff">
             <del>
-              <h2>If you’re getting less than <span class="content-block">£122.40</span> a week</h2>
+               <h2>If you’re getting less than <span data-content-id="target-content-id">£122.40</span> a week</h2>
             </del>
           </div>
           <div class="diff">
             <ins>
-              <h2>If you’re getting less than <span class="content-block">£122.55</span> a week</h2>
+               <h2>If you’re getting less than <span data-content-id="target-content-id">£122.55</span> a week</h2>
             </ins>
           </div>
           <p>You might need more qualifying years.</p>
         </main>
       HTML
 
-      snippets = described_class.from_html(html)
+      snippets = described_class.from_html(html, target_block)
 
       expect(snippets.count).to eq(2)
       expect(snippets.first.to_html).to include("<ul>")
