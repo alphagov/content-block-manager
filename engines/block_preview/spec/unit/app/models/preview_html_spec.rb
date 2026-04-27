@@ -213,6 +213,10 @@ RSpec.describe BlockPreview::PreviewHtml do
           expect(internal_link_query_hash["locale"]).to eq("en")
         end
 
+        it "represents the correct tab with tab param" do
+          expect(internal_link_query_hash["tab"]).to eq("preview")
+        end
+
         it "represents the target base path with url param" do
           expect(internal_link_query_hash["base_path"]).to eq("/foo")
         end
@@ -271,6 +275,7 @@ RSpec.describe BlockPreview::PreviewHtml do
         edition_id: block_to_preview.id,
         host_content_id: host_content_id,
         locale: "en",
+        tab: "preview",
       )
       expected_url = "#{Plek.website_root}/foo"
       expected_action = "#{form_handler_path}&url=#{expected_url}&method=get"

@@ -91,7 +91,7 @@ module BlockPreview
     end
 
     def update_local_link_paths(nokogiri_html)
-      url = host_content_preview_path(edition_id: block.id, host_content_id: content_id, locale:, state:)
+      url = host_content_preview_path(edition_id: block.id, host_content_id: content_id, locale:, state:, tab: "preview")
       nokogiri_html.css("a").each do |link|
         next if link[:href].start_with?("//") || link[:href].start_with?("http")
 
@@ -103,7 +103,7 @@ module BlockPreview
     end
 
     def update_local_form_actions(nokogiri_html, scheme, host)
-      url = host_content_preview_form_handler_path(edition_id: block.id, host_content_id: content_id, locale:)
+      url = host_content_preview_form_handler_path(edition_id: block.id, host_content_id: content_id, locale:, tab: "preview")
       nokogiri_html.css("main form").each do |form|
         form[:action] = "#{url}&url=#{scheme}://#{host}#{form[:action]}&method=#{form[:method]}"
         form[:target] = "_parent"
