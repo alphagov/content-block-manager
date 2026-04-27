@@ -196,6 +196,20 @@ RSpec.describe BlockPreview::Snippet do
     end
   end
 
+  describe "#context_parent" do
+    it "does not raise when walking up reaches a document node" do
+      document = instance_double(Nokogiri::HTML4::Document, previous_element: nil)
+      block = instance_double(Nokogiri::XML::Node, parent: document)
+      allow(block).to receive(:ancestors).with("li").and_return([])
+      allow(block).to receive(:ancestors).with("td").and_return([])
+
+      snippet = described_class.new(nil, block)
+
+      expect { snippet.context_parent }.not_to raise_error
+      expect(snippet.context_parent).to eq(document)
+    end
+  end
+
   describe "#to_html" do
     let(:doc) { Nokogiri::HTML(html) }
     let(:block) { doc.at_css(css_selector) }

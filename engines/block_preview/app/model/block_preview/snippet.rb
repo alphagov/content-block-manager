@@ -96,9 +96,13 @@ private
       parent = table_cell_ancestor.ancestors("table").first || table_cell_ancestor
     end
 
-    # If there is no previous element (for example, if the parent is contained within
-    # a div), we keep trying until the parent element has a previous element
-    parent = parent.parent while parent.previous_element.nil?
+    # If there is no previous element, walk up the tree until we find one.
+    # Stop before leaving element nodes to avoid calling `parent` on a document.
+    while parent.previous_element.nil?
+      break unless parent.respond_to?(:parent) && parent.parent&.element?
+
+      parent = parent.parent
+    end
 
     parent
   end
