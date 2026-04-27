@@ -13,7 +13,11 @@ class BlockPreview::PreviewController < BlockPreview::ApplicationController
     )
     if Flipflop.enabled?(:show_snippets)
       @current_tab = params[:tab]
-      @snippets = BlockPreview::Snippet.from_html(@preview_content.html)
+      @snippets = BlockPreview::Snippet.for_content_id(
+        host_content_id,
+        state: params[:state].presence || "published",
+        block: @block,
+      )
 
       if @current_tab == "preview"
         render "show"

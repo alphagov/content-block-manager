@@ -78,7 +78,7 @@ RSpec.describe BlockPreview::PreviewController, type: :controller do
       before do
         allow(Flipflop).to receive(:enabled?).with(:show_snippets).and_return(true)
         allow(mock_preview_content).to receive(:html).and_return("<p><span class='content-block'>value</span></p>")
-        allow(BlockPreview::Snippet).to receive(:from_html).and_return(mock_snippets)
+        allow(BlockPreview::Snippet).to receive(:for_content_id).and_return(mock_snippets)
       end
 
       context "when tab is preview" do
@@ -94,7 +94,7 @@ RSpec.describe BlockPreview::PreviewController, type: :controller do
         end
 
         it "extracts snippets from the preview html" do
-          expect(BlockPreview::Snippet).to have_received(:from_html).with(mock_preview_content.html)
+          expect(BlockPreview::Snippet).to have_received(:for_content_id).with(host_content_id, state: state, block: mock_block)
         end
 
         it "assigns the current tab" do
