@@ -1,4 +1,64 @@
 RSpec.describe BlockPreview::Snippet do
+  describe ".for_content_id" do
+    let(:content_id) { SecureRandom.uuid }
+    let(:base_path) { "/test-path" }
+    let(:block) { instance_double("ContentBlock") }
+    let(:diff_output) { "<main>DIFF_HTML</main>" }
+    let(:snippets) { [instance_double(described_class)] }
+    let(:publishing_api_response) { { "base_path" => base_path } }
+    let(:content_store) { instance_double("ContentStore") }
+    let(:diff) { instance_double(BlockPreview::ContentDiff, to_s: diff_output) }
+
+    before do
+      allow(Public::Services.publishing_api).to receive(:get_content)
+        .with(content_id)
+        .and_return(publishing_api_response)
+      allow(described_class).to receive(:from_html).with(diff_output).and_return(snippets)
+      allow(BlockPreview::ContentDiff).to receive(:new).and_return(diff)
+    end
+
+    it "fetches published content from the live content store and parses details.body" do
+      allow(Public::Services).to receive(:content_store).and_return(content_store)
+      allow(content_store).to receive(:content_item).with(base_path).and_return(
+        {
+          "document_type" => "answer",
+          "details" => { "body" => "<p>Published body</p>" },
+        },
+      )
+
+      expect(BlockPreview::ContentDiff).to receive(:new) { |html_fragment, received_block|
+        expect(html_fragment).to be_a(Nokogiri::HTML::DocumentFragment)
+        expect(html_fragment.to_html).to eq("<p>Published body</p>")
+        expect(received_block).to be(block)
+      }.and_return(diff)
+
+      expect(described_class.for_content_id(content_id, state: "published", block:)).to eq(snippets)
+    end
+
+    it "fetches draft content from the draft store and joins guide parts into a single fragment" do
+      allow(Public::Services).to receive(:draft_content_store).and_return(content_store)
+      allow(content_store).to receive(:content_item).with(base_path).and_return(
+        {
+          "document_type" => "guide",
+          "details" => {
+            "parts" => [
+              { "body" => "<p>Part one</p>" },
+              { "body" => "<p>Part two</p>" },
+            ],
+          },
+        },
+      )
+
+      expect(BlockPreview::ContentDiff).to receive(:new) { |html_fragment, _received_block|
+        expect(html_fragment).to be_a(Nokogiri::HTML::DocumentFragment)
+        expect(html_fragment.to_html).to include("<p>Part one</p>")
+        expect(html_fragment.to_html).to include("<p>Part two</p>")
+      }.and_return(diff)
+
+      described_class.for_content_id(content_id, state: "draft", block:)
+    end
+  end
+
   describe ".from_html" do
     it "returns an empty array when there are no content blocks" do
       html = <<~HTML

@@ -1,5 +1,10 @@
 class BlockPreview::Snippet
   class << self
+    def for_content_id(content_id, state:, block:)
+      diff = BlockPreview::ContentDiff.new(html_snippet(content_id, state), block)
+      from_html(diff.to_s)
+    end
+
     def from_html(html)
       doc = Nokogiri::HTML(html)
       shown_element_paths = []
@@ -18,6 +23,21 @@ class BlockPreview::Snippet
 
         new(doc, block, preview_elements:)
       }.compact
+    end
+
+  private
+
+    def html_snippet(content_id, state)
+      publishing_api_response = Public::Services.publishing_api.get_content(content_id)
+      content_store = state == "published" ? Public::Services.content_store : Public::Services.draft_content_store
+      content_store_response = content_store.content_item(publishing_api_response["base_path"])
+      html = if %w[guide travel_advice].include?(content_store_response["document_type"])
+               content_store_response["details"]["parts"].map { |part| part["body"] }.join("\n")
+             else
+               content_store_response["details"]["body"]
+             end
+
+      Nokogiri::HTML.fragment(html)
     end
   end
 
