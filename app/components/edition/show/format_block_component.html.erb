@@ -1,0 +1,12 @@
+<div class="app-c-content-block-manager-format-block">
+  <%= render "govuk_publishing_components/components/summary_card", {
+    title: title,
+    rows: [
+      {
+        key: "Block content",
+        value: block_content,
+        data: data_attributes,
+      },
+    ],
+  } %>
+</div>
