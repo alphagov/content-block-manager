@@ -94,7 +94,7 @@ RSpec.describe BlockPreview::PreviewController, type: :controller do
         end
 
         it "extracts snippets from the preview html" do
-          expect(BlockPreview::Snippet).to have_received(:for_content_id).with(host_content_id, state: state, block: mock_block)
+          expect(BlockPreview::Snippet).to have_received(:for_content_id).with(host_content_id, state: state, block: mock_block, locale: locale)
         end
 
         it "assigns the current tab" do

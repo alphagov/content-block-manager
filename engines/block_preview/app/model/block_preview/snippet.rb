@@ -1,8 +1,8 @@
 class BlockPreview::Snippet
   class << self
-    def for_content_id(content_id, state:, block:)
+    def for_content_id(content_id, state:, block:, locale:)
       diff = BlockPreview::ContentDiff.new(
-        html_snippet(content_id, state),
+        html_snippet(content_id, state, locale),
         block,
       )
       from_html(diff.to_s, block)
@@ -30,8 +30,8 @@ class BlockPreview::Snippet
 
   private
 
-    def html_snippet(content_id, state)
-      publishing_api_response = Public::Services.publishing_api.get_content(content_id)
+    def html_snippet(content_id, state, locale)
+      publishing_api_response = Public::Services.publishing_api.get_content(content_id, locale:)
       content_store = state == "published" ? Public::Services.content_store : Public::Services.draft_content_store
       content_store_response = content_store.content_item(publishing_api_response["base_path"])
       html = if %w[guide travel_advice].include?(content_store_response["document_type"])

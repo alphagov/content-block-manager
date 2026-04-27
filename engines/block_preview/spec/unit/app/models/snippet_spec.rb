@@ -11,7 +11,7 @@ RSpec.describe BlockPreview::Snippet do
 
     before do
       allow(Public::Services.publishing_api).to receive(:get_content)
-        .with(content_id)
+        .with(content_id, locale: "en")
         .and_return(publishing_api_response)
       allow(described_class).to receive(:from_html).with(diff_output, block).and_return(snippets)
       allow(BlockPreview::ContentDiff).to receive(:new).and_return(diff)
@@ -32,7 +32,7 @@ RSpec.describe BlockPreview::Snippet do
         expect(received_block).to be(block)
       }.and_return(diff)
 
-      expect(described_class.for_content_id(content_id, state: "published", block:)).to eq(snippets)
+      expect(described_class.for_content_id(content_id, state: "published", block:, locale: "en")).to eq(snippets)
     end
 
     it "fetches draft content from the draft store and joins guide parts into a single fragment" do
@@ -55,7 +55,7 @@ RSpec.describe BlockPreview::Snippet do
         expect(html_fragment.to_html).to include("<p>Part two</p>")
       }.and_return(diff)
 
-      described_class.for_content_id(content_id, state: "draft", block:)
+      described_class.for_content_id(content_id, state: "draft", block:, locale: "en")
     end
   end
 

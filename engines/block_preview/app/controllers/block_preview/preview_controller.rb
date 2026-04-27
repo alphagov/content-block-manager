@@ -17,6 +17,7 @@ class BlockPreview::PreviewController < BlockPreview::ApplicationController
         host_content_id,
         state: params[:state].presence || "published",
         block: @block,
+        locale: params[:locale],
       )
 
       if @current_tab == "preview"
