@@ -2,6 +2,14 @@
   "type": "object",
   "additionalProperties": false,
   "x-embeddable-as-block": true,
+  "x-formats": [
+    "long_form",
+    "months_and_years_long",
+    "start_day_and_month",
+    "start_month_as_word",
+    "years",
+    "years_short"
+  ],
   "properties": {
     "description": {
       "type": "string",
