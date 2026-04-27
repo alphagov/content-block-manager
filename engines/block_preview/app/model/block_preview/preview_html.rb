@@ -143,7 +143,7 @@ module BlockPreview
     def update_preview_with_diff(nokogiri_html)
       nokogiri_html.at_css("[data-module=\"govspeak\"]")
                    .replace(
-                     BlockPreview::ContentDiff.new(nokogiri_html, block).to_s,
+                     BlockPreview::ContentDiff.new(nokogiri_html.at_css('[data-module="govspeak"]'), block).to_s,
                    )
 
       nokogiri_html
