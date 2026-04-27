@@ -14,6 +14,7 @@ RSpec.describe BlockPreview::PreviewController, type: :controller do
     before do
       allow(ContentBlock).to receive(:from_edition_id).and_return(mock_block)
       allow(BlockPreview::PreviewContent).to receive(:new).and_return(mock_preview_content)
+      allow(Flipflop).to receive(:enabled?).with(:show_snippets).and_return(false)
 
       get :show, params: {
         edition_id: edition_id,
@@ -68,6 +69,79 @@ RSpec.describe BlockPreview::PreviewController, type: :controller do
           locale: locale,
           state: "published",
         )
+      end
+    end
+
+    context "when the show_snippets feature flag is enabled" do
+      let(:mock_snippets) { [instance_double(BlockPreview::Snippet)] }
+
+      before do
+        allow(Flipflop).to receive(:enabled?).with(:show_snippets).and_return(true)
+        allow(mock_preview_content).to receive(:html).and_return("<p><span class='content-block'>value</span></p>")
+        allow(BlockPreview::Snippet).to receive(:from_html).and_return(mock_snippets)
+      end
+
+      context "when tab is preview" do
+        before do
+          get :show, params: {
+            edition_id: edition_id,
+            host_content_id: host_content_id,
+            base_path: base_path,
+            locale: locale,
+            state: state,
+            tab: "preview",
+          }
+        end
+
+        it "extracts snippets from the preview html" do
+          expect(BlockPreview::Snippet).to have_received(:from_html).with(mock_preview_content.html)
+        end
+
+        it "assigns the current tab" do
+          expect(assigns(:current_tab)).to eq("preview")
+        end
+
+        it "assigns snippets" do
+          expect(assigns(:snippets)).to eq(mock_snippets)
+        end
+
+        it "renders the preview template" do
+          expect(response).to render_template("show")
+        end
+      end
+
+      context "when tab is not preview" do
+        before do
+          get :show, params: {
+            edition_id: edition_id,
+            host_content_id: host_content_id,
+            base_path: base_path,
+            locale: locale,
+            state: state,
+            tab: "instances",
+          }
+        end
+
+        it "renders the snippet list template" do
+          expect(response).to render_template("show_with_snippets")
+        end
+      end
+
+      context "when tab is omitted" do
+        before do
+          get :show, params: {
+            edition_id: edition_id,
+            host_content_id: host_content_id,
+            base_path: base_path,
+            locale: locale,
+            state: state,
+          }
+        end
+
+        it "defaults to rendering the snippet list template" do
+          expect(assigns(:current_tab)).to be_nil
+          expect(response).to render_template("show_with_snippets")
+        end
       end
     end
   end

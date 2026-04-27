@@ -11,6 +11,18 @@ class BlockPreview::PreviewController < BlockPreview::ApplicationController
       locale: params[:locale],
       state: params[:state].presence || "published",
     )
+    if Flipflop.enabled?(:show_snippets)
+      @current_tab = params[:tab]
+      @snippets = BlockPreview::Snippet.from_html(@preview_content.html)
+
+      if @current_tab == "preview"
+        render "show"
+      else
+        render "show_with_snippets"
+      end
+    else
+      render "show"
+    end
   end
 
   def form_handler
