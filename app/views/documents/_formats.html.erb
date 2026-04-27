@@ -1,0 +1,19 @@
+<div class="govuk-grid-row formats__row">
+  <div class="govuk-grid-column-full">
+    <h2 class="govuk-heading-l">
+      Available formats
+    </h2>
+    <% @schema.formats.each do |format| %>
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          <%= render(
+                Edition::Show::FormatBlockComponent.new(
+                  edition: @edition,
+                  format: format,
+                ),
+              ) %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

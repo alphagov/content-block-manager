@@ -24,6 +24,7 @@ Feature: Create "Time period" content block
     And the block should have been sent to the Publishing API
     When I click to view the content block
     Then I should see the details for the time_period content block
+    And I see the representation of each available time_period format
 
   Scenario: Time period validates correctly
     When I fill the form with the following fields:

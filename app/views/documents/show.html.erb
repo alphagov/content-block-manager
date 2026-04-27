@@ -82,6 +82,8 @@
   </div>
 <% end %>
 
+<%= render partial: "documents/formats" if @schema.formats.any? %>
+
 <% @subschemas.grouped.each do |group, subschemas| %>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">

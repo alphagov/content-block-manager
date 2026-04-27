@@ -17,14 +17,6 @@ Feature: Editor uses time period embed codes
     Given I am viewing the published edition
     Then I see embed code for the default time period block
 
-  @wip
-  Scenario: Copy day of the month e.g. '06'
-    # what about formatted day, e.g. '6'?
-
-  @wip
-  Scenario: Copy month e.g. '04'
-    # what about formatted month, e.g. 'April'
-
-  @wip
-  Scenario: Copy year e.g. '2026'
-    # what about formatted year e.g. '26', e.g. to construct '2025-26'?
+  Scenario: Copy codes for formats
+    Given I am viewing the published edition
+    Then I see the embed code for each available TimePeriod format
