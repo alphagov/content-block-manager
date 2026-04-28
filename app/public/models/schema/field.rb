@@ -4,9 +4,7 @@ class Schema
 
     attr_reader :name, :schema
 
-    HIDDEN_FIELD_PROPERTY_KEY = "hidden_field".freeze
-    GOVSPEAK_ENABLED_PROPERTY_KEY = "govspeak_enabled".freeze
-
+    include Schema::Field::Configuration
     include Schema::Field::Translations
 
     def initialize(name, schema)
@@ -18,25 +16,11 @@ class Schema
       name
     end
 
-    def component_name
-      if custom_component
-        custom_component
-      elsif enum_values
-        "enum"
-      else
-        type
-      end
-    end
-
     def component_class
       class_name = "Edition::Details::Fields::#{component_name.camelize}Component"
       class_name.constantize
     rescue NameError
       raise("Component #{class_name} not found")
-    end
-
-    def config
-      @config ||= schema.config.dig("fields", name) || {}
     end
 
     def type
@@ -55,16 +39,12 @@ class Schema
       @default_value ||= properties["default"]
     end
 
-    def show_field
-      @show_field ||= config["show_field_name"] ? nested_field(config["show_field_name"]) : nil
-    end
-
     def nested_fields
       if type.object?
-        embedded_schema = Schema::EmbeddedSchema.new(name, properties, schema, config_for_embedded_schema)
+        embedded_schema = Schema::EmbeddedSchema.new(name, properties, schema)
         embedded_schema.fields
       elsif type.array? && properties["items"]["type"] == "object"
-        embedded_schema = Schema::EmbeddedSchema.new(name, properties["items"], schema, config, is_array: true)
+        embedded_schema = Schema::EmbeddedSchema.new(name, properties["items"], schema, is_array: true)
         embedded_schema.fields
       end
     end
@@ -89,18 +69,6 @@ class Schema
 
     def is_required?
       schema.required_fields.include?(name)
-    end
-
-    def data_attributes
-      @data_attributes ||= config["data_attributes"] || {}
-    end
-
-    def hidden?
-      @hidden ||= config[HIDDEN_FIELD_PROPERTY_KEY] == true
-    end
-
-    def govspeak_enabled?
-      @govspeak_enabled ||= config[GOVSPEAK_ENABLED_PROPERTY_KEY] == true
     end
 
     def name_attribute(index = nil)
@@ -170,22 +138,8 @@ class Schema
       raise NestedFieldNotSupportedError, error_message
     end
 
-    def config_for_embedded_schema
-      return schema.config.dig("subschemas", name) if schema.config["subschemas"]
-
-      config
-    end
-
-    def custom_component
-      @custom_component ||= config["component"]
-    end
-
     def properties
       @properties ||= schema.body.dig("properties", name) || {}
-    end
-
-    def field_ordering_rule
-      @field_ordering_rule ||= config["field_order"] || []
     end
 
     def root_schema

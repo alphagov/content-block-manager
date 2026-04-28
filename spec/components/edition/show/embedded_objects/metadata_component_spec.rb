@@ -39,19 +39,11 @@ RSpec.describe Edition::Show::EmbeddedObjects::MetadataComponent, type: :compone
     Schema::EmbeddedSchema.new(schema_id, body, parent_schema)
   end
 
-  let(:schema_config) do
-    {}
-  end
-
   let(:component) do
     described_class.new(
       items:,
       schema:,
     )
-  end
-
-  before do
-    allow(schema).to receive(:config).and_return(schema_config)
   end
 
   context "when NO field order is defined" do
@@ -124,10 +116,8 @@ RSpec.describe Edition::Show::EmbeddedObjects::MetadataComponent, type: :compone
   end
 
   context "when a field order IS defined" do
-    let(:schema_config) do
-      {
-        "field_order" => %w[fizz foo],
-      }
+    before do
+      allow(schema).to receive(:field_order).and_return(%w[fizz foo])
     end
 
     it "renders a summary list with the defined field ordering (case insensitive)" do

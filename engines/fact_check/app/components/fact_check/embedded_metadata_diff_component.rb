@@ -12,7 +12,7 @@ private
   attr_reader :items, :schema
 
   def rows
-    ordering = MetadataRowOrderingRule.new(field_order:)
+    ordering = MetadataRowOrderingRule.new(field_order: schema.field_order)
     unordered_rows.sort_by { |row| ordering.call(row) }
   end
 
@@ -28,9 +28,5 @@ private
         ),
       }
     end
-  end
-
-  def field_order
-    @schema.config["field_order"]
   end
 end

@@ -2,60 +2,14 @@ RSpec.describe Schema::Field do
   let(:schema) { build(:schema) }
   let(:field) { Schema::Field.new("something", schema) }
 
-  let(:config) { {} }
   let(:body) { {} }
 
   before do
-    allow(schema).to receive(:config).and_return(config)
     allow(schema).to receive(:body).and_return(body)
   end
 
   it "returns the name when cast as a string" do
     expect(field.to_s).to eq("something")
-  end
-
-  describe "#component_name" do
-    describe "when there is no custom component set" do
-      describe "when the field is a string" do
-        let(:body) do
-          { "properties" => { "something" => { "type" => "string" } } }
-        end
-
-        it "returns string" do
-          expect(field.component_name).to eq("string")
-        end
-      end
-
-      describe "when the field has enum values" do
-        let(:body) do
-          { "properties" => { "something" => { "type" => "string", "enum" => %w[foo bar] } } }
-        end
-
-        it "returns enum" do
-          expect(field.component_name).to eq("enum")
-        end
-      end
-    end
-
-    describe "when there is a custom component set" do
-      let(:config) do
-        { "fields" => { "something" => { "component" => "custom" } } }
-      end
-
-      it "returns the custom component name" do
-        expect(field.component_name).to eq("custom")
-      end
-    end
-
-    describe "when the field is an object" do
-      let(:body) do
-        { "properties" => { "something" => { "type" => "object" } } }
-      end
-
-      it "returns object" do
-        expect(field.component_name).to eq("object")
-      end
-    end
   end
 
   describe "#component_class" do
@@ -155,52 +109,15 @@ RSpec.describe Schema::Field do
         expect(nested_fields[1].name_attribute).to eq("edition[details][something][bar]")
         expect(nested_fields[1].id_attribute).to eq("edition_details_something_bar")
       end
-
-      describe "when config is set for the nested fields" do
-        let(:config) do
-          {
-            "fields" => {
-              "something" => {
-                "fields" => {
-                  "foo" => {
-                    "component" => "custom",
-                  },
-                  "bar" => {
-                    "component" => "textarea",
-                  },
-                },
-              },
-            },
-          }
-        end
-
-        it "returns config for each field" do
-          nested_fields = field.nested_fields
-
-          expect(nested_fields.count).to eq(2)
-
-          expect(nested_fields[0].config).to eq({ "component" => "custom" })
-          expect(nested_fields[1].config).to eq({ "component" => "textarea" })
-        end
-      end
     end
 
     context "when the nested fields are a subschema and have a field order configured" do
-      let(:config) do
-        {
-          "subschemas" => {
-            "date_range" => {
-              "field_order" => %w[start end],
-            },
-          },
-        }
-      end
-
       let(:body) do
         {
           "properties" => {
             "date_range" => {
               "type" => "object",
+              "x-field-order" => %w[start end],
               "properties" => {
                 "end" => { "type" => "string" },
                 "other" => { "type" => "string" },
@@ -213,7 +130,7 @@ RSpec.describe Schema::Field do
 
       let(:field) { Schema::Field.new("date_range", schema) }
 
-      it "returns fields ordered according to the config" do
+      it "returns fields ordered according to the schema body" do
         nested_fields = field.nested_fields
 
         expect(nested_fields.map(&:name)).to eq(%w[start end other])
@@ -254,34 +171,6 @@ RSpec.describe Schema::Field do
         expect(nested_fields[1].enum_values).to eq(%w[foo bar])
         expect(nested_fields[1].name_attribute).to eq("edition[details][something][][bar]")
         expect(nested_fields[1].id_attribute).to eq("edition_details_something_bar")
-      end
-
-      describe "when config is set for the nested fields" do
-        let(:config) do
-          {
-            "fields" => {
-              "something" => {
-                "fields" => {
-                  "foo" => {
-                    "component" => "custom",
-                  },
-                  "bar" => {
-                    "component" => "textarea",
-                  },
-                },
-              },
-            },
-          }
-        end
-
-        it "returns config for each field" do
-          nested_fields = field.nested_fields
-
-          expect(nested_fields.count).to eq(2)
-
-          expect(nested_fields[0].config).to eq({ "component" => "custom" })
-          expect(nested_fields[1].config).to eq({ "component" => "textarea" })
-        end
       end
     end
   end
@@ -395,10 +284,20 @@ RSpec.describe Schema::Field do
       end
 
       describe "when an order is specified" do
-        let(:config) do
+        let(:body) do
           {
-            "fields" => {
-              "something" => { "field_order" => %w[bar foo] },
+            "properties" => {
+              "something" => {
+                "type" => "array",
+                "items" => {
+                  "type" => "object",
+                  "x-field-order" => %w[bar foo],
+                  "properties" => {
+                    "foo" => { "type" => "string" },
+                    "bar" => { "type" => "string", "enum" => %w[foo bar] },
+                  },
+                },
+              },
             },
           }
         end
@@ -446,24 +345,6 @@ RSpec.describe Schema::Field do
       allow(schema).to receive(:required_fields).and_return(%w[else])
 
       expect(field.is_required?).to eq(false)
-    end
-  end
-
-  describe "#data_attributes" do
-    describe "when a `data_attributes` config var is set" do
-      let(:config) do
-        { "fields" => { "something" => { "data_attributes" => { "foo" => "bar" } } } }
-      end
-
-      it "returns the data attributes" do
-        expect({ "foo" => "bar" }).to eq(field.data_attributes)
-      end
-    end
-
-    describe "when a `data_attributes` config var is not set" do
-      it "returns an empty hash" do
-        expect({}).to eq(field.data_attributes)
-      end
     end
   end
 
@@ -638,83 +519,6 @@ RSpec.describe Schema::Field do
         it "returns an array with the 2 parent schema names, the index and the field name" do
           expect(field.value_lookup_path(1)).to eq(["level_1", "level_2", 1, "something"])
         end
-      end
-    end
-  end
-
-  describe "#hidden?" do
-    describe "when a config var is set to hide the field" do
-      let(:config) do
-        { "fields" => { "something" => { Schema::Field::HIDDEN_FIELD_PROPERTY_KEY => true } } }
-      end
-
-      it "returns true" do
-        expect(field.hidden?).to be_truthy
-      end
-    end
-
-    describe "when a config var is not set" do
-      it "returns false" do
-        expect(field.hidden?).to be_falsey
-      end
-    end
-  end
-
-  describe "#govspeak_enabled?" do
-    describe "when a config var is set to enable Govspeak" do
-      let(:config) do
-        { "fields" => { "something" => { Schema::Field::GOVSPEAK_ENABLED_PROPERTY_KEY => true } } }
-      end
-
-      it "returns true" do
-        expect(field.govspeak_enabled?).to be_truthy
-      end
-    end
-
-    describe "when a config var is not set" do
-      it "returns false" do
-        expect(field.govspeak_enabled?).to be_falsey
-      end
-    end
-  end
-
-  describe "#show_field" do
-    let(:body) do
-      {
-        "properties" => {
-          "something" => {
-            "type" => "object",
-            "properties" => {
-              "show_field" => { "type" => "boolean" },
-              "text" => { "type" => "string" },
-            },
-          },
-        },
-      }
-    end
-
-    context "when the field does not have a show_field_name set in the config" do
-      let(:config) do
-        { "fields" => { "something" => {} } }
-      end
-
-      it "returns the field to conditionally reveal an object" do
-        show_field = field.show_field
-
-        expect(show_field).to be_nil
-      end
-    end
-
-    context "when the field does have a show_field_name set in the config" do
-      let(:config) do
-        { "fields" => { "something" => { "show_field_name" => "show_field" } } }
-      end
-
-      it "returns the field to conditionally reveal an object" do
-        show_field = field.show_field
-
-        expect(show_field).to_not be_nil
-        expect(show_field.name).to eq("show_field")
       end
     end
   end

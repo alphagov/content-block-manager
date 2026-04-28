@@ -15,23 +15,18 @@ RSpec.describe Schema do
   end
 
   describe "#fields" do
-    describe "when an order is not given in the config" do
+    describe "when an order is not given" do
       it "prioritises the title" do
         expect(%w[title foo bar]).to eq(schema.fields.map(&:name))
       end
     end
 
-    describe "when an order is given in the config" do
-      before do
-        allow(Schema)
-          .to receive(:schema_settings)
-          .and_return({
-            "schemas" => {
-              "content_block_pension" => {
-                "field_order" => %w[bar title foo],
-              },
-            },
-          })
+    describe "when an order is given in the schema body" do
+      let(:body) do
+        {
+          "x-field-order" => %w[bar title foo],
+          "properties" => { "foo" => {}, "bar" => {}, "title" => {} },
+        }
       end
 
       it "orders fields" do
@@ -39,16 +34,11 @@ RSpec.describe Schema do
       end
 
       describe "when a field is missing from the order" do
-        before do
-          allow(Schema)
-            .to receive(:schema_settings)
-            .and_return({
-              "schemas" => {
-                "content_block_pension" => {
-                  "field_order" => %w[bar foo],
-                },
-              },
-            })
+        let(:body) do
+          {
+            "x-field-order" => %w[bar foo],
+            "properties" => { "foo" => {}, "bar" => {}, "title" => {} },
+          }
         end
 
         it "puts the missing field at the end" do
@@ -289,28 +279,6 @@ RSpec.describe Schema do
     end
   end
 
-  describe ".schema_settings" do
-    let(:stub_schema) { double("schema_settings") }
-
-    before do
-      expect(YAML).to receive(:load_file)
-          .with(Schema::CONFIG_PATH)
-          .and_return(stub_schema)
-
-      # This removes any memoized schema_settings, so we can be sure the double gets returned
-      Schema.instance_variable_set("@schema_settings", nil)
-    end
-
-    after do
-      # Make sure we remove the stubbed schema_settings response after the tests in this block run
-      Schema.instance_variable_set("@schema_settings", nil)
-    end
-
-    it "should return the schema settings" do
-      expect(stub_schema).to eq(Schema.schema_settings)
-    end
-  end
-
   describe "when a schema has many embedded objects" do
     let(:body) do
       {
@@ -345,38 +313,6 @@ RSpec.describe Schema do
     end
   end
 
-  describe "#block_display_fields" do
-    describe "when config exists for a schema" do
-      before do
-        allow(Schema)
-          .to receive(:schema_settings)
-          .and_return({
-            "schemas" => {
-              schema.id => {
-                "block_display_fields" => %w[something else],
-              },
-            },
-          })
-      end
-
-      it "returns the config values" do
-        expect(%w[something else]).to eq(schema.block_display_fields)
-      end
-    end
-
-    describe "when config does not exist for a schema" do
-      before do
-        allow(Schema)
-          .to receive(:schema_settings)
-          .and_return({})
-      end
-
-      it "returns an empty array" do
-        expect([]).to eq(schema.block_display_fields)
-      end
-    end
-  end
-
   describe "#subschemas_for_group" do
     let(:group_1_subschemas) do
       [
@@ -403,42 +339,6 @@ RSpec.describe Schema do
 
     it "returns an empty array when no subschemas can be found" do
       expect([]).to eq(schema.subschemas_for_group("group_2"))
-    end
-  end
-
-  describe "#embeddable_as_block?" do
-    describe "when the embeddable_as_block config value is set" do
-      before do
-        allow(Schema)
-          .to receive(:schema_settings)
-          .and_return({
-            "schemas" => {
-              schema.id => {
-                "embeddable_as_block" => true,
-              },
-            },
-          })
-      end
-
-      it "returns true" do
-        expect(schema).to be_embeddable_as_block
-      end
-    end
-
-    describe "when the embeddable_as_block config value is not set" do
-      before do
-        allow(Schema)
-          .to receive(:schema_settings)
-          .and_return({
-            "schemas" => {
-              schema.id => {},
-            },
-          })
-      end
-
-      it "returns false" do
-        assert_not schema.embeddable_as_block?
-      end
     end
   end
 

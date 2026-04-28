@@ -119,26 +119,4 @@ RSpec.describe Edition::Details::FormComponent, type: :component do
       )
     end
   end
-
-  describe "when data_attributes are provided" do
-    let(:foo_field) { build(:field, name: "foo", component_name: "string", enum_values: nil, default_value: nil, data_attributes: { "field" => "foo" }) }
-    let(:bar_field) { build(:field, name: "bar", component_name: "string", enum_values: nil, default_value: nil, data_attributes: { "field" => "bar" }) }
-    let(:baz_field) { build(:field, name: "baz", component_name: "enum", enum_values: %w[some enum], default_value: nil, data_attributes: { "field" => "baz" }) }
-
-    it "renders inside a div with data attributes" do
-      render_inline(component)
-
-      expect(page).to have_css "div[data-field='foo']" do |component|
-        expect(component).to have_text "foo_stub"
-      end
-
-      expect(page).to have_css "div[data-field='bar']" do |component|
-        expect(component).to have_text "bar_stub"
-      end
-
-      expect(page).to have_css "div[data-field='baz']" do |component|
-        expect(component).to have_text "baz_stub"
-      end
-    end
-  end
 end

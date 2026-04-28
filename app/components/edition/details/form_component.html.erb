@@ -1,5 +1,3 @@
 <% fields.each do |field| %>
-  <%= content_tag :div, data: field.data_attributes do %>
-    <%= render helpers.component_for_field(field, context(field)) %>
-  <% end %>
+  <%= render helpers.component_for_field(field, context(field)) %>
 <% end %>

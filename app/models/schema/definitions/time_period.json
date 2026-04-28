@@ -1,23 +1,32 @@
 {
   "type": "object",
   "additionalProperties": false,
+  "x-embeddable-as-block": true,
   "properties": {
     "description": {
-      "type": "string"
+      "type": "string",
+      "x-component-name": "textarea",
+      "x-character-limit": 165,
+      "x-govspeak-enabled": true
     },
     "date_range": {
       "type": "object",
       "additionalProperties": false,
+      "x-embeddable-as-block": true,
+      "x-block-display-fields": ["start", "end"],
+      "x-field-order": ["start", "end"],
       "required": ["start", "end"],
       "properties": {
         "start": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "x-component-name": "date_time"
         },
         "end": {
           "type": "string",
           "format": "date-time",
-          "formatMinimum": { "$ref": "#/date_range/start" }
+          "formatMinimum": { "$ref": "#/date_range/start" },
+          "x-component-name": "date_time"
         }
       }
     }

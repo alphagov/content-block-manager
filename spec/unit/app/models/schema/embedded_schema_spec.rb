@@ -102,49 +102,18 @@ RSpec.describe Schema::EmbeddedSchema do
     expect(%w[title amount description frequency]).to eq(schema.fields.map(&:name))
   end
 
-  describe "#group" do
-    describe "when a group is given in config" do
-      before do
-        allow(Schema::EmbeddedSchema)
-          .to receive(:schema_settings)
-          .and_return({ "schemas" => {
-            parent_schema.id => {
-              "subschemas" => {
-                "bar" => {
-                  "group" => "a_group",
-                },
-              },
-            },
-          } })
-      end
-
-      it "returns the subschemas default name" do
-        expect(schema.group).to eq("a_group")
-      end
-    end
-
-    describe "when a group is not given in config" do
-      it "returns nil" do
-        expect(schema.group).to be_nil
-      end
-    end
-  end
-
-  describe "when an order is given in the config" do
-    before do
-      allow(Schema::EmbeddedSchema)
-        .to receive(:schema_settings)
-        .and_return({
-          "schemas" => {
-            parent_schema.id => {
-              "subschemas" => {
-                schema_id => {
-                  "field_order" => %w[frequency amount description title],
-                },
-              },
-            },
+  describe "when an order is given in the schema body" do
+    let(:body) do
+      {
+        "type" => "object",
+        "patternProperties" => {
+          "*" => {
+            "type" => "object",
+            "x-field-order" => %w[frequency amount description title],
+            "properties" => properties,
           },
-        })
+        },
+      }
     end
 
     it "orders fields" do
@@ -153,12 +122,6 @@ RSpec.describe Schema::EmbeddedSchema do
   end
 
   describe "when no order is given" do
-    before do
-      allow(Schema)
-        .to receive(:schema_settings)
-        .and_return({})
-    end
-
     it "prioritises the title" do
       expect(%w[title amount description frequency]).to eq(schema.fields.map(&:name))
     end
@@ -192,94 +155,6 @@ RSpec.describe Schema::EmbeddedSchema do
 
     it "returns the fields" do
       expect(schema.fields.map(&:name)).to eq(%w[foo bar])
-    end
-  end
-
-  describe "#embeddable_as_block?" do
-    describe "when set in the config" do
-      before do
-        allow(Schema::EmbeddedSchema)
-          .to receive(:schema_settings)
-          .and_return({
-            "schemas" => {
-              parent_schema.id => {
-                "subschemas" => {
-                  schema_id => {
-                    "embeddable_as_block" => true,
-                  },
-                },
-              },
-            },
-          })
-      end
-
-      it "returns true" do
-        expect(schema).to be_embeddable_as_block
-      end
-    end
-
-    describe "when not set in the config" do
-      before do
-        allow(Schema::EmbeddedSchema)
-          .to receive(:schema_settings)
-          .and_return({
-            "schemas" => {
-              parent_schema.id => {
-                "subschemas" => {
-                  schema_id => {},
-                },
-              },
-            },
-          })
-      end
-
-      it "returns false" do
-        assert_not schema.embeddable_as_block?
-      end
-    end
-  end
-
-  describe "#group_order" do
-    describe "when set in the config" do
-      before do
-        allow(Schema::EmbeddedSchema)
-          .to receive(:schema_settings)
-          .and_return({
-            "schemas" => {
-              parent_schema.id => {
-                "subschemas" => {
-                  schema_id => {
-                    "group_order" => "12",
-                  },
-                },
-              },
-            },
-          })
-      end
-
-      it "returns the group order as an integer" do
-        expect(12).to eq(schema.group_order)
-      end
-    end
-
-    describe "when not set in the config" do
-      before do
-        allow(Schema::EmbeddedSchema)
-          .to receive(:schema_settings)
-          .and_return({
-            "schemas" => {
-              parent_schema.id => {
-                "subschemas" => {
-                  schema_id => {},
-                },
-              },
-            },
-          })
-      end
-
-      it "returns infinity to put the item at the end of the group" do
-        expect(Float::INFINITY).to eq(schema.group_order)
-      end
     end
   end
 

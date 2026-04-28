@@ -2,12 +2,16 @@
   "type": "object",
   "required": ["tax_type"],
   "additionalProperties": false,
+  "x-field-order": ["title", "abbreviation", "synonym", "tax_type", "description", "note"],
   "properties": {
     "abbreviation": {
       "type": "string"
     },
     "description": {
-      "type": "string"
+      "type": "string",
+      "x-component-name": "textarea",
+      "x-character-limit": 165,
+      "x-govspeak-enabled": true
     },
     "synonym": {
       "type": "string"
@@ -24,6 +28,8 @@
           "type": "object",
           "required": ["title", "type", "rates"],
           "additionalProperties": false,
+          "x-block-display-fields": ["rates"],
+          "x-field-order": ["title", "type", "rates"],
           "properties": {
             "title": {
               "type": "string"
@@ -44,6 +50,7 @@
               "items": {
                 "type": "object",
                 "required": ["name", "value"],
+                "x-field-order": ["name", "value", "unit", "bands"],
                 "properties": {
                   "name": {
                     "type": "string"
@@ -56,16 +63,19 @@
                     "items": {
                       "type": "object",
                       "required": ["name"],
+                      "x-field-order": ["name", "lower_threshold", "upper_threshold"],
                       "properties": {
                         "name": {
                           "type": "string"
                         },
                         "lower_threshold": {
                           "type": "object",
+                          "x-show-field-name": "show",
                           "required": ["value"],
                           "properties": {
                             "show": {
                               "type": "boolean",
+                              "x-hidden-field": true,
                               "default": false
                             },
                             "value": {
@@ -75,10 +85,12 @@
                         },
                         "upper_threshold": {
                           "type": "object",
+                          "x-show-field-name": "show",
                           "required": ["value"],
                           "properties": {
                             "show": {
                               "type": "boolean",
+                              "x-hidden-field": true,
                               "default": false
                             },
                             "value": {

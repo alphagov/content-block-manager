@@ -6,10 +6,10 @@ class Schema
     live: %w[contact pension],
   }.freeze
 
-  CONFIG_PATH = Rails.root.join("config/content_block_manager.yml").to_s
-
   # Defines fields that are not used for display
   INTERNAL_PROPERTY_NAMES = %w[order].freeze
+
+  include Schema::Configuration
 
   class << self
     def supported_block_types
@@ -36,10 +36,6 @@ class Schema
 
     def is_valid_schema?(key)
       key.end_with?(*supported_block_types)
-    end
-
-    def schema_settings
-      @schema_settings ||= YAML.load_file(CONFIG_PATH)
     end
   end
 
@@ -90,21 +86,9 @@ class Schema
     @block_type ||= id.delete_prefix("#{SCHEMA_PREFIX}_")
   end
 
-  def block_display_fields
-    config["block_display_fields"] || []
-  end
-
-  def embeddable_as_block?
-    config["embeddable_as_block"].present?
-  end
-
-  def config
-    @config ||= self.class.schema_settings.dig("schemas", @id) || {}
-  end
-
   def field_ordering_rule(field)
     if field_order
-      # If a field order is found in the config, order by the index. If a field is not found, put it to the end
+      # If a field order is found in the schema body, order by index and keep unknown fields at the end
       field_order.index(field) || 99
     else
       # By default, order with title first
@@ -150,10 +134,6 @@ private
 
   def sort_fields(fields)
     fields.sort_by { |field| field_ordering_rule(field) }
-  end
-
-  def field_order
-    @field_order ||= config["field_order"]
   end
 
   def embedded_objects

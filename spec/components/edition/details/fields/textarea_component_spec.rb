@@ -35,7 +35,7 @@ RSpec.describe Edition::Details::Fields::TextareaComponent, type: :component do
 
     context "and the field has a character limit" do
       before do
-        allow(field).to receive(:config).and_return({ "character_limit" => 500 })
+        allow(field).to receive(:character_limit).and_return(500)
       end
       it "does not display guidance to indicate 'Govspeak supported'" do
         render_inline component

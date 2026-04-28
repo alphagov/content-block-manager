@@ -76,8 +76,8 @@ RSpec.describe FactCheck::BlocksController, type: :feature do
 
     context "when the block has a grouped subschema" do
       let(:subschemas) do
-        [Schema::EmbeddedSchema.new("addresses", {}, schema),
-         Schema::EmbeddedSchema.new("contact_links", {}, schema)]
+        [Schema::EmbeddedSchema.new("addresses", { "x-group" => "contact_methods" }, schema),
+         Schema::EmbeddedSchema.new("contact_links", { "x-group" => "contact_methods" }, schema)]
       end
       let(:schema) { build(:schema, block_type: :contact, body: SchemaHelpers::MINIMAL_CONTACT_SCHEMA_BODY) }
 
