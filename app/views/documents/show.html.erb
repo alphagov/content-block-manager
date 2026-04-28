@@ -82,6 +82,19 @@
   </div>
 <% end %>
 
+<% @schema.formats.each do |format| %>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <%= render(
+            Edition::Show::FormatBlockComponent.new(
+              edition: @edition,
+              format: format,
+            ),
+          ) %>
+    </div>
+  </div>
+<% end %>
+
 <% @subschemas.grouped.each do |group, subschemas| %>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">

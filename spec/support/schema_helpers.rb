@@ -43,6 +43,7 @@ module SchemaHelpers
         },
       },
       block_type:,
+      formats: [],
       permitted_params: %i[foo bar],
       subschemas:,
       block_display_fields: [],

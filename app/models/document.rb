@@ -39,6 +39,10 @@ class Document < ApplicationRecord
     "#{embed_code_prefix}/#{field_path}}}"
   end
 
+  def embed_code_for_format(format)
+    "#{embed_code_prefix}##{format}}}"
+  end
+
   def title
     @title ||= most_recent_edition&.title
   end
