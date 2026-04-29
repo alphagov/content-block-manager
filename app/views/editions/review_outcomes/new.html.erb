@@ -4,45 +4,49 @@
   } %>
 <% end %>
 
-<%= form_tag(create_review_outcome_edition_path(@edition)) do %>
+<div class="govuk-grid-row">
+  <%= form_tag(create_review_outcome_edition_path(@edition),
+               class: "govuk-grid-column-two-thirds") do %>
 
-  <%= render "govuk_publishing_components/components/radio", {
-    name: "review_outcome[review_performed]",
-    heading: I18n.t("edition.outcomes.heading.review"),
-    heading_caption: @edition.title,
-    heading_level: 1,
-    error_message: flash.alert.presence,
-    description: I18n.t("edition.outcomes.description.fact_check"),
-    items: [
-      {
-        value: "true",
-        text: I18n.t("edition.outcomes.options.review.performed"),
-        conditional: render("govuk_publishing_components/components/input", {
-          label: {
-            text: I18n.t("edition.outcomes.performer.label.review"),
-          },
-          name: "review_outcome[review_performer]",
-        }),
-      },
-      {
-        value: "false",
-        text: I18n.t("edition.outcomes.options.review.skip"),
-      },
-    ],
-  } %>
+    <%= render "govuk_publishing_components/components/radio", {
+      name: "review_outcome[review_performed]",
+      class: "govuk-grid-column-one-half",
+      heading: I18n.t("edition.outcomes.heading.review"),
+      heading_caption: @edition.title,
+      heading_level: 1,
+      error_message: flash.alert.presence,
+      description: I18n.t("edition.outcomes.description.fact_check"),
+      items: [
+        {
+          value: "true",
+          text: I18n.t("edition.outcomes.options.review.performed"),
+          conditional: render("govuk_publishing_components/components/input", {
+            label: {
+              text: I18n.t("edition.outcomes.performer.label.review"),
+            },
+            name: "review_outcome[review_performer]",
+          }),
+        },
+        {
+          value: "false",
+          text: I18n.t("edition.outcomes.options.review.skip"),
+        },
+      ],
+      } %>
 
-  <div class="govuk-button-group govuk-!-margin-bottom-6">
-    <%= render "govuk_publishing_components/components/button", {
-      text: "Continue",
-      name: "continue",
-      value: "Continue",
-      type: "submit",
-    } %>
-    <%= render "govuk_publishing_components/components/button", {
-      text: "Cancel",
-      href: document_path(@edition.document),
-      secondary_solid: true,
-    } %>
-  </div>
+    <div class="govuk-button-group govuk-!-margin-bottom-6">
+      <%= render "govuk_publishing_components/components/button", {
+        text: "Continue",
+        name: "continue",
+        value: "Continue",
+        type: "submit",
+        } %>
+      <%= render "govuk_publishing_components/components/button", {
+        text: "Cancel",
+        href: document_path(@edition.document),
+        secondary_solid: true,
+        } %>
+    </div>
 
-<% end %>
+  <% end %>
+</div>
