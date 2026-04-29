@@ -1,7 +1,8 @@
 class Editions::FactCheckOutcomesController < BaseController
-  before_action :set_edition_and_title, only: %i[new identify_performer]
+  before_action :set_edition_and_title, only: %i[new]
 
   def new
+    @transition = block_will_be_scheduled? ? "schedule" : "publish"
     render :new
   end
 
@@ -9,36 +10,11 @@ class Editions::FactCheckOutcomesController < BaseController
     @edition = Edition.find(params[:id])
     return form_validation_error unless fact_check_outcome_supplied?
 
-    if fact_check_skipped?
-      @edition.create_fact_check_outcome!(
-        "skipped" => true,
-        "creator" => Current.user,
-      )
-      finalise_edition
-    else
-      redirect_to identify_performer_fact_check_outcome_edition_path(@edition)
-    end
-  end
-
-  def identify_performer
-    @transition = block_will_be_scheduled? ? "schedule" : "publish"
-
-    render :identify_performer
-  end
-
-  def update
-    @edition = Edition.find(params[:id])
-
-    begin
-      @edition.create_fact_check_outcome!(
-        "skipped" => false,
-        "creator" => Current.user,
-        "performer" => fact_check_performer,
-      )
-    rescue ActionController::ParameterMissing
-      return handle_missing_fact_check_performer
-    end
-
+    @edition.create_fact_check_outcome!(
+      "skipped" => fact_check_skipped?,
+      "creator" => Current.user,
+      "performer" => fact_check_performer,
+    )
     finalise_edition
   end
 
@@ -57,23 +33,12 @@ private
   end
 
   def fact_check_performer
-    if outcome_params["fact_check_performer"].blank?
-      raise ActionController::ParameterMissing, I18n.t("edition.outcomes.errors.missing_performer.fact_check")
-    end
-
-    outcome_params["fact_check_performer"]
+    outcome_params["fact_check_performer"].presence
   end
 
   def form_validation_error
     alert = I18n.t("edition.outcomes.errors.missing_outcome.fact_check")
     redirect_to new_fact_check_outcome_edition_path(@edition), alert:
-  end
-
-  def record_fact_check_outcome
-    @edition.create_fact_check_outcome!(
-      "skipped" => fact_check_skipped?,
-      "creator" => Current.user,
-    )
   end
 
   def fact_check_outcome_supplied?
@@ -115,11 +80,6 @@ private
     record_error(error)
     flash.alert = I18n.t("edition.states.transition_error")
     redirect_to document_path(@edition.document)
-  end
-
-  def handle_missing_fact_check_performer
-    flash.alert = I18n.t("edition.outcomes.errors.missing_performer.fact_check")
-    redirect_to identify_performer_fact_check_outcome_edition_path(@edition)
   end
 
   def record_error(error)

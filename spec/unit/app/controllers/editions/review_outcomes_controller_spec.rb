@@ -4,6 +4,7 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
 
   before do
     allow(Edition).to receive(:find).and_return(edition)
+    allow(edition).to receive(:ready_for_factcheck!)
   end
 
   describe "GET to :new" do
@@ -54,9 +55,62 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
           it "redirects to the document path" do
             expect(response).to redirect_to("/456")
           end
+
+          it "shows a success message" do
+            expected_success_message = Edition::StateTransitionMessage.new(
+              edition: edition,
+              state: :awaiting_factcheck,
+            ).to_s
+            expect(flash[:success]).to eq(expected_success_message)
+          end
+
+          it "should transition to the next state" do
+            expect(edition).to have_received(:ready_for_factcheck!)
+          end
+
+          it "shows an important notice directing user to share the link" do
+            expect(flash[:notice]).to eq(I18n.t("edition.states.important_notice.awaiting_factcheck"))
+          end
         end
 
         context "when the editor has indicated that the Review was performed" do
+          before do
+            post :create, params: {
+              id: 123,
+              "review_outcome" => { "review_performed" => true, "review_performer" => "alice@example.com" },
+            }
+          end
+
+          it "saves the Review outcome details" do
+            expect(edition).to have_received(:create_review_outcome!).with(
+              "skipped" => false,
+              "creator" => current_user,
+              "performer" => "alice@example.com",
+            )
+          end
+
+          it "redirects to the document path" do
+            expect(response).to redirect_to("/456")
+          end
+
+          it "shows a success message" do
+            expected_success_message = Edition::StateTransitionMessage.new(
+              edition: edition,
+              state: :awaiting_factcheck,
+            ).to_s
+            expect(flash[:success]).to eq(expected_success_message)
+          end
+
+          it "should transition to the next state" do
+            expect(edition).to have_received(:ready_for_factcheck!)
+          end
+
+          it "shows an important notice directing user to share the link" do
+            expect(flash[:notice]).to eq(I18n.t("edition.states.important_notice.awaiting_factcheck"))
+          end
+        end
+
+        context "when the review was performed but the editor has not provided the performer's identity" do
           before do
             post :create, params: {
               id: 123,
@@ -64,22 +118,32 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
             }
           end
 
-          it "does not save the Review outcome details" do
-            expect(edition).not_to have_received(:create_review_outcome!)
+          it "saves the Review outcome details" do
+            expect(edition).to have_received(:create_review_outcome!).with(
+              "skipped" => false,
+              "creator" => current_user,
+            )
           end
-        end
-      end
 
-      describe "redirecting to the appropriate next step" do
-        before do
-          post :create, params: {
-            id: 123,
-            "review_outcome" => { "review_performed" => true },
-          }
-        end
+          it "redirects to the document path" do
+            expect(response).to redirect_to("/456")
+          end
 
-        it "should redirect the user to the identify_performer step of the fact check process" do
-          expect(response).to redirect_to("/editions/123/review_outcomes/identify_performer")
+          it "shows a success message" do
+            expected_success_message = Edition::StateTransitionMessage.new(
+              edition: edition,
+              state: :awaiting_factcheck,
+            ).to_s
+            expect(flash[:success]).to eq(expected_success_message)
+          end
+
+          it "should transition to the next state" do
+            expect(edition).to have_received(:ready_for_factcheck!)
+          end
+
+          it "shows an important notice directing user to share the link" do
+            expect(flash[:notice]).to eq(I18n.t("edition.states.important_notice.awaiting_factcheck"))
+          end
         end
       end
     end
@@ -100,131 +164,6 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
         expect(flash.alert).to eq("Indicate whether the 2i review process has been performed or not")
       end
     end
-  end
-
-  describe "GET to :identify_performer" do
-    before do
-      get :identify_performer, params: { id: 123 }
-    end
-
-    it "sets the @edition variable to the given edition" do
-      expect(Edition).to have_received(:find).with("123")
-      expect(assigns(:edition)).to eq(edition)
-    end
-
-    it "renders the editions/review_outcomes/identify_performer template" do
-      expect(response).to have_rendered("editions/review_outcomes/identify_performer")
-    end
-  end
-
-  describe "PUT to :update" do
-    let(:time_now) { Time.current }
-    let(:current_user) { instance_double(User, id: 987) }
-    let(:review_outcome) { spy(ReviewOutcome) }
-
-    before do
-      allow(Time).to receive(:current).and_return(time_now)
-      allow(Current).to receive(:user).and_return(current_user)
-      allow(edition).to receive(:update)
-      allow(edition).to receive(:ready_for_factcheck!)
-      allow(edition).to receive(:review_outcome).and_return(review_outcome)
-    end
-
-    context "when the request is valid" do
-      before do
-        allow(edition).to receive(:create_review_outcome!)
-
-        put :update, params: {
-          id: 123,
-          "review_outcome" => { "review_performer" => "Alice" },
-        }
-      end
-
-      it "should create the review outcome with the 2i reviewer" do
-        expect(edition).to have_received(:create_review_outcome!).with(
-          "skipped" => false,
-          "creator" => current_user,
-          "performer" => "Alice",
-        )
-      end
-    end
-
-    context "when the performer field is missing" do
-      before do
-        put :update, params: {
-          id: 123,
-          "review_outcome" => {},
-        }
-        allow(edition).to receive(:ready_for_factcheck!)
-      end
-
-      it "redirects to the same page to prevent the user progressing" do
-        expect(response).to redirect_to("/editions/123/review_outcomes/identify_performer")
-      end
-
-      it "shows an error message" do
-        expected_message = I18n.t("edition.outcomes.errors.missing_performer.review")
-        expect(flash.alert).to eq(expected_message)
-      end
-
-      it "should not transition to the next state" do
-        expect(edition).not_to have_received(:ready_for_factcheck!)
-      end
-    end
-
-    context "when the performer field is blank" do
-      before do
-        put :update, params: {
-          id: 123,
-          "review_outcome" => { "review_performer" => "" },
-        }
-        allow(edition).to receive(:ready_for_factcheck!)
-      end
-
-      it "redirects to the same page to prevent the user progressing" do
-        expect(response).to redirect_to("/editions/123/review_outcomes/identify_performer")
-      end
-
-      it "shows an error message" do
-        expected_message = I18n.t("edition.outcomes.errors.missing_performer.review")
-        expect(flash.alert).to eq(expected_message)
-      end
-
-      it "should not transition to the next state" do
-        expect(edition).not_to have_received(:ready_for_factcheck!)
-      end
-    end
-
-    context "when updating the outcome with the performer" do
-      before do
-        allow(edition).to receive(:create_review_outcome!)
-
-        put :update, params: {
-          id: 123,
-          "review_outcome" => { "review_performer" => "Alice" },
-        }
-      end
-
-      it "transitions the edition using the 'ready_for_factcheck!' transition" do
-        expect(edition).to have_received(:ready_for_factcheck!)
-      end
-
-      it "redirects to the documents_path to display the most recent edition" do
-        expect(response).to redirect_to("/456")
-      end
-
-      it "shows a success message" do
-        expected_success_message = Edition::StateTransitionMessage.new(
-          edition: edition,
-          state: :awaiting_factcheck,
-        ).to_s
-        expect(flash[:success]).to eq(expected_success_message)
-      end
-
-      it "shows an important notice directing user to share the link" do
-        expect(flash[:notice]).to eq(I18n.t("edition.states.important_notice.awaiting_factcheck"))
-      end
-    end
 
     describe "when the transition fails" do
       let(:error_message) do
@@ -239,9 +178,9 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
 
         allow(Edition::StateTransitionErrorReport).to receive(:new).and_return(error_report)
 
-        put :update, params: {
+        post :create, params: {
           id: 123,
-          "review_outcome" => { "review_performer" => "Alice" },
+          "review_outcome" => { "review_performed": true, "review_performer" => "alice@example.com" },
         }
       end
 
@@ -250,9 +189,7 @@ RSpec.describe Editions::ReviewOutcomesController, type: :controller do
       end
 
       it "includes an error message" do
-        expect(flash.alert).to eq(
-          "Error: it was not possible to perform that action. The error has been logged.",
-        )
+        expect(flash.alert).to eq("Error: it was not possible to perform that action. The error has been logged.")
       end
 
       it "records the error details using StateTransitionErrorReport to facilitate remediation" do

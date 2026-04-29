@@ -24,18 +24,9 @@ end
 
 When("I provide the outcome of the fact check process") do
   choose(I18n.t("edition.outcomes.options.fact_check.performed"))
-  click_button("Continue")
 end
 
 Then("I am required to provide the subject matter expert") do
-  within "h1" do
-    expect(page).to have_content(I18n.t("edition.outcomes.heading.fact_check"))
-  end
-
-  within ".govuk-caption-xl" do
-    expect(page).to have_content(edition.title)
-  end
-
   expect(page).to have_field(I18n.t("edition.outcomes.performer.label.fact_check"), type: :text)
 end
 

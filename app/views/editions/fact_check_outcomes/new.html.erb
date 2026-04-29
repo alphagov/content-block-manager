@@ -6,38 +6,48 @@
   } %>
 <% end %>
 
-<%= form_tag(create_fact_check_outcome_edition_path(@edition)) do %>
+<div class="govuk-grid-row">
+  <%= form_tag(create_fact_check_outcome_edition_path(@edition),
+               class: "govuk-grid-column-two-thirds") do %>
 
-  <%= render "govuk_publishing_components/components/radio", {
-    name: "fact_check_outcome[fact_check_performed]",
-    heading: @title,
-    heading_caption: @edition.title,
-    heading_level: 1,
-    error_message: flash.alert.presence,
-    items: [
-      {
-        value: "true",
-        text: I18n.t("edition.outcomes.options.fact_check.performed"),
-      },
-      {
-        value: "false",
-        text: I18n.t("edition.outcomes.options.fact_check.skip"),
-      },
-    ],
-  } %>
+    <%= render "govuk_publishing_components/components/radio", {
+      name: "fact_check_outcome[fact_check_performed]",
+      heading: @title,
+      heading_caption: @edition.title,
+      heading_level: 1,
+      error_message: flash.alert.presence,
+      description: I18n.t("edition.outcomes.description.review"),
+      items: [
+        {
+          value: "true",
+          text: I18n.t("edition.outcomes.options.fact_check.performed"),
+          conditional: render("govuk_publishing_components/components/input", {
+            label: {
+              text: I18n.t("edition.outcomes.performer.label.fact_check"),
+            },
+            name: "fact_check_outcome[fact_check_performer]",
+          }),
+        },
+        {
+          value: "false",
+          text: I18n.t("edition.outcomes.options.fact_check.skip"),
+        },
+      ],
+      } %>
 
-  <div class="govuk-button-group govuk-!-margin-bottom-6">
-    <%= render "govuk_publishing_components/components/button", {
-      text: "Continue",
-      name: "continue",
-      value: "Continue",
-      type: "submit",
-    } %>
-    <%= render "govuk_publishing_components/components/button", {
-      text: "Cancel",
-      href: document_path(@edition.document),
-      secondary_solid: true,
-    } %>
-  </div>
+    <div class="govuk-button-group govuk-!-margin-bottom-6">
+      <%= render "govuk_publishing_components/components/button", {
+        text: I18n.t("edition.transitions.#{@transition}"),
+        name: "continue",
+        value: "Continue",
+        type: "submit",
+        } %>
+      <%= render "govuk_publishing_components/components/button", {
+        text: "Cancel",
+        href: document_path(@edition.document),
+        secondary_solid: true,
+        } %>
+    </div>
 
-<% end %>
+  <% end %>
+</div>

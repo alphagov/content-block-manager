@@ -79,10 +79,12 @@ en:
     body:
       edition:
         fact_check:
-          performed: "Fact check performed by %{performer}"
+          performed: "Fact check performed"
+          performed_with_performer: "Fact check performed by %{performer}"
           skipped: Fact check skipped
         review:
-          performed: "2i review performed by %{performer}"
+          performed: "2i review performed"
+          performed_with_performer: "2i review performed by %{performer}"
           skipped: 2i review skipped
 
   edition:
@@ -301,6 +303,9 @@ en:
       delete: Delete
       supersede: Supersede
     outcomes:
+      description:
+        review: The details you provide are recorded in the content block’s change history.
+        fact_check: The details you provide are recorded in the content block’s change history.
       heading:
         review: Was there a 2i review?
         fact_check: Was there a fact check?
@@ -313,8 +318,8 @@ en:
           performed: "Yes, outside Content Block Manager"
       performer:
         label:
-          review:    "Reviewer's name or email address"
-          fact_check: "Fact checker's name or email address"
+          review:    "Enter reviewer's email address (optional)"
+          fact_check: "Enter fact checker's email address (optional)"
       errors:
         missing_performer:
           review:    "Provide the email or name of the 2i reviewer"

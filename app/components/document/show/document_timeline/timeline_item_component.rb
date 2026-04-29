@@ -83,7 +83,11 @@ private
   end
 
   def domain_event_outcome_resolution
-    I18n.t("domain_event.body.#{domain_event.name}", performer: domain_event.metadata["performer"])
+    if domain_event.metadata["performer"].present?
+      I18n.t("domain_event.body.#{domain_event.name}_with_performer", performer: domain_event.metadata["performer"])
+    else
+      I18n.t("domain_event.body.#{domain_event.name}")
+    end
   end
 
   def date
