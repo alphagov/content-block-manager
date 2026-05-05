@@ -60,3 +60,8 @@ Rails/RakeEnvironment:
     - 'lib/tasks/coverage.rake'
     - 'lib/tasks/converter.rake'
     - 'lib/tasks/lint.rake'
+
+# Don't require a Ruby version to be specified in gemspecs within engines.
+Gemspec/RequiredRubyVersion:
+  Exclude:
+    - 'engines/**/*.gemspec'
