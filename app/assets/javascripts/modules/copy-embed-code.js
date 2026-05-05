@@ -148,6 +148,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
     function () {
       this.removeEmbedCodesFromEmbeddedBlocks()
       this.removeEmbedCodeFromDefaultBlock()
+      this.removeEmbedCodeFromFormatBlocks()
     }
 
   CopyEmbedCode.prototype.removeEmbedCodesFromEmbeddedBlocks = function () {
@@ -163,6 +164,14 @@ window.GOVUK.Modules = window.GOVUK.Modules || {}
       .querySelectorAll(
         '.app-c-content-block-manager-default-block__embed_code'
       )
+      .forEach((element) => {
+        element.remove()
+      })
+  }
+
+  CopyEmbedCode.prototype.removeEmbedCodeFromFormatBlocks = function () {
+    this.module
+      .querySelectorAll('.app-c-content-block-manager-format-block__embed_code')
       .forEach((element) => {
         element.remove()
       })

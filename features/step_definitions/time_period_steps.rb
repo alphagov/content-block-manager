@@ -237,6 +237,35 @@ Then("the time period date range fields should be populated with the invalid val
   time_period.should_see_raw_time_period_values_in_form(raw_values: time_period.invalid_date_raw_values, page: page)
 end
 
+Then("I see the representation of each available time_period format") do
+  doc = Document.where(block_type: "time_period").last
+
+  doc.schema.formats.each do |format|
+    within ".app-c-content-block-manager-format-block " \
+           ".gem-c-summary-card[title='#{format.humanize}']" do |format_block|
+      within ".content-block" do
+        rendered_format_block = doc.editions.last.render(doc.embed_code_for_format(format))
+        format_node = Capybara.string(rendered_format_block)
+
+        expect(format_block).to have_content(format_node.text.strip)
+      end
+    end
+  end
+end
+
+Then("I see the embed code for each available TimePeriod format") do
+  doc = Document.where(block_type: "time_period").last
+
+  doc.schema.formats.each do |format|
+    within ".app-c-content-block-manager-format-block " \
+      ".gem-c-summary-card[title='#{format.humanize}']" do |format_block|
+      within ".content-block" do
+        expect(format_block).to have_content(doc.embed_code_for_format(format))
+      end
+    end
+  end
+end
+
 def has_error_message_linking_to_field_group(message:, field_group_id:)
   expect(page).to have_selector(
     "a[href='#{field_group_id}']",

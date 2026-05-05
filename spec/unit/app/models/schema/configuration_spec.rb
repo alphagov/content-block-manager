@@ -2,6 +2,26 @@ RSpec.describe Schema::Configuration do
   let(:body) { { "properties" => { "foo" => {}, "bar" => {}, "title" => {} } } }
   let(:schema) { build(:schema, :pension, body:) }
 
+  describe "#formats" do
+    describe "when `x-formats` is set in the schema body" do
+      let(:body) do
+        {
+          "x-formats" => %w[long short],
+        }
+      end
+
+      it "returns the formats from the JSON body" do
+        expect(schema.formats).to eq(%w[long short])
+      end
+    end
+
+    describe "when `x-formats` is not set in the schema body" do
+      it "returns an empty list" do
+        expect(schema.formats).to eq([])
+      end
+    end
+  end
+
   describe "#block_display_fields" do
     describe "when `x-block-display-fields` is set in the schema body" do
       let(:body) do
