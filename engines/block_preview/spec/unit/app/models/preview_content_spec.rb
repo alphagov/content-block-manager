@@ -143,6 +143,15 @@ RSpec.describe BlockPreview::PreviewContent do
       allow(BlockPreview::PreviewHtml).to receive(:new).and_return(preview_html_response)
     end
 
+    context "when the locale is empty" do
+      let(:locale) { "" }
+
+      it "defaults the locale to 'en'" do
+        preview_content.html
+        expect(BlockPreview::PreviewHtml).to have_received(:new).with(hash_including(locale: "en"))
+      end
+    end
+
     it "builds preview html using the host content base path by default" do
       expect(preview_content.html).to eq(html)
 
