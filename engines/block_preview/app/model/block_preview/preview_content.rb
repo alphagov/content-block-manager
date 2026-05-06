@@ -8,7 +8,7 @@ module BlockPreview
       @content_id = content_id
       @block = block
       @base_path = base_path
-      @locale = locale
+      @locale = locale.presence || "en"
       @state = validated_state(state)
     end
 
