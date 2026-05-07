@@ -3,6 +3,7 @@ require "govuk_sidekiq/gds_sso_middleware"
 Rails.application.routes.draw do
   get "/healthcheck/live", to: proc { [200, {}, %w[OK]] }
   get "/healthcheck/ready", to: GovukHealthcheck.rack_response
+  get "/accessibility-statement", to: "pages#accessibility_statement"
   mount Flipflop::Engine => "/flipflop"
   mount FactCheck::Engine => "/fact-check"
   mount BlockPreview::Engine => "/preview"
