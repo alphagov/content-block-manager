@@ -97,6 +97,10 @@ RSpec.describe BlockPreview::PreviewHtml do
   end
 
   it "returns the preview html" do
+    nokogiri_spy = double("Nokogiri::HTML::DocumentFragment", replace: "")
+    allow_any_instance_of(Nokogiri::HTML::Document).to receive(:at_css).and_call_original
+    allow_any_instance_of(Nokogiri::HTML::Document).to receive(:at_css).with('[data-module="govspeak"]').and_return(nokogiri_spy)
+
     actual_content = BlockPreview::PreviewHtml.new(
       content_id: host_content_id,
       block: block_to_preview,
@@ -110,7 +114,7 @@ RSpec.describe BlockPreview::PreviewHtml do
 
     expect(parsed_content.at_css("body.gem-c-layout-for-public--draft")).to be_present
     expect(BlockPreview::ContentDiff).to have_received(:new).with(
-      anything,
+      nokogiri_spy,
       block_to_preview,
     )
     expect(content_diff_spy).to have_received(:to_s)
@@ -213,6 +217,10 @@ RSpec.describe BlockPreview::PreviewHtml do
           expect(internal_link_query_hash["locale"]).to eq("en")
         end
 
+        it "represents the correct tab with tab param" do
+          expect(internal_link_query_hash["tab"]).to eq("preview")
+        end
+
         it "represents the target base path with url param" do
           expect(internal_link_query_hash["base_path"]).to eq("/foo")
         end
@@ -271,6 +279,7 @@ RSpec.describe BlockPreview::PreviewHtml do
         edition_id: block_to_preview.id,
         host_content_id: host_content_id,
         locale: "en",
+        tab: "preview",
       )
       expected_url = "#{Plek.website_root}/foo"
       expected_action = "#{form_handler_path}&url=#{expected_url}&method=get"

@@ -30,6 +30,8 @@ $govuk-page-width: 1140px;
 @import "views/content_block_manager_show";
 @import "views/editions/preview";
 
+@import "../../../engines/block_preview/app/assets/stylesheets/application";
+
 .app-js-only {
   display: none;
 }
