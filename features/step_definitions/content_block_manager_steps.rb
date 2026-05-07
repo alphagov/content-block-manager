@@ -453,3 +453,19 @@ end
 Then(/^the duplicate title validation check will have been skipped$/) do
   expect(page).to_not have_content(I18n.t("activerecord.errors.models.edition.title.not_unique"))
 end
+
+Then(/^I see the "Accessibility statement" link in the footer$/) do
+  expect(page).to have_link("Accessibility statement", href: accessibility_statement_path)
+end
+
+When(/^I click the "Accessibility statement" link$/) do
+  click_link "Accessibility statement"
+end
+
+Then(/^I am on the accessibility statement page$/) do
+  expect(page).to have_current_path(accessibility_statement_path)
+end
+
+And(/^I see the heading "Accessibility statement"$/) do
+  expect(page).to have_selector("h1", text: "Accessibility statement")
+end
