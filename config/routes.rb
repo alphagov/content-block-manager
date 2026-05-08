@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   mount FactCheck::Engine => "/fact-check"
   mount BlockPreview::Engine => "/preview"
   mount GovukSidekiq::GdsSsoMiddleware, at: "/sidekiq"
+  mount Api::Engine => "/api"
 
   scope via: :all do
     match "/400", to: "errors#bad_request"
