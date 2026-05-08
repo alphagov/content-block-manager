@@ -1,4 +1,9 @@
 PATH
+  remote: engines/api
+  specs:
+    api (0.0.1)
+
+PATH
   remote: engines/block_preview
   specs:
     block_preview (0.0.1)
@@ -937,6 +942,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  api!
   babosa
   benchmark
   better_errors
@@ -1018,6 +1024,7 @@ CHECKSUMS
   activestorage (8.1.3) sha256=0564ce9309143951a67615e1bb4e090ee54b8befed417133cae614479b46384d
   activesupport (8.1.3) sha256=21a5e0dfbd4c3ddd9e1317ec6a4d782fa226e7867dc70b0743acda81a1dca20e
   addressable (2.9.0) sha256=7fdf6ac3660f7f4e867a0838be3f6cf722ace541dd97767fa42bc6cfa980c7af
+  api (0.0.1)
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
   babosa (2.1.0) sha256=36bdf8d7d0e90180ee03386e7f81cd70ad5e9cc53c4cbca79641fa6624de12b4
   base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
@@ -1336,4 +1343,4 @@ CHECKSUMS
   zeitwerk (2.7.5) sha256=d8da92128c09ea6ec62c949011b00ed4a20242b255293dd66bf41545398f73dd
 
 BUNDLED WITH
-   4.0.10
+  4.0.10
