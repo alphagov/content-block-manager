@@ -22,3 +22,10 @@ Feature: Content block manager
     Given I do not have the "pre_release_features" permission
     When I visit the Content Block Manager home page
     Then I do not see the warning that the pre-release features are enabled
+
+  Scenario: Follow link to accessibility statement
+    When I visit the Content Block Manager home page
+    Then I see the "Accessibility statement" link in the footer
+    When I click the "Accessibility statement" link
+    Then I am on the accessibility statement page
+    And I see the heading "Accessibility statement"
