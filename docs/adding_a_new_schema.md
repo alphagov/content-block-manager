@@ -7,7 +7,8 @@ To add a new content block schema, follow the instructions below:
 Schemas are defined in the [Schema definitions directory](https://github.com/alphagov/content-block-manager/tree/main/app/models/schema/definitions)
 in a JSON schema format.
 
-This represents the shape of the data which will be stored in a content block's `details` field.
+This represents the shape of the data which will be stored in a content block's `details` field, as well as any UI
+customisations that should be applied to the content block (see [configuration](configuration.md).).
 
 Once the schema is defined, you must define it as a supported schema in the
 [`VALID_SCHEMAS` constant within the Schema class](https://github.com/alphagov/content-block-manager/blob/main/app/public/models/schema.rb#L4)
@@ -21,13 +22,6 @@ in production.
 
 You should add tests for the new schema in the [Schema tests directory](https://github.com/alphagov/content-block-manager/tree/main/spec/unit/app/validators/details_validator),
 following the pattern of the existing tests. If the schema has specific validation rules, ensure these are covered too.
-
-## Add any customisations
-
-There is a [config file](https://github.com/alphagov/content-block-manager/blob/main/config/content_block_manager.yml)
-which allows you to configure how the schema is presented in Content Block Manager.
-
-[See all available configuration variables](configuration.md)
 
 ## Open a pull request
 
