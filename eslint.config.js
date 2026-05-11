@@ -1,20 +1,13 @@
 const { defineConfig, globalIgnores } = require('eslint/config')
 
 const globals = require('globals')
-const js = require('@eslint/js')
-
-const { FlatCompat } = require('@eslint/eslintrc')
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all
-})
+const neostandard = require('neostandard')
+const eslintConfigPrettier = require('eslint-config-prettier')
 
 module.exports = defineConfig([
+  ...neostandard({ noStyle: true }),
+  eslintConfigPrettier,
   {
-    extends: compat.extends('standard', 'prettier'),
-
     languageOptions: {
       globals: {
         ...globals.browser,
