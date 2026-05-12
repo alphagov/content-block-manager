@@ -1,2 +1,2 @@
 require:
-  - packwerk/privacy/checker
+  - packwerk-extensions
