@@ -18,15 +18,14 @@
 
       <%= render "govuk_publishing_components/components/radio", {
         name: "edition[major_change]",
-        hint: "Some content types show public change notes. GOV.UK users can subscribe to email alerts and RSS feeds to receive public change notes. Telling users when published information has changed is important for transparency.",
-        id: "content_block_manager_edition_major_change",
+        hint: "<p class='govuk-body govuk-!-margin-bottom-2'>GOV.UK users can subscribe to email alerts and RSS feeds to receive public change notes. Telling users when published information has changed is important for transparency.</p><h2 class='govuk-heading-m govuk-!-margin-bottom-2'>Where change notes are published</h2><p class='govuk-body govuk-!-margin-bottom-2'> A change note is published on every page containing the content block and emailed to users. The 'last updated' date will change on the pages that display it.".html_safe,
+id: "content_block_manager_edition_major_change",
         error_items: errors_for(@edition.errors, :major_change),
         items: [
           {
             value: "1",
             checked: @edition.major_change === true,
-            text: "Yes - information has been added, updated or removed",
-            hint_text: "A change note will be published on every relevant page containing the content block you've changed. Change notes will also be emailed to users subscribed to email alerts for every page affected by this change. The 'last updated' date will change on pages that display it.",
+            text: "Yes - information has changed",
             bold: true,
             conditional: render("govuk_publishing_components/components/textarea", {
               label: {
@@ -37,14 +36,14 @@
               id: "content_block_manager_edition_change_note",
               error_items: errors_for(@edition.errors, :change_note),
               value: @edition.change_note,
-              hint: "Tell users what has been edited, where and why. Write in full sentences, leading with the most important words. For example, \"The full basic State Pension rate has changed from £156.20 per week to £169.50 per week.\"",
+              hint: "Tell users what has been edited, where and why",
             }),
           },
           {
             value: "0",
             checked: @edition.major_change === false,
-            text: "No - it's a minor edit that does not change the meaning",
-            hint_text: "This includes fixing a typo or broken link, a style change or similar. Users signed up to email alerts will not get notified and the 'last updated' date will not change.",
+            text: "No, I made minor edits only",
+            hint_text: "For example, fixing a typo or broken link",
             bold: true,
           },
         ],

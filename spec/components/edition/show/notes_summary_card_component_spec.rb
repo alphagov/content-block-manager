@@ -27,7 +27,7 @@ RSpec.describe Edition::Show::NotesSummaryCardComponent, type: :component do
       expect(page).to have_css ".govuk-summary-list__row:nth-child(1) .govuk-summary-list__actions", text: "Edit"
       expect(page).to have_css ".govuk-summary-list__row:nth-child(1) .govuk-summary-list__actions a[href='#{workflow_path(id: edition.id, step: :internal_note)}']"
 
-      expect(page).to have_css ".govuk-summary-list__row:nth-child(2) .govuk-summary-list__key", text: "Do users have to know the content has changed?"
+      expect(page).to have_css ".govuk-summary-list__row:nth-child(2) .govuk-summary-list__key", text: "Do you need to tell users the content has changed?"
       expect(page).to have_css ".govuk-summary-list__row:nth-child(2) .govuk-summary-list__value", text: "Yes"
       expect(page).to have_css ".govuk-summary-list__row:nth-child(2) .govuk-summary-list__actions", text: "Edit"
       expect(page).to have_css ".govuk-summary-list__row:nth-child(2) .govuk-summary-list__actions a[href='#{workflow_path(id: edition.id, step: :change_note)}']"
@@ -50,7 +50,7 @@ RSpec.describe Edition::Show::NotesSummaryCardComponent, type: :component do
       expect(page).to have_css ".govuk-summary-list__row:nth-child(1) .govuk-summary-list__actions", text: "Edit"
       expect(page).to have_css ".govuk-summary-list__row:nth-child(1) .govuk-summary-list__actions a[href='#{workflow_path(id: edition.id, step: :internal_note)}']"
 
-      expect(page).to have_css ".govuk-summary-list__row:nth-child(2) .govuk-summary-list__key", text: "Do users have to know the content has changed?"
+      expect(page).to have_css ".govuk-summary-list__row:nth-child(2) .govuk-summary-list__key", text: "Do you need to tell users the content has changed?"
       expect(page).to have_css ".govuk-summary-list__row:nth-child(2) .govuk-summary-list__value", text: "No"
       expect(page).to have_css ".govuk-summary-list__row:nth-child(2) .govuk-summary-list__actions", text: "Edit"
       expect(page).to have_css ".govuk-summary-list__row:nth-child(2) .govuk-summary-list__actions a[href='#{workflow_path(id: edition.id, step: :change_note)}']"

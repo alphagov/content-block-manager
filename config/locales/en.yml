@@ -131,7 +131,7 @@ en:
         cancel:
           title: Do you want to save your draft, or delete it?
         change_note:
-          title: Do users have to know the content has changed?
+          title: Do you need to tell users the content has changed?
         confirmation:
           title: Your content block is available for use
         add_embedded_object:
