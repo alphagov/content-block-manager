@@ -87,6 +87,20 @@ HEADLESS=false bundle exec cucumber
 NOTE: As this is running outside of the GOV.UK Docker environment, you will need a local database and Redis set up
 and running.
 
+### Linting and formatting
+
+To run all linters, run:
+
+```bash
+bundle exec rake:lint
+```
+
+To run all linter with automatic formatting corrections, run:
+
+```bash
+bundle exec rake:lint_autocorrect
+```
+
 ### Further documentation
 
 See the [`docs/`](docs/) directory.
