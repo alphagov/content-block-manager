@@ -2,11 +2,8 @@
 desc "Run all linters"
 task :lint do
   sh "bundle exec rubocop"
-  if Rails.env.development?
-    sh "bundle exec erb_lint --lint-all --autocorrect"
-  else
-    sh "bundle exec erb_lint --lint-all"
-  end
+  sh "bundle exec erb_lint --lint-all"
   sh "yarn run lint"
+  sh "yarn run lint:markdown"
 end
 # :nocov:
