@@ -5,9 +5,12 @@
   "author": "Government Digital Service",
   "license": "MIT",
   "scripts": {
-    "lint": "yarn run lint:js && yarn run lint:prettier && yarn run lint:scss",
+    "lint": "yarn run lint:js && yarn run lint:prettier && yarn run lint:scss && yarn run lint:markdown",
+    "lint:fix": "yarn run lint:js:fix && yarn run lint:prettier:fix && yarn run lint:scss:fix && yarn run lint:markdown:fix",
     "lint:js": "eslint --cache --cache-location .cache/eslint --color -- \"**/*.js\"",
+    "lint:js:fix": "eslint --cache --cache-location .cache/eslint --color --fix -- \"**/*.js\"",
     "lint:scss": "stylelint app/assets/stylesheets/",
+    "lint:scss:fix": "stylelint --fix app/assets/stylesheets/",
     "lint:markdown": "markdownlint **/*.md",
     "lint:markdown:fix": "markdownlint **/*.md -f",
     "lint:prettier": "prettier --cache --cache-location .cache/prettier --cache-strategy content --check -- \"**/*.{js,scss}\"",
