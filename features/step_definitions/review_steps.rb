@@ -45,8 +45,8 @@ def complete_note_step
 end
 
 def complete_change_note_step
-  expect(page).to have_content("Do users have to know the content has changed?")
-  choose("No - it's a minor edit that does not change the meaning")
+  expect(page).to have_content("Do you need to tell users the content has changed?")
+  choose("No, I made minor edits only")
   click_button("Save and continue")
 end
 

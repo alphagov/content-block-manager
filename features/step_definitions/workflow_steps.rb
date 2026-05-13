@@ -68,7 +68,7 @@ end
 
 def validate_change_note_path_and_continue
   expect(current_path).to eq(workflow_path(edition, step: :change_note))
-  choose "No - it's a minor edit that does not change the meaning"
+  choose "No, I made minor edits only"
   click_button "Save and continue"
 end
 

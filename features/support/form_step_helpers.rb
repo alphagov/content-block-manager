@@ -40,7 +40,7 @@ def should_be_on_review_step(object_type: "email_address")
 end
 
 def should_be_on_change_note_step
-  assert_text "Do users have to know the content has changed?"
+  assert_text "Do you need to tell users the content has changed?"
 end
 
 def fill_in_embedded_object_form(object_type, table)

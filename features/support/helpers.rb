@@ -143,7 +143,7 @@ end
 
 def add_change_note
   @change_note = "Some text"
-  choose "Yes - information has been added, updated or removed"
+  choose "Yes - information has changed"
   fill_in "Describe the edit for users", with: @change_note
   click_save_and_continue
 end

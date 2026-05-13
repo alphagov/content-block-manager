@@ -30,7 +30,7 @@ private
 
   def major_change_item
     {
-      key: "Do users have to know the content has changed?",
+      key: "Do you need to tell users the content has changed?",
       value: edition.major_change ? "Yes" : "No",
       actions: [
         {
