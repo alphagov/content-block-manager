@@ -24,7 +24,54 @@ The tests do the following:
 - Make a change to the block
 - Confirm this change appears on both test documents
 
+Note that the test content block (id: 18) is only visible to the E2E test user (`SIGNON_EMAIL`)
+
 ### Help! The E2Es have failed
+
+#### View logs and reproduce locally
+
+- go to the Argo **Workflows** (as distinct from Argo **CD**) at `https://argo-workflows.eks.{environment}.govuk.digital/workflows/apps/`
+- identify a failed `gov-e2e-tests` workflow node
+- view the logs to understand the error
+
+If you want to run the tests locally against a given environment to reproduce the error
+and debug, you should be able to do that by temporarily setting the credentials locally e.g.:
+
+```sh
+PUBLISHING_DOMAIN=integration.publishing.service.gov.uk
+PUBLIC_DOMAIN=www.integration.publishing.service.gov.uk
+DGU_DOMAIN=www.integration.data.gov.uk
+
+SIGNON_EMAIL=REDACTED
+SIGNON_PASSWORD=REDACTED
+```
+
+You can pull the credentials from the `secretmanager` and set them as transient environment variables with a command
+like:
+
+```sh
+source <(aws secretsmanager get-secret-value --secret-id govuk/content-block-manager/e2e-secrets | \
+  jq -r '.SecretString | fromjson | to_entries[] | "export \(.key)=\(.value); echo Set: \(.key)"')
+
+```
+
+or in the `fish` shell with:
+
+```sh
+aws secretsmanager get-secret-value --secret-id govuk/content-block-manager/e2e-secrets | \
+  jq -r '.SecretString | fromjson | to_entries[] | "set -x \(.key) \(.value); echo Set: \(.key)"' | \
+  source
+```
+
+Run our CBM tests:
+
+`yarn playwright test tests/content-block-manager.spec.js`
+
+or with the Playwright interactive UI:
+
+`yarn playwright test --ui tests/content-block-manager.spec.js`
+
+#### Check infrastructure and fixtures
 
 We're aware there is _some_ degree of flakiness in the tests, particularly in non-production environments. This is
 because the integration and staging environments have a lot of churn with data being dropped and restored on a schedule.
@@ -37,7 +84,7 @@ eval $(gds aws govuk-integration-developer -e --art 8h)
 kubectl config use-context govuk-integration
 ```
 
-#### 1. Check the Publishing API queues
+##### 1. Check the Publishing API queues
 
 The first thing to do is check to see if the Publishing API queues are busy. Sometimes, if a lot of content is queued
 for publication, this means that changes don't get reflected quickly enough, and the tests fail.
@@ -53,7 +100,7 @@ Then access <http://localhost:8080/sidekiq> in your browser.
 If the number of queued jobs is high, keep an eye on this number, and retry the tests by clicking "Resubmit" in Argo
 once the queue has calmed down.
 
-#### 2. Reset the `payload_version` of all Content Items in the Draft Content Store
+##### 2. Reset the `payload_version` of all Content Items in the Draft Content Store
 
 Sometimes, the payload versions of items in Content Store can get out of whack. This means that when Publishing API
 tries to send content to the Content Store, it gets rejected, as Content Store thinks the version of the document is
@@ -83,7 +130,7 @@ ContentItem.update_all(:payload_version => 0)
 
 Once this has run (it will take a couple of minutes), you can then try again by clicking "Resubmit" in Argo.
 
-#### 3. Delete the locked jobs
+##### 3. Delete the locked jobs
 
 Publishing API uses [sidekiq-unique-jobs][6] to ensure duplicate jobs are not queued. Sometimes this misbehaves in
 non-prod environments, and jobs that shouldn't be locked get locked.
@@ -91,7 +138,17 @@ non-prod environments, and jobs that shouldn't be locked get locked.
 To solve this, forward the Sidekiq ports as mentioned earlier, then access <http://localhost:8080/sidekiq/locks>
 and click `Delete all` to delete all the locked and stale jobs.
 
-You can then try again by clicking "Resubmit" in Argo.
+##### 4. Resubmit and observe
+
+If the issue was with the test fixtures or infrastructure:
+
+- re-submit the Argo **workflow** at `https://argo-workflows.eks.{environment}.govuk.digital/workflows/`
+
+- observe the app being promoted through to production in:
+
+  - Argo **CD** (as distinct from Argo workflow): `https://argo.eks.{environment}.govuk.digital/applications/cluster-services/content-block-manager`
+  
+  - Releases: `https://release.publishing.service.gov.uk/applications/content-block-manager`
 
 [1]: https://github.com/alphagov/govuk-e2e-tests/
 [2]: https://github.com/alphagov/content-modelling-e2e
