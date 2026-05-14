@@ -57,6 +57,18 @@ RSpec.describe Document, type: :model do
     end
   end
 
+  describe "#embed_code_for_format(format)" do
+    let(:content_id) { SecureRandom.uuid }
+    let(:content_id_alias) { "tax-year" }
+    let(:document) { create(:document, :time_period, content_id:, content_id_alias:) }
+
+    it "applies the format specifier to the base embed code (field formats not supported)" do
+      expect(document.embed_code_for_format("long")).to eq(
+        "{{embed:content_block_time_period:tax-year#long}}",
+      )
+    end
+  end
+
   describe "latest_published_edition" do
     let(:document) { create(:document, :pension) }
 

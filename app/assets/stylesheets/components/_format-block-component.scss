@@ -1,0 +1,27 @@
+@use "shared/embed_codes";
+
+.app-c-content-block-manager-format-block {
+  .govuk-summary-list__row {
+    border: none;
+
+    .govuk-summary-list__key {
+      // Hide the key in the summary list, while keeping it readable for screen reader users
+      @include govuk-visually-hidden;
+      width: 0;
+      // stylelint-disable-next-line declaration-no-important
+      position: relative !important;
+    }
+
+    .govuk-summary-list__value {
+      padding: 0;
+    }
+  }
+
+  &__embed_code {
+    color: $govuk-secondary-text-colour;
+  }
+
+  .embed-code-flash__wrapper {
+    @include embed_codes.embed-code-flash;
+  }
+}

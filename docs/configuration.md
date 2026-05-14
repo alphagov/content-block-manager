@@ -25,6 +25,9 @@ These files define both:
 - `x-field-order`: field ordering for forms and summary metadata
 - `x-group`: logical group name for grouped subschemas (for example, contact methods)
 - `x-group-order`: ordering within a group
+- `x-formats`: a list of the available formats which are supported for this block type.
+  The formats are defined in content_block_tools. A rendered preview of each format listed
+  here is shown under the "default block" representation with the embed code for the format.
 
 ### Field-level keys
 
