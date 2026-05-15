@@ -32,5 +32,22 @@ RSpec.describe ContentBlock::Query do
       expect(result.size).to eq(1)
       expect(result.first.title).to eq("Pension")
     end
+
+    it "filters by organisation" do
+      organisations = [
+        build(:organisation, id: SecureRandom.uuid, name: "Org 1"),
+        build(:organisation, id: SecureRandom.uuid, name: "Org 2"),
+      ]
+
+      allow(Organisation).to receive(:all).and_return(organisations)
+
+      org_1_edition = create(:edition, :published, document: create(:document), lead_organisation_id: organisations[0].id)
+      _org_2_edition = create(:edition, :published, document: create(:document), lead_organisation_id: organisations[1].id)
+
+      result = described_class.call(lead_organisation_id: org_1_edition.lead_organisation_id)
+
+      expect(result.size).to eq(1)
+      expect(result.first.lead_organisation.id).to eq(org_1_edition.lead_organisation_id)
+    end
   end
 end
