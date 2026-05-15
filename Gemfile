@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 
+gem "api", path: "engines/api"
 gem "babosa"
 gem "block_preview", path: "engines/block_preview"
 gem "bootsnap", require: false
