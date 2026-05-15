@@ -19,5 +19,18 @@ RSpec.describe ContentBlock::Query do
       expect(result.first.title).to eq("Doc A new edition")
       expect(result.second.title).to eq("Doc B new edition")
     end
+
+    it "filters by block type" do
+      pension_doc = create(:document, block_type: "pension")
+      create(:edition, :published, document: pension_doc, title: "Pension")
+
+      contact_doc = create(:document, block_type: "contact")
+      create(:edition, :published, document: contact_doc, title: "Contact")
+
+      result = described_class.call(block_type: "pension")
+
+      expect(result.size).to eq(1)
+      expect(result.first.title).to eq("Pension")
+    end
   end
 end
