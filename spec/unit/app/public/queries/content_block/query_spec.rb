@@ -49,5 +49,23 @@ RSpec.describe ContentBlock::Query do
       expect(result.size).to eq(1)
       expect(result.first.lead_organisation.id).to eq(org_1_edition.lead_organisation_id)
     end
+
+    it "filters by keyword" do
+      document_with_first_keyword = create(:document)
+      _edition_with_first_keyword = create(:edition,
+                                           :published,
+                                           document: document_with_first_keyword,
+                                           title: "first")
+      document_without_first_keyword = create(:document)
+      _edition_without_first_keyword = create(:edition, :published, document: document_without_first_keyword,
+                                                                    title: "second")
+
+      allow(Document).to receive(:with_keyword).and_return([document_with_first_keyword])
+
+      result = described_class.call(keyword: "keyword")
+
+      expect(result.size).to eq(1)
+      expect(result.first.title).to eq("first")
+    end
   end
 end

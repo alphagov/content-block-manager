@@ -12,6 +12,12 @@ class ContentBlock
 
         where("editions.lead_organisation_id = ?", lead_organisation_id)
       end
+
+      def by_keyword(keyword)
+        return self if keyword.blank?
+
+        where("documents.id IN (?)", Document.with_keyword(keyword).pluck(:id))
+      end
     end
 
     def self.call(filters = {})
@@ -21,6 +27,7 @@ class ContentBlock
                   .extending(Scopes)
                   .by_block_type(filters[:block_type])
                   .by_lead_organisation_id(filters[:lead_organisation_id])
+                  .by_keyword(filters[:keyword])
                   .map { |document| ContentBlock.new(document.most_recent_edition) }
     end
   end
