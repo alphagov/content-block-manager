@@ -29,3 +29,8 @@ When("I query the search API endpoint for the organisation {string}") do |organi
   visit "/api/blocks/search?lead_organisation_id=#{organisation.id}"
   @body = JSON.parse(page.source)
 end
+
+When("I query the search API endpoint for the keyword {string}") do |keyword|
+  visit "/api/blocks/search?keyword=#{keyword}"
+  @body = JSON.parse(page.source)
+end

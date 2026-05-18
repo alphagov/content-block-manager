@@ -18,11 +18,10 @@ RSpec.describe "API" do
 
       tags "Content Blocks"
       produces "application/json"
-      parameter name: "block_type", in: :query, type: :string
-      parameter name: "lead_organisation_id", in: :query, type: :string
 
-      let(:block_type) { nil }
-      let(:lead_organisation_id) { nil }
+      parameter name: "block_type", in: :query, type: :string, required: false
+      parameter name: "lead_organisation_id", in: :query, type: :string, required: false
+      parameter name: "keyword", in: :query, type: :string, required: false
 
       response "200", "blocks found" do
         before do
@@ -79,6 +78,21 @@ RSpec.describe "API" do
           expect(data.size).to eq(1)
           expect(data.first["organisation"]["name"]).to eq(organisations.first.name)
           expect(data.first["organisation"]["content_id"]).to eq(organisations.first.id)
+        end
+      end
+
+      response "200", "filters by keyword", document: false do
+        before do
+          create(:edition, :published, document: create(:document), lead_organisation_id: organisations.first.id, title: "first")
+          create(:edition, :published, document: create(:document), lead_organisation_id: organisations.first.id, title: "second")
+        end
+
+        let(:keyword) { "first" }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data.size).to eq(1)
+          expect(data.first["title"]).to eq("first")
         end
       end
     end
