@@ -13,11 +13,15 @@ RSpec.describe ContentBlock::Query do
 
       result = described_class.call
 
-      expect(result).to all(be_a(ContentBlock))
+      expect(result.current_page).to eq(1)
+      expect(result.total_pages).to eq(1)
+      expect(result.total_count).to eq(2)
 
-      expect(result.size).to eq(2)
-      expect(result.first.title).to eq("Doc A new edition")
-      expect(result.second.title).to eq("Doc B new edition")
+      expect(result.blocks).to all(be_a(ContentBlock))
+
+      expect(result.blocks.size).to eq(2)
+      expect(result.blocks.first.title).to eq("Doc A new edition")
+      expect(result.blocks.second.title).to eq("Doc B new edition")
     end
 
     it "filters by block type" do
@@ -29,8 +33,8 @@ RSpec.describe ContentBlock::Query do
 
       result = described_class.call(block_type: "pension")
 
-      expect(result.size).to eq(1)
-      expect(result.first.title).to eq("Pension")
+      expect(result.blocks.size).to eq(1)
+      expect(result.blocks.first.title).to eq("Pension")
     end
 
     it "filters by organisation" do
@@ -46,8 +50,8 @@ RSpec.describe ContentBlock::Query do
 
       result = described_class.call(lead_organisation_id: org_1_edition.lead_organisation_id)
 
-      expect(result.size).to eq(1)
-      expect(result.first.lead_organisation.id).to eq(org_1_edition.lead_organisation_id)
+      expect(result.blocks.size).to eq(1)
+      expect(result.blocks.first.lead_organisation.id).to eq(org_1_edition.lead_organisation_id)
     end
 
     it "filters by keyword" do
@@ -64,8 +68,8 @@ RSpec.describe ContentBlock::Query do
 
       result = described_class.call(keyword: "keyword")
 
-      expect(result.size).to eq(1)
-      expect(result.first.title).to eq("first")
+      expect(result.blocks.size).to eq(1)
+      expect(result.blocks.first.title).to eq("first")
     end
 
     it "supports pagination" do
@@ -76,15 +80,23 @@ RSpec.describe ContentBlock::Query do
 
       page_1_result = described_class.call(page: 1)
 
-      expect(page_1_result.size).to eq(10)
-      expect(page_1_result.first.title).to eq("Doc 1")
-      expect(page_1_result.last.title).to eq("Doc 10")
+      expect(page_1_result.current_page).to eq(1)
+      expect(page_1_result.total_pages).to eq(2)
+      expect(page_1_result.total_count).to eq(15)
+
+      expect(page_1_result.blocks.size).to eq(10)
+      expect(page_1_result.blocks.first.title).to eq("Doc 1")
+      expect(page_1_result.blocks.last.title).to eq("Doc 10")
 
       page_2_result = described_class.call(page: 2)
 
-      expect(page_2_result.size).to eq(5)
-      expect(page_2_result.first.title).to eq("Doc 11")
-      expect(page_2_result.last.title).to eq("Doc 15")
+      expect(page_2_result.current_page).to eq(2)
+      expect(page_2_result.total_pages).to eq(2)
+      expect(page_2_result.total_count).to eq(15)
+
+      expect(page_2_result.blocks.size).to eq(5)
+      expect(page_2_result.blocks.first.title).to eq("Doc 11")
+      expect(page_2_result.blocks.last.title).to eq("Doc 15")
     end
   end
 end
