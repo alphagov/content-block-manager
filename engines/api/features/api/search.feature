@@ -41,3 +41,49 @@ Feature: /api/blocks/search
       And one block has the following attributes:
         | title                |
         | Second example block |
+
+    Scenario: Pagination of search results
+      Given the API has been configured to return one result per page
+      When I query the search API endpoint for the first page of results
+      Then the response is a list containing 1 block
+      And one block has the following attributes:
+        | title                |
+        | First example block |
+      And the pagination response has the following attributes:
+        | key           | value |
+        | total         | 3     |
+        | pages         | 3     |
+        | current_page  | 1     |
+      And the pagination response has the following links:
+        | rel                  | href                                            |
+        | next                 | http://www.example.com/api/blocks/search?page=2 |
+        | self                 | http://www.example.com/api/blocks/search?page=1 |
+      And I query the search API endpoint for the second page of results
+      Then the response is a list containing 1 block
+      And one block has the following attributes:
+        | title                |
+        | Second example block |
+      And the pagination response has the following attributes:
+        | key           | value |
+        | total         | 3     |
+        | pages         | 3     |
+        | current_page  | 2     |
+      And the pagination response has the following links:
+        | rel                  | href                                            |
+        | next                 | http://www.example.com/api/blocks/search?page=3 |
+        | previous             | http://www.example.com/api/blocks/search?page=1 |
+        | self                 | http://www.example.com/api/blocks/search?page=2 |
+      And I query the search API endpoint for the third page of results
+      Then the response is a list containing 1 block
+      And one block has the following attributes:
+        | title               |
+        | Third example block |
+      And the pagination response has the following attributes:
+        | key           | value |
+        | total         | 3     |
+        | pages         | 3     |
+        | current_page  | 3     |
+      And the pagination response has the following links:
+        | rel                  | href                                            |
+        | previous             | http://www.example.com/api/blocks/search?page=2 |
+        | self                 | http://www.example.com/api/blocks/search?page=3 |

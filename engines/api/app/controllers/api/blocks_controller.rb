@@ -1,7 +1,7 @@
 class Api::BlocksController < Api::ApplicationController
   def search
     result = ContentBlock::Query.call(filters)
-    render json: Api::BlockPresenter.present_collection(result.blocks)
+    render json: Api::ResultsPresenter.present(result, request.original_url)
   end
 
 private

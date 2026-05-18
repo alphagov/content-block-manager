@@ -4,7 +4,7 @@ When("I access the search API endpoint without any parameters") do
 end
 
 Then("the response is a list containing {int} block(s)") do |count|
-  expect(@body.count).to eq(count.to_i)
+  expect(@body["results"].count).to eq(count.to_i)
 end
 
 Given(/^there are the following published content blocks:$/) do |table|
@@ -16,7 +16,7 @@ Given(/^there are the following published content blocks:$/) do |table|
 end
 
 And(/^(one|another) block has the following attributes:$/) do |_, table|
-  expect(@body).to include(hash_including table.hashes.first)
+  expect(@body["results"]).to include(hash_including(table.hashes.first))
 end
 
 When("query the search API endpoint for block type {string}") do |block_type|
@@ -33,4 +33,29 @@ end
 When("I query the search API endpoint for the keyword {string}") do |keyword|
   visit "/api/blocks/search?keyword=#{keyword}"
   @body = JSON.parse(page.source)
+end
+
+Given(/^the API has been configured to return one result per page$/) do
+  stub_const("ContentBlock::Query::DEFAULT_PAGE_SIZE", 1)
+end
+
+When(/^I query the search API endpoint for the (first|second|third) page of results$/) do |ordinal|
+  page_number = { "first" => 1, "second" => 2, "third" => 3 }[ordinal]
+  visit "/api/blocks/search?page=#{page_number}"
+  @body = JSON.parse(page.source)
+end
+
+And(/^the pagination response has the following attributes:$/) do |table|
+  table.hashes.each do |hash|
+    expect(@body[hash["key"]].to_s).to eq(hash["value"])
+  end
+end
+
+And(/^the pagination response has the following links:$/) do |table|
+  table.hashes.each do |hash|
+    expect(@body["links"]).to include({
+      "rel" => hash["rel"],
+      "href" => hash["href"],
+    })
+  end
 end
