@@ -67,5 +67,24 @@ RSpec.describe ContentBlock::Query do
       expect(result.size).to eq(1)
       expect(result.first.title).to eq("first")
     end
+
+    it "supports pagination" do
+      15.times do |i|
+        document = create(:document)
+        create(:edition, :published, document:, title: "Doc #{i + 1}", created_at: i.days.ago)
+      end
+
+      page_1_result = described_class.call(page: 1)
+
+      expect(page_1_result.size).to eq(10)
+      expect(page_1_result.first.title).to eq("Doc 1")
+      expect(page_1_result.last.title).to eq("Doc 10")
+
+      page_2_result = described_class.call(page: 2)
+
+      expect(page_2_result.size).to eq(5)
+      expect(page_2_result.first.title).to eq("Doc 11")
+      expect(page_2_result.last.title).to eq("Doc 15")
+    end
   end
 end
