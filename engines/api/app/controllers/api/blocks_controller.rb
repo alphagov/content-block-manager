@@ -7,6 +7,6 @@ class Api::BlocksController < Api::ApplicationController
 private
 
   def filters
-    params.permit(:block_type)
+    params.permit(:block_type, :lead_organisation_id)
   end
 end

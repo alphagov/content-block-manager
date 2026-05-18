@@ -9,8 +9,9 @@ end
 
 Given(/^there are the following published content blocks:$/) do |table|
   table.hashes.each do |hash|
-    hash["lead_organisation_id"] = Organisation.all.find { |org| org.name == hash.delete("organisation") }.id
-    create(:edition, :published, **hash.merge(document: create(:document, block_type: hash.delete("block_type"))))
+    hash["lead_organisation_id"] = Organisation.all.find { |org| org.name == hash["organisation"] }.id
+    hash["document"] = create(:document, block_type: hash["block_type"])
+    create(:edition, :published, **hash.except("block_type", "organisation"))
   end
 end
 
@@ -20,5 +21,11 @@ end
 
 When("query the search API endpoint for block type {string}") do |block_type|
   visit "/api/blocks/search?block_type=#{block_type}"
+  @body = JSON.parse(page.source)
+end
+
+When("I query the search API endpoint for the organisation {string}") do |organisation_name|
+  organisation = Organisation.all.find { |org| org.name == organisation_name }
+  visit "/api/blocks/search?lead_organisation_id=#{organisation.id}"
   @body = JSON.parse(page.source)
 end

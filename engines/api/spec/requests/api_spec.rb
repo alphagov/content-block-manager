@@ -2,9 +2,12 @@ require "swagger_helper"
 
 RSpec.describe "API" do
   path "/blocks/search" do
+    let(:organisations) do
+      build_list(:organisation, 3)
+    end
+
     before do
-      organisation = build(:organisation)
-      allow_any_instance_of(Edition).to receive(:lead_organisation).and_return(organisation)
+      allow(Organisation).to receive(:all).and_return(organisations)
     end
 
     get "Search for content blocks" do
@@ -16,11 +19,14 @@ RSpec.describe "API" do
       tags "Content Blocks"
       produces "application/json"
       parameter name: "block_type", in: :query, type: :string
+      parameter name: "lead_organisation_id", in: :query, type: :string
+
       let(:block_type) { nil }
+      let(:lead_organisation_id) { nil }
 
       response "200", "blocks found" do
         before do
-          create(:edition, :published, document: create(:document))
+          create(:edition, :published, document: create(:document), lead_organisation_id: organisations.first.id)
         end
 
         schema type: :array, items: {
@@ -46,8 +52,8 @@ RSpec.describe "API" do
 
       response "200", "filters by block type", document: false do
         before do
-          create(:edition, :published, document: create(:document, block_type: "pension"))
-          create(:edition, :published, document: create(:document, block_type: "contact"))
+          create(:edition, :published, document: create(:document, block_type: "pension"), lead_organisation_id: organisations.first.id)
+          create(:edition, :published, document: create(:document, block_type: "contact"), lead_organisation_id: organisations.first.id)
         end
 
         let(:block_type) { "pension" }
@@ -56,6 +62,23 @@ RSpec.describe "API" do
           data = JSON.parse(response.body)
           expect(data.size).to eq(1)
           expect(data.first["block_type"]).to eq("Pension")
+        end
+      end
+
+      response "200", "filters by organisation", document: false do
+        before do
+          organisations.each do |org|
+            create(:edition, :published, document: create(:document), lead_organisation_id: org.id)
+          end
+        end
+
+        let(:lead_organisation_id) { organisations.first.id }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data.size).to eq(1)
+          expect(data.first["organisation"]["name"]).to eq(organisations.first.name)
+          expect(data.first["organisation"]["content_id"]).to eq(organisations.first.id)
         end
       end
     end
