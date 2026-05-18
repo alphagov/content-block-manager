@@ -1,5 +1,6 @@
 class Api::BlocksController < Api::ApplicationController
   def search
-    render json: {}
+    result = ContentBlock::Query.call
+    render json: Api::BlockPresenter.present_collection(result)
   end
 end
