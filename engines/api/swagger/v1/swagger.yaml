@@ -56,6 +56,37 @@
             "description": "blocks found",
             "content": {
               "application/json": {
+                "example": {
+                  "total": 1,
+                  "pages": 1,
+                  "current_page": 1,
+                  "links": [
+                    {
+                      "href": "http://www.example.com/api/blocks/search?page=1",
+                      "rel": "self"
+                    }
+                  ],
+                  "results": [
+                    {
+                      "title": "Current Tax Year",
+                      "block_type": "Time period",
+                      "organisation": {
+                        "name": "HM Revenue & Customs",
+                        "content_id": "30eb7956-5166-476e-af0d-f1f1fe906b7a"
+                      },
+                      "state": "published",
+                      "embed_code": "{{embed:content_block_time_period:current-tax-year}}",
+                      "formats": [
+                        "long_form",
+                        "months_and_years_long",
+                        "start_day_and_month",
+                        "start_month_as_word",
+                        "years",
+                        "years_short"
+                      ]
+                    }
+                  ]
+                },
                 "schema": {
                   "type": "object",
                   "additionalProperties": false,

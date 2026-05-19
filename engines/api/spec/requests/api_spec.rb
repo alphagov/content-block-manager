@@ -3,7 +3,11 @@ require "swagger_helper"
 RSpec.describe "API" do
   path "/blocks/search" do
     let(:organisations) do
-      build_list(:organisation, 3)
+      [
+        build(:organisation, name: "HM Revenue & Customs"),
+        build(:organisation, name: "Foreign, Commonwealth & Development Office"),
+        build(:organisation, name: "Department for Work and Pensions"),
+      ]
     end
 
     before do
@@ -30,7 +34,13 @@ RSpec.describe "API" do
 
       response "200", "blocks found" do
         before do
-          create(:edition, :published, document: create(:document), lead_organisation_id: organisations.first.id)
+          create(
+            :edition,
+            :published,
+            title: "Current Tax Year",
+            document: create(:document, block_type: "time_period", sluggable_string: "current-tax-year"),
+            lead_organisation_id: organisations.first.id,
+          )
         end
 
         schema type: :object,
@@ -70,6 +80,16 @@ RSpec.describe "API" do
                    },
                  },
                }
+
+        after do |example|
+          content = example.metadata[:response][:content] || {}
+          example.metadata[:response][:content] = content.merge(
+            "application/json" => {
+              example: JSON.parse(response.body, symbolize_names: true),
+            },
+          )
+        end
+
         run_test!
       end
 
