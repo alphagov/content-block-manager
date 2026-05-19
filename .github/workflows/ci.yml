@@ -29,6 +29,10 @@ jobs:
       security-events: write
       actions: read
 
+  check-open-api:
+    name: Check OpenAPI
+    uses: ./.github/workflows/check-open-api.yml
+
   lint-scss:
     name: Lint SCSS
     uses: ./.github/workflows/lintscss.yml
