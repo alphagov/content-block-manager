@@ -131,7 +131,7 @@ RSpec.describe Edition, type: :model do
 
     aggregate_failures do
       expect_model_not_to_be_valid(model: edition)
-      expect(edition.errors.full_messages).to include("Title cannot be blank")
+      expect(edition.errors.full_messages).to include("Enter a title")
     end
   end
 

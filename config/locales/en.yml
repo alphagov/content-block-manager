@@ -17,6 +17,10 @@ en:
           blank: "%{attribute} cannot be blank"
           minimum: "%{attribute} must be after %{minimum_date}"
           attributes:
+            title:
+              blank: "Enter a title"
+            lead_organisation_id:
+              blank: "Select a lead organisation"
             schedule_publishing:
               blank: "Select publish date"
             call_charges_info_url:
@@ -65,7 +69,7 @@ en:
         request:
           invalid: Invalid request
         title:
-          missing_valid_chars: "must contain at least one letter or number"
+          missing_valid_chars: "must include at least one letter or number"
 
   domain_event:
     title:
