@@ -1,2 +1,7 @@
 require:
   - packwerk-extensions
+exclude:
+  - '**/*_steps.rb' # Ignore any code used in Cucumber steps
+  - '**/*_spec.rb' # Ignore any code used in RSpec tests
+  - 'vendor/**/*' # Ignore any third-party code
+  - 'tmp/**/*' # Ignore anything in the tmp directory
