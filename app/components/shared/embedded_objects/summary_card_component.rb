@@ -93,6 +93,6 @@ private
   end
 
   def data_attributes
-    test_id_prefix.present? ? { "test-id" => [test_id_prefix, object_title].join("_") } : {}
+    test_id_prefix.present? ? { "testid" => [test_id_prefix, object_title].join("_") } : {}
   end
 end
