@@ -24,7 +24,7 @@
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.59.1",
     "axe-core": "^4.11.4",
-    "eslint": "^10.3.0",
+    "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.6.0",
     "neostandard": "^0.13.0",
