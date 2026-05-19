@@ -30,6 +30,8 @@ gem "puma", ">= 5.0"
 gem "rails", "~> 8.1.3"
 gem "record_tag_helper", require: false
 gem "rinku", require: "rails_rinku"
+gem "rswag-api"
+gem "rswag-ui"
 gem "sentry-sidekiq"
 gem "sprockets-rails"
 gem "terser"
