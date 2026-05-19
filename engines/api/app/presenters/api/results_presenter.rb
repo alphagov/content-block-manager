@@ -55,11 +55,16 @@ module Api
     end
 
     def page_href(offset)
-      request_url.dup.tap { |url|
-        query_hash = Rack::Utils.parse_query(url.query)
-        query_hash["page"] = result.current_page + offset
-        url.query = Rack::Utils.build_query(query_hash)
-      }.to_s
+      url = request_url.dup
+      query = query_with_page(result.current_page + offset)
+      url.query = query
+      url.to_s
+    end
+
+    def query_with_page(page_number)
+      query_hash = Rack::Utils.parse_query(request_url.query)
+      query_hash["page"] = page_number
+      Rack::Utils.build_query(query_hash)
     end
 
     def previous_page?
