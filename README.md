@@ -101,6 +101,20 @@ To run all linter with automatic formatting corrections, run:
 bundle exec rake:lint_autocorrect
 ```
 
+### API
+
+The code for the API is in the [`engines/api`](engines/api) directory. It is a Rails engine, and uses 
+[`rswag`](https://github.com/rswag/rswag) to generate [OpenAPI documentation](engines/api/swagger) from the tests in 
+[`engines/api/spec/requests`](engines/api/spec/requests).
+
+If you make any changes to the API, then you can regenerate the OpenAPI documentation by running:
+
+```
+rake api:generate_swagger
+```
+
+This will then update the OpenAPI documentation in [`engines/api/swagger`](engines/api/swagger).
+
 ### Further documentation
 
 See the [`docs/`](docs/) directory.
