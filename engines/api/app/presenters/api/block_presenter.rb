@@ -1,4 +1,6 @@
 class Api::BlockPresenter
+  class OrganisationNotFound < StandardError; end
+
   class << self
     def present(block)
       new(block).present
@@ -17,13 +19,22 @@ class Api::BlockPresenter
     {
       title: @block.title,
       block_type: @block.block_type,
-      organisation: {
-        name: @block.lead_organisation.name,
-        content_id: @block.lead_organisation.id,
-      },
+      organisation: organisation,
       state: "published",
       embed_code: @block.embed_code,
       formats: @block.formats,
     }
+  end
+
+private
+
+  def organisation
+    org = @block.lead_organisation
+    unless org
+      raise OrganisationNotFound,
+            "Organisation not found for block '#{@block.title}'"
+    end
+
+    { name: org.name, content_id: org.id }
   end
 end
