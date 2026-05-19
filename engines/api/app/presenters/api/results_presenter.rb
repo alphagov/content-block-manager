@@ -55,7 +55,7 @@ module Api
     end
 
     def page_href(offset)
-      request_url.tap { |url|
+      request_url.dup.tap { |url|
         query_hash = Rack::Utils.parse_query(url.query)
         query_hash["page"] = result.current_page + offset
         url.query = Rack::Utils.build_query(query_hash)
