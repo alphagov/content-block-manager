@@ -16,6 +16,8 @@ class Edition::Details::Fields::Context
 
   attr_reader :edition, :field, :schema, :populate_with_defaults, :subschema, :object_title, :index, :details, :parent_indexes
 
+  delegate :input_prefix, to: :field
+
   def value
     value_for_field(details:, field:, populate_with_defaults:)
   end
