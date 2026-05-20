@@ -248,23 +248,6 @@ RSpec.describe DetailsValidator do
     end
   end
 
-  describe "#translate_error" do
-    let(:validator) { DetailsValidator.new }
-
-    it "attempts to find a translation for a field when validation fails" do
-      attribute = "foo"
-      type = "bar"
-
-      expect(I18n).to receive(:t).with(
-        "activerecord.errors.models.edition.attributes.#{attribute}.#{type}",
-        attribute: attribute.humanize,
-        default: ["activerecord.errors.models.edition.#{type}".to_sym],
-      ).and_return("translated")
-
-      expect(validator.translate_error(type, attribute)).to eq("translated")
-    end
-  end
-
   describe "#key_with_optional_prefix" do
     let(:validator) { DetailsValidator.new }
 

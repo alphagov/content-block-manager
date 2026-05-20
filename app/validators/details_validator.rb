@@ -61,12 +61,6 @@ class DetailsValidator < ActiveModel::Validator
     )
   end
 
-  def get_attribute_and_key_from_error(error)
-    data_pointer = error["data_pointer"].delete_prefix("/")
-    field_items = data_pointer.split("/")
-    [field_items.last, key_with_optional_prefix(error, nil)]
-  end
-
   def validate_with_schema(edition)
     # Fetch the details and remove any blank fields (JSONSchema classes an empty string as valid,
     # unless a specific format has been specified)
@@ -90,16 +84,6 @@ class DetailsValidator < ActiveModel::Validator
     else
       key
     end
-  end
-
-  def translate_error(type, attribute, **args)
-    default = "activerecord.errors.models.edition.#{type}".to_sym
-    I18n.t(
-      "activerecord.errors.models.edition.attributes.#{attribute}.#{type}",
-      attribute: attribute.humanize,
-      default: [default],
-      **args,
-    )
   end
 
 private
