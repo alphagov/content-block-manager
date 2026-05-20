@@ -168,7 +168,7 @@ RSpec.describe "API" do
         before do
           # Stub the default page size to 1 so that we can test pagination with a small number of records
           stub_const("ContentBlock::Query::DEFAULT_PAGE_SIZE", 1)
-          create_list(:edition, 3, :published, document: create(:document), lead_organisation_id: organisations.first.id)
+          3.times { create(:edition, :published, document: create(:document), lead_organisation_id: organisations.first.id) }
         end
 
         response "200", "returns the first page", document: false do
