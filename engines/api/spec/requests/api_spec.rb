@@ -226,6 +226,41 @@ RSpec.describe "API" do
           end
         end
       end
+
+      context "invalid page numbers" do
+        before do
+          create(:edition, :published, document: create(:document), lead_organisation_id: organisations.first.id)
+        end
+
+        response "200", "returns empty results for out-of-range page", document: false do
+          let(:page) { 999 }
+
+          run_test! do |response|
+            data = JSON.parse(response.body)
+            expect(data["results"]).to be_empty
+            expect(data["total"]).to eq(1)
+            expect(data["current_page"]).to eq(999)
+          end
+        end
+
+        response "400", "returns error for negative page number", document: false do
+          let(:page) { -1 }
+
+          run_test! do |response|
+            data = JSON.parse(response.body)
+            expect(data["error"]).to be_present
+          end
+        end
+
+        response "400", "returns error for zero page number", document: false do
+          let(:page) { 0 }
+
+          run_test! do |response|
+            data = JSON.parse(response.body)
+            expect(data["error"]).to be_present
+          end
+        end
+      end
     end
   end
 
