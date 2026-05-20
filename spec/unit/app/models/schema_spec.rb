@@ -353,6 +353,175 @@ RSpec.describe Schema do
     end
   end
 
+  describe "#all_fields" do
+    context "when schema has only simple fields" do
+      let(:body) do
+        {
+          "properties" => {
+            "title" => { "type" => "string" },
+            "description" => { "type" => "string" },
+          },
+        }
+      end
+
+      it "returns all fields" do
+        all_fields = schema.all_fields
+        expect(all_fields.map(&:name)).to eq(%w[title description])
+      end
+    end
+
+    context "when schema has subschemas (embedded objects)" do
+      let(:body) do
+        {
+          "properties" => {
+            "title" => { "type" => "string" },
+            "contact_info" => {
+              "type" => "object",
+              "properties" => {
+                "email" => { "type" => "string" },
+                "phone" => { "type" => "string" },
+              },
+            },
+          },
+        }
+      end
+
+      it "includes fields from subschemas" do
+        all_fields = schema.all_fields
+        field_names = all_fields.map(&:name)
+
+        expect(field_names).to include("title")
+        expect(field_names).to include("email")
+        expect(field_names).to include("phone")
+      end
+
+      it "returns the correct number of fields" do
+        all_fields = schema.all_fields
+        expect(all_fields.length).to eq(3)
+      end
+    end
+
+    context "when schema has nested fields within fields" do
+      let(:body) do
+        {
+          "properties" => {
+            "title" => { "type" => "string" },
+            "metadata" => {
+              "type" => "object",
+              "properties" => {
+                "author" => { "type" => "string" },
+                "tags" => {
+                  "type" => "array",
+                  "items" => {
+                    "type" => "object",
+                    "properties" => {
+                      "name" => { "type" => "string" },
+                      "value" => { "type" => "string" },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        }
+      end
+
+      it "includes all nested fields recursively" do
+        all_fields = schema.all_fields
+        field_names = all_fields.map(&:name)
+
+        expect(field_names).to include("title")
+        expect(field_names).to include("author")
+        expect(field_names).to include("tags")
+        expect(field_names).to include("name")
+        expect(field_names).to include("value")
+      end
+    end
+
+    context "when schema has multiple subschemas" do
+      let(:body) do
+        {
+          "properties" => {
+            "title" => { "type" => "string" },
+            "contact" => {
+              "type" => "object",
+              "properties" => {
+                "email" => { "type" => "string" },
+              },
+            },
+            "address" => {
+              "type" => "object",
+              "properties" => {
+                "street" => { "type" => "string" },
+                "city" => { "type" => "string" },
+              },
+            },
+          },
+        }
+      end
+
+      it "includes fields from all subschemas" do
+        all_fields = schema.all_fields
+        field_names = all_fields.map(&:name)
+
+        expect(field_names).to include("title")
+        expect(field_names).to include("email")
+        expect(field_names).to include("street")
+        expect(field_names).to include("city")
+        expect(all_fields.length).to eq(4)
+      end
+    end
+
+    context "when schema has complex nested structure" do
+      let(:body) do
+        {
+          "properties" => {
+            "name" => { "type" => "string" },
+            "company" => {
+              "type" => "object",
+              "properties" => {
+                "company_name" => { "type" => "string" },
+                "employees" => {
+                  "type" => "array",
+                  "items" => {
+                    "type" => "object",
+                    "properties" => {
+                      "employee_name" => { "type" => "string" },
+                      "role" => { "type" => "string" },
+                    },
+                  },
+                },
+              },
+            },
+            "location" => {
+              "type" => "object",
+              "properties" => {
+                "country" => { "type" => "string" },
+              },
+            },
+          },
+        }
+      end
+
+      it "returns all fields from nested structure" do
+        all_fields = schema.all_fields
+        field_names = all_fields.map(&:name)
+
+        expect(field_names).to include("name")
+        expect(field_names).to include("company_name")
+        expect(field_names).to include("employees")
+        expect(field_names).to include("employee_name")
+        expect(field_names).to include("role")
+        expect(field_names).to include("country")
+      end
+
+      it "returns Field instances" do
+        all_fields = schema.all_fields
+        expect(all_fields).to all(be_a(Schema::Field))
+      end
+    end
+  end
+
   describe "#live?" do
     let(:schema) { build(:schema, block_type:) }
     subject { schema.live? }
