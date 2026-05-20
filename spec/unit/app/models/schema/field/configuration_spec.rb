@@ -153,4 +153,25 @@ RSpec.describe Schema::Field::Configuration do
       end
     end
   end
+
+  describe "#input_prefix" do
+    context "when the body includes an `x-input-prefix` property" do
+      let(:body) do
+        { "properties" => { "something" => { "type" => "string", "x-input-prefix" => "£" } } }
+      end
+
+      it "returns the input prefix" do
+        expect(field.input_prefix).to eq("£")
+      end
+    end
+
+    context "when the body does not include an `x-input-prefix` property" do
+      let(:body) do
+        { "properties" => { "something" => { "type" => "string" } } }
+      end
+      it "returns nil" do
+        expect(field.input_prefix).to be_nil
+      end
+    end
+  end
 end
