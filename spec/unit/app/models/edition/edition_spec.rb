@@ -142,7 +142,7 @@ RSpec.describe Edition, type: :model do
 
       aggregate_failures do
         expect_model_not_to_be_valid(model: edition, context: :change_note)
-        expect(edition.errors.full_messages).to include("Change note cannot be blank")
+        expect(edition.errors.full_messages).to include("Enter a change note")
       end
     end
 

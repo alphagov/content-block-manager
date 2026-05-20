@@ -509,7 +509,7 @@ RSpec.describe "Workflow", type: :request do
                 },
               }
 
-          expect(page).to have_text(I18n.t("activerecord.errors.models.edition.blank", attribute: "Change note"))
+          expect(page).to have_text(I18n.t("activerecord.errors.models.edition.attributes.change_note.blank"))
         end
 
         it "shows an error if major_change is blank" do
