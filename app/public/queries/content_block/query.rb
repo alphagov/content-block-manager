@@ -63,7 +63,7 @@ class ContentBlock
       def by_keyword(keyword)
         return self if keyword.blank?
 
-        where("documents.id IN (?)", Document.with_keyword(keyword).pluck(:id))
+        where(id: Document.with_keyword(keyword).select(:id))
       end
     end
   end
