@@ -190,7 +190,7 @@ end
 When(/^I click to edit the first (.+)$/) do |type|
   @content_block ||= Edition.all.last
   key = @content_block.details[type.pluralize].keys.first
-  within "div[data-test-id=embedded_#{key}]" do
+  within "div[data-testid=embedded_#{key}]" do
     click_on "Edit"
   end
 end

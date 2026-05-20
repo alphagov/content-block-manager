@@ -92,7 +92,7 @@ RSpec.describe "Workflow", type: :request do
           it "displays the subschema in a single summary card" do
             get workflow_path(id: edition.id, step: :review)
 
-            expect(page).to have_css(".gem-c-summary-card[data-test-id='review_sole_embedded_date_range']")
+            expect(page).to have_css(".gem-c-summary-card[data-testid='review_sole_embedded_date_range']")
           end
         end
       end

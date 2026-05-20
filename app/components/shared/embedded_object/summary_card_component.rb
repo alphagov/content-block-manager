@@ -62,7 +62,7 @@ private
   end
 
   def data_attributes
-    test_id_prefix.present? ? { "test-id" => [test_id_prefix, object_type].join("_") } : {}
+    test_id_prefix.present? ? { "testid" => [test_id_prefix, object_type].join("_") } : {}
   end
 
   def rendered_value_for_field(field_name, _value)
