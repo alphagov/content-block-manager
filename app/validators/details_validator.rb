@@ -26,18 +26,18 @@ class DetailsValidator < ActiveModel::Validator
       key = key_with_optional_prefix(error, k)
       edition.errors.add(
         "details_#{key}",
-        translate_error("blank", k),
+        error_message_for_key(key, "blank"),
       )
     end
   end
 
   def add_format_minimum_errors(error, block_type)
-    attribute, key = get_attribute_and_key_from_error(error)
+    key = key_with_optional_prefix(error, nil)
     minimum_date = resolve_format_minimum_date(error["schema"]["formatMinimum"], block_type)
 
     edition.errors.add(
       "details_#{key}",
-      translate_error("minimum", attribute, minimum_date: minimum_date),
+      error_message_for_key(key, "minimum", minimum_date: minimum_date),
     )
   end
 
@@ -53,10 +53,11 @@ class DetailsValidator < ActiveModel::Validator
   end
 
   def add_format_errors(error)
-    attribute, key = get_attribute_and_key_from_error(error)
+    key = key_with_optional_prefix(error, nil)
+
     edition.errors.add(
       "details_#{key}",
-      translate_error("invalid", attribute),
+      error_message_for_key(key, "invalid"),
     )
   end
 
@@ -130,5 +131,16 @@ private
     object.compact_blank!
     object.each { |o| compact_nested(o) }
     object
+  end
+
+  def error_message_for_key(key, type, **args)
+    field = field_for_key(key)
+    field&.error_message(type, **args)
+  end
+
+  def field_for_key(key)
+    # Remove the index from the key if present, e.g. "details_1_title" becomes "details_title"
+    id_attribute = "edition_details_#{key.gsub(/_([0-9]+)_/, '_')}"
+    edition.schema.all_fields.find { |f| f.id_attribute == id_attribute }
   end
 end
