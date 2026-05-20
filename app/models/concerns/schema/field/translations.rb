@@ -14,6 +14,16 @@ class Schema::Field
         I18n.t(translation_lookup_path("hints"), default: nil)
       end
 
+      def error_message(error_type, **args)
+        path = [
+          "activerecord.errors.models",
+          translation_lookup_path("attributes"),
+          error_type,
+        ].join(".")
+        default = I18n.t("activerecord.errors.models.edition.#{error_type}", attribute: label, **args)
+        I18n.t(path, default:, **args)
+      end
+
     private
 
       def default_translation_value
