@@ -72,7 +72,7 @@ RSpec.describe ContentBlock::Query do
       expect(result.blocks.first.title).to eq("first")
     end
 
-    it "supports pagination" do
+    it "returns paginated results ordered by newest edition first" do
       15.times do |i|
         document = create(:document)
         create(:edition, :published, document:, title: "Doc #{i + 1}", created_at: i.days.ago)

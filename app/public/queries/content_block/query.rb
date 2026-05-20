@@ -40,6 +40,11 @@ class ContentBlock
               .by_block_type(filters[:block_type])
               .by_lead_organisation_id(filters[:lead_organisation_id])
               .by_keyword(filters[:keyword])
+              .order(sort_order)
+    end
+
+    def sort_order
+      "editions.created_at DESC"
     end
 
     module Scopes
