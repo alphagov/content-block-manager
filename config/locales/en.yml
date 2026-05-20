@@ -17,8 +17,42 @@ en:
           blank: "Enter %{attribute_with_indefinite_article}"
           minimum: "%{attribute} must be after %{minimum_date}"
           attributes:
+            contact:
+              contact_links:
+                url:
+                  blank: "Enter a URL"
+                  invalid: "Enter a URL in the correct format"
+              telephones:
+                telephone_numbers:
+                  blank: "Enter a telephone number"
+                  label:
+                    blank: "Enter a telephone label"
+            time_period:
+              date_range:
+                start:
+                  blank: "Enter a start date"
+                  invalid: "Enter a real date"
+                end:
+                  blank: "Enter an end date"
+                  invalid: "Enter a real date"
+                  minimum: "The end date must be after the start date"
+            tax:
+              things_taxed:
+                type:
+                  blank: "Select type"
+                rates:
+                  blank: "Add at least one rate"
+                  name:
+                    blank: "Enter a rate name"
+                  value:
+                    blank: "Enter a rate value"
+                  bands:
+                    name:
+                      blank: "Enter a band name"
             title:
               blank: "Enter a title"
+            change_note:
+              blank: "Enter a change note"
             lead_organisation_id:
               blank: "Select a lead organisation"
             schedule_publishing:
