@@ -8,6 +8,7 @@ class Schema::Field
     SHOW_FIELD_NAME_PROPERTY_KEY = "x-show-field-name".freeze
     COMPONENT_NAME_PROPERTY_KEY = "x-component-name".freeze
     FIELD_ORDERING_RULE_PROPERTY_KEY = "x-field-order".freeze
+    INPUT_PREFIX_PROPERTY_KEY = "x-input-prefix".freeze
 
     def hidden?
       @hidden ||= properties[HIDDEN_FIELD_PROPERTY_KEY] == true
@@ -37,6 +38,10 @@ class Schema::Field
 
     def field_ordering_rule
       @field_ordering_rule ||= properties.dig("items", FIELD_ORDERING_RULE_PROPERTY_KEY) || []
+    end
+
+    def input_prefix
+      @input_prefix ||= properties[INPUT_PREFIX_PROPERTY_KEY]
     end
 
   private
