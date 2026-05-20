@@ -16,9 +16,9 @@ class ContentBlock
     @edition = edition
   end
 
-  delegate :id, :title, :state, :details, :document, :auth_bypass_id, :content_id, :render, to: :edition
-  delegate :schema, to: :document
-  delegate :embeddable_as_block?, to: :schema
+  delegate :id, :title, :state, :details, :document, :auth_bypass_id, :content_id, :render, :lead_organisation, to: :edition
+  delegate :schema, :embed_code, to: :document
+  delegate :embeddable_as_block?, :formats, to: :schema
 
   def block_type
     schema.name

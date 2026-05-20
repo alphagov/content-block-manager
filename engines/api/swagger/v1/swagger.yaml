@@ -1,0 +1,145 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Content Block Manager API",
+    "version": "v1",
+    "description": "The Content Block Manager API allows users to view information about content blocks. It is largely designed\nfor use by the [authoring widget](https://github.com/alphagov/content-block-editor) to allow preview and\nsearch of content blocks.\n\nCurrently, only search is supported, but in the future, we plan to support rendering of content blocks.\n\nAt the moment, the API is read-only, and only supports searching for published content blocks, but in the\nfuture, we may add support for draft content blocks and for creating and updating content blocks, which will\nrequire authentication.\n"
+  },
+  "paths": {
+    "/blocks/search": {
+      "get": {
+        "summary": "Search for content blocks",
+        "description": "This endpoint allows you to search for content blocks. You can filter by block type, lead organisation, and\nkeyword, and the results are paginated.\n",
+        "tags": [
+          "Content Blocks"
+        ],
+        "parameters": [
+          {
+            "name": "block_type",
+            "in": "query",
+            "required": false,
+            "description": "The type of block to filter by. This is a case-insensitive match against the block type defined in the document associated with the content block.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lead_organisation_id",
+            "in": "query",
+            "required": false,
+            "description": "The Content ID of the lead organisation to filter by.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": false,
+            "description": "The keyword to filter by. Searches against the title and the details hash of the content block.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "The page number to return. Defaults to 1.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "blocks found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "total": {
+                      "type": "integer"
+                    },
+                    "pages": {
+                      "type": "integer"
+                    },
+                    "current_page": {
+                      "type": "integer"
+                    },
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "href": {
+                            "type": "string"
+                          },
+                          "rel": {
+                            "type": "string",
+                            "enum": [
+                              "self",
+                              "next",
+                              "previous"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string"
+                          },
+                          "block_type": {
+                            "type": "string"
+                          },
+                          "organisation": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "content_id": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "state": {
+                            "type": "string",
+                            "enum": [
+                              "published"
+                            ]
+                          },
+                          "embed_code": {
+                            "type": "string"
+                          },
+                          "formats": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://content-block-manager.publishing.service.gov.uk/api"
+    }
+  ]
+}

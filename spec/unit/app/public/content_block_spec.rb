@@ -14,8 +14,11 @@ RSpec.describe ContentBlock do
   it { should delegate_method(:document).to(:edition) }
   it { should delegate_method(:auth_bypass_id).to(:edition) }
   it { should delegate_method(:content_id).to(:edition) }
+  it { should delegate_method(:lead_organisation).to(:edition) }
   it { should delegate_method(:render).to(:edition) }
   it { should delegate_method(:schema).to(:document) }
+  it { should delegate_method(:embed_code).to(:document) }
+  it { should delegate_method(:formats).to(:schema) }
 
   describe ".from_content_id_alias" do
     it "returns a content block object" do

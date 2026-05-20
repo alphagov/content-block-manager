@@ -1,0 +1,41 @@
+name: Check OpenAPI documentation is up to date
+on:
+  workflow_call:
+
+jobs:
+    check-open-api:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+          with:
+            show-progress: false
+
+        - name: Setup Ruby
+          uses: ruby/setup-ruby@6aaa311d81eba98ae12eaffbcb63296ace0efcde # v1.307.0
+          with:
+            bundler-cache: true
+
+        - name: Setup Postgres
+          id: setup-postgres
+          uses: alphagov/govuk-infrastructure/.github/actions/setup-postgres@main
+
+        - name: Initialize database
+          env:
+            RAILS_ENV: test
+            TEST_DATABASE_URL: ${{ steps.setup-postgres.outputs.db-url }}
+          run: bundle exec rails db:setup
+
+        - name: Build OpenAPI documentation
+          run: bundle exec rake api:generate_swagger
+          env:
+            RAILS_ENV: test
+            TEST_DATABASE_URL: ${{ steps.setup-postgres.outputs.db-url }}
+
+        - name: Check for uncommitted changes
+          run: |
+            if git diff --exit-code; then
+              echo "No uncommitted changes detected."
+            else
+              echo "::error title=Uncommitted changes to OpenAPI docs::If these are your changes, run \\\`rake api:generate_swagger\\\` and commit the changes."
+              exit 1
+            fi

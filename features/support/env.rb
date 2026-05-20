@@ -63,4 +63,4 @@ end
 Cucumber::Rails::Database.javascript_strategy = :truncation
 
 # Require step definitions contained within engines
-Dir.glob(Rails.root.join("engines/**/features/step_definitions/*.rb")).each(&method(:require))
+Dir.glob(Rails.root.join("engines/**/features/**/step_definitions/*.rb")).each(&method(:require))

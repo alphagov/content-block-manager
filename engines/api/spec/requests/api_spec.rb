@@ -1,0 +1,222 @@
+require "swagger_helper"
+
+RSpec.describe "API" do
+  path "/blocks/search" do
+    let(:organisations) do
+      build_list(:organisation, 3)
+    end
+
+    before do
+      allow(Organisation).to receive(:all).and_return(organisations)
+    end
+
+    get "Search for content blocks" do
+      description <<~DESC
+        This endpoint allows you to search for content blocks. You can filter by block type, lead organisation, and
+        keyword, and the results are paginated.
+      DESC
+
+      tags "Content Blocks"
+      produces "application/json"
+
+      parameter name: "block_type", in: :query, type: :string, required: false, description: "The type of block to filter by. This is a case-insensitive match against the block type defined in the document associated with the content block."
+      parameter name: "lead_organisation_id", in: :query, type: :string, required: false, description: "The Content ID of the lead organisation to filter by."
+      parameter name: "keyword", in: :query, type: :string, required: false, description: "The keyword to filter by. Searches against the title and the details hash of the content block."
+      parameter name: "page", in: :query, type: :string, required: false, description: "The page number to return. Defaults to 1."
+
+      # Overrides the `page` method included in all request specs in spec/support/capybara.rb to prevent it from being
+      # called when the `page` parameter is used in the tests
+      let(:page) { nil }
+
+      response "200", "blocks found" do
+        before do
+          create(:edition, :published, document: create(:document), lead_organisation_id: organisations.first.id)
+        end
+
+        schema type: :object,
+               additionalProperties: false,
+               properties: {
+                 total: { type: :integer },
+                 pages: { type: :integer },
+                 current_page: { type: :integer },
+                 links: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       href: { type: :string },
+                       rel: { type: :string, enum: %w[self next previous] },
+                     },
+                   },
+                 },
+                 results: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       title: { type: :string },
+                       block_type: { type: :string },
+                       organisation: {
+                         type: :object,
+                         properties: {
+                           name: { type: :string },
+                           content_id: { type: :string },
+                         },
+                       },
+                       state: { type: :string, enum: %w[published] },
+                       embed_code: { type: :string },
+                       formats: { type: :array, items: { type: :string } },
+                     },
+                   },
+                 },
+               }
+        run_test!
+      end
+
+      response "200", "filters by block type", document: false do
+        before do
+          create(:edition, :published, document: create(:document, block_type: "pension"), lead_organisation_id: organisations.first.id)
+          create(:edition, :published, document: create(:document, block_type: "contact"), lead_organisation_id: organisations.first.id)
+        end
+
+        let(:block_type) { "pension" }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          it_returns_correct_pagination_information(
+            data,
+            total: 1,
+            pages: 1,
+            current_page: 1,
+            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks/search?block_type=pension&page=1" }],
+          )
+
+          expect(data["results"].size).to eq(1)
+          expect(data["results"].first["block_type"]).to eq("Pension")
+        end
+      end
+
+      response "200", "filters by organisation", document: false do
+        before do
+          organisations.each do |org|
+            create(:edition, :published, document: create(:document), lead_organisation_id: org.id)
+          end
+        end
+
+        let(:lead_organisation_id) { organisations.first.id }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          it_returns_correct_pagination_information(
+            data,
+            total: 1,
+            pages: 1,
+            current_page: 1,
+            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks/search?lead_organisation_id=#{lead_organisation_id}&page=1" }],
+          )
+
+          expect(data["results"].size).to eq(1)
+          expect(data["results"].first["organisation"]["name"]).to eq(organisations.first.name)
+          expect(data["results"].first["organisation"]["content_id"]).to eq(organisations.first.id)
+        end
+      end
+
+      response "200", "filters by keyword", document: false do
+        before do
+          create(:edition, :published, document: create(:document), lead_organisation_id: organisations.first.id, title: "first")
+          create(:edition, :published, document: create(:document), lead_organisation_id: organisations.first.id, title: "second")
+        end
+
+        let(:keyword) { "first" }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          it_returns_correct_pagination_information(
+            data,
+            total: 1,
+            pages: 1,
+            current_page: 1,
+            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks/search?keyword=first&page=1" }],
+          )
+
+          expect(data["results"].size).to eq(1)
+          expect(data["results"].first["title"]).to eq("first")
+        end
+      end
+
+      context "pagination" do
+        before do
+          # Stub the default page size to 1 so that we can test pagination with a small number of records
+          stub_const("ContentBlock::Query::DEFAULT_PAGE_SIZE", 1)
+          create_list(:edition, 3, :published, document: create(:document), lead_organisation_id: organisations.first.id)
+        end
+
+        response "200", "returns the first page", document: false do
+          let(:page) { 1 }
+
+          run_test! do |response|
+            data = JSON.parse(response.body)
+            it_returns_correct_pagination_information(
+              data,
+              total: 3,
+              pages: 3,
+              current_page: 1,
+              expected_links: [
+                { rel: "next", href: "http://www.example.com/api/blocks/search?page=2" },
+                { rel: "self", href: "http://www.example.com/api/blocks/search?page=1" },
+              ],
+            )
+          end
+        end
+
+        response "200", "returns the second page", document: false do
+          let(:page) { 2 }
+
+          run_test! do |response|
+            data = JSON.parse(response.body)
+            it_returns_correct_pagination_information(
+              data,
+              total: 3,
+              pages: 3,
+              current_page: 2,
+              expected_links: [
+                { rel: "previous", href: "http://www.example.com/api/blocks/search?page=1" },
+                { rel: "next", href: "http://www.example.com/api/blocks/search?page=3" },
+                { rel: "self", href: "http://www.example.com/api/blocks/search?page=2" },
+              ],
+            )
+          end
+        end
+
+        response "200", "returns the last page", document: false do
+          let(:page) { 3 }
+
+          run_test! do |response|
+            data = JSON.parse(response.body)
+            it_returns_correct_pagination_information(
+              data,
+              total: 3,
+              pages: 3,
+              current_page: 3,
+              expected_links: [
+                { rel: "previous", href: "http://www.example.com/api/blocks/search?page=2" },
+                { rel: "self", href: "http://www.example.com/api/blocks/search?page=3" },
+              ],
+            )
+          end
+        end
+      end
+    end
+  end
+
+  def it_returns_correct_pagination_information(data, total:, pages:, current_page:, expected_links:)
+    expect(data["total"]).to eq(total)
+    expect(data["pages"]).to eq(pages)
+    expect(data["current_page"]).to eq(current_page)
+    expect(data["links"].size).to eq(expected_links.size)
+    expected_links.each_with_index do |link, index|
+      expect(data["links"][index]["rel"]).to eq(link[:rel])
+      expect(data["links"][index]["href"]).to eq(link[:href])
+    end
+  end
+end
