@@ -1,6 +1,8 @@
 class Schema::Field
   module Translations
     extend ActiveSupport::Concern
+    include ApplicationHelper
+
     included do
       def label
         I18n.t(translation_lookup_path("labels"), default: default_translation_value)
@@ -20,7 +22,15 @@ class Schema::Field
           translation_lookup_path("attributes"),
           error_type,
         ].join(".")
-        default = I18n.t("activerecord.errors.models.edition.#{error_type}", attribute: label, **args)
+        # If the translated label is a hash, this means this field has nested fields, so we use the `title` as the attribute instead
+        attribute = label.is_a?(String) ? label.downcase : title.downcase
+
+        default = I18n.t(
+          "activerecord.errors.models.edition.#{error_type}",
+          attribute:,
+          attribute_with_indefinite_article: add_indefinite_article(attribute),
+          **args,
+        )
         I18n.t(path, default:, **args)
       end
 

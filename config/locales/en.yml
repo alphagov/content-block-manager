@@ -13,8 +13,8 @@ en:
           title:
             not_unique: "A content block with the same title already exists. If you continue, this block will not have a unique title."
           format: "%{message}"
-          invalid: "Invalid %{attribute}"
-          blank: "%{attribute} cannot be blank"
+          invalid: "Enter %{attribute_with_indefinite_article} in the correct format"
+          blank: "Enter %{attribute_with_indefinite_article}"
           minimum: "%{attribute} must be after %{minimum_date}"
           attributes:
             title:

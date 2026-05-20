@@ -1,4 +1,6 @@
 RSpec.describe Schema::Field::Translations do
+  include ApplicationHelper
+
   let(:schema) { build(:schema) }
   let(:field) { Schema::Field.new("something", schema) }
 
@@ -73,7 +75,10 @@ RSpec.describe Schema::Field::Translations do
       it "looks up the error message with the correct path" do
         allow(I18n).to receive(:t).with(
           "activerecord.errors.models.edition.#{error_type}",
-          hash_including(attribute: field.label),
+          hash_including(
+            attribute: field.label.downcase,
+            attribute_with_indefinite_article: add_indefinite_article(field.label.downcase),
+          ),
         ).and_return("fallback message")
 
         field.error_message(error_type)
@@ -93,11 +98,11 @@ RSpec.describe Schema::Field::Translations do
         allow(I18n).to receive(:t).with(
           "activerecord.errors.models.edition.#{error_type}",
           hash_including(attribute: field.label),
-        ).and_return("Something can't be blank")
+        ).and_return("Enter a something")
 
         result = field.error_message(error_type)
 
-        expect(result).to eq("Something can't be blank")
+        expect(result).to eq("Enter a something")
       end
 
       it "passes additional arguments to the translation" do
@@ -119,7 +124,10 @@ RSpec.describe Schema::Field::Translations do
       it "looks up the error message with the correct nested path" do
         allow(I18n).to receive(:t).with(
           "activerecord.errors.models.edition.#{error_type}",
-          hash_including(attribute: field.label),
+          hash_including(
+            attribute: field.label.downcase,
+            attribute_with_indefinite_article: add_indefinite_article(field.label.downcase),
+          ),
         ).and_return("fallback message")
 
         field.error_message(error_type)
@@ -139,7 +147,10 @@ RSpec.describe Schema::Field::Translations do
       it "looks up the error message with the correct deeply nested path" do
         allow(I18n).to receive(:t).with(
           "activerecord.errors.models.edition.#{error_type}",
-          hash_including(attribute: field.label),
+          hash_including(
+            attribute: field.label.downcase,
+            attribute_with_indefinite_article: add_indefinite_article(field.label.downcase),
+          ),
         ).and_return("fallback message")
 
         field.error_message(error_type)
@@ -155,7 +166,11 @@ RSpec.describe Schema::Field::Translations do
       it "passes variables to both primary and fallback translations" do
         allow(I18n).to receive(:t).with(
           "activerecord.errors.models.edition.too_long",
-          hash_including(attribute: field.label, count: 100),
+          hash_including(
+            attribute: field.label.downcase,
+            attribute_with_indefinite_article: add_indefinite_article(field.label.downcase),
+            count: 100,
+          ),
         ).and_return("fallback message")
 
         allow(I18n).to receive(:t).with(

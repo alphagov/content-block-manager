@@ -54,9 +54,9 @@ RSpec.describe DetailsValidator do
     expect(edition).to be_invalid
 
     expect(edition).to have_error_for(:details_foo)
-                         .with_error_message_for(type: "blank", attribute: "Foo")
+                         .with_error_message_for(type: "blank", attribute: "foo", attribute_with_indefinite_article: "a foo")
     expect(edition).to have_error_for(:details_bar)
-                         .with_error_message_for(type: "blank", attribute: "Bar")
+                         .with_error_message_for(type: "blank", attribute: "bar", attribute_with_indefinite_article: "a bar")
   end
 
   it "validates the format of fields" do
@@ -72,9 +72,9 @@ RSpec.describe DetailsValidator do
     expect(edition).to be_invalid
 
     expect(edition).to have_error_for(:details_foo)
-                         .with_error_message_for(type: "invalid", attribute: "Foo")
+                         .with_error_message_for(type: "invalid", attribute: "foo", attribute_with_indefinite_article: "a foo")
     expect(edition).to have_error_for(:details_bar)
-                         .with_error_message_for(type: "invalid", attribute: "Bar")
+                         .with_error_message_for(type: "invalid", attribute: "bar", attribute_with_indefinite_article: "a bar")
   end
 
   it "validates the presence of nested fields in nested objects" do
@@ -96,7 +96,7 @@ RSpec.describe DetailsValidator do
     expect(edition).to be_invalid
 
     expect(edition).to have_error_for(:details_things_my_string)
-                         .with_error_message_for(type: "blank", attribute: "My string")
+                         .with_error_message_for(type: "blank", attribute: "my string", attribute_with_indefinite_article: "a my string")
   end
 
   it "validates the format of nested fields in nested objects" do
@@ -118,7 +118,7 @@ RSpec.describe DetailsValidator do
     expect(edition).to be_invalid
 
     expect(edition).to have_error_for(:details_things_something_else)
-                         .with_error_message_for(type: "invalid", attribute: "Something else")
+                         .with_error_message_for(type: "invalid", attribute: "something else", attribute_with_indefinite_article: "a something else")
   end
 
   describe "validating against a regular expression" do
@@ -147,7 +147,7 @@ RSpec.describe DetailsValidator do
 
       expect(edition).to be_invalid
       expect(edition).to have_error_for(:details_foo)
-                           .with_error_message_for(type: "invalid", attribute: "Foo")
+                           .with_error_message_for(type: "invalid", attribute: "foo", attribute_with_indefinite_article: "a foo")
     end
   end
 
@@ -215,7 +215,7 @@ RSpec.describe DetailsValidator do
       expect(edition).to be_invalid
 
       expect(edition).to have_error_for(:details_things_array_of_objects_1_foo)
-                           .with_error_message_for(type: "blank", attribute: "Foo")
+                           .with_error_message_for(type: "blank", attribute: "foo", attribute_with_indefinite_article: "a foo")
     end
 
     it "returns an error if an item is invalid in an array of objects" do
@@ -244,7 +244,7 @@ RSpec.describe DetailsValidator do
 
       expect(edition).to be_invalid
       expect(edition).to have_error_for(:details_things_array_of_objects_0_foo)
-                           .with_error_message_for(type: "invalid", attribute: "Foo")
+                           .with_error_message_for(type: "invalid", attribute: "foo", attribute_with_indefinite_article: "a foo")
     end
   end
 
