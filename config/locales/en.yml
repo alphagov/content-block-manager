@@ -1,10 +1,14 @@
 en:
+  errors:
+    format: "%{message}"
   activerecord:
     errors:
       title: There is a problem
       models:
         document:
           attributes:
+            title:
+              missing_valid_chars: "%{attribute} must include at least one letter or number"
             block_type:
               blank: Select a content block
               contact_methods:
@@ -12,7 +16,6 @@ en:
         edition:
           title:
             not_unique: "A content block with the same title already exists. If you continue, this block will not have a unique title."
-          format: "%{message}"
           invalid: "Enter %{attribute_with_indefinite_article} in the correct format"
           blank: "Enter %{attribute_with_indefinite_article}"
           minimum: "%{attribute} must be after %{minimum_date}"
@@ -49,8 +52,6 @@ en:
                   bands:
                     name:
                       blank: "Enter a band name"
-            title:
-              blank: "Enter a title"
             change_note:
               blank: "Enter a change note"
             lead_organisation_id:
@@ -102,9 +103,6 @@ en:
           invalid: "Lead Organisation is not valid"
         request:
           invalid: Invalid request
-        title:
-          missing_valid_chars: "must include at least one letter or number"
-
   domain_event:
     title:
       edition:

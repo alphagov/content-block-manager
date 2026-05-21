@@ -333,7 +333,7 @@ RSpec.describe "Workflow", type: :request do
               }
 
           expect(response).to render_template("editions/workflow/edit_draft")
-          expect(page).to have_text(I18n.t("activerecord.errors.models.edition.attributes.title.blank"))
+          expect(page).to have_text(I18n.t("activerecord.errors.models.edition.blank", attribute_with_indefinite_article: "a title"))
         end
       end
     end
