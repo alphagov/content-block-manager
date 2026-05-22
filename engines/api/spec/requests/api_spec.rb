@@ -4,9 +4,9 @@ RSpec.describe "API" do
   path "/blocks/search" do
     let(:organisations) do
       [
-        build(:organisation, name: "HM Revenue & Customs"),
-        build(:organisation, name: "Foreign, Commonwealth & Development Office"),
-        build(:organisation, name: "Department for Work and Pensions"),
+        build(:organisation, id: "aa1b2c3d-1234-5678-abcd-000000000001", name: "HM Revenue & Customs"),
+        build(:organisation, id: "aa1b2c3d-1234-5678-abcd-000000000002", name: "Foreign, Commonwealth & Development Office"),
+        build(:organisation, id: "aa1b2c3d-1234-5678-abcd-000000000003", name: "Department for Work and Pensions"),
       ]
     end
 

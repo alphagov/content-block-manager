@@ -72,7 +72,7 @@
                       "block_type": "Time period",
                       "organisation": {
                         "name": "HM Revenue & Customs",
-                        "content_id": "30eb7956-5166-476e-af0d-f1f1fe906b7a"
+                        "content_id": "aa1b2c3d-1234-5678-abcd-000000000001"
                       },
                       "state": "published",
                       "embed_code": "{{embed:content_block_time_period:current-tax-year}}",
