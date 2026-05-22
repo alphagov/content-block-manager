@@ -80,6 +80,31 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
       expect(page).to_not have_css ".app-c-embedded-objects-blocks-component__details-wrapper"
     end
 
+    describe "when a field has an input_prefix" do
+      let(:foo_field) { build(:field, label: "Foo", input_prefix: "£") }
+
+      it "prepends the prefix to the value" do
+        render_inline component
+        expect_summary_list_row(test_id: "else_foo", key: "Foo", value: "£bar", embed_code_suffix: "foo")
+      end
+    end
+
+    describe "when a field has no input prefix" do
+      let(:foo_field) { build(:field, label: "Foo", input_prefix: nil) }
+      it "renders the value without any prefix" do
+        render_inline component
+        expect_summary_list_row(test_id: "else_foo", key: "Foo", value: "bar", embed_code_suffix: "foo")
+      end
+    end
+
+    describe "when a field has an empty string as input prefix" do
+      let(:foo_field) { build(:field, label: "Foo", input_prefix: "") }
+      it "renders the value without any prefix" do
+        render_inline component
+        expect_summary_list_row(test_id: "else_foo", key: "Foo", value: "bar", embed_code_suffix: "foo")
+      end
+    end
+
     describe "when items contain an array" do
       let(:items) do
         {
