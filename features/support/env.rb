@@ -6,6 +6,7 @@ SimpleCov.command_name "Cucumber"
 SimpleCov.merge_timeout 3600
 
 ENV["DEBUG_GA4"] = "true"
+ENV["JWT_AUTH_SECRET"] ||= "123abc"
 
 require "cucumber/rails"
 

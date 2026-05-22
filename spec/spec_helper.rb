@@ -1,4 +1,5 @@
 ENV["RAILS_ENV"] ||= "test"
+ENV["JWT_AUTH_SECRET"] ||= "123abc"
 
 require "simplecov"
 SimpleCov.start "rails"
