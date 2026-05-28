@@ -5,7 +5,7 @@ Feature: View a content object
     And a pension content block has been created
     And that pension has a rate with the following fields:
       | title   | amount  | frequency |
-      | My rate | £123.45 | a week    |
+      | My rate | 123.45  | a week    |
     And a published contact edition exists
 
   Scenario: GDS Editor views a content object

@@ -6,7 +6,7 @@ Given("the pension has a rate set") do
   pension.details[:rates] = {
     "my-rate" => {
       "title" => "My Rate",
-      "amount" => "£123.45",
+      "amount" => "123.45",
       "frequency" => "a month",
     },
   }
