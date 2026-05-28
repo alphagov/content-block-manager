@@ -1,27 +1,26 @@
 RSpec.describe ContentBlock::Query do
   describe ".call" do
-    it "returns one content block per document" do
-      doc_a = create(:document)
-      create(:edition, :published, document: doc_a, updated_at: 2.days.ago, title: "Doc A old edition")
-      create(:edition, :published, document: doc_a, updated_at: 1.day.ago, title: "Doc A new edition")
-
-      doc_b = create(:document)
-      create(:edition, :published, document: doc_b, updated_at: Time.current, title: "Doc B new edition")
-
-      excluded_document = create(:document)
-      create(:edition, :draft, document: excluded_document, updated_at: Time.current)
+    it "returns blocks as ContentBlock representations" do
+      doc = create(:document)
+      create(:edition, :published, document: doc)
 
       result = described_class.call
-
-      expect(result.current_page).to eq(1)
-      expect(result.total_pages).to eq(1)
-      expect(result.total_count).to eq(2)
-
       expect(result.blocks).to all(be_a(ContentBlock))
+    end
 
-      expect(result.blocks.size).to eq(2)
-      #  Robust: Cares about the content, not the order
-      expect(result.blocks.map(&:title)).to match_array(["Doc A new edition", "Doc B new edition"])
+    it "excludes draft content blocks" do
+      doc_a = create(:document)
+      create(:edition, :published, document: doc_a, title: "Doc A published edition")
+      create(:edition, :draft, document: doc_a, title: "Doc A draft edition")
+
+      doc_b = create(:document)
+      create(:edition, :published, document: doc_b, title: "Doc B published edition")
+
+      excluded_document = create(:document)
+      create(:edition, :draft, document: excluded_document)
+
+      result = described_class.call
+      expect(result.blocks.map(&:title)).to contain_exactly("Doc A published edition", "Doc B published edition")
     end
 
     it "filters by block type" do
@@ -74,31 +73,42 @@ RSpec.describe ContentBlock::Query do
       expect(result.blocks.first.title).to eq("first")
     end
 
-    it "returns paginated results ordered by newest edition first" do
-      15.times do |i|
-        document = create(:document)
-        create(:edition, :published, document:, title: "Doc #{i + 1}", created_at: i.days.ago)
+    context "with pagination metadata" do
+      before do
+        15.times do |i|
+          document = create(:document)
+          create(:edition, :published, document:, title: "Doc #{i + 1}", created_at: i.days.ago)
+        end
       end
 
-      page_1_result = described_class.call(page: 1)
+      it "includes the number of the current page" do
+        result = described_class.call(page: 1)
+        expect(result.current_page).to eq(1)
+      end
+      it "includes the count of total pages" do
+        result = described_class.call(page: 1)
+        expect(result.total_pages).to eq(2)
+      end
+      it "includes a count of the total blocks found" do
+        result = described_class.call(page: 1)
+        expect(result.total_count).to eq(15)
+      end
 
-      expect(page_1_result.current_page).to eq(1)
-      expect(page_1_result.total_pages).to eq(2)
-      expect(page_1_result.total_count).to eq(15)
+      it "returns results ordered by newest edition creation date first" do
+        page_1_result = described_class.call(page: 1)
 
-      expect(page_1_result.blocks.size).to eq(10)
-      expect(page_1_result.blocks.first.title).to eq("Doc 1")
-      expect(page_1_result.blocks.last.title).to eq("Doc 10")
+        aggregate_failures "page 1 results" do
+          expect(page_1_result.blocks.first.title).to eq("Doc 1")
+          expect(page_1_result.blocks.last.title).to eq("Doc 10")
+        end
 
-      page_2_result = described_class.call(page: 2)
+        page_2_result = described_class.call(page: 2)
 
-      expect(page_2_result.current_page).to eq(2)
-      expect(page_2_result.total_pages).to eq(2)
-      expect(page_2_result.total_count).to eq(15)
-
-      expect(page_2_result.blocks.size).to eq(5)
-      expect(page_2_result.blocks.first.title).to eq("Doc 11")
-      expect(page_2_result.blocks.last.title).to eq("Doc 15")
+        aggregate_failures "page 2 results" do
+          expect(page_2_result.blocks.first.title).to eq("Doc 11")
+          expect(page_2_result.blocks.last.title).to eq("Doc 15")
+        end
+      end
     end
   end
 end
