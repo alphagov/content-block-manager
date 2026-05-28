@@ -12,7 +12,7 @@ RSpec.describe BlockContent do
                 "my_rate" => {
                   "title" => "my title",
                   "frequency" => "weekly",
-                  "amount" => "£1000",
+                  "amount" => "1000",
                 },
               },
             })
@@ -42,7 +42,7 @@ RSpec.describe BlockContent do
 
     describe "#fields" do
       it "should return the fields defined as block-level (display) fields" do
-        expect(block_content.fields("my_rate")).to eq({ "amount" => "£1000" })
+        expect(block_content.fields("my_rate")).to eq({ "amount" => "1000" })
       end
 
       context "when block is not defined" do
