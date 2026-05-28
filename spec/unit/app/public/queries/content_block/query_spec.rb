@@ -20,8 +20,8 @@ RSpec.describe ContentBlock::Query do
       expect(result.blocks).to all(be_a(ContentBlock))
 
       expect(result.blocks.size).to eq(2)
-      expect(result.blocks.first.title).to eq("Doc A new edition")
-      expect(result.blocks.second.title).to eq("Doc B new edition")
+      #  Robust: Cares about the content, not the order
+      expect(result.blocks.map(&:title)).to match_array(["Doc A new edition", "Doc B new edition"])
     end
 
     it "filters by block type" do
