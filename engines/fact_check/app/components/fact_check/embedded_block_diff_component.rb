@@ -19,18 +19,19 @@ private
 
   def rows
     first_class_items(items).flat_map do |key, value|
+      field = schema.field(key)
       {
-        key: schema.field(key).label,
-        value: content_for_row(value),
+        key: field.label,
+        value: content_for_row(value, field),
       }
     end
   end
 
-  def content_for_row(value)
+  def content_for_row(value, field)
     if value["published"]
-      content_tag(:div, render_diff(value["published"], value["new"]), class: "compare-editions")
+      content_tag(:div, render_diff([field.input_prefix, value["published"]].compact.join, [field.input_prefix, value["new"]].compact.join), class: "compare-editions")
     else
-      value["new"]
+      [field.input_prefix, value["new"]].compact.join
     end
   end
 
