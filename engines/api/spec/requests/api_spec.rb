@@ -3,7 +3,11 @@ require "swagger_helper"
 RSpec.describe "API" do
   path "/blocks/search" do
     let(:organisations) do
-      build_list(:organisation, 3)
+      [
+        build(:organisation, id: "aa1b2c3d-1234-5678-abcd-000000000001", name: "HM Revenue & Customs"),
+        build(:organisation, id: "aa1b2c3d-1234-5678-abcd-000000000002", name: "Foreign, Commonwealth & Development Office"),
+        build(:organisation, id: "aa1b2c3d-1234-5678-abcd-000000000003", name: "Department for Work and Pensions"),
+      ]
     end
 
     before do
@@ -30,7 +34,13 @@ RSpec.describe "API" do
 
       response "200", "blocks found" do
         before do
-          create(:edition, :published, document: create(:document), lead_organisation_id: organisations.first.id)
+          create(
+            :edition,
+            :published,
+            title: "Current Tax Year",
+            document: create(:document, block_type: "time_period", sluggable_string: "current-tax-year"),
+            lead_organisation_id: organisations.first.id,
+          )
         end
 
         schema type: :object,
@@ -70,6 +80,16 @@ RSpec.describe "API" do
                    },
                  },
                }
+
+        after do |example|
+          content = example.metadata[:response][:content] || {}
+          example.metadata[:response][:content] = content.merge(
+            "application/json" => {
+              example: JSON.parse(response.body, symbolize_names: true),
+            },
+          )
+        end
+
         run_test!
       end
 
@@ -148,7 +168,7 @@ RSpec.describe "API" do
         before do
           # Stub the default page size to 1 so that we can test pagination with a small number of records
           stub_const("ContentBlock::Query::DEFAULT_PAGE_SIZE", 1)
-          create_list(:edition, 3, :published, document: create(:document), lead_organisation_id: organisations.first.id)
+          3.times { create(:edition, :published, document: create(:document), lead_organisation_id: organisations.first.id) }
         end
 
         response "200", "returns the first page", document: false do
@@ -203,6 +223,41 @@ RSpec.describe "API" do
                 { rel: "self", href: "http://www.example.com/api/blocks/search?page=3" },
               ],
             )
+          end
+        end
+      end
+
+      context "invalid page numbers" do
+        before do
+          create(:edition, :published, document: create(:document), lead_organisation_id: organisations.first.id)
+        end
+
+        response "200", "returns empty results for out-of-range page", document: false do
+          let(:page) { 999 }
+
+          run_test! do |response|
+            data = JSON.parse(response.body)
+            expect(data["results"]).to be_empty
+            expect(data["total"]).to eq(1)
+            expect(data["current_page"]).to eq(999)
+          end
+        end
+
+        response "400", "returns error for negative page number", document: false do
+          let(:page) { -1 }
+
+          run_test! do |response|
+            data = JSON.parse(response.body)
+            expect(data["error"]).to be_present
+          end
+        end
+
+        response "400", "returns error for zero page number", document: false do
+          let(:page) { 0 }
+
+          run_test! do |response|
+            data = JSON.parse(response.body)
+            expect(data["error"]).to be_present
           end
         end
       end

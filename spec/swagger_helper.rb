@@ -4,7 +4,7 @@ RSpec.configure do |config|
   config.openapi_root = Rails.root.join("engines/api/swagger").to_s
 
   config.openapi_specs = {
-    "v1/swagger.yaml" => {
+    "v1/swagger.json" => {
       openapi: "3.0.1",
       info: {
         title: "Content Block Manager API",

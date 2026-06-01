@@ -8,9 +8,10 @@ Then("the response is a list containing {int} block(s)") do |count|
 end
 
 Given(/^there are the following published content blocks:$/) do |table|
-  table.hashes.each do |hash|
+  table.hashes.each_with_index do |hash, index|
     hash["lead_organisation_id"] = Organisation.all.find { |org| org.name == hash["organisation"] }.id
     hash["document"] = create(:document, block_type: hash["block_type"])
+    hash["created_at"] = index.days.ago
     create(:edition, :published, **hash.except("block_type", "organisation"))
   end
 end

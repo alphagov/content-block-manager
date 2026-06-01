@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   get "/healthcheck/ready", to: GovukHealthcheck.rack_response
   get "/accessibility-statement", to: "pages#accessibility_statement"
   mount Flipflop::Engine => "/flipflop"
+  mount Rswag::Ui::Engine => "/api-docs"
+  mount Rswag::Api::Engine => "/api-docs"
   mount FactCheck::Engine => "/fact-check"
   mount BlockPreview::Engine => "/preview"
   mount GovukSidekiq::GdsSsoMiddleware, at: "/sidekiq"

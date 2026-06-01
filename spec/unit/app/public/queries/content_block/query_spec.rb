@@ -64,7 +64,9 @@ RSpec.describe ContentBlock::Query do
       _edition_without_first_keyword = create(:edition, :published, document: document_without_first_keyword,
                                                                     title: "second")
 
-      allow(Document).to receive(:with_keyword).and_return([document_with_first_keyword])
+      allow(Document).to receive(:with_keyword)
+        .with("keyword")
+        .and_return(Document.where(id: document_with_first_keyword.id))
 
       result = described_class.call(keyword: "keyword")
 

@@ -20,6 +20,17 @@ RSpec.describe Api::BlockPresenter do
         content_id: lead_org.id,
       )
     end
+
+    it "raises OrganisationNotFound when lead_organisation is nil" do
+      block = build(:content_block)
+      allow(block).to receive(:lead_organisation).and_return(nil)
+
+      expect { described_class.present(block) }
+        .to raise_error(
+          Api::BlockPresenter::OrganisationNotFound,
+          /Organisation not found/,
+        )
+    end
   end
 
   describe ".present_collection" do
