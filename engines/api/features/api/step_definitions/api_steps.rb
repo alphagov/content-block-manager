@@ -13,6 +13,8 @@ Given(/^there are the following published content blocks:$/) do |table|
     hash["document"] = create(:document, block_type: hash["block_type"])
     hash["created_at"] = index.days.ago
     create(:edition, :published, **hash.except("block_type", "organisation"))
+
+    published_content_blocks_by_title[hash["title"]] = hash["document"]
   end
 end
 
@@ -59,4 +61,57 @@ And(/^the pagination response has the following links:$/) do |table|
       "href" => hash["href"],
     })
   end
+end
+
+When("I query the render API endpoint with the following embed codes:") do |table|
+  visit_render_api(table.hashes.map { |hash| hash["embed_code"] })
+end
+
+When("I query the render API endpoint for the following content blocks:") do |table|
+  visit_render_api(table.hashes.map { |hash| published_content_blocks_by_title.fetch(hash["title"]).embed_code })
+end
+
+When("I query the render API endpoint for the following content blocks with variants:") do |table|
+  visit_render_api(
+    table.hashes.map do |hash|
+      embed_code = published_content_blocks_by_title.fetch(hash["title"]).embed_code
+      variant = hash["variant"]
+
+      variant.present? ? embed_code.sub("}}", "#{variant}}}") : embed_code
+    end,
+  )
+end
+
+Then("the response contains {int} rendered blocks") do |count|
+  expect(rendered_blocks.count).to eq(count)
+end
+
+Then("the rendered block for {string} includes title {string}") do |lookup, expected_title|
+  rendered_block = rendered_block_for(lookup)
+
+  expect(rendered_block).to include("title" => expected_title)
+  expect(rendered_block["html"]).to be_a(String)
+  expect(rendered_block["html"]).to include(expected_title)
+end
+
+Then("the rendered block for {string} includes block type {string}") do |lookup, expected_block_type|
+  expect(rendered_block_for(lookup)).to include("block_type" => expected_block_type)
+end
+
+def visit_render_api(embed_codes)
+  query = URI.encode_www_form(embed_codes.map { |embed_code| ["embed_codes[]", embed_code] })
+  visit "/api/blocks/render?#{query}"
+  @render_body = JSON.parse(page.source)
+end
+
+def rendered_blocks
+  @render_body.fetch("rendered_blocks")
+end
+
+def rendered_block_for(lookup)
+  rendered_blocks.fetch(lookup) { rendered_blocks.values.find { |block| block["title"] == lookup } }
+end
+
+def published_content_blocks_by_title
+  @published_content_blocks_by_title ||= {}
 end
