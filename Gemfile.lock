@@ -276,7 +276,7 @@ GEM
       nokogiri (~> 1.12)
       rinku (~> 2.0)
       sanitize (>= 6, < 8)
-    govuk_app_config (9.24.1)
+    govuk_app_config (9.25.0)
       connection_pool (< 4)
       logstasher (~> 2.1)
       opentelemetry-exporter-otlp (>= 0.25, < 0.34)
@@ -1116,7 +1116,7 @@ CHECKSUMS
   google-protobuf (4.35.0-x86_64-linux-musl) sha256=be0218520d77b2aee898b363514b03819f6f63f9c041ae0d0d79b4ce5247bffd
   googleapis-common-protos-types (1.23.0) sha256=992e740a523794d9fc5f29a504465d8fc737aaa16c930fe7228e3346860faf0a
   govspeak (10.9.1) sha256=f153b288195480244a7606c0bdf3b52453f9a60a4f405d2bc3429520e126df17
-  govuk_app_config (9.24.1) sha256=626b7eee43b07aafdc9591412e9127e3a54c6a3a588739d1e16958e03c85918e
+  govuk_app_config (9.25.0) sha256=63b7696f2741c3711873b1e318bbebb11dda70319891ef00be6fffc8bc3d334a
   govuk_frontend_toolkit (9.0.1) sha256=18fdae529c9003e023c3461d89a45ddaf5ac0df311705351743c9f1b7b48a2de
   govuk_personalisation (1.1.0) sha256=6e7a0dcfaec11570d95490160a95aff85150df5b667a586ecd7d5de04feac5dd
   govuk_publishing_components (66.4.1) sha256=4716a7471e74a3430eb1eb337fa74f0fbf7e90685e0c25fe2945302bed788076
