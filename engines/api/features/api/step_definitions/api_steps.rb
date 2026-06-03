@@ -77,7 +77,7 @@ When("I query the render API endpoint for the following content blocks with vari
       embed_code = published_content_blocks_by_title.fetch(hash["title"]).embed_code
       variant = hash["variant"]
 
-      variant.present? ? embed_code.sub("}}", "#{variant}}}") : embed_code
+      variant.present? ? embed_code.sub(/(\}\}+\z)/, "#{variant}\\1") : embed_code
     end,
   )
 end
