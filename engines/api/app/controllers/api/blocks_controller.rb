@@ -8,7 +8,12 @@ class Api::BlocksController < Api::ApplicationController
 
   # named _render to avoid collision with the core framework render method
   def _render
-    embed_codes = params.permit(embed_codes: [])[:embed_codes] || []
+    parsed_query = Rack::Utils.parse_query(request.query_string)
+    embed_codes = (
+      Array(parsed_query["embed_codes[]"]) +
+      Array(parsed_query["embed_codes"]) +
+      Array(params[:embed_codes])
+    ).filter_map(&:presence).uniq
 
     rendered_blocks = embed_codes.each_with_object({}) do |embed_code, hash|
       base_embed_code_for_lookup = embed_code.gsub(/[\/#][^}]+/, "")

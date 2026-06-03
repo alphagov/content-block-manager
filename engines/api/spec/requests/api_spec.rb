@@ -275,70 +275,106 @@ RSpec.describe "API" do
     end
   end
 
-  let(:organisations) { build_list(:organisation, 1) }
-
-  describe "GET /api/blocks/render" do
-    let(:document1) { create(:document, sluggable_string: "state-pension", block_type: "pension") }
-    let(:document2) { create(:document, sluggable_string: "tax-year", block_type: "pension") } # Using pension as I know it's supported
+  path "/blocks/render" do
+    let(:organisations) do
+      [
+        build(:organisation, id: "aa1b2c3d-1234-5678-abcd-000000000001", name: "HM Revenue & Customs"),
+        build(:organisation, id: "aa1b2c3d-1234-5678-abcd-000000000002", name: "Foreign, Commonwealth & Development Office"),
+        build(:organisation, id: "aa1b2c3d-1234-5678-abcd-000000000003", name: "Department for Work and Pensions"),
+      ]
+    end
+    let(:document1) do
+      create(
+        :document,
+        content_id: "ac4a021a-4fcf-4606-a13a-6d2abcfd1695",
+        sluggable_string: "state-pension",
+        block_type: "pension",
+      )
+    end
+    let(:document2) do
+      create(
+        :document,
+        content_id: "ac4a021a-4fcf-4606-a13a-6d2abcfd1695",
+        sluggable_string: "tax-year",
+        block_type: "pension",
+      )
+    end
 
     before do
       create(:edition, :published, document: document1, title: "State Pension", lead_organisation_id: organisations.first.id)
       create(:edition, :published, document: document2, title: "Tax year", lead_organisation_id: organisations.first.id)
     end
 
-    it "returns rendered html for given embed codes" do
-      embed_codes = [document1.embed_code, document2.embed_code]
+    get "Render content blocks" do
+      description "This endpoint allows you to render content blocks into HTML by providing their embed codes."
+      tags "Content Blocks"
+      produces "application/json"
 
-      get "/api/blocks/render", params: { embed_codes: }
+      parameter name: "embed_codes[]", in: :query, type: :array, items: { type: :string }, required: true, description: "The embed codes of the content blocks to render."
 
-      expect(response).to have_http_status(:ok)
-      data = JSON.parse(response.body)
+      let(:"embed_codes[]") { [document1.embed_code] }
 
-      expect(data).to have_key("rendered_blocks")
-      expect(data["rendered_blocks"]).to have_key(document1.embed_code)
-      expect(data["rendered_blocks"]).to have_key(document2.embed_code)
+      response "200", "blocks rendered" do
+        schema type: :object,
+               properties: {
+                 rendered_blocks: {
+                   type: :object,
+                   additionalProperties: {
+                     type: :object,
+                     properties: {
+                       title: { type: :string },
+                       block_type: { type: :string },
+                       html: { type: :string },
+                     },
+                   },
+                 },
+               }
 
-      expect(data["rendered_blocks"][document1.embed_code]).to include(
-        "title" => "State Pension",
-        "block_type" => "Pension",
-      )
-      expect(data["rendered_blocks"][document1.embed_code]["html"]).to be_a(String)
-      expect(data["rendered_blocks"][document1.embed_code]["html"]).to include("State Pension")
+        after do |example|
+          next if response.nil? || response.body.blank?
 
-      expect(data["rendered_blocks"][document2.embed_code]).to include(
-        "title" => "Tax year",
-        "block_type" => "Pension",
-      )
-      expect(data["rendered_blocks"][document2.embed_code]["html"]).to be_a(String)
-      expect(data["rendered_blocks"][document2.embed_code]["html"]).to include("Tax year")
-    end
+          content = example.metadata[:response][:content] || {}
+          example.metadata[:response][:content] = content.merge(
+            "application/json" => {
+              example: JSON.parse(response.body, symbolize_names: true),
+            },
+          )
+        end
 
-    it "ignores unknown embed codes" do
-      get "/api/blocks/render", params: { embed_codes: ["{{embed:unknown}}"] }
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data["rendered_blocks"][document1.embed_code]).to include(
+            "title" => "State Pension",
+            "block_type" => "Pension",
+          )
+          expect(data["rendered_blocks"][document1.embed_code]["html"]).to include("State Pension")
+        end
+      end
 
-      expect(response).to have_http_status(:ok)
+      response "200", "ignores unknown embed codes", document: false do
+        let(:"embed_codes[]") { ["{{embed:unknown}}"] }
 
-      data = JSON.parse(response.body)
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data).to eq("rendered_blocks" => {})
+        end
+      end
 
-      expect(data).to eq("rendered_blocks" => {})
-    end
+      response "200", "renders blocks for embed code variants", document: false do
+        # Explicitly evaluate document1 first to guarantee its creation before defining the query variant
+        let(:variant_embed_code) { "#{document1.embed_code}/section-a" }
+        let(:"embed_codes[]") { [variant_embed_code] }
 
-    it "renders blocks for embed code variants using the base embed code lookup" do
-      variant_embed_code = "#{document1.embed_code}#section-a"
-
-      get "/api/blocks/render", params: { embed_codes: [variant_embed_code] }
-
-      expect(response).to have_http_status(:ok)
-
-      data = JSON.parse(response.body)
-
-      expect(data["rendered_blocks"]).to have_key(variant_embed_code)
-      expect(data["rendered_blocks"][variant_embed_code]).to include(
-        "title" => "State Pension",
-        "block_type" => "Pension",
-      )
-      expect(data["rendered_blocks"][variant_embed_code]["html"]).to be_a(String)
-      expect(data["rendered_blocks"][variant_embed_code]["html"]).to include("State Pension")
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data["rendered_blocks"]).to have_key(variant_embed_code)
+          expect(data["rendered_blocks"][variant_embed_code]).to include(
+            "title" => "State Pension",
+            "block_type" => "Pension",
+          )
+          expect(data["rendered_blocks"][variant_embed_code]["html"]).to include("State Pension")
+        end
+      end
     end
   end
 end

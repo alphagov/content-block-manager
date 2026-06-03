@@ -166,6 +166,69 @@
           }
         }
       }
+    },
+    "/blocks/render": {
+      "get": {
+        "summary": "Render content blocks",
+        "description": "This endpoint allows you to render content blocks into HTML by providing their embed codes.",
+        "tags": [
+          "Content Blocks"
+        ],
+        "parameters": [
+          {
+            "name": "embed_codes[]",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The embed codes of the content blocks to render.",
+            "schema": {
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "blocks rendered",
+            "content": {
+              "application/json": {
+                "example": {
+                  "rendered_blocks": {
+                    "{{embed:content_block_pension:state-pension}}": {
+                      "title": "State Pension",
+                      "block_type": "Pension",
+                      "html": "<div class=\"content-block content-block--pension\" data-content-block=\"\" data-document-type=\"pension\" data-content-id=\"ac4a021a-4fcf-4606-a13a-6d2abcfd1695\" data-embed-code=\"{{embed:content_block_pension:state-pension}}\">State Pension</div>"
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rendered_blocks": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string"
+                          },
+                          "block_type": {
+                            "type": "string"
+                          },
+                          "html": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "servers": [
