@@ -274,4 +274,71 @@ RSpec.describe "API" do
       expect(data["links"][index]["href"]).to eq(link[:href])
     end
   end
+
+  let(:organisations) { create_list(:organisation, 1) }
+
+  describe "GET /api/blocks/render" do
+    let(:document1) { create(:document, sluggable_string: "state-pension", block_type: "pension") }
+    let(:document2) { create(:document, sluggable_string: "tax-year", block_type: "pension") } # Using pension as I know it's supported
+
+    before do
+      create(:edition, :published, document: document1, title: "State Pension", lead_organisation_id: organisations.first.id)
+      create(:edition, :published, document: document2, title: "Tax year", lead_organisation_id: organisations.first.id)
+    end
+
+    it "returns rendered html for given embed codes" do
+      embed_codes = [document1.embed_code, document2.embed_code]
+
+      get "/api/blocks/render", params: { embed_codes: }
+
+      expect(response).to have_http_status(:ok)
+      data = JSON.parse(response.body)
+
+      expect(data).to have_key("rendered_blocks")
+      expect(data["rendered_blocks"]).to have_key(document1.embed_code)
+      expect(data["rendered_blocks"]).to have_key(document2.embed_code)
+
+      expect(data["rendered_blocks"][document1.embed_code]).to include(
+        "title" => "State Pension",
+        "block_type" => "Pension",
+      )
+      expect(data["rendered_blocks"][document1.embed_code]["html"]).to be_a(String)
+      expect(data["rendered_blocks"][document1.embed_code]["html"]).to include("State Pension")
+
+      expect(data["rendered_blocks"][document2.embed_code]).to include(
+        "title" => "Tax year",
+        "block_type" => "Pension",
+      )
+      expect(data["rendered_blocks"][document2.embed_code]["html"]).to be_a(String)
+      expect(data["rendered_blocks"][document2.embed_code]["html"]).to include("Tax year")
+    end
+
+    it "ignores unknown embed codes" do
+      get "/api/blocks/render", params: { embed_codes: ["{{embed:unknown}}"] }
+
+      expect(response).to have_http_status(:ok)
+
+      data = JSON.parse(response.body)
+
+      expect(data).to eq("rendered_blocks" => {})
+    end
+
+    it "renders blocks for embed code variants using the base embed code lookup" do
+      variant_embed_code = "#{document1.embed_code}#section-a"
+
+      get "/api/blocks/render", params: { embed_codes: [variant_embed_code] }
+
+      expect(response).to have_http_status(:ok)
+
+      data = JSON.parse(response.body)
+
+      expect(data["rendered_blocks"]).to have_key(variant_embed_code)
+      expect(data["rendered_blocks"][variant_embed_code]).to include(
+        "title" => "State Pension",
+        "block_type" => "Pension",
+      )
+      expect(data["rendered_blocks"][variant_embed_code]["html"]).to be_a(String)
+      expect(data["rendered_blocks"][variant_embed_code]["html"]).to include("State Pension")
+    end
+  end
 end
