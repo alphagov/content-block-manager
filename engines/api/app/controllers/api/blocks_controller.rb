@@ -1,13 +1,12 @@
 class Api::BlocksController < Api::ApplicationController
-  def search
+  def blocks_search
     return invalid_page_error if invalid_page?
 
     result = ContentBlock::Query.call(filters)
     render json: Api::ResultsPresenter.present(result, request.original_url)
   end
 
-  # named _render to avoid collision with the core framework render method
-  def _render
+  def blocks_render
     parsed_query = Rack::Utils.parse_query(request.query_string)
     embed_codes = (
       Array(parsed_query["embed_codes[]"]) +
