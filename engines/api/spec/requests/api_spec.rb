@@ -274,4 +274,112 @@ RSpec.describe "API" do
       expect(data["links"][index]["href"]).to eq(link[:href])
     end
   end
+
+  path "/blocks/render" do
+    let(:organisations) do
+      [
+        build(:organisation, id: "aa1b2c3d-1234-5678-abcd-000000000001", name: "HM Revenue & Customs"),
+        build(:organisation, id: "aa1b2c3d-1234-5678-abcd-000000000002", name: "Foreign, Commonwealth & Development Office"),
+        build(:organisation, id: "aa1b2c3d-1234-5678-abcd-000000000003", name: "Department for Work and Pensions"),
+      ]
+    end
+    let(:document1) do
+      create(
+        :document,
+        content_id: "ac4a021a-4fcf-4606-a13a-6d2abcfd1695",
+        sluggable_string: "state-pension",
+        block_type: "pension",
+      )
+    end
+    let(:document2) do
+      create(
+        :document,
+        content_id: "ac4a021a-4fcf-4606-a13a-6d2abcfd1695",
+        sluggable_string: "tax-year",
+        block_type: "pension",
+      )
+    end
+
+    before do
+      create(:edition, :published, document: document1, title: "State Pension", lead_organisation_id: organisations.first.id)
+      create(:edition, :published, document: document2, title: "Tax year", lead_organisation_id: organisations.first.id)
+    end
+
+    # The new render endpoint can potentially expose draft content if from_embed_code isn’t restricted to published
+    # editions. After switching to latest_published_edition, it would be good to add a request spec example asserting
+    # that a draft-only block is not returned (e.g., create a document with only a :draft edition and ensure
+    # rendered_blocks stays empty for its embed code).
+    # https://github.com/alphagov/content-block-manager/pull/703#discussion_r3361821345
+    get "Render content blocks" do
+      description "This endpoint allows you to render content blocks into HTML by providing their embed codes."
+      tags "Content Blocks"
+      produces "application/json"
+
+      parameter name: "embed_codes[]", in: :query, type: :array, items: { type: :string }, required: true, description: "The embed codes of the content blocks to render."
+
+      let(:"embed_codes[]") { [document1.embed_code] }
+
+      response "200", "blocks rendered" do
+        schema type: :object,
+               properties: {
+                 rendered_blocks: {
+                   type: :object,
+                   additionalProperties: {
+                     type: :object,
+                     properties: {
+                       title: { type: :string },
+                       block_type: { type: :string },
+                       html: { type: :string },
+                     },
+                   },
+                 },
+               }
+
+        after do |example|
+          next if response.nil? || response.body.blank?
+
+          content = example.metadata[:response][:content] || {}
+          example.metadata[:response][:content] = content.merge(
+            "application/json" => {
+              example: JSON.parse(response.body, symbolize_names: true),
+            },
+          )
+        end
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data["rendered_blocks"][document1.embed_code]).to include(
+            "title" => "State Pension",
+            "block_type" => "Pension",
+          )
+          expect(data["rendered_blocks"][document1.embed_code]["html"]).to include("State Pension")
+        end
+      end
+
+      response "200", "ignores unknown embed codes", document: false do
+        let(:"embed_codes[]") { ["{{embed:unknown}}"] }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data).to eq("rendered_blocks" => {})
+        end
+      end
+
+      response "200", "renders blocks for embed code variants", document: false do
+        # Explicitly evaluate document1 first to guarantee its creation before defining the query variant
+        let(:variant_embed_code) { document1.embed_code_for_field("section-a") }
+        let(:"embed_codes[]") { [variant_embed_code] }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data["rendered_blocks"]).to have_key(variant_embed_code)
+          expect(data["rendered_blocks"][variant_embed_code]).to include(
+            "title" => "State Pension",
+            "block_type" => "Pension",
+          )
+          expect(data["rendered_blocks"][variant_embed_code]["html"]).to include(variant_embed_code)
+        end
+      end
+    end
+  end
 end
