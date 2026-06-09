@@ -6,6 +6,18 @@ class Api::BlocksController < Api::ApplicationController
     render json: Api::ResultsPresenter.present(result, request.original_url)
   end
 
+  def render_block
+    embed_code = params[:embed_code]
+    block = ContentBlock.from_embed_code(embed_code)
+    if block
+      base_embed_code_for_lookup = embed_code.gsub(/[\/#][^}]+/, "")
+      block = ContentBlock.from_embed_code(base_embed_code_for_lookup)
+      render html: block.render(embed_code)
+    else
+      not_found_page_error "Content block not found for embed code: #{embed_code}"
+    end
+  end
+
 private
 
   def filters
@@ -17,6 +29,10 @@ private
 
     page = Integer(params[:page], exception: false)
     page.nil? || page < 1
+  end
+
+  def not_found_page_error(message)
+    render json: { error: message }, status: :not_found
   end
 
   def invalid_page_error
