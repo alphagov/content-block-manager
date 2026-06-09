@@ -45,7 +45,7 @@ private
         sort_direction: sort_direction("document_type"),
       },
       {
-        text: "Instances",
+        text: "Times used",
         href: sort_link("instances"),
         sort_direction: sort_direction("instances"),
       },
