@@ -10,6 +10,14 @@ class ContentBlock
       edition = Edition.find(edition_id)
       ContentBlock.new(edition)
     end
+
+    def from_embed_code(embed_code)
+      document = Document.find_by(embed_code:)
+      latest_published_edition = document&.latest_published_edition
+      return nil unless latest_published_edition
+
+      ContentBlock.new(latest_published_edition)
+    end
   end
 
   def initialize(edition)
