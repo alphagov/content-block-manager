@@ -1,3 +1,3 @@
 Api::Engine.routes.draw do
-  get "blocks/search", to: "blocks#search"
+  get "blocks", to: "blocks#search"
 end
