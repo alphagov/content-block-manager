@@ -33,9 +33,28 @@ RSpec.describe ContentBlock do
   describe ".from_edition_id" do
     it "returns a content block object" do
       allow(Edition).to receive(:find).with(edition.id).and_return(edition)
-      allow(ContentBlock).to receive(:new).with(edition).and_return(content_block)
+      allow(ContentBlock).to receive(:new).with(edition).and_return(document)
 
       expect(ContentBlock.from_edition_id(edition.id)).to eq(content_block)
+    end
+  end
+
+  describe ".from_embed_code" do
+    let(:published_edition) { build(:edition, document: document) }
+
+    it "returns a content block object for the latest published edition" do
+      allow(Document).to receive(:find_by).with(embed_code: document.embed_code).and_return(document)
+      allow(document).to receive(:latest_published_edition).and_return(published_edition)
+      allow(ContentBlock).to receive(:new).with(published_edition).and_return(content_block)
+
+      expect(ContentBlock.from_embed_code(document.embed_code)).to eq(content_block)
+    end
+
+    it "returns nil when no latest published edition exists" do
+      allow(Document).to receive(:find_by).with(embed_code: document.embed_code).and_return(document)
+      allow(document).to receive(:latest_published_edition).and_return(nil)
+
+      expect(ContentBlock.from_embed_code(document.embed_code)).to be_nil
     end
   end
 

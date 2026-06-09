@@ -1,7 +1,8 @@
 require "swagger_helper"
+require "cgi"
 
 RSpec.describe "API" do
-  path "/blocks/search" do
+  path "/blocks" do
     let(:organisations) do
       [
         build(:organisation, id: "aa1b2c3d-1234-5678-abcd-000000000001", name: "HM Revenue & Customs"),
@@ -108,7 +109,7 @@ RSpec.describe "API" do
             total: 1,
             pages: 1,
             current_page: 1,
-            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks/search?block_type=pension&page=1" }],
+            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks?block_type=pension&page=1" }],
           )
 
           expect(data["results"].size).to eq(1)
@@ -132,7 +133,7 @@ RSpec.describe "API" do
             total: 1,
             pages: 1,
             current_page: 1,
-            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks/search?lead_organisation_id=#{lead_organisation_id}&page=1" }],
+            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks?lead_organisation_id=#{lead_organisation_id}&page=1" }],
           )
 
           expect(data["results"].size).to eq(1)
@@ -156,7 +157,7 @@ RSpec.describe "API" do
             total: 1,
             pages: 1,
             current_page: 1,
-            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks/search?keyword=first&page=1" }],
+            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks?keyword=first&page=1" }],
           )
 
           expect(data["results"].size).to eq(1)
@@ -182,8 +183,8 @@ RSpec.describe "API" do
               pages: 3,
               current_page: 1,
               expected_links: [
-                { rel: "next", href: "http://www.example.com/api/blocks/search?page=2" },
-                { rel: "self", href: "http://www.example.com/api/blocks/search?page=1" },
+                { rel: "next", href: "http://www.example.com/api/blocks?page=2" },
+                { rel: "self", href: "http://www.example.com/api/blocks?page=1" },
               ],
             )
           end
@@ -200,9 +201,9 @@ RSpec.describe "API" do
               pages: 3,
               current_page: 2,
               expected_links: [
-                { rel: "previous", href: "http://www.example.com/api/blocks/search?page=1" },
-                { rel: "next", href: "http://www.example.com/api/blocks/search?page=3" },
-                { rel: "self", href: "http://www.example.com/api/blocks/search?page=2" },
+                { rel: "previous", href: "http://www.example.com/api/blocks?page=1" },
+                { rel: "next", href: "http://www.example.com/api/blocks?page=3" },
+                { rel: "self", href: "http://www.example.com/api/blocks?page=2" },
               ],
             )
           end
@@ -219,8 +220,8 @@ RSpec.describe "API" do
               pages: 3,
               current_page: 3,
               expected_links: [
-                { rel: "previous", href: "http://www.example.com/api/blocks/search?page=2" },
-                { rel: "self", href: "http://www.example.com/api/blocks/search?page=3" },
+                { rel: "previous", href: "http://www.example.com/api/blocks?page=2" },
+                { rel: "self", href: "http://www.example.com/api/blocks?page=3" },
               ],
             )
           end
@@ -259,6 +260,52 @@ RSpec.describe "API" do
             data = JSON.parse(response.body)
             expect(data["error"]).to be_present
           end
+        end
+      end
+    end
+  end
+
+  path "/blocks/{embed_code}/render" do
+    get "Render a content block" do
+      description <<~DESC
+        This endpoint renders a published content block as HTML for a given embed code.
+      DESC
+
+      tags "Content Blocks"
+      produces "text/html"
+
+      parameter name: "embed_code", in: :path, type: :string, required: true, description: "The embed code to render. This can be a base embed code or one that targets a specific field or format."
+
+      response "200", "renders HTML for a base embed code", document: false do
+        let(:document) { create(:document, block_type: "pension", sluggable_string: "state-pension") }
+        let(:embed_code) { CGI.escape(document.embed_code) }
+
+        before do
+          create(
+            :edition,
+            :published,
+            title: "State Pension",
+            lead_organisation_id: SecureRandom.uuid,
+            document:,
+          )
+        end
+
+        run_test! do |response|
+          expect(response.content_type).to include("text/html")
+          expect(response.body).to include("content-block")
+          expect(response.body).to include("State Pension")
+        end
+      end
+
+      response "404", "returns an error when the embed code is unknown", document: false do
+        let(:embed_code) { CGI.escape("{{embed:content_block_pension:missing-block}}") }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+
+          expect(data).to eq({
+            "error" => "Content block not found for embed code: {{embed:content_block_pension:missing-block}}",
+          })
         end
       end
     end
