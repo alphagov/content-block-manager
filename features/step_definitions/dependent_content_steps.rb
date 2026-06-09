@@ -2,7 +2,7 @@ require_relative "../support/dependent_content"
 require_relative "../support/helpers"
 
 Then(/^I should see the dependent content listed$/) do
-  assert_text "List of locations"
+  assert_text "Places this content block is used"
 
   @dependent_content.each do |item|
     assert_text item["title"]
