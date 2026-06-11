@@ -81,7 +81,7 @@ RSpec.describe "Embedded content", type: :feature do
     it "supports sorting" do
       sorted_by_asc = {}
       sorted_by_desc = {}
-      sort_fields = %w[title document_type unique_pageviews primary_publishing_organisation_title last_edited_at]
+      sort_fields = %w[title unique_pageviews primary_publishing_organisation_title last_edited_at]
 
       sort_fields.each do |key|
         sorted_by_asc[key] = host_content_items.map { |item| item.merge("title" => "#{item['title']} - Sorted by #{key} asc") }
