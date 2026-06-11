@@ -10,6 +10,7 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
       "base_path" => "/bar",
     }
   end
+  let(:publishing_app) { "publisher" }
   let(:unique_pageviews) { 1_200_000 }
   let(:state) { "published" }
 
@@ -19,7 +20,7 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
       "title" => "Some title",
       "base_path" => "/foo",
       "document_type" => "document_type",
-      "publishing_app" => "publisher",
+      "publishing_app" => publishing_app,
       "last_edited_by_editor" => last_edited_by_editor,
       "last_edited_at" => Time.zone.now.to_s,
       "publishing_organisation" => publishing_organisation,
@@ -112,7 +113,7 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
         expect(tag.text.strip).to eq("Published")
       end
 
-      expect(columns[1]).to have_text "Publisher"
+      expect(columns[1]).to have_text "Mainstream Publisher"
       expect(columns[2]).to have_text "1"
       expect(columns[3]).to have_text "1.2m"
       expect(columns[4]).to have_text host_content_item.publishing_organisation["title"]
@@ -324,7 +325,7 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
       expect(columns.count).to eq(7)
 
       expect(columns[0]).to have_no_css ".govuk-link"
-      expect(columns[1]).to have_text "Publisher"
+      expect(columns[1]).to have_text "Mainstream Publisher"
       expect(columns[2]).to have_text "1"
       expect(columns[3]).to have_text "1.2m"
       expect(columns[4]).to have_text host_content_item.publishing_organisation["title"]
@@ -355,6 +356,25 @@ RSpec.describe Shared::HostEditionsTableComponent, type: :component do
           expect(link[:href]).to include("state=draft")
         end
       end
+    end
+  end
+
+  context "when the publishing app is 'publisher'" do
+    let(:publishing_app) { "publisher" }
+
+    it "renders 'Mainstream Publisher' in the table" do
+      render_inline(described_class.new(caption:, host_content_items:, edition:))
+
+      expect(page.find_all("tbody .govuk-table__row")[0].find_all(".govuk-table__cell")[1].text).to eq("Mainstream Publisher")
+    end
+  end
+  context "when the publishing app is not publisher" do
+    let(:publishing_app) { "some_other_app" }
+
+    it "renders the humanised app name in the table" do
+      render_inline(described_class.new(caption:, host_content_items:, edition:))
+
+      expect(page.find_all("tbody .govuk-table__row")[0].find_all(".govuk-table__cell")[1].text).to eq("Some other app")
     end
   end
 end
