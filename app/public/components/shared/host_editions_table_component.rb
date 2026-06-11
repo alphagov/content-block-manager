@@ -40,11 +40,6 @@ private
         sort_direction: sort_direction("publishing_app"),
       },
       {
-        text: "Type",
-        href: sort_link("document_type"),
-        sort_direction: sort_direction("document_type"),
-      },
-      {
         text: "Times used",
         href: sort_link("instances"),
         sort_direction: sort_direction("instances"),
@@ -81,9 +76,6 @@ private
       title_row(content_item),
       {
         text: content_item.publishing_app.humanize,
-      },
-      {
-        text: content_item.document_type.humanize,
       },
       {
         text: content_item.instances,
