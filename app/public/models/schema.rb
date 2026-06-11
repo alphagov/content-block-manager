@@ -66,6 +66,20 @@ class Schema
     fields.find(proc { raise "Field '#{name}' not found" }) { |f| f.name == name }
   end
 
+  def all_fields
+    collected = fields.dup
+
+    subschemas.each do |subschema|
+      collected.concat(subschema.all_fields)
+    end
+
+    fields.each do |field|
+      collected.concat(field.all_nested_fields)
+    end
+
+    collected
+  end
+
   def subschema(name)
     subschemas.find { |s| s.id == name }
   end

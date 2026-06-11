@@ -33,7 +33,7 @@ RSpec.describe DetailsValidator do
       it { is_expected.not_to be_valid }
 
       it "adds an error to the tax_type field" do
-        expect(errors[:details_tax_type]).to include("Tax type cannot be blank")
+        expect(errors[:details_tax_type]).to include("Enter a tax type")
       end
     end
 
@@ -91,8 +91,8 @@ RSpec.describe DetailsValidator do
 
         it { is_expected.not_to be_valid }
 
-        it "adds an error to the titke field" do
-          expect(errors[:details_things_taxed_title]).to include("Title cannot be blank")
+        it "adds an error to the title field" do
+          expect(errors[:details_things_taxed_title]).to include("Enter a title")
         end
       end
 
@@ -102,7 +102,7 @@ RSpec.describe DetailsValidator do
         it { is_expected.not_to be_valid }
 
         it "adds an error to the type field" do
-          expect(errors[:details_things_taxed_type]).to include("Type cannot be blank")
+          expect(errors[:details_things_taxed_type]).to include("Select type")
         end
       end
 
@@ -112,7 +112,7 @@ RSpec.describe DetailsValidator do
         it { is_expected.not_to be_valid }
 
         it "adds an error to the rates field" do
-          expect(errors[:details_things_taxed_rates]).to include("Rates cannot be blank")
+          expect(errors[:details_things_taxed_rates]).to include("Add at least one rate")
         end
       end
 
@@ -123,7 +123,7 @@ RSpec.describe DetailsValidator do
           it { is_expected.not_to be_valid }
 
           it "adds an error to the name field" do
-            expect(errors[:details_things_taxed_rates_0_name]).to include("Name cannot be blank")
+            expect(errors[:details_things_taxed_rates_0_name]).to include("Enter a rate name")
           end
         end
 
@@ -133,7 +133,7 @@ RSpec.describe DetailsValidator do
           it { is_expected.not_to be_valid }
 
           it "adds an error to the name field" do
-            expect(errors[:details_things_taxed_rates_0_name]).to include("Name cannot be blank")
+            expect(errors[:details_things_taxed_rates_0_name]).to include("Enter a rate name")
           end
         end
       end
@@ -145,7 +145,7 @@ RSpec.describe DetailsValidator do
           it { is_expected.not_to be_valid }
 
           it "adds an error to the name field" do
-            expect(errors[:details_things_taxed_rates_0_bands_0_name]).to include("Name cannot be blank")
+            expect(errors[:details_things_taxed_rates_0_bands_0_name]).to include("Enter a band name")
           end
         end
       end
