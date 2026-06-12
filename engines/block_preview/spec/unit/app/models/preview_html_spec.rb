@@ -170,6 +170,78 @@ RSpec.describe BlockPreview::PreviewHtml do
     end
   end
 
+  describe "path validation" do
+    let(:preview) do
+      BlockPreview::PreviewHtml.new(
+        content_id: host_content_id,
+        block: block_to_preview,
+        base_path: host_base_path,
+        locale: "en",
+        state: "published",
+        auth_bypass_id:,
+      )
+    end
+
+    context "when base_path is safe" do
+      let(:host_base_path) { "/test-path" }
+
+      it "constructs a safe frontend path" do
+        expect(preview.send(:frontend_path)).to eq("#{Plek.website_root}/test-path")
+      end
+
+      it "does not raise an argument error when calling to_s" do
+        expect { preview.to_s }.not_to raise_error
+      end
+    end
+
+    context "when base_path is unsafe" do
+      shared_examples "an unsafe path" do
+        it "raises an UnsafePathError when fetching the frontend path" do
+          expect { preview.send(:frontend_path) }.to raise_error(BlockPreview::PreviewHtml::UnsafePathError, "Unsafe path format")
+        end
+
+        it "returns the error HTML when calling to_s" do
+          expect(preview.to_s).to eq(BlockPreview::PreviewHtml::ERROR_HTML)
+        end
+
+        it "does not attempt to make a request to the frontend" do
+          preview.to_s
+          expect(Net::HTTP).not_to have_received(:get_response)
+        end
+      end
+
+      context "when it contains an @ symbol" do
+        let(:host_base_path) { "/test@example.com" }
+        it_behaves_like "an unsafe path"
+      end
+
+      context "when it contains //" do
+        let(:host_base_path) { "//attack.com" }
+        it_behaves_like "an unsafe path"
+      end
+
+      context "when it contains \\" do
+        let(:host_base_path) { "\\attack.com" }
+        it_behaves_like "an unsafe path"
+      end
+
+      context "when it does not start with /" do
+        let(:host_base_path) { "attack.com" }
+        it_behaves_like "an unsafe path"
+      end
+
+      context "when it is an absolute URL starting with http" do
+        let(:host_base_path) { "http://attack.com" }
+        it_behaves_like "an unsafe path"
+      end
+
+      context "when it is blank" do
+        let(:host_base_path) { "   " }
+        it_behaves_like "an unsafe path"
+      end
+    end
+  end
+
   describe "when the frontend response contains links" do
     let(:fake_content) do
       "
