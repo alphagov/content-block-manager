@@ -9,6 +9,7 @@ module BlockPreview
     ERROR_HTML = "<html><head></head><body><p>Preview not found</p></body></html>".freeze
 
     class HtmlSnapshotError < StandardError; end
+    class UnsafePathError < StandardError; end
 
     def initialize(content_id:, block:, base_path:, locale:, state:, auth_bypass_id:)
       @content_id = content_id
@@ -30,7 +31,7 @@ module BlockPreview
       update_local_link_paths(nokogiri_html)
       update_local_form_actions(nokogiri_html, uri.scheme, uri.host)
       nokogiri_html.to_s
-    rescue HtmlSnapshotError
+    rescue HtmlSnapshotError, UnsafePathError
       ERROR_HTML
     end
 
@@ -39,7 +40,15 @@ module BlockPreview
     attr_reader :block, :content_id, :base_path, :locale, :state, :auth_bypass_id
 
     def frontend_path
-      frontend_base_path + base_path
+      clean_path = base_path.to_s.strip
+
+      invalid_sequences = ["@", "//", "\\"]
+
+      if !clean_path.start_with?("/") || invalid_sequences.any? { |seq| clean_path.include?(seq) }
+        raise UnsafePathError, "Unsafe path format"
+      end
+
+      frontend_base_path + clean_path
     end
 
     def frontend_base_path
