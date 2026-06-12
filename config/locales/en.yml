@@ -24,13 +24,13 @@ en:
             major_change:
               inclusion: "Select if users have to know the content has changed"
             scheduled_publication:
-              blank: "Scheduled publication date and time cannot be blank"
+              blank: "Enter publication date and time"
               invalid_date: "Invalid scheduled publication date and time"
-              future_date: "Scheduled publication date and time must be in the future"
+              future_date: "Enter a publication date and time in the future"
               date:
-                blank: "Scheduled publication date cannot be blank"
+                blank: "Enter a publication date"
               time:
-                blank: "Scheduled publication time cannot be blank"
+                blank: "Enter a publication time"
             opening_hours:
               opening_hours:
                 blank: "Opening hours cannot be blank"
