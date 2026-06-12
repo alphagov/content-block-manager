@@ -41,7 +41,7 @@ end
 
 def shows_list_of_locations
   within "#host_editions" do
-    expect(page).to have_content("List of locations")
+    expect(page).to have_content("Places this content block is used")
   end
 end
 

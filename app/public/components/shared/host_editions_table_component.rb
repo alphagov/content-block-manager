@@ -40,12 +40,7 @@ private
         sort_direction: sort_direction("publishing_app"),
       },
       {
-        text: "Type",
-        href: sort_link("document_type"),
-        sort_direction: sort_direction("document_type"),
-      },
-      {
-        text: "Instances",
+        text: "Times used",
         href: sort_link("instances"),
         sort_direction: sort_direction("instances"),
       },
@@ -80,10 +75,7 @@ private
     [
       title_row(content_item),
       {
-        text: content_item.publishing_app.humanize,
-      },
-      {
-        text: content_item.document_type.humanize,
+        text: publishing_app_name(content_item.publishing_app),
       },
       {
         text: content_item.instances,
@@ -208,5 +200,11 @@ private
                   "Unknown user"
                 end
     "#{time_ago_in_words(content_item.last_edited_at)} ago by #{user_copy}".html_safe
+  end
+
+  def publishing_app_name(publishing_app)
+    return "Mainstream Publisher" if publishing_app == "publisher"
+
+    publishing_app.humanize
   end
 end

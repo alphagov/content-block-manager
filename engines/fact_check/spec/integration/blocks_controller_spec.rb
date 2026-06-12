@@ -41,8 +41,7 @@ RSpec.describe FactCheck::BlocksController, type: :feature do
     it "shows the list of host editions referencing the block" do
       visit block_path(content_id)
 
-      expect(page).to have_css "#host_editions", text: "List of locations" do |component|
-        expect(component).to have_content "My document type", count: item_count
+      expect(page).to have_css "#host_editions", text: "Places this content block is used" do |component|
         expect(component).to have_content "My Item Title", count: item_count * 2 # Title appears twice in each row (once as text, once as link)
       end
     end
