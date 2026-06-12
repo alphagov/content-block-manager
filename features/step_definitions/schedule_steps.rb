@@ -1,7 +1,7 @@
 require_relative "../support/helpers"
 
 Then("I see the errors prompting me to provide a date and time") do
-  assert_text "Scheduled publication date and time cannot be blank", minimum: 2
+  assert_text I18n.t("activerecord.errors.models.edition.attributes.scheduled_publication.blank"), minimum: 2
 end
 
 Then("I see the errors informing me the date is invalid") do
