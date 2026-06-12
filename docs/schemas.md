@@ -53,19 +53,19 @@ Using the pension schema as an example, the `rates` payload looks like this:
   "rates": {
     "rate-1": {
       "title": "Rate 1",
-      "amount": "£221.20",
+      "amount": "221.20",
       "frequency": "a week",
       "description": "Your weekly pension amount"
     },
     "rate-2": {
       "title": "Rate without decimal point",
-      "amount": "£221",
+      "amount": "221",
       "frequency": "a week",
       "description": "Your weekly pension amount"
     },
     "rate-3": {
       "title": "Rate with big value",
-      "amount": "£1,223",
+      "amount": "1,223",
       "frequency": "a week",
       "description": "Your weekly pension amount"
     }

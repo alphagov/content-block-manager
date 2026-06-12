@@ -4,7 +4,7 @@ RSpec.describe FactCheck::UngroupedSubschemaDiffComponent, type: :component do
                            {
                              "title" => "",
                              "frequency" => "",
-                             "amount" => "",
+                             "amount" => { "type" => "string", "x-input-prefix" => "£" },
                            } })
   end
   let(:schema) { build(:schema) }
@@ -18,7 +18,7 @@ RSpec.describe FactCheck::UngroupedSubschemaDiffComponent, type: :component do
               "my_rate" => {
                 "title" => "my title",
                 "frequency" => "weekly",
-                "amount" => "£1000",
+                "amount" => "1000",
               },
               "my_rate_2" => {
                 "title" => "my title 2",
