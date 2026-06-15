@@ -21,7 +21,7 @@ module BlockPreview
     end
 
     def to_s
-      uri = Addressable::URI.parse(frontend_path)
+      uri = frontend_uri
       nokogiri_html = html_snapshot_from_frontend(uri)
       add_draft_style(nokogiri_html)
       update_css_hrefs(nokogiri_html)
@@ -39,16 +39,27 @@ module BlockPreview
 
     attr_reader :block, :content_id, :base_path, :locale, :state, :auth_bypass_id
 
-    def frontend_path
-      clean_path = base_path.to_s.strip
-
-      invalid_sequences = ["@", "//", "\\"]
-
-      if !clean_path.start_with?("/") || invalid_sequences.any? { |seq| clean_path.include?(seq) }
-        raise UnsafePathError, "Unsafe path format"
+    def frontend_uri
+      validate_base_path!
+      uri = Addressable::URI.parse(frontend_origin)
+      expected_host = uri.host
+      uri.path = base_path.to_s.strip
+      uri.query = nil
+      uri.fragment = nil
+      unless uri.host == expected_host
+        raise UnsafePathError, "URI host mismatch"
       end
 
-      frontend_origin + clean_path
+      uri
+    end
+
+    def validate_base_path!
+      clean_path = base_path.to_s.strip
+      invalid_sequences = %w[@ // \\]
+      if !clean_path.start_with?("/") ||
+          invalid_sequences.any? { |seq| clean_path.include?(seq) }
+        raise UnsafePathError, "Unsafe path format"
+      end
     end
 
     def frontend_origin

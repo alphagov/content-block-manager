@@ -185,19 +185,26 @@ RSpec.describe BlockPreview::PreviewHtml do
     context "when base_path is safe" do
       let(:host_base_path) { "/test-path" }
 
-      it "constructs a safe frontend path" do
-        expect(preview.send(:frontend_path)).to eq("#{Plek.website_root}/test-path")
+      it "constructs a URI with the expected origin and path" do
+        uri = preview.send(:frontend_uri)
+        expect(uri).to be_a(Addressable::URI)
+        expect(uri.host).to eq(
+          Addressable::URI.parse(Plek.website_root).host,
+        )
+        expect(uri.path).to eq("/test-path")
       end
 
-      it "does not raise an argument error when calling to_s" do
+      it "does not raise an error when calling to_s" do
         expect { preview.to_s }.not_to raise_error
       end
     end
 
     context "when base_path is unsafe" do
       shared_examples "an unsafe path" do
-        it "raises an UnsafePathError when fetching the frontend path" do
-          expect { preview.send(:frontend_path) }.to raise_error(BlockPreview::PreviewHtml::UnsafePathError, "Unsafe path format")
+        it "raises an UnsafePathError" do
+          expect { preview.send(:frontend_uri) }.to raise_error(
+            BlockPreview::PreviewHtml::UnsafePathError,
+          )
         end
 
         it "returns the error HTML when calling to_s" do
@@ -238,6 +245,27 @@ RSpec.describe BlockPreview::PreviewHtml do
       context "when it is blank" do
         let(:host_base_path) { "   " }
         it_behaves_like "an unsafe path"
+      end
+    end
+
+    describe "origin verification" do
+      it "verifies the constructed URI host matches the expected origin" do
+        uri = preview.send(:frontend_uri)
+        expected_host = Addressable::URI.parse(Plek.website_root).host
+        expect(uri.host).to eq(expected_host)
+      end
+
+      context "when base_path contains @" do
+        it "does not allow @ to be interpreted as a userinfo delimiter that changes the host" do
+          origin = Addressable::URI.parse(Plek.website_root)
+          origin.path = "/@evil.example.com/"
+          expect(origin.host).to eq(
+            Addressable::URI.parse(Plek.website_root).host,
+          )
+          expect(origin.to_s).to eq(
+            "#{Plek.website_root}/@evil.example.com/",
+          )
+        end
       end
     end
   end
