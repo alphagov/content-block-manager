@@ -20,7 +20,7 @@ window.GOVUK.vars.extraDomains = [
     initialiseGA4: true,
     id: 'GTM-KHZP7S7Q',
     gaProperty: 'G-9FZ6YBQ08M',
-    auth: '8jHx-VNEguw67iX9TBC6_g',
-    preview: 'env-50'
+    auth: 'GoGeIsCL2PK9Dv50tgM6Lg',
+    preview: 'env-172'
   }
 ]
