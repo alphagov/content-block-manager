@@ -96,13 +96,20 @@ module BlockPreview
     end
 
     def html_snapshot_from_frontend(uri)
+      verify_trusted_host!(uri)
       uri = add_auth_bypass_token_to_uri(uri) if draft?
-      # Net::HTTP.get_response doesn't work with Addressable::URI, so we need to convert it to a standard URI
       response = Net::HTTP.get_response(URI.parse(uri.to_s))
       if response.code == "200"
         Nokogiri::HTML.parse(response.body)
       else
         raise HtmlSnapshotError
+      end
+    end
+
+    def verify_trusted_host!(uri)
+      expected_host = Addressable::URI.parse(frontend_origin).host
+      unless uri.host == expected_host
+        raise UnsafePathError, "Untrusted host"
       end
     end
 

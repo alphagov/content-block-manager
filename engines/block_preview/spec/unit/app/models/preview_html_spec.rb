@@ -268,6 +268,34 @@ RSpec.describe BlockPreview::PreviewHtml do
         end
       end
     end
+
+    describe "trusted host verification before request" do
+      it "rejects a URI with an untrusted host" do
+        untrusted_uri = Addressable::URI.parse("https://evil.com/path")
+        expect {
+          preview.send(:verify_trusted_host!, untrusted_uri)
+        }.to raise_error(
+          BlockPreview::PreviewHtml::UnsafePathError, "Untrusted host"
+        )
+      end
+
+      it "accepts a URI with the expected frontend host" do
+        trusted_uri = Addressable::URI.parse(
+          "#{Plek.website_root}/some-path",
+        )
+        expect {
+          preview.send(:verify_trusted_host!, trusted_uri)
+        }.not_to raise_error
+      end
+
+      it "does not append the auth token when host is untrusted" do
+        untrusted_uri = Addressable::URI.parse("https://evil.com/path")
+        expect(JWT).not_to receive(:encode)
+        expect {
+          preview.send(:html_snapshot_from_frontend, untrusted_uri)
+        }.to raise_error(BlockPreview::PreviewHtml::UnsafePathError)
+      end
+    end
   end
 
   describe "when the frontend response contains links" do
