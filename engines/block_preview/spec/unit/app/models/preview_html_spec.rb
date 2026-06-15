@@ -116,7 +116,7 @@ RSpec.describe BlockPreview::PreviewHtml do
     expect(content_diff_spy).to have_received(:to_s)
   end
 
-  it "appends the base path to the CSS and JS references" do
+  it "prepends the frontend origin to the CSS and JS references" do
     actual_content = BlockPreview::PreviewHtml.new(
       content_id: host_content_id,
       block: block_to_preview,
@@ -443,7 +443,7 @@ RSpec.describe BlockPreview::PreviewHtml do
       expect(content_diff_spy).to have_received(:to_s)
     end
 
-    it "appends the draft-origin base path to the CSS and JS references" do
+    it "prepends the draft origin to the CSS and JS references" do
       parsed_content = Nokogiri::HTML.parse(actual_content)
 
       expect(parsed_content.at_css("link[href='#{Plek.external_url_for('draft-origin')}/assets/application.css']")).to be_present

@@ -48,22 +48,23 @@ module BlockPreview
         raise UnsafePathError, "Unsafe path format"
       end
 
-      frontend_base_path + clean_path
+      frontend_origin + clean_path
     end
 
-    def frontend_base_path
-      @frontend_base_path ||= Rails.env.development? ? development_base_path : website_base_root
+    def frontend_origin
+      @frontend_origin ||= Rails.env.development? ? development_origin : website_origin
     end
 
-    def website_base_root
+    def website_origin
       draft? ? Plek.external_url_for("draft-origin") : Plek.website_root
     end
 
-    # There are multiple rendering apps for GOV.UK. In non-dev environments, the Router app determines the rendering app
-    # to use. We don't have access to this in dev, so we need to get the rendering app from the Publishing API and construct
-    # the base path that way.
-    def development_base_path
-      @development_base_path ||= begin
+    # There are multiple rendering apps for GOV.UK. In non-dev environments,
+    # the Router app determines the rendering app to use. We don't have access
+    # to this in dev, so we need to get the rendering app from the Publishing
+    # API and construct the origin that way.
+    def development_origin
+      @development_origin ||= begin
         publishing_api_response ||= Public::Services.publishing_api.get_content(content_id)
         Plek.external_url_for(rendering_app(publishing_api_response))
       end
@@ -136,7 +137,7 @@ module BlockPreview
     def update_css_hrefs(nokogiri_html)
       head = nokogiri_html.at_css("head")
       head.css("link[rel='stylesheet']").each do |link|
-        link[:href] = frontend_base_path + link[:href] if link[:href]
+        link[:href] = frontend_origin + link[:href] if link[:href]
       end
       nokogiri_html
     end
@@ -144,7 +145,7 @@ module BlockPreview
     def update_js_srcs(nokogiri_html)
       head = nokogiri_html.at_css("head")
       head.css("script").each do |script|
-        script[:src] = frontend_base_path + script[:src] if script[:src]
+        script[:src] = frontend_origin + script[:src] if script[:src]
       end
       nokogiri_html
     end
