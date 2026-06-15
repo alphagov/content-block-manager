@@ -1,8 +1,10 @@
-# Represents a form submission to a gov.uk domain and its resulting behavior.
+# Represents a form submission to a GOV.UK frontend and its resulting
+# redirect behaviour. Only allows requests to known frontend hosts
+# as determined by Plek.
 #
 # @example Basic usage
 #   submission = FormSubmission.new(
-#     url: "https://example.gov.uk/form",
+#     url: "https://www.gov.uk/form",
 #     body: { field: "value" },
 #     method: "post"
 #   )
@@ -12,7 +14,7 @@ module BlockPreview
   class FormSubmission
     # @return [URI] The parsed URI of the target URL
     # @example
-    #   URI("https://example.gov.uk/form")
+    #   URI("https://www.gov.uk/form")
     attr_reader :uri
 
     # @return [Hash] The form data to be submitted
@@ -28,7 +30,7 @@ module BlockPreview
     # Raised when the HTTP response is not as expected
     class UnexpectedResponseError < StandardError; end
 
-    # Raised when the URL is not a gov.uk domain
+    # Raised when the URL host is not in the allowed frontend hosts
     class UnexpectedUrlError < StandardError; end
 
     # Initializes a new FormSubmission.
@@ -36,13 +38,14 @@ module BlockPreview
     # @param url [String] The target URL to submit the form to
     # @param body [Hash] The form data to be submitted
     # @param method [String] The HTTP method to use for the request
-    # @raise [UnexpectedUrlError] if the URL is not a gov.uk domain
+    # @raise [UnexpectedUrlError] if the URL host is not an allowed
+    #   frontend host
     #
     def initialize(url:, body:, method:)
       @uri = URI.parse(url)
       @body = body
       @method = method
-      raise UnexpectedUrlError unless uri.host&.ends_with?("gov.uk")
+      raise UnexpectedUrlError unless allowed_host?
     end
 
     # The path component of the redirect location resulting from the submission.
@@ -59,7 +62,18 @@ module BlockPreview
       location.request_uri
     end
 
+    def self.allowed_hosts
+      [
+        Plek.website_root,
+        Plek.external_url_for("draft-origin"),
+      ].map { |url| URI.parse(url).host }.compact.uniq
+    end
+
   private
+
+    def allowed_host?
+      self.class.allowed_hosts.include?(uri.host)
+    end
 
     def http_uri?(uri)
       uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)
