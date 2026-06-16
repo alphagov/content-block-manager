@@ -267,6 +267,55 @@ RSpec.describe BlockPreview::PreviewHtml do
           )
         end
       end
+
+      context "if input validation is somehow bypassed" do
+        before { allow(preview).to receive(:validate_base_path!) }
+
+        context "with base path set to original attack vector (@ as userinfo delimiter)" do
+          let(:host_base_path) { "/@evil.example.com/" }
+
+          it "URI component assignment prevents host hijacking" do
+            expected_host = Addressable::URI.parse(Plek.website_root).host
+
+            uri = preview.send(:frontend_uri)
+
+            expect(uri.host).to eq(expected_host)
+            expect(uri.path).to eq("/@evil.example.com/")
+          end
+        end
+
+        context "with base path set to a protocol-relative path" do
+          let(:host_base_path) { "//evil.example.com/" }
+
+          it "URI component assignment prevents host hijacking" do
+            expected_host = Addressable::URI.parse(Plek.website_root).host
+
+            uri = preview.send(:frontend_uri)
+
+            expect(uri.host).to eq(expected_host)
+          end
+        end
+
+        context "if path assignment is somehow able to mutate the URI host" do
+          it "raises UnsafePathError" do
+            origin = preview.send(:frontend_origin)
+            uri = Addressable::URI.parse(origin)
+
+            allow(uri).to receive(:path=) do
+              allow(uri).to receive(:host).and_return(
+                "evil.example.com",
+              )
+            end
+            allow(Addressable::URI).to receive(:parse)
+              .with(origin).and_return(uri)
+
+            expect { preview.send(:frontend_uri) }.to raise_error(
+              BlockPreview::PreviewHtml::UnsafePathError,
+              "URI host mismatch",
+            )
+          end
+        end
+      end
     end
 
     describe "trusted host verification before request" do
