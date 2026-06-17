@@ -42,11 +42,11 @@ Feature: Fact check preview
     Given a pension content block has been created
     And that pension has a rate with the following fields:
       | title      | amount | frequency |
-      | my pension | £123   | a day |
+      | my pension | 123    | a day |
     And a pension content block has been drafted
     And that pension has a rate with the following fields:
-      | title          | amount | frequency |
-      | my pension  | £444   | a month   |
+      | title       | amount | frequency |
+      | my pension  | 444    | a month   |
     When I visit the fact check path for the block
     Then I should see the block's title
     And I should see "£123" as a previous value

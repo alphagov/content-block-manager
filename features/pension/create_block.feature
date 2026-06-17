@@ -41,7 +41,7 @@ Feature: Create a pension block
     And there should be no accessibility errors
     And I complete the "rate" form with the following fields:
       | title    | amount  | frequency |
-      | New rate | £127.91 | a month  |
+      | New rate | 127.91  | a month  |
     Then I should be on the "add_embedded_rates" step
     When I save and continue
     Then there should be no accessibility errors

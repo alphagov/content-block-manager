@@ -45,7 +45,7 @@ private
 
       {
         key: label,
-        value: translated_value(field.name, item),
+        value: [field.input_prefix, translated_value(field.name, item)].compact.join,
         data: { testid: testid_for(suffix) },
       }
     end

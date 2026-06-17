@@ -168,6 +168,80 @@ RSpec.describe Shared::EmbeddedObjects::SummaryCardComponent, type: :component d
     expect(page).to have_css ".govuk-summary-card__actions .govuk-summary-card__action:nth-child(1) a[href='#{expected_edit_path}']", text: "Edit"
   end
 
+  describe "input prefix (e.g. for currency symbol)" do
+    context "when the field has an input prefix" do
+      it "renders a value with a prefix" do
+        fields = [build(:field, name: "amount", label: "Amount", input_prefix: "£")]
+        allow(subschema).to receive(:fields).and_return(fields)
+
+        details = {
+          "embedded-objects" => {
+            "my-embedded-object" => { "amount" => "100.00" },
+          },
+        }
+        edition = build_stubbed(:edition, :pension, details:, document:)
+
+        component = described_class.new(
+          edition:,
+          object_type: "embedded-objects",
+          object_title: "my-embedded-object",
+        )
+
+        render_inline component
+
+        expect(page).to have_css ".govuk-summary-list__value", text: "£100.00"
+      end
+    end
+
+    context "when the field has an empty input prefix" do
+      it "renders a value with no prefix" do
+        fields = [build(:field, name: "something", label: "Something", input_prefix: "")]
+        allow(subschema).to receive(:fields).and_return(fields)
+
+        details = {
+          "embedded-objects" => {
+            "my-embedded-object" => { "something" => "100.00" },
+          },
+        }
+        edition = build_stubbed(:edition, :pension, details:, document:)
+
+        component = described_class.new(
+          edition:,
+          object_type: "embedded-objects",
+          object_title: "my-embedded-object",
+        )
+
+        render_inline component
+
+        expect(page).to have_css ".govuk-summary-list__value", text: "100.00"
+      end
+    end
+
+    context "when the field has no input prefix" do
+      it "renders a value with no prefix" do
+        fields = [build(:field, name: "something", label: "Something")]
+        allow(subschema).to receive(:fields).and_return(fields)
+
+        details = {
+          "embedded-objects" => {
+            "my-embedded-object" => { "something" => "100.00" },
+          },
+        }
+        edition = build_stubbed(:edition, :pension, details:, document:)
+
+        component = described_class.new(
+          edition:,
+          object_type: "embedded-objects",
+          object_title: "my-embedded-object",
+        )
+
+        render_inline component
+
+        expect(page).to have_css ".govuk-summary-list__value", text: "100.00"
+      end
+    end
+  end
+
   describe "when arrays are present" do
     let(:name_field) { build(:field, name: "name", label: "Name") }
     let(:field_field) { build(:field, name: "field", label: "Field") }

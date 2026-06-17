@@ -19,6 +19,7 @@ FactoryBot.define do
       label { nil }
       title { nil }
       hint { nil }
+      input_prefix { nil }
     end
 
     initialize_with do
@@ -40,6 +41,7 @@ FactoryBot.define do
       allow(field).to receive(:label).and_return(evaluator.label)
       allow(field).to receive(:title).and_return(evaluator.title)
       allow(field).to receive(:hint).and_return(evaluator.hint)
+      allow(field).to receive(:input_prefix).and_return(evaluator.input_prefix)
     end
   end
 end
