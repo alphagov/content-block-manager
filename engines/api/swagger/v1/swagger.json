@@ -190,7 +190,7 @@
             "description": "renders HTML for a base embed code",
             "content": {
               "text/html": {
-                "example": "<div class=\"content-block content-block--pension\" data-content-block=\"\" data-document-type=\"pension\" data-content-id=\"038eb0a8-49ee-45f1-a898-732b7e3d1dd4\" data-embed-code=\"{{embed:content_block_pension:state-pension}}\">State Pension</div>"
+                "example": "<div class=\"content-block content-block--pension\" data-content-block=\"\" data-document-type=\"pension\" data-content-id=\"11111111-2222-4333-8444-555555555555\" data-embed-code=\"{{embed:content_block_pension:state-pension}}\">State Pension</div>"
               }
             }
           },

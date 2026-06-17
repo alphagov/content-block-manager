@@ -277,7 +277,14 @@ RSpec.describe "API" do
       parameter name: "embed_code", in: :path, type: :string, required: true, description: "The embed code to render. This can be a base embed code or one that targets a specific field or format."
 
       response "200", "renders HTML for a base embed code" do
-        let(:document) { create(:document, block_type: "pension", sluggable_string: "state-pension") }
+        let(:document) do
+          create(
+            :document,
+            block_type: "pension",
+            sluggable_string: "state-pension",
+            content_id: "11111111-2222-4333-8444-555555555555",
+          )
+        end
         let(:embed_code) { CGI.escape(document.embed_code) }
 
         before do
