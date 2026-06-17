@@ -42,9 +42,9 @@ RSpec.describe BlockPreview::PreviewDetailsComponent, type: :component do
         "description": "Basic state pension",
         "rates": {
           "rate1":
-            { "title": "rate1", "amount": "£100.5", "frequency": "a week", "description": "" },
+            { "title": "rate1", "amount": "100.5", "frequency": "a week", "description": "" },
           "rate2":
-            { "title": "rate2", "amount": "£11.1", "frequency": "a month", "description": "1111" },
+            { "title": "rate2", "amount": "11.1", "frequency": "a month", "description": "1111" },
         },
       })
     end

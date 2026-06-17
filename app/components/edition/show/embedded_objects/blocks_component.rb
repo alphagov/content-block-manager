@@ -45,7 +45,7 @@ private
 
       {
         "#{key_name}": label,
-        value: content_for_row(suffix, item),
+        value: content_for_row(suffix, [field.input_prefix, item].compact.join),
         data: data_attributes_for_row(suffix),
       }
     end

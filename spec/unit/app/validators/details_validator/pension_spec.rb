@@ -2,7 +2,7 @@ RSpec.describe DetailsValidator do
   describe "pension schema" do
     let(:document) { build(:document, :pension) }
 
-    let(:amount) { "£320.00" }
+    let(:amount) { "320.00" }
     let(:frequency) { "a week" }
 
     let(:rate) do
@@ -36,7 +36,7 @@ RSpec.describe DetailsValidator do
     end
 
     context "when the amount does not have a decimal point" do
-      let(:amount) { "£320" }
+      let(:amount) { "320" }
 
       it { is_expected.to be_valid }
     end
