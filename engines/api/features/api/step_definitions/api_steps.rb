@@ -72,6 +72,30 @@ end
 
 When("I query the render API endpoint with the embed code {string}") do |embed_code|
   encoded_embed_code = CGI.escape(embed_code)
+
+  visit "/api/blocks/#{encoded_embed_code}/render"
+end
+
+When("I query the render API endpoint with the embed code for the block titled {string}") do |title|
+  published_edition = Edition.published.find_by!(title: title)
+  encoded_embed_code = CGI.escape(published_edition.document.embed_code)
+
+  visit "/api/blocks/#{encoded_embed_code}/render"
+end
+
+When("I query the render API endpoint with the embed code for the block titled {string} and internal content path {string}") do |title, field_path|
+  published_edition = Edition.published.find_by!(title: title)
+  embed_code = published_edition.document.embed_code_for_field(field_path)
+  encoded_embed_code = CGI.escape(embed_code)
+
+  visit "/api/blocks/#{encoded_embed_code}/render"
+end
+
+When("I query the render API endpoint with the embed code for the block titled {string} and format {string}") do |title, format|
+  published_edition = Edition.published.find_by!(title: title)
+  embed_code = published_edition.document.embed_code_for_format(format)
+  encoded_embed_code = CGI.escape(embed_code)
+
   visit "/api/blocks/#{encoded_embed_code}/render"
 end
 
