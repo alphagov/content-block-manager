@@ -1,55 +1,70 @@
 RSpec.describe BlockPreview::FormSubmission do
-  let(:valid_url) { "https://example.gov.uk/form" }
   let(:body) { { field: "value", another_field: "data" } }
   let(:method) { "post" }
 
+  let(:website_host) { URI.parse(Plek.website_root).host }
+  let(:draft_host) { URI.parse(Plek.external_url_for("draft-origin")).host }
+
   describe "#initialize" do
-    context "with a valid gov.uk URL" do
-      it "successfully creates an instance" do
-        service = described_class.new(url: valid_url, body: body, method:)
+    context "with an allowed frontend host" do
+      it "accepts the live frontend host" do
+        url = "http://#{website_host}/form"
+        service = described_class.new(url: url, body: body, method:)
         expect(service).to be_a(BlockPreview::FormSubmission)
       end
-    end
 
-    context "with a subdomain of gov.uk" do
-      it "accepts the URL" do
-        url = "https://subdomain.example.gov.uk/path"
+      it "accepts the draft frontend host" do
+        url = "http://#{draft_host}/form"
+        service = described_class.new(url: url, body: body, method:)
+        expect(service).to be_a(BlockPreview::FormSubmission)
+      end
+
+      it "accepts paths with query parameters" do
+        url = "http://#{website_host}/form?param=value"
         service = described_class.new(url: url, body: body, method:)
         expect(service).to be_a(BlockPreview::FormSubmission)
       end
     end
 
-    context "with an invalid URL" do
-      it "raises UnexpectedUrlError for non-gov.uk domains" do
-        invalid_url = "https://example.com/form"
+    context "with a disallowed host" do
+      it "rejects arbitrary external domains" do
         expect {
-          described_class.new(url: invalid_url, body: body, method:)
+          described_class.new(
+            url: "https://evil.com/form", body: body, method:,
+          )
         }.to raise_error(BlockPreview::FormSubmission::UnexpectedUrlError)
       end
 
-      it "raises UnexpectedUrlError for URLs that contain but don't end with gov.uk" do
-        invalid_url = "https://gov.uk.fake.com/form"
+      it "rejects other gov.uk subdomains not in the allowlist" do
         expect {
-          described_class.new(url: invalid_url, body: body, method:)
+          described_class.new(
+            url: "https://other-service.gov.uk/form",
+            body: body, method:
+          )
         }.to raise_error(BlockPreview::FormSubmission::UnexpectedUrlError)
       end
-    end
 
-    context "with a URL without a domain" do
-      it "raises UnexpectedUrlError domains" do
-        invalid_url = "form"
+      it "rejects hosts that merely contain an allowed host" do
         expect {
-          described_class.new(url: invalid_url, body: body, method:)
+          described_class.new(
+            url: "https://#{website_host}.evil.com/form",
+            body: body, method:
+          )
+        }.to raise_error(BlockPreview::FormSubmission::UnexpectedUrlError)
+      end
+
+      it "rejects URLs without a host" do
+        expect {
+          described_class.new(url: "form", body: body, method:)
         }.to raise_error(BlockPreview::FormSubmission::UnexpectedUrlError)
       end
     end
   end
 
   describe "#redirect_path" do
+    let(:valid_url) { "http://#{website_host}/form" }
     let(:service) { described_class.new(url: valid_url, body: body, method:) }
-    let(:response) { double(code: response_code, headers: { "location" => redirect_location }) }
-
-    let(:redirect_location) { "https://example.gov.uk/preview/123" }
+    let(:redirect_location) { "https://#{website_host}/preview/123" }
 
     before do
       stub_request(:post, valid_url)
@@ -89,10 +104,12 @@ RSpec.describe BlockPreview::FormSubmission do
     end
 
     context "when response has a redirect with query parameters" do
-      let(:redirect_location) { "https://example.gov.uk/preview/123?param=value" }
+      let(:redirect_location) do
+        "https://#{website_host}/preview/123?param=value"
+      end
       let(:response_code) { 302 }
 
-      it "returns only the path without query parameters" do
+      it "includes query parameters in the returned path" do
         expect(service.redirect_path).to eq("/preview/123?param=value")
       end
     end
@@ -136,6 +153,20 @@ RSpec.describe BlockPreview::FormSubmission do
           service.redirect_path
         }.to raise_error(BlockPreview::FormSubmission::UnexpectedResponseError)
       end
+    end
+  end
+
+  describe ".allowed_hosts" do
+    it "includes the live frontend host" do
+      expect(described_class.allowed_hosts).to include(website_host)
+    end
+
+    it "includes the draft frontend host" do
+      expect(described_class.allowed_hosts).to include(draft_host)
+    end
+
+    it "does not include arbitrary hosts" do
+      expect(described_class.allowed_hosts).not_to include("evil.com")
     end
   end
 end

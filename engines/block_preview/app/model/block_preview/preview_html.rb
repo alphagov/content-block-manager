@@ -21,7 +21,7 @@ module BlockPreview
     end
 
     def to_s
-      uri = Addressable::URI.parse(frontend_path)
+      uri = frontend_uri
       nokogiri_html = html_snapshot_from_frontend(uri)
       add_draft_style(nokogiri_html)
       update_css_hrefs(nokogiri_html)
@@ -39,31 +39,43 @@ module BlockPreview
 
     attr_reader :block, :content_id, :base_path, :locale, :state, :auth_bypass_id
 
-    def frontend_path
-      clean_path = base_path.to_s.strip
-
-      invalid_sequences = ["@", "//", "\\"]
-
-      if !clean_path.start_with?("/") || invalid_sequences.any? { |seq| clean_path.include?(seq) }
-        raise UnsafePathError, "Unsafe path format"
+    def frontend_uri
+      validate_base_path!
+      uri = Addressable::URI.parse(frontend_origin)
+      expected_host = uri.host
+      uri.path = base_path.to_s.strip
+      uri.query = nil
+      uri.fragment = nil
+      unless uri.host == expected_host
+        raise UnsafePathError, "URI host mismatch"
       end
 
-      frontend_base_path + clean_path
+      uri
     end
 
-    def frontend_base_path
-      @frontend_base_path ||= Rails.env.development? ? development_base_path : website_base_root
+    def validate_base_path!
+      clean_path = base_path.to_s.strip
+      invalid_sequences = %w[@ // \\]
+      if !clean_path.start_with?("/") ||
+          invalid_sequences.any? { |seq| clean_path.include?(seq) }
+        raise UnsafePathError, "Unsafe path format"
+      end
     end
 
-    def website_base_root
+    def frontend_origin
+      @frontend_origin ||= Rails.env.development? ? development_origin : website_origin
+    end
+
+    def website_origin
       draft? ? Plek.external_url_for("draft-origin") : Plek.website_root
     end
 
-    # There are multiple rendering apps for GOV.UK. In non-dev environments, the Router app determines the rendering app
-    # to use. We don't have access to this in dev, so we need to get the rendering app from the Publishing API and construct
-    # the base path that way.
-    def development_base_path
-      @development_base_path ||= begin
+    # There are multiple rendering apps for GOV.UK. In non-dev environments,
+    # the Router app determines the rendering app to use. We don't have access
+    # to this in dev, so we need to get the rendering app from the Publishing
+    # API and construct the origin that way.
+    def development_origin
+      @development_origin ||= begin
         publishing_api_response ||= Public::Services.publishing_api.get_content(content_id)
         Plek.external_url_for(rendering_app(publishing_api_response))
       end
@@ -84,13 +96,20 @@ module BlockPreview
     end
 
     def html_snapshot_from_frontend(uri)
+      verify_trusted_host!(uri)
       uri = add_auth_bypass_token_to_uri(uri) if draft?
-      # Net::HTTP.get_response doesn't work with Addressable::URI, so we need to convert it to a standard URI
       response = Net::HTTP.get_response(URI.parse(uri.to_s))
       if response.code == "200"
         Nokogiri::HTML.parse(response.body)
       else
         raise HtmlSnapshotError
+      end
+    end
+
+    def verify_trusted_host!(uri)
+      expected_host = Addressable::URI.parse(frontend_origin).host
+      unless uri.host == expected_host
+        raise UnsafePathError, "Untrusted host"
       end
     end
 
@@ -136,7 +155,7 @@ module BlockPreview
     def update_css_hrefs(nokogiri_html)
       head = nokogiri_html.at_css("head")
       head.css("link[rel='stylesheet']").each do |link|
-        link[:href] = frontend_base_path + link[:href] if link[:href]
+        link[:href] = frontend_origin + link[:href] if link[:href]
       end
       nokogiri_html
     end
@@ -144,7 +163,7 @@ module BlockPreview
     def update_js_srcs(nokogiri_html)
       head = nokogiri_html.at_css("head")
       head.css("script").each do |script|
-        script[:src] = frontend_base_path + script[:src] if script[:src]
+        script[:src] = frontend_origin + script[:src] if script[:src]
       end
       nokogiri_html
     end

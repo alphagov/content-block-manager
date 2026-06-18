@@ -116,7 +116,7 @@ RSpec.describe BlockPreview::PreviewHtml do
     expect(content_diff_spy).to have_received(:to_s)
   end
 
-  it "appends the base path to the CSS and JS references" do
+  it "prepends the frontend origin to the CSS and JS references" do
     actual_content = BlockPreview::PreviewHtml.new(
       content_id: host_content_id,
       block: block_to_preview,
@@ -185,19 +185,26 @@ RSpec.describe BlockPreview::PreviewHtml do
     context "when base_path is safe" do
       let(:host_base_path) { "/test-path" }
 
-      it "constructs a safe frontend path" do
-        expect(preview.send(:frontend_path)).to eq("#{Plek.website_root}/test-path")
+      it "constructs a URI with the expected origin and path" do
+        uri = preview.send(:frontend_uri)
+        expect(uri).to be_a(Addressable::URI)
+        expect(uri.host).to eq(
+          Addressable::URI.parse(Plek.website_root).host,
+        )
+        expect(uri.path).to eq("/test-path")
       end
 
-      it "does not raise an argument error when calling to_s" do
+      it "does not raise an error when calling to_s" do
         expect { preview.to_s }.not_to raise_error
       end
     end
 
     context "when base_path is unsafe" do
       shared_examples "an unsafe path" do
-        it "raises an UnsafePathError when fetching the frontend path" do
-          expect { preview.send(:frontend_path) }.to raise_error(BlockPreview::PreviewHtml::UnsafePathError, "Unsafe path format")
+        it "raises an UnsafePathError" do
+          expect { preview.send(:frontend_uri) }.to raise_error(
+            BlockPreview::PreviewHtml::UnsafePathError,
+          )
         end
 
         it "returns the error HTML when calling to_s" do
@@ -238,6 +245,104 @@ RSpec.describe BlockPreview::PreviewHtml do
       context "when it is blank" do
         let(:host_base_path) { "   " }
         it_behaves_like "an unsafe path"
+      end
+    end
+
+    describe "origin verification" do
+      it "verifies the constructed URI host matches the expected origin" do
+        uri = preview.send(:frontend_uri)
+        expected_host = Addressable::URI.parse(Plek.website_root).host
+        expect(uri.host).to eq(expected_host)
+      end
+
+      context "when base_path contains @" do
+        it "does not allow @ to be interpreted as a userinfo delimiter that changes the host" do
+          origin = Addressable::URI.parse(Plek.website_root)
+          origin.path = "/@evil.example.com/"
+          expect(origin.host).to eq(
+            Addressable::URI.parse(Plek.website_root).host,
+          )
+          expect(origin.to_s).to eq(
+            "#{Plek.website_root}/@evil.example.com/",
+          )
+        end
+      end
+
+      context "if input validation is somehow bypassed" do
+        before { allow(preview).to receive(:validate_base_path!) }
+
+        context "with base path set to original attack vector (@ as userinfo delimiter)" do
+          let(:host_base_path) { "/@evil.example.com/" }
+
+          it "URI component assignment prevents host hijacking" do
+            expected_host = Addressable::URI.parse(Plek.website_root).host
+
+            uri = preview.send(:frontend_uri)
+
+            expect(uri.host).to eq(expected_host)
+            expect(uri.path).to eq("/@evil.example.com/")
+          end
+        end
+
+        context "with base path set to a protocol-relative path" do
+          let(:host_base_path) { "//evil.example.com/" }
+
+          it "URI component assignment prevents host hijacking" do
+            expected_host = Addressable::URI.parse(Plek.website_root).host
+
+            uri = preview.send(:frontend_uri)
+
+            expect(uri.host).to eq(expected_host)
+          end
+        end
+
+        context "if path assignment is somehow able to mutate the URI host" do
+          it "raises UnsafePathError" do
+            origin = preview.send(:frontend_origin)
+            uri = Addressable::URI.parse(origin)
+
+            allow(uri).to receive(:path=) do
+              allow(uri).to receive(:host).and_return(
+                "evil.example.com",
+              )
+            end
+            allow(Addressable::URI).to receive(:parse)
+              .with(origin).and_return(uri)
+
+            expect { preview.send(:frontend_uri) }.to raise_error(
+              BlockPreview::PreviewHtml::UnsafePathError,
+              "URI host mismatch",
+            )
+          end
+        end
+      end
+    end
+
+    describe "trusted host verification before request" do
+      it "rejects a URI with an untrusted host" do
+        untrusted_uri = Addressable::URI.parse("https://evil.com/path")
+        expect {
+          preview.send(:verify_trusted_host!, untrusted_uri)
+        }.to raise_error(
+          BlockPreview::PreviewHtml::UnsafePathError, "Untrusted host"
+        )
+      end
+
+      it "accepts a URI with the expected frontend host" do
+        trusted_uri = Addressable::URI.parse(
+          "#{Plek.website_root}/some-path",
+        )
+        expect {
+          preview.send(:verify_trusted_host!, trusted_uri)
+        }.not_to raise_error
+      end
+
+      it "does not append the auth token when host is untrusted" do
+        untrusted_uri = Addressable::URI.parse("https://evil.com/path")
+        expect(JWT).not_to receive(:encode)
+        expect {
+          preview.send(:html_snapshot_from_frontend, untrusted_uri)
+        }.to raise_error(BlockPreview::PreviewHtml::UnsafePathError)
       end
     end
   end
@@ -443,7 +548,7 @@ RSpec.describe BlockPreview::PreviewHtml do
       expect(content_diff_spy).to have_received(:to_s)
     end
 
-    it "appends the draft-origin base path to the CSS and JS references" do
+    it "prepends the draft origin to the CSS and JS references" do
       parsed_content = Nokogiri::HTML.parse(actual_content)
 
       expect(parsed_content.at_css("link[href='#{Plek.external_url_for('draft-origin')}/assets/application.css']")).to be_present
