@@ -3,7 +3,7 @@
   "info": {
     "title": "Content Block Manager API",
     "version": "v1",
-    "description": "The Content Block Manager API allows users to view information about content blocks. It is largely designed\nfor use by the [authoring widget](https://github.com/alphagov/content-block-editor) to allow preview and\nsearch of content blocks.\n\nCurrently, only search is supported, but in the future, we plan to support rendering of content blocks.\n\nAt the moment, the API is read-only, and only supports searching for published content blocks, but in the\nfuture, we may add support for draft content blocks and for creating and updating content blocks, which will\nrequire authentication.\n"
+    "description": "The Content Block Manager API allows users to view information about content blocks. It is largely designed\nfor use by the [block picker widget](https://github.com/alphagov/content-block-picker) to allow preview and\nsearch of content blocks.\n\nAt the moment, the API is read-only, and only supports searching for published content blocks, but in the\nfuture, we may add support for draft content blocks and for creating and updating content blocks, which will\nrequire authentication.\n"
   },
   "paths": {
     "/blocks": {
@@ -163,6 +163,52 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/blocks/{embed_code}/render": {
+      "get": {
+        "summary": "Render a content block",
+        "description": "This endpoint renders a published content block as HTML for a given embed code.\n",
+        "tags": [
+          "Content Blocks"
+        ],
+        "parameters": [
+          {
+            "name": "embed_code",
+            "in": "path",
+            "required": true,
+            "description": "The embed code to render. This can be a base embed code or one that targets a specific field or format.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "renders the specified sub content for a format",
+            "content": {
+              "text/html": {
+                "examples": {
+                  "base_embed_code": {
+                    "summary": "Base embed code renders the block title",
+                    "value": "<div class=\"content-block content-block--pension\" data-content-block=\"\" data-document-type=\"pension\" data-content-id=\"11111111-2222-4333-8444-555555555555\" data-embed-code=\"{{embed:content_block_pension:state-pension}}\">State Pension</div>"
+                  },
+                  "internal_content_path": {
+                    "summary": "Providing an internal path causes the correct path to be rendered",
+                    "value": "<span class=\"content-block content-block--pension\" data-content-block=\"\" data-document-type=\"pension\" data-content-id=\"11111111-2222-4333-8444-666666666666\" data-embed-code=\"{{embed:content_block_pension:state-pension-field/rates/weekly-rate/amount}}\">£999.69</span>"
+                  },
+                  "format": {
+                    "summary": "Providing a format causes the correct format to be rendered",
+                    "value": "<div class=\"content-block content-block--time_period\" data-content-block=\"\" data-document-type=\"time_period\" data-content-id=\"11111111-2222-5333-8444-666666666666\" data-embed-code=\"{{embed:content_block_time_period:sample_time_period#long_form}}\"><p class=\"govuk-body\">\n  9 September 2109 to 10 October 2109\n</p>\n</div>"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "returns an error when the embed code is unknown"
           }
         }
       }
