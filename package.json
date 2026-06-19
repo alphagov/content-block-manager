@@ -37,7 +37,7 @@
     "picomatch": "^4.0.4",
     "prettier": "^3.8.4",
     "stylelint": "^17.13.0",
-    "stylelint-config-gds": "^2.0.0",
+    "stylelint-config-gds": "^3.0.0",
     "tinyglobby": "^0.2.17",
     "ts-declaration-location": "^1.0.7"
   },
