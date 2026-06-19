@@ -38,4 +38,29 @@ RSpec.describe Edition do
       end
     end
   end
+  describe ".most_recent_published_for_document" do
+    let(:document) { create(:document) }
+
+    context "where there are multiple draft and published editions" do
+      before do
+        create(:edition, document: document, updated_at: Time.zone.now - 2.days, state: :published)
+        create(:edition, document: document, updated_at: Time.zone.now, state: :draft)
+      end
+
+      let!(:most_recent_published_edition) { create(:edition, document: document, updated_at: Time.zone.now - 1.day, state: :published) }
+      it "returns the most recent published edition" do
+        expect(Edition.most_recent_published_for_document).to eq([most_recent_published_edition])
+      end
+    end
+
+    context "where there are only draft editions" do
+      before do
+        create(:edition, document: document, state: :draft)
+        create(:edition, document: document, state: :draft)
+      end
+      it "returns an empty list" do
+        expect(Edition.most_recent_published_for_document).to eq([])
+      end
+    end
+  end
 end

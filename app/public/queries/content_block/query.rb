@@ -13,7 +13,7 @@ class ContentBlock
 
     def results
       Result.new(
-        blocks: paginated_results.map { |document| ContentBlock.new(document.most_recent_edition) },
+        blocks: paginated_results.map { |document| ContentBlock.new(document.latest_published_edition) },
         current_page: paginated_results.current_page,
         total_pages: paginated_results.total_pages,
         total_count: paginated_results.total_count,
@@ -34,8 +34,8 @@ class ContentBlock
 
     def unpaginated_results
       Document.joins(:editions)
-              .merge(Edition.most_recent_for_document)
               .merge(Edition.published)
+              .merge(Edition.most_recent_published_for_document)
               .extending(Scopes)
               .by_block_type(filters[:block_type])
               .by_lead_organisation_id(filters[:lead_organisation_id])
