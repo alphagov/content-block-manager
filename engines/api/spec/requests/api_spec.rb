@@ -1,4 +1,5 @@
 require "swagger_helper"
+require "cgi"
 
 RSpec.describe "API" do
   path "/blocks" do
@@ -259,6 +260,134 @@ RSpec.describe "API" do
             data = JSON.parse(response.body)
             expect(data["error"]).to be_present
           end
+        end
+      end
+    end
+  end
+
+  path "/blocks/{embed_code}/render" do
+    get "Render a content block" do
+      description <<~DESC
+        This endpoint renders a published content block as HTML for a given embed code.
+      DESC
+
+      tags "Content Blocks"
+      produces "text/html", "application/json"
+
+      parameter name: "embed_code", in: :path, type: :string, required: true, description: "The embed code to render. This can be a base embed code or one that targets a specific field or format."
+
+      response "200", "renders HTML for a base embed code" do
+        before do
+          @document = create(
+            :document,
+            block_type: "pension",
+            sluggable_string: "state-pension",
+            content_id: "11111111-2222-4333-8444-555555555555",
+          )
+          create(
+            :edition,
+            :published,
+            title: "State Pension",
+            lead_organisation_id: SecureRandom.uuid,
+            document: @document,
+          )
+        end
+
+        let(:embed_code) { CGI.escape(@document.embed_code) }
+
+        after do |example|
+          content = example.metadata[:response][:content] || {}
+          example.metadata[:response][:content] = content.merge(
+            "text/html" => {
+              example: response.body,
+            },
+          )
+        end
+
+        run_test! do |response|
+          expect(response.content_type).to include("text/html")
+          expect(response.body).to include("content-block")
+          expect(response.body).to include("State Pension")
+        end
+      end
+
+      response "200", "renders the specified sub content for an internal content path where the embed code containing a slash", document: false do
+        before do
+          @document = create(
+            :document,
+            block_type: "pension",
+            sluggable_string: "state-pension-field",
+            content_id: "11111111-2222-4333-8444-666666666666",
+          )
+          create(
+            :edition,
+            :published,
+            details: {
+              "rates" => {
+                "weekly-rate" => {
+                  "title" => "Weekly rate",
+                  "amount" => "999.69",
+                  "frequency" => "a week",
+                },
+              },
+            },
+            title: "State Pension",
+            lead_organisation_id: SecureRandom.uuid,
+            document: @document,
+          )
+        end
+
+        let(:embed_code) { CGI.escape(@document.embed_code_for_field("rates/weekly-rate/amount")) }
+
+        let(:expected_response) do
+          <<~HTML
+            <span
+              class="content-block content-block--pension"
+              data-content-block=""
+              data-document-type="pension"
+              data-content-id="11111111-2222-4333-8444-666666666666"
+              data-embed-code="{{embed:content_block_pension:state-pension-field/rates/weekly-rate/amount}}"
+              >
+              £999.69
+            </span>
+          HTML
+        end
+
+        run_test! do |response|
+          expect(response.content_type).to include("text/html")
+          expect(normalise_html(response.body)).to eq(normalise_html(expected_response))
+        end
+
+        def normalise_html(html)
+          fragment = Nokogiri::HTML.fragment(html)
+          fragment.traverse do |node|
+            if node.text?
+              node.content = node.content.squish
+              node.remove if node.content.empty?
+            end
+          end
+          fragment.to_html
+        end
+      end
+
+      response "404", "returns an error when the embed code is unknown" do
+        let(:embed_code) { CGI.escape("{{embed:content_block_pension:missing-block}}") }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+
+          expect(data).to eq({
+            "error" => "Content block not found for embed code: {{embed:content_block_pension:missing-block}}",
+          })
+        end
+      end
+
+      response "404", "returns an error when the embed code with a slash field path is unknown", document: false do
+        let(:embed_code) { CGI.escape("{{embed:content_block_pension:missing-block/rates/rate1/amount}}}") }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data["error"]).to be_present
         end
       end
     end
