@@ -1,7 +1,7 @@
 require "swagger_helper"
 
 RSpec.describe "API" do
-  path "/blocks/search" do
+  path "/blocks" do
     let(:organisations) do
       [
         build(:organisation, id: "aa1b2c3d-1234-5678-abcd-000000000001", name: "HM Revenue & Customs"),
@@ -108,7 +108,7 @@ RSpec.describe "API" do
             total: 1,
             pages: 1,
             current_page: 1,
-            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks/search?block_type=pension&page=1" }],
+            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks?block_type=pension&page=1" }],
           )
 
           expect(data["results"].size).to eq(1)
@@ -132,7 +132,7 @@ RSpec.describe "API" do
             total: 1,
             pages: 1,
             current_page: 1,
-            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks/search?lead_organisation_id=#{lead_organisation_id}&page=1" }],
+            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks?lead_organisation_id=#{lead_organisation_id}&page=1" }],
           )
 
           expect(data["results"].size).to eq(1)
@@ -156,7 +156,7 @@ RSpec.describe "API" do
             total: 1,
             pages: 1,
             current_page: 1,
-            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks/search?keyword=first&page=1" }],
+            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks?keyword=first&page=1" }],
           )
 
           expect(data["results"].size).to eq(1)
@@ -182,8 +182,8 @@ RSpec.describe "API" do
               pages: 3,
               current_page: 1,
               expected_links: [
-                { rel: "next", href: "http://www.example.com/api/blocks/search?page=2" },
-                { rel: "self", href: "http://www.example.com/api/blocks/search?page=1" },
+                { rel: "next", href: "http://www.example.com/api/blocks?page=2" },
+                { rel: "self", href: "http://www.example.com/api/blocks?page=1" },
               ],
             )
           end
@@ -200,9 +200,9 @@ RSpec.describe "API" do
               pages: 3,
               current_page: 2,
               expected_links: [
-                { rel: "previous", href: "http://www.example.com/api/blocks/search?page=1" },
-                { rel: "next", href: "http://www.example.com/api/blocks/search?page=3" },
-                { rel: "self", href: "http://www.example.com/api/blocks/search?page=2" },
+                { rel: "previous", href: "http://www.example.com/api/blocks?page=1" },
+                { rel: "next", href: "http://www.example.com/api/blocks?page=3" },
+                { rel: "self", href: "http://www.example.com/api/blocks?page=2" },
               ],
             )
           end
@@ -219,8 +219,8 @@ RSpec.describe "API" do
               pages: 3,
               current_page: 3,
               expected_links: [
-                { rel: "previous", href: "http://www.example.com/api/blocks/search?page=2" },
-                { rel: "self", href: "http://www.example.com/api/blocks/search?page=3" },
+                { rel: "previous", href: "http://www.example.com/api/blocks?page=2" },
+                { rel: "self", href: "http://www.example.com/api/blocks?page=3" },
               ],
             )
           end
