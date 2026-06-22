@@ -10,7 +10,7 @@ RSpec.describe ContentBlock::Query do
 
     it "excludes draft content blocks" do
       doc_a = create(:document)
-      create(:edition, :published, document: doc_a, title: "Doc A published edition")
+      create(:edition, :published, document: doc_a, title: "Doc A published edition", created_at: 1.day.ago)
       create(:edition, :draft, document: doc_a, title: "Doc A draft edition")
 
       doc_b = create(:document)

@@ -29,6 +29,10 @@ class Edition < ApplicationRecord
     where(updated_at: Edition.active.select("MAX(updated_at)").group(:document_id))
   }
 
+  scope :most_recent_published_for_document, lambda {
+    where(editions: { id: Edition.published.select("MAX(id)").group(:document_id) })
+  }
+
   scope :most_recent_first, lambda {
     order(updated_at: :desc)
   }
