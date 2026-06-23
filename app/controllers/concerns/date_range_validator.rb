@@ -1,5 +1,6 @@
 class DateRangeValidator
   SUBSCHEMA_BLOCK_TYPE = "date_range".freeze
+  include ApplicationHelper
 
   def initialize(edition, object_params)
     @edition = edition
@@ -52,13 +53,17 @@ private
       I18n.t(
         "activerecord.errors.models.edition.attributes.#{field_name}.blank",
         attribute: attribute,
-        default: I18n.t("activerecord.errors.models.edition.blank", attribute: attribute),
+        default: I18n.t("activerecord.errors.models.edition.blank",
+                        attribute: attribute,
+                        attribute_with_indefinite_article: add_indefinite_article(attribute)),
       )
     when :date_invalid
       I18n.t(
         "activerecord.errors.models.edition.attributes.#{field_name}.invalid",
         attribute: attribute,
-        default: I18n.t("activerecord.errors.models.edition.invalid", attribute: attribute),
+        default: I18n.t("activerecord.errors.models.edition.invalid",
+                        attribute: attribute,
+                        attribute_with_indefinite_article: add_indefinite_article(attribute)),
       )
     end
   end

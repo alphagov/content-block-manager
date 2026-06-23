@@ -49,6 +49,18 @@ class Schema
       end
     end
 
+    def all_nested_fields
+      return [] if nested_fields.nil?
+
+      collected = nested_fields.dup
+
+      nested_fields.each do |field|
+        collected.concat(field.nested_fields) if field.nested_fields.present?
+      end
+
+      collected
+    end
+
     def nested_field(nested_field_name)
       raise(ArgumentError, "Provide the name of a nested field") if nested_field_name.blank?
 
