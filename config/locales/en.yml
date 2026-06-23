@@ -406,6 +406,8 @@ en:
     views:
       title: Views
       context: in last 30 days
+  host_editions:
+    caption: "Places this content block is used"
   schema:
     title:
       things_taxed: thing the tax is paid on
