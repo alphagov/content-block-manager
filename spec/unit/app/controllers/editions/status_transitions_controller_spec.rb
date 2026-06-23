@@ -1,7 +1,7 @@
 RSpec.describe Editions::StatusTransitionsController, type: :controller do
   include LoginHelpers
   let(:user) { create :user }
-  let(:document) { instance_double(Document, id: 456) }
+  let(:document) { create(:document) }
   let(:edition) { create(:edition, document: create(:document)) }
   let(:transition_state_outcome) do
     {
@@ -93,19 +93,18 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
 
     context "when the transition is invalid" do
       let(:edition_invalid_for_transition) do
-        document = create(:document, id: 456)
-        create(:edition, state: "awaiting_review", id: 234, document: document)
+        create(:edition, state: "awaiting_review", document: document)
       end
 
       before do
         allow(Edition).to receive(:find).and_return(edition_invalid_for_transition)
         allow(GovukError).to receive(:notify)
 
-        post :create, params: { id: 234, transition: :ready_for_review }
+        post :create, params: { id: edition_invalid_for_transition.id, transition: :ready_for_review }
       end
 
       it "redirects to the show page" do
-        expect(response).to redirect_to(document_path(456))
+        expect(response).to redirect_to(document_path(document.id))
       end
 
       it "shows an error message " do
@@ -116,13 +115,13 @@ RSpec.describe Editions::StatusTransitionsController, type: :controller do
 
       it "records the error details using GovukError to facilitate remediation" do
         expected_error_details = "Can't fire event `ready_for_review` in current state " \
-          "`awaiting_review` for `Edition` with ID 234 "
+          "`awaiting_review` for `Edition` with ID #{edition_invalid_for_transition.id} "
 
         expect(GovukError).to have_received(:notify).with(
           expected_error_details,
           extra: {
-            edition_id: 234,
-            document_id: 456,
+            edition_id: edition_invalid_for_transition.id,
+            document_id: document.id,
           },
         )
       end
