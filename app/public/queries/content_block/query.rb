@@ -34,7 +34,6 @@ class ContentBlock
 
     def unpaginated_results
       Document.joins(:editions)
-              .merge(Edition.published)
               .merge(Edition.most_recent_published_for_document)
               .extending(Scopes)
               .by_block_type(filters[:block_type])
