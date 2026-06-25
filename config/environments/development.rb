@@ -65,6 +65,16 @@ Rails.application.configure do
 
   config.hosts.clear
 
+  # Allow CORS requests from the local Vite dev server
+  config.middleware.insert_before 0, Rack::Cors do
+    allow do
+      origins "http://localhost:5173"
+      resource "*",
+               headers: :any,
+               methods: %i[get post put patch delete options head]
+    end
+  end
+
   # Raises error for missing translations.
   config.i18n.raise_on_missing_translations = true
 
