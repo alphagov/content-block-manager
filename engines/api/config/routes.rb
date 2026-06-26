@@ -1,3 +1,4 @@
 Api::Engine.routes.draw do
-  get "blocks/search", to: "blocks#search"
+  get "blocks", to: "blocks#search"
+  get "blocks/*embed_code/render", to: "blocks#render_block"
 end

@@ -1,4 +1,4 @@
-Feature: /api/blocks/search
+Feature: /api/blocks
   Background:
     Given the organisation "Ministry of Example" exists
     And the organisation "Ministry of Silly Walks" exists
@@ -56,8 +56,8 @@ Feature: /api/blocks/search
         | current_page  | 1     |
       And the pagination response has the following links:
         | rel                  | href                                            |
-        | next                 | http://www.example.com/api/blocks/search?page=2 |
-        | self                 | http://www.example.com/api/blocks/search?page=1 |
+        | next                 | http://www.example.com/api/blocks?page=2 |
+        | self                 | http://www.example.com/api/blocks?page=1 |
       And I query the search API endpoint for the second page of results
       Then the response is a list containing 1 block
       And one block has the following attributes:
@@ -70,9 +70,9 @@ Feature: /api/blocks/search
         | current_page  | 2     |
       And the pagination response has the following links:
         | rel                  | href                                            |
-        | next                 | http://www.example.com/api/blocks/search?page=3 |
-        | previous             | http://www.example.com/api/blocks/search?page=1 |
-        | self                 | http://www.example.com/api/blocks/search?page=2 |
+        | next                 | http://www.example.com/api/blocks?page=3 |
+        | previous             | http://www.example.com/api/blocks?page=1 |
+        | self                 | http://www.example.com/api/blocks?page=2 |
       And I query the search API endpoint for the third page of results
       Then the response is a list containing 1 block
       And one block has the following attributes:
@@ -85,5 +85,5 @@ Feature: /api/blocks/search
         | current_page  | 3     |
       And the pagination response has the following links:
         | rel                  | href                                            |
-        | previous             | http://www.example.com/api/blocks/search?page=2 |
-        | self                 | http://www.example.com/api/blocks/search?page=3 |
+        | previous             | http://www.example.com/api/blocks?page=2 |
+        | self                 | http://www.example.com/api/blocks?page=3 |
