@@ -1,5 +1,7 @@
+require "cgi"
+
 When("I access the search API endpoint without any parameters") do
-  visit "/api/blocks/search"
+  visit "/api/blocks"
   @body = JSON.parse(page.source)
 end
 
@@ -21,18 +23,18 @@ And(/^(one|another) block has the following attributes:$/) do |_, table|
 end
 
 When("query the search API endpoint for block type {string}") do |block_type|
-  visit "/api/blocks/search?block_type=#{block_type}"
+  visit "/api/blocks?block_type=#{block_type}"
   @body = JSON.parse(page.source)
 end
 
 When("I query the search API endpoint for the organisation {string}") do |organisation_name|
   organisation = Organisation.all.find { |org| org.name == organisation_name }
-  visit "/api/blocks/search?lead_organisation_id=#{organisation.id}"
+  visit "/api/blocks?lead_organisation_id=#{organisation.id}"
   @body = JSON.parse(page.source)
 end
 
 When("I query the search API endpoint for the keyword {string}") do |keyword|
-  visit "/api/blocks/search?keyword=#{keyword}"
+  visit "/api/blocks?keyword=#{keyword}"
   @body = JSON.parse(page.source)
 end
 
@@ -42,7 +44,7 @@ end
 
 When(/^I query the search API endpoint for the (first|second|third) page of results$/) do |ordinal|
   page_number = { "first" => 1, "second" => 2, "third" => 3 }[ordinal]
-  visit "/api/blocks/search?page=#{page_number}"
+  visit "/api/blocks?page=#{page_number}"
   @body = JSON.parse(page.source)
 end
 
@@ -59,4 +61,63 @@ And(/^the pagination response has the following links:$/) do |table|
       "href" => hash["href"],
     })
   end
+end
+
+When("I query the render API endpoint for the block titled {string}") do |title|
+  published_edition = Edition.published.find_by!(title: title)
+  encoded_embed_code = CGI.escape(published_edition.document.embed_code)
+
+  visit "/api/blocks/#{encoded_embed_code}/render"
+end
+
+When("I query the render API endpoint with the embed code {string}") do |embed_code|
+  encoded_embed_code = CGI.escape(embed_code)
+
+  visit "/api/blocks/#{encoded_embed_code}/render"
+end
+
+When("I query the render API endpoint with the embed code for the block titled {string}") do |title|
+  published_edition = Edition.published.find_by!(title: title)
+  encoded_embed_code = CGI.escape(published_edition.document.embed_code)
+
+  visit "/api/blocks/#{encoded_embed_code}/render"
+end
+
+When("I query the render API endpoint with the embed code for the block titled {string} and internal content path {string}") do |title, field_path|
+  published_edition = Edition.published.find_by!(title: title)
+  embed_code = published_edition.document.embed_code_for_field(field_path)
+  encoded_embed_code = CGI.escape(embed_code)
+
+  visit "/api/blocks/#{encoded_embed_code}/render"
+end
+
+When("I query the render API endpoint with the embed code for the block titled {string} and format {string}") do |title, format|
+  published_edition = Edition.published.find_by!(title: title)
+  embed_code = published_edition.document.embed_code_for_format(format)
+  encoded_embed_code = CGI.escape(embed_code)
+
+  visit "/api/blocks/#{encoded_embed_code}/render"
+end
+
+Then("the response is rendered HTML") do
+  expect(page.status_code).to eq(200)
+  expect(page.response_headers["Content-Type"]).to include("text/html")
+  expect(page.source).to include("content-block")
+end
+
+Then("the response contains {string}") do |title|
+  expect(page.source).to include(title)
+end
+
+Then("the response does not contain {string}") do |arg|
+  expect(page.source).not_to include(arg)
+end
+
+Then("the response is a not found error for embed code {string}") do |embed_code|
+  response_body = JSON.parse(page.source)
+
+  expect(page.status_code).to eq(404)
+  expect(response_body).to eq({
+    "error" => "Content block not found for embed code: #{embed_code}",
+  })
 end

@@ -11,10 +11,8 @@ RSpec.configure do |config|
         version: "v1",
         description: <<~DESC,
           The Content Block Manager API allows users to view information about content blocks. It is largely designed
-          for use by the [authoring widget](https://github.com/alphagov/content-block-editor) to allow preview and
+          for use by the [block picker widget](https://github.com/alphagov/content-block-picker) to allow preview and
           search of content blocks.
-
-          Currently, only search is supported, but in the future, we plan to support rendering of content blocks.
 
           At the moment, the API is read-only, and only supports searching for published content blocks, but in the
           future, we may add support for draft content blocks and for creating and updating content blocks, which will
