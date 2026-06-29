@@ -29,7 +29,7 @@ module DateAndTime
     def parse_integer(value)
       return nil if value.blank?
 
-      Integer(value)
+      Integer(value, 10)
     rescue ArgumentError
       nil
     end

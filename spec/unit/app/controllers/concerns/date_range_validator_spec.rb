@@ -114,6 +114,35 @@ RSpec.describe DateRangeValidator do
       end
     end
 
+    context "when month or day is 08 or 09 (leading zero with non-octal digit)" do
+      let(:params) do
+        {
+          "start(1i)" => "2027",
+          "start(2i)" => "09",
+          "start(3i)" => "09",
+          "start(4i)" => "00",
+          "start(5i)" => "00",
+          "end(1i)" => "2028",
+          "end(2i)" => "09",
+          "end(3i)" => "08",
+          "end(4i)" => "23",
+          "end(5i)" => "59",
+        }
+      end
+
+      it "accepts the dates as valid" do
+        expect { DateRangeValidator.new(edition, params).validate_and_convert }
+          .not_to raise_error
+      end
+
+      it "returns valid ISO 8601 datetimes" do
+        result = DateRangeValidator.new(edition, params).validate_and_convert
+
+        expect(result["start"]).to match(/\A2027-09-09T00:00:00[+-]\d{2}:\d{2}\z/)
+        expect(result["end"]).to match(/\A2028-09-08T23:59:00[+-]\d{2}:\d{2}\z/)
+      end
+    end
+
     context "when end datetime is not after start datetime" do
       let(:params) do
         {
