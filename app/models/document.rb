@@ -1,4 +1,6 @@
 class Document < ApplicationRecord
+  include ApplicationHelper
+
   include Scopes::SearchableByKeyword
   include Scopes::SearchableByLeadOrganisation
   include Scopes::SearchableByUpdatedDate
@@ -63,6 +65,15 @@ class Document < ApplicationRecord
     @schema ||= Schema.find_by_block_type(block_type)
   end
 
+  def title_name
+    attribute_key = "activerecord.attributes.edition/document.title.#{block_type || 'default'}"
+    I18n.t(attribute_key, default: I18n.t("activerecord.attributes.edition/document.title.default"))
+  end
+
+  def title_name_with_indefinite_article
+    add_indefinite_article(title_name.downcase)
+  end
+
 private
 
   def embed_code_prefix
@@ -71,7 +82,7 @@ private
 
   def sluggable_string_contains_alphanumeric_chars
     if sluggable_string !~ /[a-z0-9]+/i
-      errors.add(:title, I18n.t("document.index.errors.title.missing_valid_chars"))
+      errors.add(:title, I18n.t("activerecord.errors.models.document.attributes.title.missing_valid_chars", attribute: title_name))
     end
   end
 end
