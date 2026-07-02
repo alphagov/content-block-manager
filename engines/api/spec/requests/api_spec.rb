@@ -18,7 +18,7 @@ RSpec.describe "API" do
     get "Search for content blocks" do
       description <<~DESC
         This endpoint allows you to search for content blocks. You can filter by block type, lead organisation, and
-        keyword, and the results are paginated.
+        keyword.
       DESC
 
       tags "Content Blocks"
@@ -27,11 +27,6 @@ RSpec.describe "API" do
       parameter name: "block_type", in: :query, type: :string, required: false, description: "The type of block to filter by. This is a case-insensitive match against the block type defined in the document associated with the content block."
       parameter name: "lead_organisation_id", in: :query, type: :string, required: false, description: "The Content ID of the lead organisation to filter by."
       parameter name: "keyword", in: :query, type: :string, required: false, description: "The keyword to filter by. Searches against the title and the details hash of the content block."
-      parameter name: "page", in: :query, type: :string, required: false, description: "The page number to return. Defaults to 1."
-
-      # Overrides the `page` method included in all request specs in spec/support/capybara.rb to prevent it from being
-      # called when the `page` parameter is used in the tests
-      let(:page) { nil }
 
       response "200", "blocks found" do
         before do
@@ -47,19 +42,6 @@ RSpec.describe "API" do
         schema type: :object,
                additionalProperties: false,
                properties: {
-                 total: { type: :integer },
-                 pages: { type: :integer },
-                 current_page: { type: :integer },
-                 links: {
-                   type: :array,
-                   items: {
-                     type: :object,
-                     properties: {
-                       href: { type: :string },
-                       rel: { type: :string, enum: %w[self next previous] },
-                     },
-                   },
-                 },
                  results: {
                    type: :array,
                    items: {
@@ -104,14 +86,6 @@ RSpec.describe "API" do
 
         run_test! do |response|
           data = JSON.parse(response.body)
-          it_returns_correct_pagination_information(
-            data,
-            total: 1,
-            pages: 1,
-            current_page: 1,
-            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks?block_type=pension&page=1" }],
-          )
-
           expect(data["results"].size).to eq(1)
           expect(data["results"].first["block_type"]).to eq("Pension")
         end
@@ -128,14 +102,6 @@ RSpec.describe "API" do
 
         run_test! do |response|
           data = JSON.parse(response.body)
-          it_returns_correct_pagination_information(
-            data,
-            total: 1,
-            pages: 1,
-            current_page: 1,
-            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks?lead_organisation_id=#{lead_organisation_id}&page=1" }],
-          )
-
           expect(data["results"].size).to eq(1)
           expect(data["results"].first["organisation"]["name"]).to eq(organisations.first.name)
           expect(data["results"].first["organisation"]["content_id"]).to eq(organisations.first.id)
@@ -152,114 +118,8 @@ RSpec.describe "API" do
 
         run_test! do |response|
           data = JSON.parse(response.body)
-          it_returns_correct_pagination_information(
-            data,
-            total: 1,
-            pages: 1,
-            current_page: 1,
-            expected_links: [{ rel: "self", href: "http://www.example.com/api/blocks?keyword=first&page=1" }],
-          )
-
           expect(data["results"].size).to eq(1)
           expect(data["results"].first["title"]).to eq("first")
-        end
-      end
-
-      context "pagination" do
-        before do
-          # Stub the default page size to 1 so that we can test pagination with a small number of records
-          stub_const("ContentBlock::Query::DEFAULT_PAGE_SIZE", 1)
-          3.times { create(:edition, :published, document: create(:document), lead_organisation_id: organisations.first.id) }
-        end
-
-        response "200", "returns the first page", document: false do
-          let(:page) { 1 }
-
-          run_test! do |response|
-            data = JSON.parse(response.body)
-            it_returns_correct_pagination_information(
-              data,
-              total: 3,
-              pages: 3,
-              current_page: 1,
-              expected_links: [
-                { rel: "next", href: "http://www.example.com/api/blocks?page=2" },
-                { rel: "self", href: "http://www.example.com/api/blocks?page=1" },
-              ],
-            )
-          end
-        end
-
-        response "200", "returns the second page", document: false do
-          let(:page) { 2 }
-
-          run_test! do |response|
-            data = JSON.parse(response.body)
-            it_returns_correct_pagination_information(
-              data,
-              total: 3,
-              pages: 3,
-              current_page: 2,
-              expected_links: [
-                { rel: "previous", href: "http://www.example.com/api/blocks?page=1" },
-                { rel: "next", href: "http://www.example.com/api/blocks?page=3" },
-                { rel: "self", href: "http://www.example.com/api/blocks?page=2" },
-              ],
-            )
-          end
-        end
-
-        response "200", "returns the last page", document: false do
-          let(:page) { 3 }
-
-          run_test! do |response|
-            data = JSON.parse(response.body)
-            it_returns_correct_pagination_information(
-              data,
-              total: 3,
-              pages: 3,
-              current_page: 3,
-              expected_links: [
-                { rel: "previous", href: "http://www.example.com/api/blocks?page=2" },
-                { rel: "self", href: "http://www.example.com/api/blocks?page=3" },
-              ],
-            )
-          end
-        end
-      end
-
-      context "invalid page numbers" do
-        before do
-          create(:edition, :published, document: create(:document), lead_organisation_id: organisations.first.id)
-        end
-
-        response "200", "returns empty results for out-of-range page", document: false do
-          let(:page) { 999 }
-
-          run_test! do |response|
-            data = JSON.parse(response.body)
-            expect(data["results"]).to be_empty
-            expect(data["total"]).to eq(1)
-            expect(data["current_page"]).to eq(999)
-          end
-        end
-
-        response "400", "returns error for negative page number", document: false do
-          let(:page) { -1 }
-
-          run_test! do |response|
-            data = JSON.parse(response.body)
-            expect(data["error"]).to be_present
-          end
-        end
-
-        response "400", "returns error for zero page number", document: false do
-          let(:page) { 0 }
-
-          run_test! do |response|
-            data = JSON.parse(response.body)
-            expect(data["error"]).to be_present
-          end
         end
       end
     end
@@ -469,17 +329,6 @@ RSpec.describe "API" do
           expect(data["error"]).to be_present
         end
       end
-    end
-  end
-
-  def it_returns_correct_pagination_information(data, total:, pages:, current_page:, expected_links:)
-    expect(data["total"]).to eq(total)
-    expect(data["pages"]).to eq(pages)
-    expect(data["current_page"]).to eq(current_page)
-    expect(data["links"].size).to eq(expected_links.size)
-    expected_links.each_with_index do |link, index|
-      expect(data["links"][index]["rel"]).to eq(link[:rel])
-      expect(data["links"][index]["href"]).to eq(link[:href])
     end
   end
 end

@@ -73,7 +73,7 @@ RSpec.describe ContentBlock::Query do
       expect(result.blocks.first.title).to eq("first")
     end
 
-    context "with pagination metadata" do
+    context "with multiple blocks" do
       before do
         15.times do |i|
           document = create(:document)
@@ -81,33 +81,16 @@ RSpec.describe ContentBlock::Query do
         end
       end
 
-      it "includes the number of the current page" do
-        result = described_class.call(page: 1)
-        expect(result.current_page).to eq(1)
-      end
-      it "includes the count of total pages" do
-        result = described_class.call(page: 1)
-        expect(result.total_pages).to eq(2)
-      end
-      it "includes a count of the total blocks found" do
-        result = described_class.call(page: 1)
-        expect(result.total_count).to eq(15)
+      it "returns all blocks" do
+        result = described_class.call
+        expect(result.blocks.size).to eq(15)
       end
 
-      it "returns results ordered by newest edition creation date first" do
-        page_1_result = described_class.call(page: 1)
+      it "returns all blocks ordered by newest edition creation date first" do
+        result = described_class.call
 
-        aggregate_failures "page 1 results" do
-          expect(page_1_result.blocks.first.title).to eq("Doc 1")
-          expect(page_1_result.blocks.last.title).to eq("Doc 10")
-        end
-
-        page_2_result = described_class.call(page: 2)
-
-        aggregate_failures "page 2 results" do
-          expect(page_2_result.blocks.first.title).to eq("Doc 11")
-          expect(page_2_result.blocks.last.title).to eq("Doc 15")
-        end
+        expect(result.blocks.first.title).to eq("Doc 1")
+        expect(result.blocks.last.title).to eq("Doc 15")
       end
     end
   end
