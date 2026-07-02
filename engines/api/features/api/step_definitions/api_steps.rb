@@ -38,31 +38,6 @@ When("I query the search API endpoint for the keyword {string}") do |keyword|
   @body = JSON.parse(page.source)
 end
 
-Given(/^the API has been configured to return one result per page$/) do
-  stub_const("ContentBlock::Query::DEFAULT_PAGE_SIZE", 1)
-end
-
-When(/^I query the search API endpoint for the (first|second|third) page of results$/) do |ordinal|
-  page_number = { "first" => 1, "second" => 2, "third" => 3 }[ordinal]
-  visit "/api/blocks?page=#{page_number}"
-  @body = JSON.parse(page.source)
-end
-
-And(/^the pagination response has the following attributes:$/) do |table|
-  table.hashes.each do |hash|
-    expect(@body[hash["key"]].to_s).to eq(hash["value"])
-  end
-end
-
-And(/^the pagination response has the following links:$/) do |table|
-  table.hashes.each do |hash|
-    expect(@body["links"]).to include({
-      "rel" => hash["rel"],
-      "href" => hash["href"],
-    })
-  end
-end
-
 When("I query the render API endpoint for the block titled {string}") do |title|
   published_edition = Edition.published.find_by!(title: title)
   encoded_embed_code = CGI.escape(published_edition.document.embed_code)
