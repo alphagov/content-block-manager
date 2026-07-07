@@ -4,6 +4,7 @@
   "private": true,
   "author": "Government Digital Service",
   "license": "MIT",
+  "packageManager": "yarn@1.22.22",
   "scripts": {
     "lint": "yarn run lint:js && yarn run lint:prettier && yarn run lint:scss && yarn run lint:markdown",
     "lint:fix": "yarn run lint:js:fix && yarn run lint:prettier:fix && yarn run lint:scss:fix && yarn run lint:markdown:fix",
