@@ -62,4 +62,20 @@ RSpec.describe Block::Document, type: :model do
         .to eq("{{embed:content_block_time_period:current-tax-year/date_range/start/date}}")
     end
   end
+
+  describe "#title" do
+    it "returns the title from the most recent edition" do
+      document = create(:block_document, block_type: "time_period")
+      create(:block_time_period_edition, document: document, title: "First Edition", created_at: 1.day.ago)
+      create(:block_time_period_edition, document: document, title: "Latest Edition", created_at: Time.current)
+
+      expect(document.title).to eq("Latest Edition")
+    end
+
+    it "returns nil when there are no editions" do
+      document = create(:block_document, block_type: "time_period")
+
+      expect(document.title).to be_nil
+    end
+  end
 end
