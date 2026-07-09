@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_08_153910) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_09_134353) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -24,6 +24,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_08_153910) do
     t.string "sluggable_string"
     t.boolean "testing_artefact"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "block_editions", force: :cascade do |t|
+    t.bigint "block_document_id", null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.text "instructions_to_publishers"
+    t.uuid "lead_organisation_id"
+    t.string "title"
+    t.string "type"
+    t.datetime "updated_at", null: false
+    t.index ["block_document_id"], name: "index_block_editions_on_block_document_id"
   end
 
   create_table "documents", force: :cascade do |t|
@@ -134,6 +146,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_08_153910) do
     t.index ["item_type"], name: "index_versions_on_item_type"
   end
 
+  add_foreign_key "block_editions", "block_documents"
   add_foreign_key "domain_events", "documents"
   add_foreign_key "domain_events", "editions"
   add_foreign_key "domain_events", "users"
