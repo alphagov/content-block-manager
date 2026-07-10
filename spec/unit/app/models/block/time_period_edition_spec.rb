@@ -45,4 +45,47 @@ RSpec.describe Block::TimePeriodEdition, type: :model do
       expect(edition.date_range.end).to eq(Time.zone.parse("2026-04-05 23:59"))
     end
   end
+
+  describe "#to_details" do
+    it "returns hash with description and date_range to_details" do
+      date_range = build(:block_time_period_date_range,
+                         start: Time.zone.parse("2025-04-06 00:00"),
+                         end: Time.zone.parse("2026-04-05 23:59"))
+      edition = build(:block_time_period_edition,
+                      description: "Tax year 2025/26",
+                      date_range: date_range)
+
+      expect(edition.to_details).to eq({
+        "description" => "Tax year 2025/26",
+        "date_range" => {
+          "start" => "2025-04-06 00:00:00.000000000 +0100",
+          "end" => "2026-04-05 23:59:00.000000000 +0100",
+        },
+      })
+    end
+
+    it "returns hash with only description when date_range is nil" do
+      edition = build(:block_time_period_edition, description: "Tax year 2025/26")
+
+      expect(edition.to_details).to eq({
+        "description" => "Tax year 2025/26",
+      })
+    end
+
+    it "returns hash with only date_range when description is nil" do
+      date_range = build(:block_time_period_date_range,
+                         start: Time.zone.parse("2025-04-06 00:00"),
+                         end: Time.zone.parse("2026-04-05 23:59"))
+      edition = build(:block_time_period_edition,
+                      description: nil,
+                      date_range: date_range)
+
+      expect(edition.to_details).to eq({
+        "date_range" => {
+          "start" => "2025-04-06 00:00:00.000000000 +0100",
+          "end" => "2026-04-05 23:59:00.000000000 +0100",
+        },
+      })
+    end
+  end
 end
