@@ -6,6 +6,7 @@
   "license": "MIT",
   "packageManager": "yarn@1.22.22",
   "scripts": {
+    "postinstall": "cd node_modules/content-block-picker && npm ci && npm run build",
     "lint": "yarn run lint:js && yarn run lint:prettier && yarn run lint:scss && yarn run lint:markdown",
     "lint:fix": "yarn run lint:js:fix && yarn run lint:prettier:fix && yarn run lint:scss:fix && yarn run lint:markdown:fix",
     "lint:js": "eslint --cache --cache-location .cache/eslint --color -- \"**/*.js\"",
@@ -44,5 +45,8 @@
   },
   "resolutions": {
     "js-yaml": "^4.2.0"
+  },
+  "dependencies": {
+    "content-block-picker": "alphagov/content-block-picker"
   }
 }

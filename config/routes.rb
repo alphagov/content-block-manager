@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get "/healthcheck/live", to: proc { [200, {}, %w[OK]] }
   get "/healthcheck/ready", to: GovukHealthcheck.rack_response
   get "/accessibility-statement", to: "pages#accessibility_statement"
+  get "/content-block-picker-demo", to: "pages#content_block_picker_demo"
   mount Flipflop::Engine => "/flipflop"
   mount Rswag::Ui::Engine => "/api-docs"
   mount Rswag::Api::Engine => "/api-docs"
