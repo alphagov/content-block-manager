@@ -1047,7 +1047,8 @@ concat-map@0.0.1:
 
 content-block-picker@alphagov/content-block-picker:
   version "1.0.0"
-  resolved "https://codeload.github.com/alphagov/content-block-picker/tar.gz/bae6ff0682847d8991983e1eac30751118bb054c"
+  uid "668b0e1783fcb8d70ba7edf63d2ed828eef2d0e8"
+  resolved "https://codeload.github.com/alphagov/content-block-picker/tar.gz/668b0e1783fcb8d70ba7edf63d2ed828eef2d0e8"
   dependencies:
     govuk-frontend "^6.3.0"
     jsdom "^29.1.1"
@@ -3695,15 +3696,10 @@ prelude-ls@^1.2.1:
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.2.1.tgz#debc6489d7a6e6b0e7611888cec880337d316396"
   integrity sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==
 
-prettier@^3.9.4:
+prettier@^3.9.4, prettier@^3.9.5:
   version "3.9.6"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.9.6.tgz#b3ea5146515d40fc53f18aa63f74dfab1e10dbf6"
   integrity sha512-OpN0zzVdiaiAhxpuuj5efpIS4sY9j7bY6uR5mnj5yPzGkdkjNKSJeUThPb60Jw29QuAZgA4o+/iB49kFiaBX6g==
-
-prettier@^3.9.5:
-  version "3.9.5"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.9.5.tgz#4fec97736e33b9d0b620b48914fe93b530e835ad"
-  integrity sha512-/FVl766LpUfB5vXgCYOYa0MeV/441Ia99AeICQIQFTY/Nw0roZwULcXpku5i1/m5kt/baz+s4Zogspd839HSMg==
 
 process-nextick-args@~2.0.0:
   version "2.0.1"
