@@ -1,0 +1,74 @@
+<% content_for :head do %>
+  <script src="<%= asset_path("content-block-picker/dist/content-block-picker.umd.cjs") %>"></script>
+<% end %>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-xl">Content Block Picker Demo</h1>
+
+    <p class="govuk-body-l">
+      This page demonstrates the Content Block Picker.
+    </p>
+
+    <div class="govuk-inset-text">
+      <p class="govuk-body">
+        The Content Block Picker allows you to insert content blocks into a textarea by clicking the "Insert block" button.
+        It provides search and preview functionality for content blocks from the API.
+      </p>
+    </div>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- Content Block Editor Section -->
+    <section class="govuk-!-margin-bottom-9">
+      <h2 class="govuk-heading-l">Interactive Demo</h2>
+
+      <p class="govuk-body">
+        Click the "Insert block" button to open the content block picker and search for blocks to insert into the textarea.
+      </p>
+
+      <button class="govuk-button" id="insert-content-block-button">
+        Insert block
+      </button>
+
+      <label class="govuk-label" for="demo-textarea">Demo content</label>
+      <textarea
+        id="demo-textarea"
+        rows="12"
+        class="my-cbp govuk-textarea"
+        data-module="content-block-highlight"
+        data-cbp-insert-block-button="insert-content-block-button">In alignment with our overarching strategic frameworks, we are proactively initiating a comprehensive, cross-functional paradigm shift designed to optimize systemic efficiencies across all vertical operational modalities. By shifting the critical path toward multi-tiered stakeholder integration, the department will effectively incentivize synergistic outcomes that transcend legacy infrastructural silos. Our primary objective remains the holistic recalibration of granular deliverables to maximize scalable output while minimizing mitigating risks within the institutional ecosystem.
+      </textarea>
+    </section>
+  </div>
+</div>
+
+<script>
+    document.addEventListener('turbo:load', function() {
+    // Wait for the ContentBlockPicker library to load
+    // The UMD module exports to window['content-block-picker'].ContentBlockPicker
+    if (typeof window['content-block-picker'] !== 'undefined' && window['content-block-picker'].ContentBlockPicker) {
+      initializeEditor();
+    } else {
+      // If not loaded yet, wait a bit and try again
+      setTimeout(function() {
+        if (typeof window['content-block-picker'] !== 'undefined' && window['content-block-picker'].ContentBlockPicker) {
+          initializeEditor();
+        } else {
+          console.error('ContentBlockPicker library failed to load');
+          console.log('Available globals:', Object.keys(window).filter(k => k.includes('content')));
+        }
+      }, 100);
+    }
+  });
+
+  function initializeEditor() {
+    const textarea = document.querySelector(".my-cbp");
+    if (textarea) {
+      const ContentBlockPicker = window['content-block-picker'].ContentBlockPicker;
+      new ContentBlockPicker(textarea, {
+        baseUrl: window.location.origin + "/api/",
+      });
+    }
+  }
+</script>
