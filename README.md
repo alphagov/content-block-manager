@@ -9,6 +9,27 @@ therefore reducing duplication of work and ensuring consistency across locations
 This README is for developers using content-block-manager, to view publisher documentation navigate to:
 [Content Block Manager Publisher Docs](https://www.gov.uk/guidance/how-to-publish-on-gov-uk/content-block-manager).
 
+## Block Picker Demo
+
+There is a built in demo of the block picker that can be used to test the block picker functionality. To run the demo, run the application and navigate to: /content-block-picker-demo
+
+Currently, the NPM bundling for CBP is broken, so we pull the code directly from GitHub. Yarn caches very efficiently, so if you have previously run the demo, you may need to clear your yarn cache to get the latest version of the code. You can do this by running:
+
+### When running in govuk docker
+
+```bash
+govuk-docker run content-block-manager-app yarn install
+govuk-docker run content-block-manager-app rake assets:precompile
+```
+
+### When running locally
+
+```bash
+yarn cache clean
+yarn install --check-files
+rake assets:precompile
+```
+
 ## Running the Application
 
 Use [GOV.UK Docker](https://github.com/alphagov/govuk-docker) to run any commands that follow.
