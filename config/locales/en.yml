@@ -221,6 +221,7 @@ en:
         start: Start date and time
         end: End date and time
     labels:
+      description: Description (optional)
       lead_organisation: Lead organisation
       instructions_to_publishers:
         Instructions to publishers (optional)
