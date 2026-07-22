@@ -16,11 +16,18 @@ module Block
              dependent: :destroy,
              inverse_of: :document
 
+    has_one :most_recent_edition,
+            -> { most_recent_first },
+            foreign_key: :block_document_id,
+            class_name: "Block::Edition"
+
     before_validation :generate_content_id, on: :create
     after_validation :set_content_id_alias_and_embed_code, on: :create
 
+    enum :block_type, { time_period: "time_period" }
+
     def title
-      editions.order(created_at: :desc).first&.title
+      most_recent_edition&.title
     end
 
     def built_embed_code

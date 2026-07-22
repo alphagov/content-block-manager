@@ -1,6 +1,7 @@
 module Block
   class Edition < ApplicationRecord
     include ::Edition::HasLeadOrganisation
+    include ::Edition::HasAuthors
 
     belongs_to :document, class_name: "Block::Document", foreign_key: :block_document_id, inverse_of: :editions
 
@@ -9,10 +10,16 @@ module Block
 
     before_validation :set_document_sluggable_string, on: :create
 
+    scope :most_recent_first, -> { order(updated_at: :desc) }
+
     # Abstract method to be implemented by subclasses
     # Returns a hash representation of the edition's details
     def to_details
       raise NotImplementedError, "Subclasses must implement #to_details method"
+    end
+
+    def state
+      "draft"
     end
 
   private

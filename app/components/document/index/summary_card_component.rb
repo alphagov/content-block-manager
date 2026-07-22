@@ -26,6 +26,8 @@ private
   end
 
   def details_items
+    return [] if schema.blank?
+
     schema.fields.map do |field|
       {
         key: field.name.humanize,
@@ -35,7 +37,7 @@ private
   end
 
   def schema
-    @schema ||= edition.schema
+    @schema ||= edition.respond_to?(:schema) ? edition.schema : nil
   end
 
   def organisation_item

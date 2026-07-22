@@ -1,0 +1,34 @@
+<% content_for :page_title, "Home" %>
+
+<div class="govuk-grid-row content-block-manager-header">
+  <div class="govuk-grid-column-one-half">
+    <h1 class="govuk-heading-xl content-block-manager-header--heading">
+      Content Block Manager - ActiveRecord Blocks
+    </h1>
+
+    <p class="govuk-body">Create, edit and use standardised content across GOV.UK</p>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-third">
+    <%= render(
+      Document::Index::FilterOptionsComponent.new(
+        filters: @filters,
+        errors: @errors,
+      ),
+    ) %>
+  </div>
+  <div class="govuk-grid-column-two-thirds">
+    <h2 class="govuk-heading-m"><%= pluralize(@documents.total_count, "result") %></h2>
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+    <p class="govuk-body"><strong>Sorted by most recently updated</strong></p>
+    <% @documents.each_with_index do |document, index| %>
+      <div data-testid="homepage-item-<%= index %>">
+        <%= render Document::Index::SummaryCardComponent.new(document:) %>
+      </div>
+    <% end %>
+
+    <%= paginate(@documents, theme: "govuk_paginator") %>
+  </div>
+</div>
