@@ -41,6 +41,21 @@ en:
               invalid: "Start is invalid"
             end:
               invalid: "End is invalid"
+        block/edition:
+          attributes:
+            title:
+              blank: "cannot be blank"
+              alphanumeric: "must contain at least one letter or number"
+            lead_organisation_id:
+              blank: "cannot be blank"
+        block/time_period_date_range:
+          attributes:
+            start:
+              blank: "Enter a start date"
+              invalid_date: "Start date is not a valid date"
+            end:
+              blank: "Enter an end date"
+              invalid_date: "End date is not a valid date"
     attributes:
       edition/document:
         title:
