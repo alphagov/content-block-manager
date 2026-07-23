@@ -15,7 +15,7 @@ jobs:
         uses: alphagov/govuk-infrastructure/.github/actions/setup-redis@main
 
       - name: Checkout repository
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.1
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9 # v1.316.0
