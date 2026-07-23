@@ -47,6 +47,7 @@ Rails.application.routes.draw do
 
   namespace :block do
     resources :time_period_editions, only: %i[new create show]
+    resources :documents, only: [:index]
   end
 
   resources :editions, only: %i[new create destroy], path_names: { new: ":block_type/new" } do
