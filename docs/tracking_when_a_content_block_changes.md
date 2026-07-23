@@ -37,4 +37,4 @@ where the relevant actions are weaved into the edition's other actions and prese
 
 We know having two places for document / edition history is not ideal, and going forward, it would be better to have
 a single source of truth for this information (such as the Publishing API), but this is a bigger piece of work and
-beyond the current scope of the Content Modelling Team's remit.
+beyond the current scope of the Content Reuse Team's remit.
