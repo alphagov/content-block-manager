@@ -773,7 +773,8 @@ concat-map@0.0.1:
 
 content-block-picker@alphagov/content-block-picker#main:
   version "1.0.0"
-  resolved "https://codeload.github.com/alphagov/content-block-picker/tar.gz/f6b9cfea77e659c6784815b5ea44ab1badd068dd"
+  uid "6b88e9be324a5ee9a0921359f1558a4c22269877"
+  resolved "https://codeload.github.com/alphagov/content-block-picker/tar.gz/6b88e9be324a5ee9a0921359f1558a4c22269877"
   dependencies:
     dompurify "^3.4.12"
     govuk-frontend "^6.3.0"
