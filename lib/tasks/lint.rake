@@ -1,4 +1,4 @@
-# :nocov:
+# simplecov:disable
 desc "Run all linters"
 task :lint do
   sh "bundle exec rubocop"
@@ -6,4 +6,4 @@ task :lint do
   sh "yarn run lint"
   sh "yarn run lint:markdown"
 end
-# :nocov:
+# simplecov:enable
