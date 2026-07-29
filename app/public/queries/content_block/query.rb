@@ -23,6 +23,7 @@ class ContentBlock
     def unpaginated_results
       Document.joins(:editions)
               .merge(Edition.most_recent_published_for_document)
+              .visible_in_search_index
               .extending(Scopes)
               .by_block_type(filters[:block_type])
               .by_lead_organisation_id(filters[:lead_organisation_id])

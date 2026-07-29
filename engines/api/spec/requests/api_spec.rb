@@ -13,6 +13,7 @@ RSpec.describe "API" do
 
     before do
       allow(Organisation).to receive(:all).and_return(organisations)
+      allow(Current).to receive(:user).and_return(nil)
     end
 
     get "Search for content blocks" do
@@ -122,6 +123,40 @@ RSpec.describe "API" do
           expect(data["results"].first["title"]).to eq("first")
         end
       end
+
+      response "200", "excludes testing artefacts", document: false do
+        before do
+          testing_doc = create(:document)
+          testing_doc.update!(testing_artefact: true)
+          create(:edition, :published, document: testing_doc, lead_organisation_id: organisations.first.id, title: "Test Block")
+          regular_doc = create(:document, testing_artefact: false)
+          create(:edition, :published, document: regular_doc, lead_organisation_id: organisations.first.id, title: "Regular Block")
+        end
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data["results"].size).to eq(1)
+          expect(data["results"].first["title"]).to eq("Regular Block")
+        end
+      end
+
+      response "200", "includes testing artefacts for e2e users", document: false do
+        before do
+          testing_doc = create(:document)
+          testing_doc.update!(testing_artefact: true)
+          create(:edition, :published, document: testing_doc, lead_organisation_id: organisations.first.id, title: "Test Block")
+          regular_doc = create(:document, testing_artefact: false)
+          create(:edition, :published, document: regular_doc, lead_organisation_id: organisations.first.id, title: "Regular Block")
+
+          mock_user = instance_double("User", is_e2e_user?: true)
+          allow(Current).to receive(:user).and_return(mock_user)
+        end
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data["results"].size).to eq(2)
+        end
+      end
     end
   end
 
@@ -135,6 +170,10 @@ RSpec.describe "API" do
       produces "text/html", "application/json"
 
       parameter name: "embed_code", in: :path, type: :string, required: true, description: "The embed code to render. This can be a base embed code or one that targets a specific field or format."
+
+      before do
+        allow(Current).to receive(:user).and_return(nil)
+      end
 
       def normalise_html(html)
         fragment = Nokogiri::HTML.fragment(html)
@@ -327,6 +366,63 @@ RSpec.describe "API" do
         run_test! do |response|
           data = JSON.parse(response.body)
           expect(data["error"]).to be_present
+        end
+      end
+
+      response "404", "returns an error for testing artefacts", document: false do
+        before do
+          @document = create(
+            :document,
+            block_type: "pension",
+            sluggable_string: "test-pension",
+            content_id: "99999999-9999-9999-9999-999999999999",
+          )
+          @document.update!(testing_artefact: true)
+          create(
+            :edition,
+            :published,
+            title: "Test Pension",
+            lead_organisation_id: SecureRandom.uuid,
+            document: @document,
+          )
+        end
+
+        let(:embed_code) { CGI.escape(@document.embed_code) }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data).to eq({
+            "error" => "Content block not found for embed code: #{@document.embed_code}",
+          })
+        end
+      end
+
+      response "200", "can render testing artefacts for e2e users", document: false do
+        before do
+          @document = create(
+            :document,
+            block_type: "pension",
+            sluggable_string: "test-pension-e2e",
+            content_id: "88888888-8888-8888-8888-888888888888",
+          )
+          @document.update!(testing_artefact: true)
+          create(
+            :edition,
+            :published,
+            title: "Test Pension E2E",
+            lead_organisation_id: SecureRandom.uuid,
+            document: @document,
+          )
+
+          mock_user = instance_double("User", is_e2e_user?: true)
+          allow(Current).to receive(:user).and_return(mock_user)
+        end
+
+        let(:embed_code) { CGI.escape(@document.embed_code) }
+
+        run_test! do |response|
+          expect(response.content_type).to include("text/html")
+          expect(response.body).to include("Test Pension E2E")
         end
       end
     end

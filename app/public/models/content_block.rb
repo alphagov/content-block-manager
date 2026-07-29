@@ -17,6 +17,8 @@ class ContentBlock
 
       base_embed_code = embed_code.gsub(/[\/#][^}]+/, "")
       document = Document.find_by(embed_code: base_embed_code)
+      return nil if document&.hidden_from_search_index?
+
       latest_published_edition = document&.latest_published_edition
       return nil unless latest_published_edition
 
