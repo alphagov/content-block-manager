@@ -113,13 +113,13 @@ and running.
 To run all linters, run:
 
 ```bash
-bundle exec rake:lint
+bundle exec rake lint
 ```
 
 To run all linter with automatic formatting corrections, run:
 
 ```bash
-bundle exec rake:lint_autocorrect
+bundle exec rake lint_autocorrect
 ```
 
 ### API
