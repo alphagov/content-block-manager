@@ -92,6 +92,7 @@ private
                          .merge(Edition.most_recent_for_document)
                          .merge(Edition.active)
 
+    documents = documents.where.not(block_type: ContentBlock.api_excluded_block_types)
     documents = documents.where(testing_artefact: false) unless Current.user&.is_e2e_user?
     documents = documents.where(id: ids_with_keyword(keyword)) if keyword.present?
     documents = documents.where(block_type: filters[:block_type]) if filters[:block_type].present?

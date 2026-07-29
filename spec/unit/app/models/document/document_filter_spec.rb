@@ -25,6 +25,12 @@ RSpec.describe Document::DocumentFilter do
     end
 
     describe "when a user is not an e2e user" do
+      it "excludes tax blocks" do
+        filter.call({})
+
+        expect(document_scope_spy).to have_received(:not).with(block_type: %w[tax])
+      end
+
       it "only returns non-testing artefacts" do
         filter.call({})
 
@@ -160,6 +166,12 @@ RSpec.describe Document::DocumentFilter do
 
     describe "when a user is an e2e user" do
       let(:is_e2e_user) { true }
+
+      it "still excludes tax blocks" do
+        filter.call({})
+
+        expect(document_scope_spy).to have_received(:not).with(block_type: %w[tax])
+      end
 
       it "does not filter by testing_artefact" do
         filter.call({})

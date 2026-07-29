@@ -125,10 +125,12 @@ RSpec.describe "API" do
 
       response "200", "excludes testing artefacts", document: false do
         before do
-          testing_doc = create(:document, testing_artefact: true)
+          testing_doc = create(:document)
+          testing_doc.update_column(:testing_artefact, true)
           create(:edition, :published, document: testing_doc, lead_organisation_id: organisations.first.id, title: "Test Block")
           regular_doc = create(:document, testing_artefact: false)
           create(:edition, :published, document: regular_doc, lead_organisation_id: organisations.first.id, title: "Regular Block")
+          allow(Current).to receive(:user).and_return(nil)
         end
 
         run_test! do |response|
@@ -140,10 +142,26 @@ RSpec.describe "API" do
 
       response "200", "includes testing artefacts for e2e users", document: false do
         before do
-          testing_doc = create(:document, testing_artefact: true)
+          testing_doc = create(:document)
+          testing_doc.update_column(:testing_artefact, true)
           create(:edition, :published, document: testing_doc, lead_organisation_id: organisations.first.id, title: "Test Block")
           regular_doc = create(:document, testing_artefact: false)
           create(:edition, :published, document: regular_doc, lead_organisation_id: organisations.first.id, title: "Regular Block")
+          tax_doc = create(:document, :tax, testing_artefact: false)
+          create(
+            :edition,
+            :published,
+            :tax,
+            document: tax_doc,
+            lead_organisation_id: organisations.first.id,
+            title: "Tax Block",
+            details: {
+              abbreviation: "TAX",
+              description: "Some description",
+              synonym: "Some synonym",
+              tax_type: "Tax",
+            },
+          )
 
           mock_user = instance_double("User", is_e2e_user?: true)
           allow(Current).to receive(:user).and_return(mock_user)
@@ -152,6 +170,7 @@ RSpec.describe "API" do
         run_test! do |response|
           data = JSON.parse(response.body)
           expect(data["results"].size).to eq(2)
+          expect(data["results"].map { |block| block["title"] }).to contain_exactly("Test Block", "Regular Block")
         end
       end
     end
@@ -369,8 +388,8 @@ RSpec.describe "API" do
             block_type: "pension",
             sluggable_string: "test-pension",
             content_id: "99999999-9999-9999-9999-999999999999",
-            testing_artefact: true,
           )
+          @document.update_column(:testing_artefact, true)
           create(
             :edition,
             :published,
@@ -378,6 +397,42 @@ RSpec.describe "API" do
             lead_organisation_id: SecureRandom.uuid,
             document: @document,
           )
+          allow(Current).to receive(:user).and_return(nil)
+        end
+
+        let(:embed_code) { CGI.escape(@document.embed_code) }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data["error"]).to be_present
+          expect(response.status).to eq(404)
+        end
+      end
+
+      response "404", "returns an error for tax blocks", document: false do
+        before do
+          @document = create(
+            :document,
+            :tax,
+            sluggable_string: "test-tax",
+            content_id: "77777777-7777-7777-7777-777777777777",
+          )
+          create(
+            :edition,
+            :published,
+            :tax,
+            title: "Test Tax",
+            lead_organisation_id: SecureRandom.uuid,
+            document: @document,
+            details: {
+              abbreviation: "TAX",
+              description: "Some description",
+              synonym: "Some synonym",
+              tax_type: "Tax",
+            },
+          )
+          mock_user = instance_double("User", is_e2e_user?: true)
+          allow(Current).to receive(:user).and_return(mock_user)
         end
 
         let(:embed_code) { CGI.escape(@document.embed_code) }
@@ -396,8 +451,8 @@ RSpec.describe "API" do
             block_type: "pension",
             sluggable_string: "test-pension-e2e",
             content_id: "88888888-8888-8888-8888-888888888888",
-            testing_artefact: true,
           )
+          @document.update_column(:testing_artefact, true)
           create(
             :edition,
             :published,
