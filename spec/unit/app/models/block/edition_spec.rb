@@ -28,6 +28,15 @@ RSpec.describe Block::Edition, type: :model do
     it { is_expected.to belong_to(:document).class_name("Block::Document") }
   end
 
+  describe ".most_recent_first" do
+    it "orders records by created_at in descending order" do
+      older_edition = create(:block_time_period_edition, created_at: 2.days.ago)
+      newer_edition = create(:block_time_period_edition, created_at: 1.day.ago)
+
+      expect(described_class.most_recent_first).to eq([newer_edition, older_edition])
+    end
+  end
+
   describe "validations" do
     subject { concrete_edition_class.new(title: "Other Type Title") }
 

@@ -10,6 +10,8 @@ module Block
 
     before_validation :set_document_sluggable_string, on: :create
 
+    scope :most_recent_first, -> { order(created_at: :desc) }
+
     # Abstract method to be implemented by subclasses
     # Returns a hash representation of the edition's details
     def to_details

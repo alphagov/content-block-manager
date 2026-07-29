@@ -34,6 +34,24 @@ RSpec.describe Block::Document, type: :model do
         expect(document.time_period_editions).not_to include(other)
       end
     end
+
+    describe "#most_recent_edition" do
+      it "returns the most recently created edition" do
+        document = create(:block_document, block_type: "time_period")
+
+        _older_edition = create(:block_time_period_edition, document: document, created_at: 2.days.ago)
+        newer_edition = create(:block_time_period_edition, document: document, created_at: 1.day.ago)
+        _oldest_edition = create(:block_time_period_edition, document: document, created_at: 3.days.ago)
+
+        expect(document.most_recent_edition).to eq(newer_edition)
+      end
+
+      it "returns nil when there are no editions" do
+        document = create(:block_document, block_type: "time_period")
+
+        expect(document.most_recent_edition).to be_nil
+      end
+    end
   end
 
   describe "callbacks" do
