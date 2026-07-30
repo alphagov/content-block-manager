@@ -54,4 +54,52 @@ RSpec.describe "Block time period editions", type: :request do
       end
     end
   end
+
+  describe "POST /block/time_period_edition/:id" do
+    before do
+      allow(Organisation).to receive(:all).and_return([])
+    end
+
+    context "with valid parameters" do
+      let(:valid_params) do
+        {
+          edition: {
+            title: "Test Time Period Edition",
+            description: "This is a test time period edition.",
+            lead_organisation_id: SecureRandom.uuid,
+            instructions_to_publishers: "Please follow the instructions.",
+          },
+        }
+      end
+
+      it "creates a new time period edition and redirects to the time period edition page with a success message" do
+        expect {
+          post block_time_period_editions_path, params: valid_params
+        }.to change(Block::TimePeriodEdition, :count).by(1)
+
+        expect(response).to redirect_to(block_time_period_edition_path(Block::TimePeriodEdition.last.id))
+        follow_redirect!
+        expect(response.body).to include(I18n.t("block/time_period_edition.create.success"))
+      end
+    end
+
+    context "with invalid parameters" do
+      let(:invalid_params) do
+        {
+          edition: {
+            title: "", # Invalid because title is required
+            lead_organisation_id: nil, # Invalid because lead_organisation_id is required
+          },
+        }
+      end
+
+      it "does not create a new time period edition and redirects to index" do
+        expect {
+          post block_time_period_editions_path, params: invalid_params
+        }.not_to change(Block::TimePeriodEdition, :count)
+
+        expect(response).not_to redirect_to(block_time_period_editions_path)
+      end
+    end
+  end
 end
