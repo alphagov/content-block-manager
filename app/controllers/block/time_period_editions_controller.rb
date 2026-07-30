@@ -1,6 +1,9 @@
 module Block
   class TimePeriodEditionsController < BlocksController
-    def new; end
+    def new
+      @edition = Block::TimePeriodEdition.new
+      @edition.build_document(block_type:)
+    end
 
     def create; end
 
