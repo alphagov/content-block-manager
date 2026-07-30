@@ -19,6 +19,8 @@ module Block
     before_validation :generate_content_id, on: :create
     after_validation :set_content_id_alias_and_embed_code, on: :create
 
+    enum :block_type, { time_period: "time_period" }
+
     def title
       editions.order(created_at: :desc).first&.title
     end
