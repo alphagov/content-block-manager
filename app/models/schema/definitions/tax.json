@@ -2,6 +2,7 @@
   "type": "object",
   "required": ["tax_type"],
   "additionalProperties": false,
+  "x-formats": ["tax_table"],
   "x-field-order": ["title", "abbreviation", "synonym", "tax_type", "description", "note"],
   "properties": {
     "abbreviation": {
