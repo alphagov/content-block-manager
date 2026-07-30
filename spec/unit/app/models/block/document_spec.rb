@@ -115,4 +115,24 @@ RSpec.describe Block::Document, type: :model do
       expect(document.title).to be_nil
     end
   end
+
+  describe "#is_new_block?" do
+    it "returns true if there is only one edition" do
+      document = create(:block_document, block_type: "time_period")
+      create(:block_time_period_edition, document: document, creator:)
+
+      expect(document.is_new_block?).to be true
+    end
+
+    it "returns false if there are multiple editions" do
+      document = create(:block_document, block_type: "time_period")
+
+      expect(document.is_new_block?).to be false
+
+      create(:block_time_period_edition, document: document, creator:)
+      create(:block_time_period_edition, document: document, creator:)
+
+      expect(document.is_new_block?).to be false
+    end
+  end
 end

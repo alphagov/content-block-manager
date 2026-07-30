@@ -33,6 +33,10 @@ module Block
       "{{embed:content_block_#{block_type}:#{content_id_alias}/#{field_path}}}"
     end
 
+    def is_new_block?
+      editions.count == 1
+    end
+
   private
 
     def generate_content_id
