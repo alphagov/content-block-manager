@@ -11,6 +11,8 @@ RSpec.describe Block::Document, type: :model do
     end
   end
 
+  let(:creator) { create(:user) }
+
   describe "associations" do
     describe "#time_period_editions" do
       it "builds a TimePeriodEdition with the correct type" do
@@ -23,8 +25,8 @@ RSpec.describe Block::Document, type: :model do
 
       it "only returns TimePeriodEdition instances" do
         document = create(:block_document, block_type: "time_period")
-        time_period = create(:block_time_period_edition, document: document)
-        other = block_edition_with_details.new(document: document, title: "Foo Edition").save!
+        time_period = create(:block_time_period_edition, document: document, creator:)
+        other = block_edition_with_details.new(document: document, title: "Foo Edition", creator:).save!
 
         expect(document.editions.count).to eq(2)
         expect(document.time_period_editions.count).to eq(1)
@@ -101,8 +103,8 @@ RSpec.describe Block::Document, type: :model do
   describe "#title" do
     it "returns the title from the most recent edition" do
       document = create(:block_document, block_type: "time_period")
-      create(:block_time_period_edition, document: document, title: "First Edition", created_at: 1.day.ago)
-      create(:block_time_period_edition, document: document, title: "Latest Edition", created_at: Time.current)
+      create(:block_time_period_edition, document: document, title: "First Edition", created_at: 1.day.ago, creator:)
+      create(:block_time_period_edition, document: document, title: "Latest Edition", created_at: Time.current, creator:)
 
       expect(document.title).to eq("Latest Edition")
     end

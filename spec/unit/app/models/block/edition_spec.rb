@@ -21,6 +21,8 @@ RSpec.describe Block::Edition, type: :model do
     end
   end
 
+  let(:creator) { create(:user) }
+
   describe "associations" do
     subject { concrete_edition_class.new(title: "Other Type Title") }
     it { is_expected.to belong_to(:document).class_name("Block::Document") }
@@ -35,17 +37,17 @@ RSpec.describe Block::Edition, type: :model do
 
     describe "title alphanumeric validation" do
       it "is valid when title contains letters" do
-        edition = concrete_edition_class.new(title: "Valid Title", lead_organisation_id: SecureRandom.uuid, document:)
+        edition = concrete_edition_class.new(title: "Valid Title", lead_organisation_id: SecureRandom.uuid, document:, creator:)
         expect(edition).to be_valid
       end
 
       it "is valid when title contains numbers" do
-        edition = concrete_edition_class.new(title: "2024", lead_organisation_id: SecureRandom.uuid, document:)
+        edition = concrete_edition_class.new(title: "2024", lead_organisation_id: SecureRandom.uuid, document:, creator:)
         expect(edition).to be_valid
       end
 
       it "is invalid when title contains only special characters" do
-        edition = concrete_edition_class.new(title: "---", lead_organisation_id: SecureRandom.uuid, document:)
+        edition = concrete_edition_class.new(title: "---", lead_organisation_id: SecureRandom.uuid, document:, creator:)
         edition.valid?
         expect(edition.errors[:title]).to include("must contain at least one letter or number")
       end
@@ -53,13 +55,13 @@ RSpec.describe Block::Edition, type: :model do
 
     describe "lead_organisation_id presence validation" do
       it "is invalid when lead_organisation_id is blank" do
-        edition = concrete_edition_class.new(title: "Valid Title", lead_organisation_id: nil, document:)
+        edition = concrete_edition_class.new(title: "Valid Title", lead_organisation_id: nil, document:, creator:)
         edition.valid?
         expect(edition.errors[:lead_organisation_id]).to include("cannot be blank")
       end
 
       it "is valid when lead_organisation_id is present" do
-        edition = concrete_edition_class.new(title: "Valid Title", lead_organisation_id: SecureRandom.uuid, document:)
+        edition = concrete_edition_class.new(title: "Valid Title", lead_organisation_id: SecureRandom.uuid, document:, creator:)
         expect(edition).to be_valid
       end
     end
@@ -77,6 +79,7 @@ RSpec.describe Block::Edition, type: :model do
       edition = concrete_edition_class.new(
         document: document,
         title: "Other Type Title",
+        creator:,
       )
       expect(edition.to_details).to eq({ "field_1" => "value 1" })
     end
