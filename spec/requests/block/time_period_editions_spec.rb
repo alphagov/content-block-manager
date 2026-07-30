@@ -93,12 +93,21 @@ RSpec.describe "Block time period editions", type: :request do
         }
       end
 
-      it "does not create a new time period edition and redirects to index" do
+      it "does not create a new time period edition and re-renders the form with errors" do
         expect {
           post block_time_period_editions_path, params: invalid_params
         }.not_to change(Block::TimePeriodEdition, :count)
 
-        expect(response).not_to redirect_to(block_time_period_editions_path)
+        aggregate_failures "checking response and error messages" do
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(response).to render_template("block/time_period_editions/new")
+
+          expect(page).to have_css(".gem-c-error-summary__list-item", text: "Title cannot be blank")
+          expect(page).to have_css(".gem-c-error-summary__list-item", text: "Lead organisation cannot be blank")
+
+          expect(page).to have_css(".govuk-error-message", text: "Title cannot be blank")
+          expect(page).to have_css(".govuk-error-message", text: "Lead organisation cannot be blank")
+        end
       end
     end
   end
