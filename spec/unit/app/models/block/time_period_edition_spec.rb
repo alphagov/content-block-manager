@@ -1,4 +1,6 @@
 RSpec.describe Block::TimePeriodEdition, type: :model do
+  let(:creator) { create(:user) }
+
   describe "inheritance" do
     it "inherits from Block::Edition" do
       expect(described_class.superclass).to eq(Block::Edition)
@@ -10,6 +12,7 @@ RSpec.describe Block::TimePeriodEdition, type: :model do
         document: document,
         title: "Test Time Period",
         lead_organisation_id: SecureRandom.uuid,
+        creator:,
       )
 
       expect(edition.type).to eq("Block::TimePeriodEdition")

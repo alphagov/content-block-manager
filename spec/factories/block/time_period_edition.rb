@@ -4,5 +4,6 @@ FactoryBot.define do
     sequence(:title) { |n| "Time Period #{n}" }
     description { "A time period description" }
     lead_organisation_id { SecureRandom.uuid }
+    creator { association :user }
   end
 end

@@ -221,6 +221,7 @@ en:
         start: Start date and time
         end: End date and time
     labels:
+      description: Description (optional)
       lead_organisation: Lead organisation
       instructions_to_publishers:
         Instructions to publishers (optional)
@@ -434,4 +435,9 @@ en:
       hour: Hour
       minute: Minute
 
-
+  block/time_period_edition:
+    new:
+      title: "Create time period"
+      context: "Create content block"
+    create:
+      success: "Time period edition was successfully created."
