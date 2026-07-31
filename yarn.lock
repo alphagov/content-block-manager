@@ -773,11 +773,11 @@ concat-map@0.0.1:
 
 content-block-picker@alphagov/content-block-picker#main:
   version "1.0.0"
-  uid "6b88e9be324a5ee9a0921359f1558a4c22269877"
-  resolved "https://codeload.github.com/alphagov/content-block-picker/tar.gz/6b88e9be324a5ee9a0921359f1558a4c22269877"
+  uid "3015a88765b871c8b62f6490bc0c7d55d2f7b651"
+  resolved "https://codeload.github.com/alphagov/content-block-picker/tar.gz/3015a88765b871c8b62f6490bc0c7d55d2f7b651"
   dependencies:
     dompurify "^3.4.12"
-    govuk-frontend "^6.3.0"
+    govuk-frontend "^6.4.0"
 
 content-disposition@^1.0.0:
   version "1.1.0"
@@ -1769,7 +1769,7 @@ gopd@^1.0.1, gopd@^1.2.0:
   resolved "https://registry.yarnpkg.com/gopd/-/gopd-1.2.0.tgz#89f56b8217bdbc8802bd299df6d7f1081d7e51a1"
   integrity sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==
 
-govuk-frontend@^6.3.0:
+govuk-frontend@^6.4.0:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/govuk-frontend/-/govuk-frontend-6.4.0.tgz#bacd856aae0b27862b9636734eddcfa14b90b3ac"
   integrity sha512-jU3oaVFXqK1yDVIdZs1YZ6JD7YDB4PFUHF3rFMWJye9ArImp42F9wCsFzzB1+udjuzGCryJGcHHbBQ5HY+8rqQ==
