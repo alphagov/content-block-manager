@@ -14,12 +14,10 @@ module PublishingApi
         title: edition.title,
         instructions_to_publishers: edition.instructions_to_publishers,
         content_id_alias:,
-        base_path:,
         details: edition.details,
         links:,
         update_type:,
         change_note:,
-        routes:,
       }
     end
 
@@ -41,19 +39,6 @@ module PublishingApi
 
     def change_note
       edition.major_change ? edition.change_note : nil
-    end
-
-    def base_path
-      "/content-blocks/#{document_type}/#{content_id_alias}"
-    end
-
-    def routes
-      [
-        {
-          path: base_path,
-          type: "exact",
-        },
-      ]
     end
   end
 end
