@@ -1,5 +1,5 @@
 module V2
-  class TimePeriodEditionsController < BlocksController
+  class TimePeriodEditionsController < BaseController
     def new
       @edition = V2::TimePeriodEdition.new
       @edition.build_document(block_type:)

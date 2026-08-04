@@ -1,4 +1,4 @@
-RSpec.describe BlocksController, type: :controller do
+RSpec.describe V2::BaseController, type: :controller do
   describe "#edition_params" do
     let(:user) { create(:user) }
 
