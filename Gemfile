@@ -5,7 +5,7 @@ gem "babosa"
 gem "block_preview", path: "engines/block_preview"
 gem "bootsnap", require: false
 gem "connection_pool", "< 3" # Pin ConnectionPool to 2.x until we upgrade Sidekiq to 8.x
-gem "content_block_tools"
+gem "content_block_tools", git: "https://github.com/alphagov/govuk_content_block_tools", ref: "cf5b78d011b8713d5f291e0b965ba5780a20cbb2"
 gem "dartsass-rails"
 gem "fact_check", path: "engines/fact_check"
 gem "faraday"
