@@ -12,6 +12,7 @@ RSpec.describe V2::BaseController, type: :controller do
           edition: {
             lead_organisation_id: "123",
             instructions_to_publishers: "Some instructions",
+            description: "A description",
             title: "A title",
             unpermitted_field: "should be filtered out",
           },
@@ -27,6 +28,7 @@ RSpec.describe V2::BaseController, type: :controller do
 
         expect(result[:lead_organisation_id]).to eq("123")
         expect(result[:instructions_to_publishers]).to eq("Some instructions")
+        expect(result[:description]).to eq("A description")
         expect(result[:title]).to eq("A title")
       end
 
