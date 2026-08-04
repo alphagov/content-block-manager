@@ -3,11 +3,20 @@ class Edition::Show::FormatBlockComponent < ViewComponent::Base
     @edition = edition
     @document = edition.document
     @format = format
+    @rendered_format = edition.render(embed_code_for_format)
+  end
+
+  def render?
+    format_available?
   end
 
 private
 
-  attr_reader :edition, :document, :format
+  attr_reader :edition, :document, :format, :rendered_format
+
+  def format_available?
+    Nokogiri::HTML::DocumentFragment.parse(rendered_format).css("div").text.present?
+  end
 
   def title
     format.humanize
@@ -15,7 +24,7 @@ private
 
   def block_content
     content = content_tag(:div, class: "govspeak") do
-      edition.render(embed_code_for_format)
+      rendered_format
     end
     content << embed_code_element
 
