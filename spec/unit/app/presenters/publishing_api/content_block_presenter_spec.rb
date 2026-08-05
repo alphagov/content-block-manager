@@ -31,19 +31,12 @@ RSpec.describe PublishingApi::ContentBlockPresenter do
         title:,
         instructions_to_publishers:,
         content_id_alias:,
-        base_path: "/content-blocks/#{document_type}/#{content_id_alias}",
         change_note:,
         details:,
         update_type: "major",
         links: {
           primary_publishing_organisation: [lead_organisation.id],
         },
-        routes: [
-          {
-            path: "/content-blocks/#{document_type}/#{content_id_alias}",
-            type: "exact",
-          },
-        ],
       })
     end
 
