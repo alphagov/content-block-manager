@@ -5,7 +5,7 @@ RSpec.describe Edition::Show::FormatBlockComponent, type: :component do
   let(:format) { "my_format" }
   let(:embed_code_for_format) { "{{embed:content_block_time_period:tax-year##{format}}}" }
   let(:embed_code_details) { "format block" }
-  let(:format_block_output) { "FORMAT_BLOCK_OUTPUT" }
+  let(:format_block_output) { "<div>FORMAT_BLOCK_OUTPUT</div>" }
 
   before do
     allow(edition).to receive(:render).with(embed_code_for_format).and_return(format_block_output)
@@ -39,6 +39,14 @@ RSpec.describe Edition::Show::FormatBlockComponent, type: :component do
       ]
 
       expect(page).to have_css("div#{data_attrs.join}")
+    end
+
+    context "when the format can't be applied to the block (tools returns empty wrapper)" do
+      let(:format_block_output) { "<div></div>" }
+
+      it "does not render" do
+        expect(page.text).to be_blank
+      end
     end
   end
 
