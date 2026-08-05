@@ -21,6 +21,8 @@ module V2
 
     def edit; end
 
+    def update; end
+
   private
 
     def block_type
