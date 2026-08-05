@@ -709,6 +709,7 @@ RSpec.describe "Workflow", type: :request do
       describe "#update" do
         describe "when choosing to publish immediately" do
           it "redirects to the review step" do
+            allow(SchedulePublishingWorker).to receive(:dequeue)
             scheduled_at = {
               "scheduled_publication(1i)": "",
               "scheduled_publication(2i)": "",
