@@ -19,7 +19,9 @@ module V2
 
     def show; end
 
-    def edit; end
+    def edit
+      @edition = V2::TimePeriodEdition.find(params[:id])
+    end
 
     def update; end
 
