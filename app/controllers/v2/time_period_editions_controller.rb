@@ -19,6 +19,8 @@ module V2
 
     def show; end
 
+    def edit; end
+
   private
 
     def block_type

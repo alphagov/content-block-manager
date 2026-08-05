@@ -46,7 +46,7 @@ Rails.application.routes.draw do
   end
 
   namespace :v2 do
-    resources :time_period_editions, only: %i[new create show]
+    resources :time_period_editions, only: %i[new create show edit]
     resources :documents, only: [:index]
   end
 
