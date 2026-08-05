@@ -1,4 +1,4 @@
 <% content_for :context, I18n.t("block/time_period_edition.new.context") %>
 <% content_for :title, I18n.t("block/time_period_edition.new.title") %>
 
-<%= render "form" %>
+<%= render "form", url: v2_time_period_editions_path, method: :post %>
