@@ -16,13 +16,28 @@ module Block
              dependent: :destroy,
              inverse_of: :document
 
+    has_one :most_recent_edition,
+            -> { most_recent_first },
+            foreign_key: :block_document_id,
+            class_name: "Block::Edition"
+
     before_validation :generate_content_id, on: :create
     after_validation :set_content_id_alias_and_embed_code, on: :create
 
     enum :block_type, { time_period: "time_period" }
 
+    scope :by_most_recently_created_edition, lambda {
+      latest_edition = Block::Edition
+        .select(:created_at)
+        .where("block_editions.block_document_id = block_documents.id")
+        .order(created_at: :desc)
+        .limit(1)
+
+      order(Arel.sql("(#{latest_edition.to_sql}) DESC NULLS LAST"))
+    }
+
     def title
-      editions.order(created_at: :desc).first&.title
+      most_recent_edition&.title
     end
 
     def built_embed_code

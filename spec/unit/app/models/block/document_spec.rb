@@ -34,6 +34,24 @@ RSpec.describe Block::Document, type: :model do
         expect(document.time_period_editions).not_to include(other)
       end
     end
+
+    describe "#most_recent_edition" do
+      it "returns the most recently created edition" do
+        document = create(:block_document, block_type: "time_period")
+
+        _older_edition = create(:block_time_period_edition, document: document, created_at: 2.days.ago)
+        newer_edition = create(:block_time_period_edition, document: document, created_at: 1.day.ago)
+        _oldest_edition = create(:block_time_period_edition, document: document, created_at: 3.days.ago)
+
+        expect(document.most_recent_edition).to eq(newer_edition)
+      end
+
+      it "returns nil when there are no editions" do
+        document = create(:block_document, block_type: "time_period")
+
+        expect(document.most_recent_edition).to be_nil
+      end
+    end
   end
 
   describe "callbacks" do
@@ -74,6 +92,20 @@ RSpec.describe Block::Document, type: :model do
         expect(document.embed_code).to be_present
         expect(document.embed_code).to eq("{{embed:content_block_time_period:test-block}}")
       end
+    end
+  end
+
+  describe ".by_most_recently_created_edition" do
+    it "orders documents so the document with the most recently created edition appears first" do
+      older_document_with_newer_edition = create(:block_document, created_at: 4.days.ago)
+      create(:block_time_period_edition, document: older_document_with_newer_edition, created_at: 4.days.ago)
+      create(:block_time_period_edition, document: older_document_with_newer_edition, created_at: 1.day.ago)
+
+      newer_document_with_older_edition = create(:block_document, created_at: 3.days.ago)
+      create(:block_time_period_edition, document: newer_document_with_older_edition, created_at: 3.days.ago)
+      create(:block_time_period_edition, document: newer_document_with_older_edition, created_at: 2.days.ago)
+
+      expect(described_class.by_most_recently_created_edition).to eq([older_document_with_newer_edition, newer_document_with_older_edition])
     end
   end
 
