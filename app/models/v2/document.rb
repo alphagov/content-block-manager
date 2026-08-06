@@ -1,17 +1,17 @@
-module Block
+module V2
   class Document < ApplicationRecord
     extend FriendlyId
     friendly_id :sluggable_string, use: :slugged, slug_column: :content_id_alias, routes: :default
 
     has_many :editions,
-             class_name: "Block::Edition",
+             class_name: "V2::Edition",
              foreign_key: :block_document_id,
              dependent: :destroy,
              inverse_of: :document
 
     has_many :time_period_editions,
-             -> { where(type: "Block::TimePeriodEdition") },
-             class_name: "Block::TimePeriodEdition",
+             -> { where(type: "V2::TimePeriodEdition") },
+             class_name: "V2::TimePeriodEdition",
              foreign_key: :block_document_id,
              dependent: :destroy,
              inverse_of: :document
@@ -19,7 +19,7 @@ module Block
     has_one :most_recent_edition,
             -> { most_recent_first },
             foreign_key: :block_document_id,
-            class_name: "Block::Edition"
+            class_name: "V2::Edition"
 
     before_validation :generate_content_id, on: :create
     after_validation :set_content_id_alias_and_embed_code, on: :create
@@ -27,7 +27,7 @@ module Block
     enum :block_type, { time_period: "time_period" }
 
     scope :by_most_recently_created_edition, lambda {
-      latest_edition = Block::Edition
+      latest_edition = V2::Edition
         .select(:created_at)
         .where("block_editions.block_document_id = block_documents.id")
         .order(created_at: :desc)

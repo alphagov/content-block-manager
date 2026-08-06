@@ -9,5 +9,5 @@ Feature: Search for a content object
         | Student loan repayment period | The repayment period for a student loan | Ministry of Example       |
 
 Scenario: view all available content blocks
-    When I visit the blocks index page
+    When I visit the V2 index page
     Then I should see the details for all three available content blocks

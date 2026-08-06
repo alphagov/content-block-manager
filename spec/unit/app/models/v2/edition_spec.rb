@@ -1,9 +1,9 @@
-RSpec.describe Block::Edition, type: :model do
+RSpec.describe V2::Edition, type: :model do
   # Since Edition is abstract, we need a concrete subclass for testing
   let(:concrete_edition_class) do
-    Class.new(Block::Edition) do
+    Class.new(V2::Edition) do
       def self.name
-        "Block::OtherTypeEdition"
+        "V2::OtherTypeEdition"
       end
 
       def to_details
@@ -14,9 +14,9 @@ RSpec.describe Block::Edition, type: :model do
 
   # Another concrete subclass, this one missing the #to_details implementation
   let(:edition_class_missing_implementation) do
-    Class.new(Block::Edition) do
+    Class.new(V2::Edition) do
       def self.name
-        "Block::MissingImplementationEdition"
+        "V2::MissingImplementationEdition"
       end
     end
   end
@@ -25,13 +25,13 @@ RSpec.describe Block::Edition, type: :model do
 
   describe "associations" do
     subject { concrete_edition_class.new(title: "Other Type Title") }
-    it { is_expected.to belong_to(:document).class_name("Block::Document") }
+    it { is_expected.to belong_to(:document).class_name("V2::Document") }
   end
 
   describe ".most_recent_first" do
     it "orders records by created_at in descending order" do
-      older_edition = create(:block_time_period_edition, created_at: 2.days.ago)
-      newer_edition = create(:block_time_period_edition, created_at: 1.day.ago)
+      older_edition = create(:v2_time_period_edition, created_at: 2.days.ago)
+      newer_edition = create(:v2_time_period_edition, created_at: 1.day.ago)
 
       expect(described_class.most_recent_first).to eq([newer_edition, older_edition])
     end
@@ -40,7 +40,7 @@ RSpec.describe Block::Edition, type: :model do
   describe "validations" do
     subject { concrete_edition_class.new(title: "Other Type Title") }
 
-    let(:document) { Block::Document.create!(sluggable_string: "test-block", block_type: "time_period") }
+    let(:document) { V2::Document.create!(sluggable_string: "test-block", block_type: "time_period") }
 
     it { is_expected.to validate_presence_of(:title) }
 
@@ -84,7 +84,7 @@ RSpec.describe Block::Edition, type: :model do
     end
 
     it "can be implemented by subclasses" do
-      document = Block::Document.create!(sluggable_string: "other-type-block", block_type: "time_period")
+      document = V2::Document.create!(sluggable_string: "other-type-block", block_type: "time_period")
       edition = concrete_edition_class.new(
         document: document,
         title: "Other Type Title",

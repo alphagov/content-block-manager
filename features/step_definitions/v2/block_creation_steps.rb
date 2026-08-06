@@ -2,9 +2,9 @@ Given("the following time period content blocks have been drafted:") do |table|
   table.hashes.each do |row|
     organisation = Organisation.all&.find { |org| org.name == row["Organisation"] }
 
-    document = Block::Document.new(block_type: "time_period")
+    document = V2::Document.new(block_type: "time_period")
 
-    Block::TimePeriodEdition.create!(
+    V2::TimePeriodEdition.create!(
       document: document,
       title: row["Time period name"],
       description: row["Description"],
@@ -15,7 +15,7 @@ Given("the following time period content blocks have been drafted:") do |table|
 end
 
 Then("I should see the details for all three available content blocks") do
-  Block::TimePeriodEdition.find_each do |edition|
+  V2::TimePeriodEdition.find_each do |edition|
     expect(page).to have_content(edition.title)
     expect(page).to have_content(edition.description)
     expect(page).to have_content(edition.lead_organisation.name)

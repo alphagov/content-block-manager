@@ -45,7 +45,7 @@ Rails.application.routes.draw do
     patch "schedule", to: "documents/schedule#update"
   end
 
-  namespace :block do
+  namespace :v2 do
     resources :time_period_editions, only: %i[new create show]
     resources :documents, only: [:index]
   end

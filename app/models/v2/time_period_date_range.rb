@@ -1,6 +1,6 @@
-module Block
+module V2
   class TimePeriodDateRange < ApplicationRecord
-    belongs_to :edition, class_name: "Block::TimePeriodEdition"
+    belongs_to :edition, class_name: "V2::TimePeriodEdition"
 
     include DateValidation
     date_attributes :start, :end

@@ -1,8 +1,8 @@
-RSpec.describe Block::Document, type: :model do
-  let(:block_edition_with_details) do
-    Class.new(Block::Edition) do
+RSpec.describe V2::Document, type: :model do
+  let(:v2_edition_with_details) do
+    Class.new(V2::Edition) do
       def self.name
-        "Block::FooEdition"
+        "V2::FooEdition"
       end
 
       def lead_organisation_id
@@ -16,17 +16,17 @@ RSpec.describe Block::Document, type: :model do
   describe "associations" do
     describe "#time_period_editions" do
       it "builds a TimePeriodEdition with the correct type" do
-        document = build(:block_document, block_type: "time_period")
+        document = build(:v2_document, block_type: "time_period")
         edition = document.time_period_editions.build(title: "Test")
 
-        expect(edition).to be_a(Block::TimePeriodEdition)
-        expect(edition.type).to eq("Block::TimePeriodEdition")
+        expect(edition).to be_a(V2::TimePeriodEdition)
+        expect(edition.type).to eq("V2::TimePeriodEdition")
       end
 
       it "only returns TimePeriodEdition instances" do
-        document = create(:block_document, block_type: "time_period")
-        time_period = create(:block_time_period_edition, document: document, creator:)
-        other = block_edition_with_details.new(document: document, title: "Foo Edition", creator:).save!
+        document = create(:v2_document, block_type: "time_period")
+        time_period = create(:v2_time_period_edition, document: document, creator:)
+        other = v2_edition_with_details.new(document: document, title: "Foo Edition", creator:).save!
 
         expect(document.editions.count).to eq(2)
         expect(document.time_period_editions.count).to eq(1)
@@ -37,17 +37,17 @@ RSpec.describe Block::Document, type: :model do
 
     describe "#most_recent_edition" do
       it "returns the most recently created edition" do
-        document = create(:block_document, block_type: "time_period")
+        document = create(:v2_document, block_type: "time_period")
 
-        _older_edition = create(:block_time_period_edition, document: document, created_at: 2.days.ago)
-        newer_edition = create(:block_time_period_edition, document: document, created_at: 1.day.ago)
-        _oldest_edition = create(:block_time_period_edition, document: document, created_at: 3.days.ago)
+        _older_edition = create(:v2_time_period_edition, document: document, created_at: 2.days.ago)
+        newer_edition = create(:v2_time_period_edition, document: document, created_at: 1.day.ago)
+        _oldest_edition = create(:v2_time_period_edition, document: document, created_at: 3.days.ago)
 
         expect(document.most_recent_edition).to eq(newer_edition)
       end
 
       it "returns nil when there are no editions" do
-        document = create(:block_document, block_type: "time_period")
+        document = create(:v2_document, block_type: "time_period")
 
         expect(document.most_recent_edition).to be_nil
       end
@@ -97,13 +97,13 @@ RSpec.describe Block::Document, type: :model do
 
   describe ".by_most_recently_created_edition" do
     it "orders documents so the document with the most recently created edition appears first" do
-      older_document_with_newer_edition = create(:block_document, created_at: 4.days.ago)
-      create(:block_time_period_edition, document: older_document_with_newer_edition, created_at: 4.days.ago)
-      create(:block_time_period_edition, document: older_document_with_newer_edition, created_at: 1.day.ago)
+      older_document_with_newer_edition = create(:v2_document, created_at: 4.days.ago)
+      create(:v2_time_period_edition, document: older_document_with_newer_edition, created_at: 4.days.ago)
+      create(:v2_time_period_edition, document: older_document_with_newer_edition, created_at: 1.day.ago)
 
-      newer_document_with_older_edition = create(:block_document, created_at: 3.days.ago)
-      create(:block_time_period_edition, document: newer_document_with_older_edition, created_at: 3.days.ago)
-      create(:block_time_period_edition, document: newer_document_with_older_edition, created_at: 2.days.ago)
+      newer_document_with_older_edition = create(:v2_document, created_at: 3.days.ago)
+      create(:v2_time_period_edition, document: newer_document_with_older_edition, created_at: 3.days.ago)
+      create(:v2_time_period_edition, document: newer_document_with_older_edition, created_at: 2.days.ago)
 
       expect(described_class.by_most_recently_created_edition).to eq([older_document_with_newer_edition, newer_document_with_older_edition])
     end
@@ -134,15 +134,15 @@ RSpec.describe Block::Document, type: :model do
 
   describe "#title" do
     it "returns the title from the most recent edition" do
-      document = create(:block_document, block_type: "time_period")
-      create(:block_time_period_edition, document: document, title: "First Edition", created_at: 1.day.ago, creator:)
-      create(:block_time_period_edition, document: document, title: "Latest Edition", created_at: Time.current, creator:)
+      document = create(:v2_document, block_type: "time_period")
+      create(:v2_time_period_edition, document: document, title: "First Edition", created_at: 1.day.ago, creator:)
+      create(:v2_time_period_edition, document: document, title: "Latest Edition", created_at: Time.current, creator:)
 
       expect(document.title).to eq("Latest Edition")
     end
 
     it "returns nil when there are no editions" do
-      document = create(:block_document, block_type: "time_period")
+      document = create(:v2_document, block_type: "time_period")
 
       expect(document.title).to be_nil
     end
@@ -150,19 +150,19 @@ RSpec.describe Block::Document, type: :model do
 
   describe "#is_new_block?" do
     it "returns true if there is only one edition" do
-      document = create(:block_document, block_type: "time_period")
-      create(:block_time_period_edition, document: document, creator:)
+      document = create(:v2_document, block_type: "time_period")
+      create(:v2_time_period_edition, document: document, creator:)
 
       expect(document.is_new_block?).to be true
     end
 
     it "returns false if there are multiple editions" do
-      document = create(:block_document, block_type: "time_period")
+      document = create(:v2_document, block_type: "time_period")
 
       expect(document.is_new_block?).to be false
 
-      create(:block_time_period_edition, document: document, creator:)
-      create(:block_time_period_edition, document: document, creator:)
+      create(:v2_time_period_edition, document: document, creator:)
+      create(:v2_time_period_edition, document: document, creator:)
 
       expect(document.is_new_block?).to be false
     end

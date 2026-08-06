@@ -1,33 +1,33 @@
-RSpec.describe "Block time period editions", type: :request do
+RSpec.describe "V2 time period editions", type: :request do
   before do
     logout
     login_as(create(:user))
   end
 
-  describe "GET /block/time_period_edition/:id" do
+  describe "GET /v2/time_period_edition/:id" do
     it "renders the time period edition 'show' page" do
-      get block_time_period_edition_path(0)
+      get v2_time_period_edition_path(0)
 
       expect(response).to have_http_status(:success)
-      expect(response).to render_template("block/time_period_editions/show")
+      expect(response).to render_template("v2/time_period_editions/show")
     end
   end
 
-  describe "GET /block/time_period_editions/new" do
+  describe "GET /v2/time_period_editions/new" do
     describe "when rendering the new template" do
       before do
         allow(Organisation).to receive(:all).and_return([])
 
-        get new_block_time_period_edition_path
+        get new_v2_time_period_edition_path
       end
 
       it "renders the correct page successfully" do
         expect(response).to have_http_status(:success)
-        expect(response).to render_template("block/time_period_editions/new")
+        expect(response).to render_template("v2/time_period_editions/new")
       end
 
       it "contains the correct form with the required fields" do
-        expect(page).to have_css("form[action='#{block_time_period_editions_path}']") do |form|
+        expect(page).to have_css("form[action='#{v2_time_period_editions_path}']") do |form|
           expect(form).to have_field("edition[title]")
           expect(form).to have_field("edition[description]")
           expect(form).to have_field("edition[lead_organisation_id]")
@@ -47,7 +47,7 @@ RSpec.describe "Block time period editions", type: :request do
       it "initialises a time period edition with a time period document" do
         edition = assigns(:edition)
 
-        expect(edition).to be_a(Block::TimePeriodEdition)
+        expect(edition).to be_a(V2::TimePeriodEdition)
         expect(edition).to be_new_record
         expect(edition.document).to be_new_record
         expect(edition.document.block_type).to eq("time_period")
@@ -55,7 +55,7 @@ RSpec.describe "Block time period editions", type: :request do
     end
   end
 
-  describe "POST /block/time_period_edition/:id" do
+  describe "POST /v2/time_period_edition/:id" do
     before do
       allow(Organisation).to receive(:all).and_return([])
     end
@@ -74,10 +74,10 @@ RSpec.describe "Block time period editions", type: :request do
 
       it "creates a new time period edition and redirects to the time period edition page with a success message" do
         expect {
-          post block_time_period_editions_path, params: valid_params
-        }.to change(Block::TimePeriodEdition, :count).by(1)
+          post v2_time_period_editions_path, params: valid_params
+        }.to change(V2::TimePeriodEdition, :count).by(1)
 
-        expect(response).to redirect_to(block_time_period_edition_path(Block::TimePeriodEdition.last.id))
+        expect(response).to redirect_to(v2_time_period_edition_path(V2::TimePeriodEdition.last.id))
         follow_redirect!
         expect(response.body).to include(I18n.t("block/time_period_edition.create.success"))
       end
@@ -95,11 +95,11 @@ RSpec.describe "Block time period editions", type: :request do
 
       it "does not create a new time period edition and re-renders the form with errors" do
         expect {
-          post block_time_period_editions_path, params: invalid_params
-        }.not_to change(Block::TimePeriodEdition, :count)
+          post v2_time_period_editions_path, params: invalid_params
+        }.not_to change(V2::TimePeriodEdition, :count)
 
         expect(response).to have_http_status(:unprocessable_content)
-        expect(response).to render_template("block/time_period_editions/new")
+        expect(response).to render_template("v2/time_period_editions/new")
 
         expect(page).to have_css(".gem-c-error-summary__list-item", text: "Title cannot be blank")
         expect(page).to have_css(".gem-c-error-summary__list-item", text: "Lead organisation cannot be blank")

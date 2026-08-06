@@ -1,5 +1,5 @@
 When("I am viewing the form to create a new Time Period Edition") do
-  visit new_block_time_period_edition_path
+  visit new_v2_time_period_edition_path
 end
 
 When("I fill the Time Period Edition details correctly") do

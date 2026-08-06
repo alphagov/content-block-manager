@@ -1,10 +1,10 @@
-RSpec.describe Block::TimePeriodDateRange, type: :model do
+RSpec.describe V2::TimePeriodDateRange, type: :model do
   describe "associations" do
-    it { is_expected.to belong_to(:edition).class_name("Block::TimePeriodEdition") }
+    it { is_expected.to belong_to(:edition).class_name("V2::TimePeriodEdition") }
   end
 
   describe "validations" do
-    let(:edition) { create(:block_time_period_edition) }
+    let(:edition) { create(:v2_time_period_edition) }
 
     describe "presence validations" do
       subject { described_class.new(edition: edition, start: Time.zone.parse("2025-01-01 00:00"), end: Time.zone.parse("3333-04-05 12:34")) }

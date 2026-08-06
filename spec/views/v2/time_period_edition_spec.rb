@@ -1,7 +1,7 @@
-RSpec.describe "block/time_period_editions/new", type: :view do
+RSpec.describe "v2/time_period_editions/new", type: :view do
   describe "when rendering the new template" do
     before do
-      assign(:edition, create(:block_time_period_edition))
+      assign(:edition, create(:v2_time_period_edition))
 
       allow(Organisation).to receive(:all).and_return([])
     end
