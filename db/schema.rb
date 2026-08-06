@@ -10,42 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_09_152529) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_03_145359) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
-
-  create_table "block_documents", force: :cascade do |t|
-    t.string "block_type"
-    t.uuid "content_id"
-    t.string "content_id_alias"
-    t.datetime "created_at", null: false
-    t.datetime "deleted_at"
-    t.string "embed_code"
-    t.string "sluggable_string"
-    t.boolean "testing_artefact"
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "block_editions", force: :cascade do |t|
-    t.bigint "block_document_id", null: false
-    t.datetime "created_at", null: false
-    t.text "description"
-    t.text "instructions_to_publishers"
-    t.uuid "lead_organisation_id"
-    t.string "title"
-    t.string "type"
-    t.datetime "updated_at", null: false
-    t.index ["block_document_id"], name: "index_block_editions_on_block_document_id"
-  end
-
-  create_table "block_time_period_date_ranges", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.bigint "edition_id", null: false
-    t.datetime "end"
-    t.datetime "start"
-    t.datetime "updated_at", null: false
-    t.index ["edition_id"], name: "index_block_time_period_date_ranges_on_edition_id"
-  end
 
   create_table "documents", force: :cascade do |t|
     t.text "block_type"
@@ -142,6 +109,39 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_09_152529) do
     t.index ["uid"], name: "index_users_on_uid"
   end
 
+  create_table "v2_documents", force: :cascade do |t|
+    t.string "block_type"
+    t.uuid "content_id"
+    t.string "content_id_alias"
+    t.datetime "created_at", null: false
+    t.datetime "deleted_at"
+    t.string "embed_code"
+    t.string "sluggable_string"
+    t.boolean "testing_artefact"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "v2_editions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.text "instructions_to_publishers"
+    t.uuid "lead_organisation_id"
+    t.string "title"
+    t.string "type"
+    t.datetime "updated_at", null: false
+    t.bigint "v2_document_id", null: false
+    t.index ["v2_document_id"], name: "index_v2_editions_on_v2_document_id"
+  end
+
+  create_table "v2_time_period_date_ranges", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "edition_id", null: false
+    t.datetime "end"
+    t.datetime "start"
+    t.datetime "updated_at", null: false
+    t.index ["edition_id"], name: "index_v2_time_period_date_ranges_on_edition_id"
+  end
+
   create_table "versions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "event", null: false
@@ -155,8 +155,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_09_152529) do
     t.index ["item_type"], name: "index_versions_on_item_type"
   end
 
-  add_foreign_key "block_editions", "block_documents"
-  add_foreign_key "block_time_period_date_ranges", "block_editions", column: "edition_id"
   add_foreign_key "domain_events", "documents"
   add_foreign_key "domain_events", "editions"
   add_foreign_key "domain_events", "users"
@@ -164,4 +162,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_09_152529) do
   add_foreign_key "outcomes", "domain_events"
   add_foreign_key "outcomes", "editions"
   add_foreign_key "outcomes", "users", column: "creator_id"
+  add_foreign_key "v2_editions", "v2_documents"
+  add_foreign_key "v2_time_period_date_ranges", "v2_editions", column: "edition_id"
 end

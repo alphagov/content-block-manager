@@ -3,7 +3,7 @@ module V2
     include ::Edition::HasLeadOrganisation
     include ::Edition::HasAuthors
 
-    belongs_to :document, class_name: "V2::Document", foreign_key: :block_document_id, inverse_of: :editions
+    belongs_to :document, class_name: "V2::Document", foreign_key: :v2_document_id, inverse_of: :editions
 
     validates :title, presence: true
     validate :title_contains_alphanumeric_chars

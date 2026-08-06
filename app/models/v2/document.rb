@@ -5,20 +5,20 @@ module V2
 
     has_many :editions,
              class_name: "V2::Edition",
-             foreign_key: :block_document_id,
+             foreign_key: :v2_document_id,
              dependent: :destroy,
              inverse_of: :document
 
     has_many :time_period_editions,
              -> { where(type: "V2::TimePeriodEdition") },
              class_name: "V2::TimePeriodEdition",
-             foreign_key: :block_document_id,
+             foreign_key: :v2_document_id,
              dependent: :destroy,
              inverse_of: :document
 
     has_one :most_recent_edition,
             -> { most_recent_first },
-            foreign_key: :block_document_id,
+            foreign_key: :v2_document_id,
             class_name: "V2::Edition"
 
     before_validation :generate_content_id, on: :create
@@ -29,7 +29,7 @@ module V2
     scope :by_most_recently_created_edition, lambda {
       latest_edition = V2::Edition
         .select(:created_at)
-        .where("block_editions.block_document_id = block_documents.id")
+        .where("v2_editions.v2_document_id = v2_documents.id")
         .order(created_at: :desc)
         .limit(1)
 
