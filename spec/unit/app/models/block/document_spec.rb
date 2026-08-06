@@ -95,6 +95,20 @@ RSpec.describe Block::Document, type: :model do
     end
   end
 
+  describe ".by_most_recently_created_edition" do
+    it "orders documents so the document with the most recently created edition appears first" do
+      older_document_with_newer_edition = create(:block_document, created_at: 4.days.ago)
+      create(:block_time_period_edition, document: older_document_with_newer_edition, created_at: 4.days.ago)
+      create(:block_time_period_edition, document: older_document_with_newer_edition, created_at: 1.day.ago)
+
+      newer_document_with_older_edition = create(:block_document, created_at: 3.days.ago)
+      create(:block_time_period_edition, document: newer_document_with_older_edition, created_at: 3.days.ago)
+      create(:block_time_period_edition, document: newer_document_with_older_edition, created_at: 2.days.ago)
+
+      expect(described_class.by_most_recently_created_edition).to eq([older_document_with_newer_edition, newer_document_with_older_edition])
+    end
+  end
+
   describe "#built_embed_code" do
     it "returns the embed code format using content_id_alias" do
       document = described_class.new(

@@ -26,6 +26,16 @@ module Block
 
     enum :block_type, { time_period: "time_period" }
 
+    scope :by_most_recently_created_edition, lambda {
+      latest_edition = Block::Edition
+        .select(:created_at)
+        .where("block_editions.block_document_id = block_documents.id")
+        .order(created_at: :desc)
+        .limit(1)
+
+      order(Arel.sql("(#{latest_edition.to_sql}) DESC NULLS LAST"))
+    }
+
     def title
       most_recent_edition&.title
     end
