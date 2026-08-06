@@ -444,3 +444,5 @@ en:
       context: "Edit content block"
     create:
       success: "Time period edition was successfully created."
+    update:
+      success: "Time period edition was successfully updated."

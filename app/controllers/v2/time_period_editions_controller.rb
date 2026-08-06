@@ -23,7 +23,17 @@ module V2
       @edition = V2::TimePeriodEdition.find(params[:id])
     end
 
-    def update; end
+    def update
+      @edition = V2::TimePeriodEdition.find(params[:id])
+      @edition.assign_attributes(edition_params.except(:creator))
+
+      if @edition.save
+        redirect_to v2_time_period_edition_path(@edition.id),
+                    notice: I18n.t("block/time_period_edition.update.success")
+      else
+        render :edit, status: :unprocessable_content
+      end
+    end
 
   private
 
