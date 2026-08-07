@@ -87,7 +87,7 @@ RSpec.describe DetailsValidator do
         it { is_expected.not_to be_valid }
 
         it "adds an error to the email_address field" do
-          expect(errors[:details_email_addresses_email_address]).to include("Email address cannot be blank")
+          expect(errors[:details_email_addresses_email_address]).to include("Enter an email address")
         end
       end
 
@@ -97,7 +97,7 @@ RSpec.describe DetailsValidator do
         it { is_expected.not_to be_valid }
 
         it "adds an error to the email_address field" do
-          expect(errors[:details_email_addresses_email_address]).to include("Invalid Email address")
+          expect(errors[:details_email_addresses_email_address]).to include("Enter an email address in the correct format")
         end
       end
 
@@ -121,7 +121,7 @@ RSpec.describe DetailsValidator do
         it { is_expected.not_to be_valid }
 
         it "adds an error to the label field" do
-          expect(errors[:details_contact_links_label]).to include("Label cannot be blank")
+          expect(errors[:details_contact_links_label]).to include("Enter a label")
         end
       end
 
@@ -137,7 +137,7 @@ RSpec.describe DetailsValidator do
         it { is_expected.not_to be_valid }
 
         it "adds an error to the url field" do
-          expect(errors[:details_contact_links_url]).to include("URL cannot be blank")
+          expect(errors[:details_contact_links_url]).to include("Enter a URL")
         end
       end
 
@@ -147,7 +147,7 @@ RSpec.describe DetailsValidator do
         it { is_expected.not_to be_valid }
 
         it "adds an error to the url field" do
-          expect(errors[:details_contact_links_url]).to include("URL is invalid")
+          expect(errors[:details_contact_links_url]).to include("Enter a URL in the correct format")
         end
       end
     end
@@ -165,7 +165,7 @@ RSpec.describe DetailsValidator do
         it { is_expected.not_to be_valid }
 
         it "adds an error to the telephone_numbers field" do
-          expect(errors[:details_telephones_telephone_numbers]).to include("Telephone numbers cannot be blank")
+          expect(errors[:details_telephones_telephone_numbers]).to include("Enter a telephone number")
         end
       end
 
@@ -177,7 +177,7 @@ RSpec.describe DetailsValidator do
         it { is_expected.not_to be_valid }
 
         it "adds an error to the label field" do
-          expect(errors[:details_telephones_telephone_numbers_0_label]).to include("Label cannot be blank")
+          expect(errors[:details_telephones_telephone_numbers_0_label]).to include("Enter a telephone label")
         end
       end
 
@@ -189,7 +189,7 @@ RSpec.describe DetailsValidator do
         it { is_expected.not_to be_valid }
 
         it "adds an error to the telephone_number field" do
-          expect(errors[:details_telephones_telephone_numbers_0_telephone_number]).to include("Telephone number cannot be blank")
+          expect(errors[:details_telephones_telephone_numbers_0_telephone_number]).to include("Enter a telephone number")
         end
       end
 
