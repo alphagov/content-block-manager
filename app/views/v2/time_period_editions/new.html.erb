@@ -1,0 +1,73 @@
+<% content_for :context, I18n.t("block/time_period_edition.new.context") %>
+<% content_for :title, I18n.t("block/time_period_edition.new.title") %>
+
+<% content_for :error_summary, render(Shared::ErrorSummaryComponent.new(object: @edition, parent_class: "edition")) %>
+
+<%= form_with(
+  model: @edition,
+  url: v2_time_period_editions_path,
+  method: :post,
+  data: data_attributes_for_forms_with_text_fields(edition: @edition, block_type: @edition.document.block_type),
+  ) do |f| %>
+
+  <p class="govuk-body">
+    <%= I18n.t("edition.new.general_field_notice") %>
+  </p>
+
+  <%= render "govuk_publishing_components/components/character_count", {
+    id: "edition_title",
+    textarea: {
+      label: {
+        text: label_for_title(@edition.document.block_type),
+      },
+      hint: I18n.t("edition.hints.#{@edition.document.block_type}.title", default: nil),
+      name: "edition[title]",
+      value: @edition.title,
+      error_items: errors_for(@edition.errors, :title),
+      rows: 1,
+    },
+    maxlength: 65,
+    } %>
+
+  <div class="app-c-content-block-manager-textarea-component">
+    <%= render "components/govspeak_editor", {
+      name: "edition[description]",
+      id: "edition_description",
+      label: { text: I18n.t("edition.labels.description") },
+      value: @edition.description,
+      error_items: errors_for(@edition.errors, :description),
+      hint_id: "edition_description_hint",
+      rows: 5,
+      character_limit: 165,
+      } %>
+  </div>
+
+  <%= render "govuk_publishing_components/components/select_with_search", {
+    id: "edition_lead_organisation_id",
+    name: "edition[lead_organisation_id]",
+    error_items: errors_for(@edition.errors, :lead_organisation_id),
+    hint: I18n.t("edition.hints.not_displayed"),
+    include_blank: true,
+    label: I18n.t("edition.labels.lead_organisation"),
+    options: taggable_organisations_container([@edition.lead_organisation_id]),
+    } %>
+
+  <%= render "govuk_publishing_components/components/textarea", {
+    label: {
+      text: I18n.t("edition.labels.instructions_to_publishers"),
+    },
+    name: "edition[instructions_to_publishers]",
+    hint: t("edition.hints.instructions_to_publishers_html"),
+    textarea_id: "edition_instructions_to_publishers",
+    value: @edition.instructions_to_publishers,
+    error_items: errors_for(@edition.errors, :instructions_to_publishers),
+    } %>
+
+  <div class="govuk-button-group govuk-!-margin-bottom-6">
+    <%= render "govuk_publishing_components/components/button", {
+      text: I18n.t("buttons.save_and_continue"),
+      type: "submit",
+      } %>
+  </div>
+
+<% end %>

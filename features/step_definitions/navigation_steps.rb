@@ -12,8 +12,8 @@ When("I revisit the edit page") do
   visit_edit_page
 end
 
-When("I visit the blocks index page") do
-  visit block_documents_path
+When("I visit the V2 index page") do
+  visit v2_documents_path
 end
 
 Given("I am viewing the published edition") do

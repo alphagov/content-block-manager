@@ -1,12 +1,12 @@
 RSpec.describe Document::Index::V2::SummaryCardComponent, type: :component do
   include Rails.application.routes.url_helpers
 
-  let(:document) { build_stubbed(:block_document, block_type: "time_period") }
+  let(:document) { build_stubbed(:v2_document, block_type: "time_period") }
   let(:organisation) { build(:organisation) }
 
   let(:edition) do
     build_stubbed(
-      :block_time_period_edition,
+      :v2_time_period_edition,
       id: 123,
       description: "some time period description",
       lead_organisation_id: organisation.id,
