@@ -1,6 +1,7 @@
 module Block
   class Document < ApplicationRecord
     extend FriendlyId
+    include Block::Document::Scopes::SearchableByKeyword
     friendly_id :sluggable_string, use: :slugged, slug_column: :content_id_alias, routes: :default
 
     has_many :editions,
@@ -34,6 +35,28 @@ module Block
         .limit(1)
 
       order(Arel.sql("(#{latest_edition.to_sql}) DESC NULLS LAST"))
+    }
+
+    scope :with_block_type, lambda { |types|
+      where(block_type: types) if types.present?
+    }
+
+    scope :with_lead_organisation, lambda { |org_id|
+      return all if org_id.blank?
+
+      matching_editions = Block::Edition
+        .select(:block_document_id)
+        .where(lead_organisation_id: org_id)
+
+      where(id: matching_editions)
+    }
+
+    scope :last_updated_after, lambda { |date|
+      where("updated_at >= ?", Time.zone.parse(date.to_s)) if date.present?
+    }
+
+    scope :last_updated_before, lambda { |date|
+      where("updated_at <= ?", Time.zone.parse(date.to_s)) if date.present?
     }
 
     def title

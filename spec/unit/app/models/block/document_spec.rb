@@ -109,6 +109,195 @@ RSpec.describe Block::Document, type: :model do
     end
   end
 
+  describe ".with_block_type" do
+    subject(:scope) { described_class.with_block_type(filter) }
+
+    let!(:time_period_doc) { create(:block_document, block_type: :time_period) }
+
+    context "when filtering with matching criteria" do
+      context "with a string key" do
+        let(:filter) { "time_period" }
+
+        it "returns matching documents" do
+          expect(scope).to contain_exactly(time_period_doc)
+        end
+      end
+
+      context "with an array of values" do
+        let(:filter) { %w[time_period non_matching_type] }
+
+        it "filters accurately by the array contents" do
+          expect(scope).to contain_exactly(time_period_doc)
+        end
+      end
+    end
+
+    context "when filtering with non-matching criteria" do
+      let(:filter) { "non_matching_type" }
+
+      it "returns an empty array" do
+        expect(scope).to eq([])
+      end
+    end
+
+    context "when argument is blank" do
+      [nil, "", []].each do |blank_value|
+        context "when filter is #{blank_value.inspect}" do
+          let(:filter) { blank_value }
+
+          it "returns all records as an ActiveRecord relation" do
+            expect(scope).to contain_exactly(time_period_doc)
+            expect(scope).to be_a(ActiveRecord::Relation)
+          end
+        end
+      end
+    end
+  end
+
+  describe ".with_lead_organisation" do
+    subject(:scope) { described_class.with_lead_organisation(org_id) }
+
+    let(:target_org_id) { SecureRandom.uuid }
+    let(:other_org_id) { SecureRandom.uuid }
+
+    let!(:matching_doc) { create(:block_document) }
+    let!(:non_matching_doc) { create(:block_document) }
+
+    before do
+      create(:block_time_period_edition, document: matching_doc, lead_organisation_id: target_org_id)
+      create(:block_time_period_edition, document: non_matching_doc, lead_organisation_id: other_org_id)
+    end
+
+    context "when a single matching org_id is provided" do
+      let(:org_id) { target_org_id }
+
+      it "returns documents with editions belonging to that organisation" do
+        expect(scope).to contain_exactly(matching_doc)
+      end
+    end
+
+    context "when a document has multiple editions" do
+      let(:org_id) { target_org_id }
+
+      before do
+        create(:block_time_period_edition, document: matching_doc, lead_organisation_id: target_org_id)
+      end
+
+      it "returns a single document" do
+        expect(scope).to contain_exactly(matching_doc)
+      end
+    end
+
+    context "when an array of org_ids is provided" do
+      let(:org_id) { [target_org_id, other_org_id] }
+
+      it "returns documents matching any of the organisation IDs" do
+        expect(scope).to contain_exactly(matching_doc, non_matching_doc)
+      end
+    end
+
+    context "when org_id does not match any edition" do
+      let(:org_id) { SecureRandom.uuid }
+
+      it "returns an empty array" do
+        expect(scope).to eq([])
+      end
+    end
+
+    context "when org_id is blank" do
+      [nil, "", []].each do |blank_value|
+        context "when argument is #{blank_value.inspect}" do
+          let(:org_id) { blank_value }
+
+          it "returns all records as an ActiveRecord relation" do
+            expect(scope).to contain_exactly(matching_doc, non_matching_doc)
+            expect(scope).to be_a(ActiveRecord::Relation)
+          end
+        end
+      end
+    end
+  end
+
+  describe "date filtering scopes" do
+    let(:reference_time) { Time.zone.parse("2026-06-15") }
+
+    let!(:old_doc) { create(:block_document) }
+    let!(:new_doc) { create(:block_document) }
+    let!(:mid_doc) { create(:block_document) }
+
+    before do
+      old_doc.update_column(:updated_at, Time.zone.parse("2026-06-10"))
+      mid_doc.update_column(:updated_at, reference_time)
+      new_doc.update_column(:updated_at, Time.zone.parse("2026-06-20"))
+    end
+
+    describe ".last_updated_after" do
+      subject(:scope) { described_class.last_updated_after(target_date) }
+
+      context "when a valid date is provided" do
+        let(:target_date) { reference_time }
+
+        it "returns records updated on or after the given date" do
+          expect(scope).to contain_exactly(mid_doc, new_doc)
+        end
+      end
+
+      context "when string or Time object formats are passed" do
+        let(:target_date) { "2026-06-20" }
+
+        it "parses and filters correctly" do
+          expect(scope).to contain_exactly(new_doc)
+        end
+      end
+
+      context "when argument is blank" do
+        [nil, ""].each do |blank_value|
+          context "when argument is #{blank_value.inspect}" do
+            let(:target_date) { blank_value }
+
+            it "returns all records as an ActiveRecord relation" do
+              expect(scope).to contain_exactly(old_doc, mid_doc, new_doc)
+              expect(scope).to be_a(ActiveRecord::Relation)
+            end
+          end
+        end
+      end
+    end
+
+    describe ".last_updated_before" do
+      subject(:scope) { described_class.last_updated_before(target_date) }
+
+      context "when a valid date is provided" do
+        let(:target_date) { reference_time }
+
+        it "returns records updated on or before the given date" do
+          expect(scope).to contain_exactly(old_doc, mid_doc)
+        end
+      end
+
+      context "when string or Time object formats are passed" do
+        let(:target_date) { "2026-06-10" }
+
+        it "parses and filters correctly" do
+          expect(scope).to contain_exactly(old_doc)
+        end
+      end
+
+      context "when argument is blank" do
+        [nil, ""].each do |blank_value|
+          context "when argument is #{blank_value.inspect}" do
+            let(:target_date) { blank_value }
+
+            it "returns all records as an ActiveRecord relation" do
+              expect(scope).to contain_exactly(old_doc, mid_doc, new_doc)
+              expect(scope).to be_a(ActiveRecord::Relation)
+            end
+          end
+        end
+      end
+    end
+  end
+
   describe "#built_embed_code" do
     it "returns the embed code format using content_id_alias" do
       document = described_class.new(
