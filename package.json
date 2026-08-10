@@ -43,7 +43,7 @@
     "ts-declaration-location": "^1.0.7"
   },
   "resolutions": {
-    "js-yaml": "^4.2.0"
+    "js-yaml": "^5.2.1"
   },
   "dependencies": {
     "content-block-picker": "alphagov/content-block-picker#main"
