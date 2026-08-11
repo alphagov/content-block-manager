@@ -140,7 +140,7 @@ GEM
     concurrent-ruby (1.3.8)
     connection_pool (2.5.5)
     constant_resolver (0.3.0)
-    content_block_tools (2.0.0)
+    content_block_tools (2.1.0)
       actionview (>= 6, < 8.1.4)
       gds-api-adapters (>= 101.0)
       govspeak (>= 10.6.3)
@@ -1069,7 +1069,7 @@ CHECKSUMS
   concurrent-ruby (1.3.8) sha256=b2f1be836e968ccc78ccfce277ea79c72a88633f22306782c16ff23fb415d1e1
   connection_pool (2.5.5) sha256=e54ff92855753df1fd7c59fa04a398833355f27dd14c074f8c83a05f72a716ad
   constant_resolver (0.3.0) sha256=b94886294298fb8d5db3715bac65e65493fae7b12b8a6f867cbf898944e64e83
-  content_block_tools (2.0.0) sha256=2303a81962c203462fd426d99f9f1f712f760074e182fddd3ff8d7d1e13a82e1
+  content_block_tools (2.1.0) sha256=fa54cbbcfb7dac5988edbbccefa2b9b7b3273044fffd299ae2e6df9c82744a7b
   crack (1.0.1) sha256=ff4a10390cd31d66440b7524eb1841874db86201d5b70032028553130b6d4c7e
   crass (1.0.7) sha256=94868719948664c89ddcaf0a37c65048413dfcb1c869470a5f7a7ceb5390b295
   cucumber (11.1.1) sha256=dedd44f4a14b50af798c13b50c3221afa41be8051f5fce666c37cd09f8564ec4
