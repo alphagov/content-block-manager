@@ -146,8 +146,12 @@
               "text/html": {
                 "examples": {
                   "base_embed_code": {
-                    "summary": "Base embed code renders the block title",
-                    "value": "<div class=\"content-block content-block--pension\" data-content-block=\"\" data-document-type=\"pension\" data-content-id=\"11111111-2222-4333-8444-555555555555\" data-embed-code=\"{{embed:content_block_pension:state-pension}}\">State Pension</div>"
+                    "summary": "Base embed code renders the default block",
+                    "value": "<div class=\"content-block content-block--time_period\" data-content-block=\"\" data-document-type=\"time_period\" data-content-id=\"11111111-2222-4333-8444-555555555555\" data-embed-code=\"{{embed:content_block_time_period:tax-year}}\"><p class=\"govuk-body\">\n  6 April 2026 to 5 April 2027\n</p>\n</div>"
+                  },
+                  "rendering_failure_message": {
+                    "summary": "Base embed code renders failure message for block which has no default",
+                    "value": "<div class=\"content-block content-block--pension\" data-content-block=\"\" data-document-type=\"pension\" data-content-id=\"11111111-2222-4333-8444-555555555555\" data-embed-code=\"{{embed:content_block_pension:state-pension}}\">Unable to render block &#39;State Pension&#39; {{embed:content_block_pension:state-pension}}</div>"
                   },
                   "internal_content_path": {
                     "summary": "Providing an internal path causes the correct path to be rendered",
