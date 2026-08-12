@@ -25,7 +25,7 @@ When("I fill the Time Period Edition details incorrectly") do
 end
 
 Then("I see that the Edition was created successfully") do
-  expect(page).to have_content(I18n.t("block/time_period_edition.create.success"))
+  expect(page).to have_content(I18n.t("v2/time_period_edition.create.success"))
 end
 
 Then("I see that the Edition was updated successfully") do
