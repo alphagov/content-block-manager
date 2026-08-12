@@ -79,7 +79,7 @@ RSpec.describe "V2 time period editions", type: :request do
 
         expect(response).to redirect_to(v2_time_period_edition_path(V2::TimePeriodEdition.last.id))
         follow_redirect!
-        expect(response.body).to include(I18n.t("block/time_period_edition.create.success"))
+        expect(response.body).to include(I18n.t("v2/time_period_edition.create.success"))
       end
     end
 
