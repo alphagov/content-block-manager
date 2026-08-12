@@ -147,24 +147,42 @@ RSpec.describe "API" do
         fragment.to_html
       end
 
-      response "200", "renders HTML for a base embed code" do
+      response "200", "renders the default format for a base embed code" do
         before do
           @document = create(
             :document,
-            block_type: "pension",
-            sluggable_string: "state-pension",
+            block_type: "time_period",
+            sluggable_string: "tax-year",
             content_id: "11111111-2222-4333-8444-555555555555",
           )
           create(
             :edition,
             :published,
-            title: "State Pension",
+            title: "Tax year",
             lead_organisation_id: SecureRandom.uuid,
             document: @document,
+            details: { "date_range" => {
+              "start" => "2026-04-06T00:00:00+01:00",
+              "end" => "2027-04-05T23:59:00+01:00",
+            } },
           )
         end
 
         let(:embed_code) { CGI.escape(@document.embed_code) }
+
+        let(:expected_response) do
+          <<~HTML
+            <div
+              class="content-block content-block--time_period"
+              data-content-block=""
+              data-document-type="time_period"
+              data-content-id="11111111-2222-4333-8444-555555555555"
+              data-embed-code="{{embed:content_block_time_period:tax-year}}"
+              >
+              <p class="govuk-body">6 April 2026 to 5 April 2027</p>
+            </div>
+          HTML
+        end
 
         after do |example|
           content = example.metadata[:response][:content] || {}
@@ -172,7 +190,7 @@ RSpec.describe "API" do
             "text/html" => {
               examples: {
                 base_embed_code: {
-                  summary: "Base embed code renders the block title",
+                  summary: "Base embed code renders the default block",
                   value: response.body,
                 },
               },
@@ -183,7 +201,7 @@ RSpec.describe "API" do
         run_test! do |response|
           expect(response.content_type).to include("text/html")
           expect(response.body).to include("content-block")
-          expect(response.body).to include("State Pension")
+          expect(normalise_html(response.body)).to eq(normalise_html(expected_response))
         end
       end
 
