@@ -187,6 +187,60 @@ RSpec.describe "API" do
         end
       end
 
+      response "200", "renders the default failure message when the block can't be rendered" do
+        before do
+          @document = create(
+            :document,
+            block_type: "pension",
+            sluggable_string: "state-pension",
+            content_id: "11111111-2222-4333-8444-555555555555",
+          )
+          create(
+            :edition,
+            :published,
+            title: "State Pension",
+            lead_organisation_id: SecureRandom.uuid,
+            document: @document,
+          )
+        end
+
+        let(:embed_code) { CGI.escape(@document.embed_code) }
+
+        let(:expected_failure_message) do
+          <<~HTML
+            <div
+              class="content-block content-block--pension"
+              data-content-block=""
+              data-document-type="pension"
+              data-content-id="11111111-2222-4333-8444-555555555555"
+              data-embed-code="{{embed:content_block_pension:state-pension}}"
+              >
+              Unable to render block 'State Pension' {{embed:content_block_pension:state-pension}}
+             </div>
+          HTML
+        end
+
+        after do |example|
+          content = example.metadata[:response][:content] || {}
+          example.metadata[:response][:content] = content.deep_merge(
+            "text/html" => {
+              examples: {
+                rendering_failure_message: {
+                  summary: "Base embed code renders failure message for block which has no default",
+                  value: response.body,
+                },
+              },
+            },
+          )
+        end
+
+        run_test! do |response|
+          expect(response.content_type).to include("text/html")
+          expect(response.body).to include("content-block")
+          expect(normalise_html(response.body)).to eq(normalise_html(expected_failure_message))
+        end
+      end
+
       response "200", "renders the specified sub content for an internal content path" do
         before do
           @document = create(
