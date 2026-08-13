@@ -49,6 +49,7 @@ en:
             lead_organisation_id:
               blank: "cannot be blank"
         v2/time_period_date_range:
+          format: "%{message}"
           attributes:
             start:
               blank: "Enter a start date"
