@@ -11,7 +11,14 @@ RSpec.describe GovukE2e::ContentBlockManager::Fixtures do
     end
 
     context "when the Test user is present" do
-      before { create(:user, name: "Test user") }
+      before do
+        create(:user, name: "Test user")
+        lead_organisation =
+          build(:organisation, id: described_class::LEAD_ORGANISATION_ID)
+        allow(Organisation).to receive(:all).and_return([lead_organisation])
+        allow(Public::Services.publishing_api).to receive(:put_content)
+        allow(Public::Services.publishing_api).to receive(:publish)
+      end
 
       it "creates document 18 with the fixture's content_id and alias" do
         described_class.seed!
@@ -24,14 +31,24 @@ RSpec.describe GovukE2e::ContentBlockManager::Fixtures do
           .to eq("{{embed:content_block_pension:test-content-block-do-not-use}}")
       end
 
-      it "creates a draft edition carrying the pension rate-1 amount" do
+      it "publishes an edition carrying the pension rate-1 amount" do
         described_class.seed!
 
         edition = Document.find(described_class::DOCUMENT_ID).editions.sole
-        expect(edition).to be_draft
+        expect(edition).to be_published
         expect(edition.details.dig("rates", "rate-1", "amount")).to eq("134.64")
         expect(edition.lead_organisation_id)
           .to eq(described_class::LEAD_ORGANISATION_ID)
+      end
+
+      it "sends the published block to the Publishing API" do
+        described_class.seed!
+
+        expect(Public::Services.publishing_api)
+          .to have_received(:put_content)
+            .with(described_class::DOCUMENT_CONTENT_ID, anything)
+        expect(Public::Services.publishing_api)
+          .to have_received(:publish).with(described_class::DOCUMENT_CONTENT_ID)
       end
 
       it "associates the edition to the Test user via the audit trail" do
@@ -39,7 +56,7 @@ RSpec.describe GovukE2e::ContentBlockManager::Fixtures do
 
         edition = Document.find(described_class::DOCUMENT_ID).editions.sole
         expect(edition.creator.name).to eq("Test user")
-        expect(edition.versions.first.event).to eq("created")
+        expect(edition.versions.last.event).to eq("created")
       end
 
       it "is idempotent" do

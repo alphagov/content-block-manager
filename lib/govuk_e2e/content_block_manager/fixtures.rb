@@ -31,7 +31,7 @@ module GovukE2e
         document = create_document
 
         Edition::HasAuditTrail.acting_as(test_user) do
-          Edition.create!(
+          edition = Edition.create!(
             document:,
             state: "draft",
             title: TITLE,
@@ -42,6 +42,8 @@ module GovukE2e
             change_note: "",
             major_change: false,
           )
+
+          PublishEditionService.new.call(edition)
         end
       end
 
