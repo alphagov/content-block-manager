@@ -109,4 +109,66 @@ RSpec.describe "V2 time period editions", type: :request do
       end
     end
   end
+
+  describe "PUT /v2/time_period_edition/:id" do
+    let(:existing_params) do
+      { title: "Existing Edition",
+        description: "Existing description",
+        lead_organisation_id: SecureRandom.uuid,
+        instructions_to_publishers: "Existing instructions" }
+    end
+
+    let(:updated_params) do
+      { title: "Updated Edition",
+        description: "Updated description",
+        lead_organisation_id: SecureRandom.uuid,
+        instructions_to_publishers: "Updated instructions" }
+    end
+
+    let(:invalid_params) do
+      { title: "",
+        description: "",
+        lead_organisation_id: nil,
+        instructions_to_publishers: "" }
+    end
+
+    let(:existing_edition) { create(:v2_time_period_edition, **existing_params) }
+
+    let(:updated_edition) { create(:v2_time_period_edition, **updated_params) }
+
+    before do
+      allow(Organisation).to receive(:all).and_return([])
+    end
+
+    it "updates an existing time period edition" do
+      put v2_time_period_edition_path(existing_edition.id), params: { edition: updated_params }
+
+      existing_edition.reload
+      expect(existing_edition.title).to eq(updated_params[:title])
+      expect(existing_edition.description).to eq(updated_params[:description])
+      expect(existing_edition.lead_organisation_id).to eq(updated_params[:lead_organisation_id])
+      expect(existing_edition.instructions_to_publishers).to eq(updated_params[:instructions_to_publishers])
+    end
+
+    it "redirects to the time period edition page with a success message" do
+      put v2_time_period_edition_path(existing_edition.id), params: { edition: updated_params }
+
+      expect(response).to redirect_to(v2_time_period_edition_path(existing_edition.id))
+      follow_redirect!
+      expect(response.body).to include(I18n.t("block/time_period_edition.update.success"))
+    end
+
+    it "re-renders the edit form with errors when invalid parameters are provided" do
+      put v2_time_period_edition_path(existing_edition.id), params: { edition: invalid_params }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response).to render_template("v2/time_period_editions/edit")
+
+      expect(page).to have_css(".gem-c-error-summary__list-item", text: "Title cannot be blank")
+      expect(page).to have_css(".gem-c-error-summary__list-item", text: "Lead organisation cannot be blank")
+
+      expect(page).to have_css(".govuk-error-message", text: "Title cannot be blank")
+      expect(page).to have_css(".govuk-error-message", text: "Lead organisation cannot be blank")
+    end
+  end
 end

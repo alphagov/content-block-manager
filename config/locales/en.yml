@@ -439,5 +439,10 @@ en:
     new:
       title: "Create time period"
       context: "Create content block"
+    edit:
+      title: "Edit time period"
+      context: "Edit content block"
     create:
       success: "Time period edition was successfully created."
+    update:
+      success: "Time period edition was successfully updated."
