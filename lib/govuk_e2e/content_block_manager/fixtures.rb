@@ -57,6 +57,39 @@ module GovukE2e
         end
       end
 
+      def self.reset!
+        document = Document.find_by(id: DOCUMENT_ID)
+        return unless document
+
+        remove_generated_editions(document)
+        republish_seeded_edition(document)
+      end
+
+      def self.remove_generated_editions(document)
+        generated_editions = document.editions.order(:id).offset(1)
+        generated_edition_ids = generated_editions.pluck(:id)
+        return if generated_edition_ids.empty?
+
+        DomainEvent.where(edition_id: generated_edition_ids).delete_all
+        Version.where(item_type: "Edition", item_id: generated_edition_ids).delete_all
+        generated_editions.destroy_all
+      end
+
+      def self.republish_seeded_edition(document)
+        seeded_edition = document.editions.order(:id).first
+        return unless seeded_edition
+
+        schema = Schema.find_by_block_type(document.block_type)
+        payload = PublishingApi::ContentBlockPresenter.new(
+          document_type: schema.id,
+          content_id_alias: document.content_id_alias,
+          edition: seeded_edition,
+        ).present
+
+        Public::Services.publishing_api.put_content(document.content_id, payload)
+        Public::Services.publishing_api.publish(document.content_id)
+      end
+
       def self.create_e2e_user
         User.find_or_create_by!(uid: E2E_USER_UID) do |user|
           user.name = "GOV.UK e2e test user"

@@ -108,4 +108,119 @@ RSpec.describe GovukE2e::ContentBlockManager::Fixtures do
       end
     end
   end
+
+  describe ".reset!" do
+    let(:test_user) { create(:user, name: "Test user") }
+
+    before do
+      lead_organisation =
+        build(:organisation, id: described_class::LEAD_ORGANISATION_ID)
+      allow(Organisation).to receive(:all).and_return([lead_organisation])
+      allow(Public::Services.publishing_api).to receive(:put_content)
+      allow(Public::Services.publishing_api).to receive(:publish)
+    end
+
+    def seeded_document
+      document = described_class.create_document
+      Edition::HasAuditTrail.acting_as(test_user) do
+        edition = Edition.create!(
+          document:,
+          state: "draft",
+          title: described_class::TITLE,
+          details: described_class::DETAILS,
+          creator: test_user,
+          lead_organisation_id: described_class::LEAD_ORGANISATION_ID,
+          change_note: "",
+          major_change: false,
+        )
+        PublishEditionService.new.call(edition)
+      end
+      document
+    end
+
+    context "when the journey left an extra published edition (success)" do
+      it "removes it, keeping only the oldest seeded edition" do
+        document = seeded_document
+        seeded_edition = document.editions.sole
+        Edition::HasAuditTrail.acting_as(test_user) do
+          extra = seeded_edition.dup
+          extra.creator = test_user
+          extra.state = "published"
+          extra.save!
+        end
+
+        described_class.reset!
+
+        expect(document.reload.editions.pluck(:id)).to eq([seeded_edition.id])
+      end
+    end
+
+    context "when the journey left a draft edition behind (failure)" do
+      it "removes the leftover draft, keeping only the seeded edition" do
+        document = seeded_document
+        seeded_edition = document.editions.sole
+        Edition::HasAuditTrail.acting_as(test_user) do
+          document.editions.create!(
+            state: "draft",
+            title: described_class::TITLE,
+            details: described_class::DETAILS,
+            creator: test_user,
+            lead_organisation_id: described_class::LEAD_ORGANISATION_ID,
+            change_note: "",
+            major_change: false,
+          )
+        end
+
+        described_class.reset!
+
+        expect(document.reload.editions.pluck(:id)).to eq([seeded_edition.id])
+      end
+    end
+
+    it "re-publishes the surviving seeded edition to the Publishing API" do
+      seeded_document
+
+      described_class.reset!
+
+      expect(Public::Services.publishing_api)
+        .to have_received(:put_content)
+        .with(described_class::DOCUMENT_CONTENT_ID, anything).at_least(:once)
+      expect(Public::Services.publishing_api)
+        .to have_received(:publish)
+        .with(described_class::DOCUMENT_CONTENT_ID).at_least(:once)
+    end
+
+    it "leaves orphaned versions and domain events cleaned up" do
+      document = seeded_document
+      extra = nil
+      Edition::HasAuditTrail.acting_as(test_user) do
+        extra = document.editions.create!(
+          state: "draft",
+          title: described_class::TITLE,
+          details: described_class::DETAILS,
+          creator: test_user,
+          lead_organisation_id: described_class::LEAD_ORGANISATION_ID,
+          change_note: "",
+          major_change: false,
+        )
+        PublishEditionService.new.call(extra)
+      end
+      expect(DomainEvent.where(edition_id: extra.id)).not_to be_empty
+      expect(Version.where(item_type: "Edition", item_id: extra.id)).not_to be_empty
+
+      described_class.reset!
+
+      expect(Version.where(item_type: "Edition", item_id: extra.id)).to be_empty
+      expect(DomainEvent.where(edition_id: extra.id)).to be_empty
+    end
+
+    it "is idempotent when already at the seeded state" do
+      document = seeded_document
+
+      described_class.reset!
+
+      expect { described_class.reset! }
+        .not_to(change { document.reload.editions.count })
+    end
+  end
 end

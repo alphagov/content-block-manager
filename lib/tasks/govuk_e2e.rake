@@ -8,6 +8,15 @@ namespace :db do
       task content_block_manager: :environment do
         GovukE2e::ContentBlockManager::Fixtures.seed!
       end
+
+      namespace :content_block_manager do
+        desc "Reset the Content Block Manager GOV.UK end-to-end test fixtures " \
+             "to their seeded starting state by removing the editions of block " \
+             "18 created by a test run and re-publishing the seeded edition."
+        task reset: :environment do
+          GovukE2e::ContentBlockManager::Fixtures.reset!
+        end
+      end
     end
   end
 end
