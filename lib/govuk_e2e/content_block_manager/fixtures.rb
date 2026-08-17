@@ -11,6 +11,14 @@ module GovukE2e
       LEAD_ORGANISATION_TITLE = "Government Digital Service".freeze
       LEAD_ORGANISATION_BASE_PATH = "/government/organisations/government-digital-service".freeze
 
+      E2E_USER_UID = "govuk-e2e-content-block-manager".freeze
+      E2E_USER_PERMISSIONS = [
+        "signin",
+        "GDS Admin",
+        "GDS Editor",
+        "Managing Editor",
+      ].freeze
+
       DETAILS = {
         "rates" => {
           "rate-1" => {
@@ -24,9 +32,11 @@ module GovukE2e
       }.freeze
 
       def self.seed!
+        test_user = test_user!
+        create_e2e_user
+
         return if Document.where(id: DOCUMENT_ID).exists?
 
-        test_user = test_user!
         publish_lead_organisation
         document = create_document
 
@@ -44,6 +54,14 @@ module GovukE2e
           )
 
           PublishEditionService.new.call(edition)
+        end
+      end
+
+      def self.create_e2e_user
+        User.find_or_create_by!(uid: E2E_USER_UID) do |user|
+          user.name = "GOV.UK e2e test user"
+          user.email = "govuk-e2e-content-block-manager@gds.example.com"
+          user.permissions = E2E_USER_PERMISSIONS
         end
       end
 

@@ -65,6 +65,16 @@ RSpec.describe GovukE2e::ContentBlockManager::Fixtures do
         expect { described_class.seed! }.not_to change(Document, :count)
         expect { described_class.seed! }.not_to change(Edition, :count)
       end
+
+      it "creates an e2e sign-in user without the pre_release_features permission" do
+        described_class.seed!
+
+        user = User.find_by(uid: described_class::E2E_USER_UID)
+        expect(user).to be_present
+        expect(user.has_permission?(User::Permissions::PRE_RELEASE_FEATURES_PERMISSION))
+          .to be(false)
+        expect(user.has_permission?("signin")).to be(true)
+      end
     end
 
     context "when the lead organisation is absent from the Publishing API" do
