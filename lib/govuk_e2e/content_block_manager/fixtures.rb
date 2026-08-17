@@ -8,6 +8,8 @@ module GovukE2e
       SLUGGABLE_STRING = "Test Content Block - Do Not Use".freeze
       TITLE = "Test Content Block - Do Not Use".freeze
       LEAD_ORGANISATION_ID = "af07d5a5-df63-4ddc-9383-6a666845ebe9".freeze
+      LEAD_ORGANISATION_TITLE = "Government Digital Service".freeze
+      LEAD_ORGANISATION_BASE_PATH = "/government/organisations/government-digital-service".freeze
 
       DETAILS = {
         "rates" => {
@@ -25,6 +27,7 @@ module GovukE2e
         return if Document.where(id: DOCUMENT_ID).exists?
 
         test_user = test_user!
+        publish_lead_organisation
         document = create_document
 
         Edition::HasAuditTrail.acting_as(test_user) do
@@ -40,6 +43,25 @@ module GovukE2e
             major_change: false,
           )
         end
+      end
+
+      def self.publish_lead_organisation
+        Public::Services.publishing_api.put_content(LEAD_ORGANISATION_ID, {
+          "base_path" => LEAD_ORGANISATION_BASE_PATH,
+          "document_type" => "organisation",
+          "publishing_app" => "content-block-manager",
+          "rendering_app" => "frontend",
+          "schema_name" => "organisation",
+          "title" => LEAD_ORGANISATION_TITLE,
+          "routes" => [
+            {
+              "path" => LEAD_ORGANISATION_BASE_PATH,
+              "type" => "exact",
+            },
+          ],
+        })
+        Public::Services.publishing_api.publish(LEAD_ORGANISATION_ID, "major")
+        Rails.cache.delete("organisations")
       end
 
       def self.create_document

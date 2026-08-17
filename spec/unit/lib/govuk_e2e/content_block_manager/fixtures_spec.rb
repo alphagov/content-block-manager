@@ -49,5 +49,36 @@ RSpec.describe GovukE2e::ContentBlockManager::Fixtures do
         expect { described_class.seed! }.not_to change(Edition, :count)
       end
     end
+
+    context "when the lead organisation is absent from the Publishing API" do
+      before do
+        create(:user, name: "Test user")
+        lead_organisation =
+          build(:organisation, id: described_class::LEAD_ORGANISATION_ID)
+        allow(Organisation).to receive(:all).and_return([lead_organisation])
+        allow(Public::Services.publishing_api).to receive(:put_content)
+        allow(Public::Services.publishing_api).to receive(:publish)
+      end
+
+      it "publishes the lead organisation to the Publishing API so the block can resolve it" do
+        described_class.seed!
+
+        expect(Public::Services.publishing_api)
+          .to have_received(:put_content)
+          .with(
+            described_class::LEAD_ORGANISATION_ID,
+            hash_including("document_type" => "organisation"),
+          )
+        expect(Public::Services.publishing_api)
+          .to have_received(:publish)
+          .with(described_class::LEAD_ORGANISATION_ID, "major")
+      end
+
+      it "busts the organisations cache so Organisation.all reflects the new org" do
+        expect(Rails.cache).to receive(:delete).with("organisations")
+
+        described_class.seed!
+      end
+    end
   end
 end
