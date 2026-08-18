@@ -10,6 +10,8 @@ Feature: Create Time Period Edition
 
   Scenario: Editor can create a new Time Period Edition
     When I fill the Time Period Edition details correctly
+    And I continue to the date range page
+    And I fill the date range details correctly
     And I save and continue
     Then I see that the Edition was created successfully
 
@@ -17,3 +19,9 @@ Feature: Create Time Period Edition
     When I fill the Time Period Edition details incorrectly
     And I save and continue
     Then I see which Time Period Edition errors I need to correct
+
+  Scenario: Editor is informed when creating a date range incorrectly
+    When I fill the Time Period Edition details correctly
+    And I continue to the date range page
+    And I save and continue
+    Then I see errors telling me to enter values

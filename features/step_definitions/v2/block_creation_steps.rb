@@ -74,3 +74,44 @@ end
 Then("I should not see {string}") do |content|
   expect(page).to have_no_content(content)
 end
+
+When("I fill the date range details incorrectly") do
+  start_date = 2.days.before(Time.zone.now)
+  end_date = 10.days.before(Time.zone.now)
+
+  fill_in "edition[date_range_attributes][start(3i)]", with: start_date.day
+  fill_in "edition[date_range_attributes][start(2i)]", with: start_date.month
+  fill_in "edition[date_range_attributes][start(1i)]", with: start_date.year
+
+  fill_in "edition[date_range_attributes][end(3i)]", with: end_date.day
+  fill_in "edition[date_range_attributes][end(2i)]", with: end_date.month
+  fill_in "edition[date_range_attributes][end(1i)]", with: end_date.year
+end
+
+And("I fill the date range details correctly") do
+  start_date = 10.days.before(Time.zone.now)
+  end_date = 2.days.before(Time.zone.now)
+
+  fill_in "edition[date_range_attributes][start(3i)]", with: start_date.day
+  fill_in "edition[date_range_attributes][start(2i)]", with: start_date.month
+  fill_in "edition[date_range_attributes][start(1i)]", with: start_date.year
+
+  fill_in "edition[date_range_attributes][end(3i)]", with: end_date.day
+  fill_in "edition[date_range_attributes][end(2i)]", with: end_date.month
+  fill_in "edition[date_range_attributes][end(1i)]", with: end_date.year
+end
+
+Then("I see errors telling me to enter values") do
+  expect(page).to have_content("Enter a start date")
+  expect(page).to have_content("Enter an end date")
+end
+
+And("I continue to the date range page") do
+  click_button("Save and continue")
+
+  edition = V2::TimePeriodEdition.last
+
+  expect(current_path).to eq(edit_v2_time_period_edition_time_period_date_range_path(
+                               edition,
+                             ))
+end
