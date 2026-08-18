@@ -763,10 +763,10 @@ concat-map@0.0.1:
 
 content-block-picker@alphagov/content-block-picker#main:
   version "1.0.0"
-  uid bdb973d17a968fcde1738d5484ae5c1f508469d8
-  resolved "https://codeload.github.com/alphagov/content-block-picker/tar.gz/bdb973d17a968fcde1738d5484ae5c1f508469d8"
+  uid e00017b5726e78998efd4803bbce75d484c2035c
+  resolved "https://codeload.github.com/alphagov/content-block-picker/tar.gz/e00017b5726e78998efd4803bbce75d484c2035c"
   dependencies:
-    dompurify "^3.4.12"
+    dompurify "^3.4.13"
     govuk-frontend "^6.4.0"
 
 content-disposition@^1.0.0:
@@ -980,7 +980,7 @@ domhandler@^5.0.2, domhandler@^5.0.3:
   dependencies:
     domelementtype "^2.3.0"
 
-dompurify@^3.4.12:
+dompurify@^3.4.13:
   version "3.4.13"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.4.13.tgz#fc28949d59f92d62e28a3a764bcbeee35897a1be"
   integrity sha512-2vmYIoqjze2d+kakP8S/nS5shfsl587kzwEjcGlTdiksUVgFHnFCsLYDVj/JNqJVOQZGSYBTmuycv0PodwmnMQ==
