@@ -47,7 +47,11 @@ Rails.application.routes.draw do
 
   namespace :v2 do
     resources :time_period_editions, only: %i[new create show edit update]
-    resources :documents, only: [:index]
+    resources :documents, only: [:index] do
+      resources :time_period_date_ranges,
+                only: %i[edit update],
+                path: "time-period-date-ranges"
+    end
   end
 
   resources :editions, only: %i[new create destroy], path_names: { new: ":block_type/new" } do
