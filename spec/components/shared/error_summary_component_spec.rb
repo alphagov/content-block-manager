@@ -126,7 +126,8 @@ class ErrorSummaryTestObject
   include ActiveModel::Model
   attr_accessor :title, :date
 
-  validates :title, :date, presence: true
+  validates :title, presence: { message: "Title can't be blank" }
+  validates :date, presence: { message: "Date can't be blank" }
   validate :date_is_a_date
 
   def initialize(title, date)
@@ -135,6 +136,6 @@ class ErrorSummaryTestObject
   end
 
   def date_is_a_date
-    errors.add(:date, :invalid) unless date.is_a?(Date)
+    errors.add(:date, "Date is invalid") unless date.is_a?(Date)
   end
 end

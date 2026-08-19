@@ -198,11 +198,20 @@ RSpec.describe Document, type: :model do
       expect(document.content_id_alias).to eq("this-is-a-title")
     end
 
-    it "ensures the sluggable string must contain some letters or numbers" do
-      document = build(:document, sluggable_string: "💯💯💯")
+    {
+      pension: "Title",
+      contact: "Contact name",
+      tax: "Tax name",
+      time_period: "Time period name",
+    }.each do |block_type, attribute_name|
+      context "when the edition is a #{block_type}" do
+        it "ensures the sluggable string must contain some letters or numbers" do
+          document = build(:document, block_type, sluggable_string: "💯💯💯")
 
-      expect(document.valid?).to be(false)
-      expect(document.errors[:title]).to include(I18n.t("document.index.errors.title.missing_valid_chars"))
+          expect(document.valid?).to be(false)
+          expect(document.errors[:title]).to include(I18n.t("activerecord.errors.models.document.attributes.title.missing_valid_chars", attribute: attribute_name))
+        end
+      end
     end
   end
 
