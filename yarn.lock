@@ -762,11 +762,11 @@ concat-map@0.0.1:
   integrity sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
 
 content-block-picker@alphagov/content-block-picker#main:
-  version "1.0.0"
-  uid bdb973d17a968fcde1738d5484ae5c1f508469d8
-  resolved "https://codeload.github.com/alphagov/content-block-picker/tar.gz/bdb973d17a968fcde1738d5484ae5c1f508469d8"
+  version "1.0.2"
+  uid e5b702ce35ae366f6a752e53f886af344354586e
+  resolved "https://codeload.github.com/alphagov/content-block-picker/tar.gz/e5b702ce35ae366f6a752e53f886af344354586e"
   dependencies:
-    dompurify "^3.4.12"
+    dompurify "^3.4.13"
     govuk-frontend "^6.4.0"
 
 content-disposition@^1.0.0:
@@ -980,10 +980,10 @@ domhandler@^5.0.2, domhandler@^5.0.3:
   dependencies:
     domelementtype "^2.3.0"
 
-dompurify@^3.4.12:
-  version "3.4.13"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.4.13.tgz#fc28949d59f92d62e28a3a764bcbeee35897a1be"
-  integrity sha512-2vmYIoqjze2d+kakP8S/nS5shfsl587kzwEjcGlTdiksUVgFHnFCsLYDVj/JNqJVOQZGSYBTmuycv0PodwmnMQ==
+dompurify@^3.4.13:
+  version "3.4.14"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.4.14.tgz#a789edb2c7bcdb69a93713a34edb7e0a5245d8c9"
+  integrity sha512-dVoH9z+MY+C9IilgGCk3YfFqjLi3fChm2OiKJMzh6axrJ5qwxqWaZamgmHrpv22CN/KdbZJuGEGgfQoL00LTdg==
   optionalDependencies:
     "@types/trusted-types" "^2.0.7"
 
