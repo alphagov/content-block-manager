@@ -189,7 +189,7 @@ module BlockPreview
     end
 
     def nokodiff_stylesheet_href
-      ActionController::Base.helpers.asset_path("nokodiff.css")
+      ActionController::Base.helpers.asset_path("nokodiff_preview.css")
     end
 
     def auth_bypass_token

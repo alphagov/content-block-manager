@@ -145,7 +145,7 @@ RSpec.describe BlockPreview::PreviewHtml do
     parsed_content = Nokogiri::HTML.parse(actual_content)
     hrefs = parsed_content.css("head link[rel='stylesheet']").map { |link| link["href"] }
 
-    expect(hrefs).to include("/assets/content-block-manager/nokodiff.css")
+    expect(hrefs).to include("/assets/content-block-manager/nokodiff_preview.css")
   end
 
   describe "when the frontend returns a non-200 response" do

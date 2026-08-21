@@ -1,2 +1,2 @@
 //= link host-content-iframe.js
-//= link nokodiff.css
+//= link nokodiff_preview.css

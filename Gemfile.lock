@@ -1,3 +1,11 @@
+GIT
+  remote: https://github.com/alphagov/nokodiff.git
+  revision: c4dd41a08fbd326b850224ec570fbe8cb7724a99
+  ref: c4dd41a08fbd326b850224ec570fbe8cb7724a99
+  specs:
+    nokodiff (1.0.0.rc1)
+      diff-lcs
+
 PATH
   remote: engines/api
   specs:
@@ -412,14 +420,6 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.5)
-    nokodiff (0.4.2)
-      actionview (>= 6, < 8.1.4)
-      byebug
-      diff-lcs
-      gds-api-adapters (>= 101.0, < 103.3)
-      govspeak (>= 10.6.3)
-      rails (>= 6, < 8.1.4)
-      view_component (~> 4)
     nokogiri (1.19.4-aarch64-linux-gnu)
       racc (~> 1.4)
     nokogiri (1.19.4-aarch64-linux-musl)
@@ -996,7 +996,7 @@ DEPENDENCIES
   json_schemer
   kaminari
   launchy
-  nokodiff
+  nokodiff!
   packwerk
   packwerk-extensions
   parser
@@ -1173,7 +1173,7 @@ CHECKSUMS
   net-smtp (0.5.1) sha256=ed96a0af63c524fceb4b29b0d352195c30d82dd916a42f03c62a3a70e5b70736
   netrc (0.11.0) sha256=de1ce33da8c99ab1d97871726cba75151113f117146becbe45aa85cb3dabee3f
   nio4r (2.7.5) sha256=6c90168e48fb5f8e768419c93abb94ba2b892a1d0602cb06eef16d8b7df1dca1
-  nokodiff (0.4.2) sha256=fc1a886572d4f7315a69cf34a3255c972c119c6cca9d4534fc3e601f7d08ce04
+  nokodiff (1.0.0.rc1)
   nokogiri (1.19.4-aarch64-linux-gnu) sha256=1269fb644a6de405057a53dd5c762b1209b43ca7424f839454d3dbc677c31a8f
   nokogiri (1.19.4-aarch64-linux-musl) sha256=35c65b9ce72b3bb03207bdbe7067915019dc18c1b9b59139684bd6690fdd01af
   nokogiri (1.19.4-arm-linux-gnu) sha256=a301313e38bb065d68239e79734bcd6f56fb6efaacebde29e9abf2a4735340ca
