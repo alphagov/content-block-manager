@@ -13,6 +13,8 @@
 //= require components/array-component
 //= require components/govspeak-editor
 
+//= require content-block-picker/dist/content-block-picker.umd
+
 //= require ./modules/copy-embed-code
 //= require ./modules/ga4-form-setup
 //= require ./modules/unsaved-changes-prompt
