@@ -72,14 +72,15 @@ RSpec.describe "V2 time period editions", type: :request do
         }
       end
 
-      it "creates a new time period edition and redirects to the time period edition page with a success message" do
+      it "creates a new time period edition and redirects to the date range page" do
         expect {
           post v2_time_period_editions_path, params: valid_params
         }.to change(V2::TimePeriodEdition, :count).by(1)
 
-        expect(response).to redirect_to(v2_time_period_edition_path(V2::TimePeriodEdition.last.id))
+        expected_created_edition = V2::TimePeriodEdition.last
+
+        expect(response).to redirect_to(edit_v2_document_time_period_date_range_path(expected_created_edition, expected_created_edition.document))
         follow_redirect!
-        expect(response.body).to include(I18n.t("block/time_period_edition.create.success"))
       end
     end
 
@@ -155,7 +156,7 @@ RSpec.describe "V2 time period editions", type: :request do
 
       expect(response).to redirect_to(v2_time_period_edition_path(existing_edition.id))
       follow_redirect!
-      expect(response.body).to include(I18n.t("block/time_period_edition.update.success"))
+      expect(response.body).to include(I18n.t("v2/time_period_edition.update.success"))
     end
 
     it "re-renders the edit form with errors when invalid parameters are provided" do
