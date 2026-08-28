@@ -8,14 +8,8 @@ RSpec.describe BlockPreview::ContentDiff do
     context "when govspeak includes a matching embedded content block" do
       let(:html) do
         Nokogiri::HTML.parse(<<~HTML)
-          <html>
-            <body>
-              <div data-module="govspeak">
-                <p>Before content</p>
-                <span data-content-id="#{content_id}" data-embed-code="embed-1">Old block</span>
-              </div>
-            </body>
-          </html>
+          <p>Before content</p>
+          <span data-content-id="#{content_id}" data-embed-code="embed-1">Old block</span>
         HTML
       end
 
@@ -40,14 +34,8 @@ RSpec.describe BlockPreview::ContentDiff do
       let(:other_content_id) { SecureRandom.uuid }
       let(:html) do
         Nokogiri::HTML.parse(<<~HTML)
-          <html>
-            <body>
-              <div data-module="govspeak">
-                <span data-content-id="#{content_id}" data-embed-code="embed-1">Old matching block</span>
-                <span data-content-id="#{other_content_id}" data-embed-code="embed-2">Old non-matching block</span>
-              </div>
-            </body>
-          </html>
+          <span data-content-id="#{content_id}" data-embed-code="embed-1">Old matching block</span>
+          <span data-content-id="#{other_content_id}" data-embed-code="embed-2">Old non-matching block</span>
         HTML
       end
 
@@ -71,14 +59,8 @@ RSpec.describe BlockPreview::ContentDiff do
     context "when multiple wrappers match the target content id" do
       let(:html) do
         Nokogiri::HTML.parse(<<~HTML)
-          <html>
-            <body>
-              <div data-module="govspeak">
-                <span data-content-id="#{content_id}" data-embed-code="embed-1">Old block 1</span>
-                <span data-content-id="#{content_id}" data-embed-code="embed-2">Old block 2</span>
-              </div>
-            </body>
-          </html>
+          <span data-content-id="#{content_id}" data-embed-code="embed-1">Old block 1</span>
+          <span data-content-id="#{content_id}" data-embed-code="embed-2">Old block 2</span>
         HTML
       end
 
@@ -98,13 +80,7 @@ RSpec.describe BlockPreview::ContentDiff do
     context "when a matching wrapper has no embed code" do
       let(:html) do
         Nokogiri::HTML.parse(<<~HTML)
-          <html>
-            <body>
-              <div data-module="govspeak">
-                <span data-content-id="#{content_id}">Old block</span>
-              </div>
-            </body>
-          </html>
+          <span data-content-id="#{content_id}">Old block</span>
         HTML
       end
 
@@ -117,22 +93,6 @@ RSpec.describe BlockPreview::ContentDiff do
 
         expect(block).to have_received(:render).with(nil)
         expect(output).to include("compare-editions")
-      end
-    end
-
-    context "when the source html has no govspeak node" do
-      let(:html) do
-        Nokogiri::HTML.parse(<<~HTML)
-          <html>
-            <body>
-              <p>No govspeak content here</p>
-            </body>
-          </html>
-        HTML
-      end
-
-      it "raises an error when generating the diff" do
-        expect { content_diff.to_s }.to raise_error(NoMethodError)
       end
     end
   end

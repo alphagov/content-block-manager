@@ -3,31 +3,29 @@
 <% content_for :title, @preview_content.title %>
 <% content_for :title_margin_bottom, 1 %>
 
-<% content_for :head do %>
-  <%= javascript_include_tag "host-content-iframe" %>
-<% end %>
-
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds govuk-body govuk-!-margin-bottom-0">
     <%= render(BlockPreview::PreviewDetailsComponent.new(
-          block: @block,
-          preview_content: @preview_content)) %>
+      block: @block,
+      preview_content: @preview_content)) %>
   </div>
 </div>
 <hr class="govuk-section-break govuk-!-margin-bottom-8 govuk-section-break--visible">
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-    <% if Flipflop.enabled?(:show_snippets) %>
-      <%= render BlockPreview::TabsComponent.new(
-        current_tab: @current_tab,
-        snippet_count: @snippets.count,
-        block: @block,
-        preview_content: @preview_content,
-      ) %>
-    <% end %>
+    <%= render BlockPreview::TabsComponent.new(
+      current_tab: @current_tab,
+      snippet_count: @snippets.count,
+      block: @block,
+      preview_content: @preview_content,
+    ) %>
 
-    <%= turbo_frame_tag "preview_frame_#{@block.id}" do %>
-      <%= render partial: "iframe" %>
-    <% end %>
+    <div class="result-wrapper">
+      <% @snippets.each do |snippet| %>
+        <div class="result govspeak compare-editions">
+          <%= snippet.to_html.html_safe %>
+        </div>
+      <% end %>
+    </div>
   </div>
 </div>

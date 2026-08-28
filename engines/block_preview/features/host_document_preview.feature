@@ -4,6 +4,7 @@ Feature: Host document preview
     And the organisation "Ministry of Example" exists
     And a pension content block has been created
     And dependent content exists for a content block
+    And the show_snippets feature flag is not turned on
 
   @javascript
   Scenario: GDS editor can preview a host document
