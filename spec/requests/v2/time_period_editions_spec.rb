@@ -77,7 +77,9 @@ RSpec.describe "V2 time period editions", type: :request do
           post v2_time_period_editions_path, params: valid_params
         }.to change(V2::TimePeriodEdition, :count).by(1)
 
-        expect(response).to redirect_to(v2_time_period_edition_path(V2::TimePeriodEdition.last.id))
+        expected_created_edition = V2::TimePeriodEdition.last
+
+        expect(response).to redirect_to(edit_v2_document_time_period_date_range_path(expected_created_edition.document, expected_created_edition))
         follow_redirect!
         expect(response.body).to include(I18n.t("v2/time_period_edition.create.success"))
       end
