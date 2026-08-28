@@ -47,7 +47,7 @@ RSpec.describe DetailsValidator do
       it { is_expected.to_not be_valid }
 
       it "adds an error to the amount field" do
-        expect(errors[:details_rates_amount]).to include("Invalid Amount")
+        expect(errors[:details_rates_amount]).to include("Enter an amount in the correct format")
       end
     end
 
@@ -57,7 +57,7 @@ RSpec.describe DetailsValidator do
       it { is_expected.to_not be_valid }
 
       it "adds an error to the amount field" do
-        expect(errors[:details_rates_amount]).to include("Amount cannot be blank")
+        expect(errors[:details_rates_amount]).to include("Enter an amount")
       end
     end
 
@@ -67,7 +67,7 @@ RSpec.describe DetailsValidator do
       it { is_expected.to_not be_valid }
 
       it "adds an error to the amount field" do
-        expect(errors[:details_rates_frequency]).to include("Frequency cannot be blank")
+        expect(errors[:details_rates_frequency]).to include("Enter a frequency")
       end
     end
   end

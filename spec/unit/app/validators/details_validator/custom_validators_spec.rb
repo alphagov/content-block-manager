@@ -81,7 +81,7 @@ RSpec.describe DetailsValidator::CustomValidators do
       expect(edition).to have_error_for(:details_date_range_end)
                            .with_error_message_for(
                              type: "minimum",
-                             attribute: "End",
+                             attribute: "end",
                              minimum_date: "date range start",
                            )
     end

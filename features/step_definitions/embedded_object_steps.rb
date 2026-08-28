@@ -129,14 +129,16 @@ Then("I should see errors for the required {string} fields") do |object_type|
   schema = @schema.subschema(object_type.pluralize)
   required_fields = schema.body["required"]
   required_fields.each do |required_field|
-    assert_text "#{Edition.human_attribute_name("details_#{required_field}")} cannot be blank", minimum: 2
+    field = schema.field(required_field)
+    assert_text field.error_message("blank"), minimum: 2
   end
 end
 
 Then("I should see errors for the required nested {string} fields") do |nested_object_name|
   subschema = @schema.subschema(@object_type.pluralize)
   required_fields(subschema, nested_object_name).each do |required_field|
-    expect(page).to have_text("#{Edition.human_attribute_name("details_#{required_field}")} cannot be blank")
+    field = subschema.field(nested_object_name.pluralize).nested_field(required_field)
+    expect(page).to have_text(field.error_message("blank"))
   end
 end
 

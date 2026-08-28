@@ -333,7 +333,7 @@ RSpec.describe "Workflow", type: :request do
               }
 
           expect(response).to render_template("editions/workflow/edit_draft")
-          expect(page).to have_text(I18n.t("activerecord.errors.models.edition.blank", attribute: "Title"))
+          expect(page).to have_text(I18n.t("activerecord.errors.models.edition.blank", attribute_with_indefinite_article: "a title"))
         end
       end
     end
@@ -509,7 +509,7 @@ RSpec.describe "Workflow", type: :request do
                 },
               }
 
-          expect(page).to have_text(I18n.t("activerecord.errors.models.edition.blank", attribute: "Change note"))
+          expect(page).to have_text(I18n.t("activerecord.errors.models.edition.attributes.change_note.blank"))
         end
 
         it "shows an error if major_change is blank" do
