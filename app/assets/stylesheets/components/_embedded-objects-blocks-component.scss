@@ -8,7 +8,7 @@
 
   // stylelint-disable-next-line max-nesting-depth
   &__embed-code {
-    color: govuk-colour("dark-grey");
+    color: govuk-colour("black", $variant: "tint-25");
   }
 
   .embed-code-flash__wrapper {
