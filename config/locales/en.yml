@@ -49,6 +49,7 @@ en:
             lead_organisation_id:
               blank: "cannot be blank"
         v2/time_period_date_range:
+          format: "%{message}"
           attributes:
             start:
               blank: "Enter a start date"
@@ -435,7 +436,7 @@ en:
       hour: Hour
       minute: Minute
 
-  block/time_period_edition:
+  v2/time_period_edition:
     new:
       title: "Create time period"
       context: "Create content block"

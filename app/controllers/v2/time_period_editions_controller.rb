@@ -10,8 +10,9 @@ module V2
       @edition.build_document(block_type:)
 
       if @edition.save
-        redirect_to v2_time_period_edition_path(@edition.id),
-                    notice: I18n.t("block/time_period_edition.create.success")
+        redirect_to edit_v2_time_period_edition_time_period_date_range_path(
+          @edition,
+        )
       else
         render :new, status: :unprocessable_content
       end
@@ -29,7 +30,7 @@ module V2
 
       if @edition.save
         redirect_to v2_time_period_edition_path(@edition.id),
-                    notice: I18n.t("block/time_period_edition.update.success")
+                    notice: I18n.t("v2/time_period_edition.update.success")
       else
         render :edit, status: :unprocessable_content
       end

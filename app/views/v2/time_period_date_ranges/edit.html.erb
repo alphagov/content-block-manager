@@ -1,0 +1,18 @@
+<% content_for :title, "Edit time period block" %>
+<% content_for :back_link,
+   render("govuk_publishing_components/components/back_link", {
+     href: v2_time_period_edition_time_period_date_range_path(@edition),
+   }) %>
+
+ <% if @error_summary_errors %>
+  <%= render "govuk_publishing_components/components/error_summary", {
+    title: "There is a problem",
+    items: @error_summary_errors,
+  } %>
+<% end %>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <%= render "form" %>
+  </div>
+</div>
