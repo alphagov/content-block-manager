@@ -630,14 +630,14 @@ GEM
     opentelemetry-semantic_conventions (1.44.0)
       opentelemetry-api (~> 1.0)
     ostruct (0.6.3)
-    packwerk (3.3.0)
+    packwerk (3.3.1)
       activesupport (>= 6.0)
       ast
       benchmark
       better_html
       bundler
       constant_resolver (>= 0.3)
-      parallel (< 2)
+      parallel
       parser
       prism (>= 1.4.0)
       zeitwerk (>= 2.6.1)
@@ -1242,7 +1242,7 @@ CHECKSUMS
   opentelemetry-sdk (1.13.0) sha256=eea4ab625eb901ecfe1083049862d4853fd16d94029f3cdd16526c81332f0fff
   opentelemetry-semantic_conventions (1.44.0) sha256=b09b8793422f13b01c08f7a6f29b5f511f47f37bcdb57c0513465a0464168513
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
-  packwerk (3.3.0) sha256=5a23dfb161ce225dea02a7171dd038b21b77b7c685e37edd635cd75fb8b1a74f
+  packwerk (3.3.1) sha256=095d3c295ec52c21bd7fef393462d892cae2e3cbfa98e740fcd0ef5529afd3d2
   packwerk-extensions (0.3.0) sha256=538297909a396cb478c12c0c125f10c636415b8dac1c0229c81f3cbaeb97c55b
   parallel (1.28.0) sha256=33e6de1484baf2524792d178b0913fc8eb94c628d6cfe45599ad4458c638c970
   parser (3.3.12.0) sha256=21a6d7f755d5a24dfbdc6e6b772e4e879a52e7631a88bc5a3a134606052c9828
