@@ -28,7 +28,43 @@ Note that the test content block (id: 18) is only visible to the E2E test user (
 
 ### Help! The E2Es have failed
 
-#### View logs and reproduce locally
+#### Reproduce locally against govuk-docker
+
+You can run the GOV.UK e2e Content Block Manager journey entirely against your
+local [govuk-docker][7] stack, seeding the required three fixture records locally
+rather than debugging against a deployed environment.
+
+Requirements:
+
+- **local repos**: `govuk-docker` and `govuk-e2e-tests` must be checked out alongside this
+  repo (all under `~/govuk`)
+- **e2e test config**: adjust `govuk-e2e-tests/.env` to have:
+  - `PUBLISHING_DOMAIN=dev.gov.uk` - use the local stack
+  - `PUBLISHING_USE_HTTP=true` - use `http` rather than `https`
+- **govuk-docker**: the full CBM stack up must be running. You can run it in your preferred way or
+  else let the [main Makefile][cbm_makefile] bring it up with `govuk-docker up content-block-manager-full`
+
+Then, from this repo:
+
+```sh
+bin/govuk-e2e
+```
+
+This primes the fixtures via govuk-docker's make targets to: i) perform seeding,
+waiting for the collaborating apps to be ready, ii) reset the test block 18
+to its seeded starting state -- and then runs the Playwright spec.
+
+Arguments are passed through to Playwright, so to use the interactive UI run:
+
+```sh
+bin/govuk-e2e --ui
+```
+
+The infrastructure `make` targets it uses (`content-block-manager-seed-govuk-e2e`
+and `content-block-manager-reset-govuk-e2e`) live in govuk-docker and can also be
+run on their own. See [govuk-docker's Content Block Manager `Makefile`][cbm_makefile].
+
+#### View logs and reproduce against integration or production
 
 - go to the Argo **Workflows** (as distinct from Argo **CD**) at `https://argo-workflows.eks.{environment}.govuk.digital/workflows/apps/`
 - identify a failed `gov-e2e-tests` workflow node
@@ -156,3 +192,5 @@ If the issue was with the test fixtures or infrastructure:
 [4]: https://content-block-manager.integration.publishing.service.gov.uk/18
 [5]: https://whitehall-admin.integration.publishing.service.gov.uk/government/admin/standard-editions/1658299
 [6]: https://publisher.integration.publishing.service.gov.uk/editions/a3dc0cf7-00e4-4868-b0fd-2c33b4f47387
+[7]: https://github.com/alphagov/govuk-docker
+[cbm_makefile]: https://github.com/alphagov/govuk-docker/blob/main/projects/content-block-manager/Makefile
