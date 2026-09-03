@@ -761,12 +761,12 @@ concat-map@0.0.1:
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
   integrity sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
 
-content-block-picker@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/content-block-picker/-/content-block-picker-1.0.2.tgz#bee930bbfa29d5ac15f981bb48dbbeb9583457ce"
-  integrity sha512-1vsNxbQSD0T61fGBWWnqQ52a81rqe4MwbvAUYZraaWC2zPYe6j0ZOVt6spGO5anS9JOMWA8chutgjtdgIeeIuQ==
+content-block-picker@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/content-block-picker/-/content-block-picker-1.1.0.tgz#7f27d0636ff88c43f398c6f4452d5a1f6ef2a93a"
+  integrity sha512-sVMY7zdpXSWhJmwoHn8jL3/QAx2vGtsgdLlSGjMEfwo1d7lRNUuy4PUkTVAdqmUvi2LfRZ2Gbx7fv2I0Q84ZhA==
   dependencies:
-    dompurify "^3.4.13"
+    dompurify "^3.4.14"
     govuk-frontend "^6.4.0"
 
 content-disposition@^1.0.0:
@@ -980,7 +980,7 @@ domhandler@^5.0.2, domhandler@^5.0.3:
   dependencies:
     domelementtype "^2.3.0"
 
-dompurify@^3.4.13:
+dompurify@^3.4.14:
   version "3.4.14"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.4.14.tgz#a789edb2c7bcdb69a93713a34edb7e0a5245d8c9"
   integrity sha512-dVoH9z+MY+C9IilgGCk3YfFqjLi3fChm2OiKJMzh6axrJ5qwxqWaZamgmHrpv22CN/KdbZJuGEGgfQoL00LTdg==
