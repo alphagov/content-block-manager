@@ -35,7 +35,7 @@ RSpec.describe FactCheck::BlocksController, type: :feature do
 
       expect(page).to have_css ".govuk-heading-xl", text: block.title
       expect(page).to have_css ".govuk-caption-xl", text: block.block_type
-      expect(page).to have_css ".govuk-tag--pink", text: "In fact check"
+      expect(page).to have_css ".govuk-tag--magenta", text: "In fact check"
     end
 
     it "shows the list of host editions referencing the block" do
