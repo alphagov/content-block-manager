@@ -14,10 +14,12 @@ RSpec.describe FactCheck::NestedBlockDiffComponent, type: :component do
     allow(field).to receive(:nested_field).with("url").and_return(double(label: "URL", hidden?: false))
     allow(field).to receive(:nested_field).with("label").and_return(double(label: "Label", hidden?: false))
     allow(field).to receive(:nested_field).with("reviewed").and_return(double(label: "Reviewed", hidden?: true))
-    render_inline(component)
   end
 
   describe "when given flat items to render" do
+    before do
+      render_inline(component)
+    end
     it "should render a summary card with a row for each item passed in" do
       expect(page).to have_css(".gem-c-summary-card", count: 1) do |element|
         expect(element).to have_css(".govuk-summary-list__row", count: 3)
