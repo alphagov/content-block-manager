@@ -6,13 +6,15 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
   let(:user) { create(:user) }
   let(:schema) { double(:schema, subschemas: []) }
 
+  let(:fact_check_skipped) { nil }
+
   let(:edition) do
     build(:edition,
           :pension,
           change_note: nil,
           internal_change_note: nil,
           review_outcome: ReviewOutcome.new,
-          fact_check_outcome: FactCheckOutcome.new)
+          fact_check_outcome: FactCheckOutcome.new(skipped: fact_check_skipped))
   end
 
   let(:version) do
@@ -80,13 +82,9 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
     end
 
     context "and its edition indicates that the review was performed" do
-      before do
-        edition.fact_check_outcome.skipped = false
-      end
+      let(:fact_check_skipped) { false }
 
       it "shows the review outcome" do
-        render_inline component
-
         expect(page).to have_css(".timeline__review-outcome") do
           expect(page).to have_content("Fact check performed")
         end
@@ -94,13 +92,9 @@ RSpec.describe Document::Show::DocumentTimeline::TimelineItemComponent, type: :c
     end
 
     context "and its edition indicates that the review was skipped" do
-      before do
-        edition.fact_check_outcome.skipped = true
-      end
+      let(:fact_check_skipped) { true }
 
       it "shows the review outcome" do
-        render_inline component
-
         expect(page).to have_css(".timeline__review-outcome") do
           expect(page).to have_content("Fact check skipped")
         end
