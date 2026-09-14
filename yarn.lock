@@ -726,13 +726,13 @@ concat-map@0.0.1:
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
   integrity sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
 
-content-block-picker@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/content-block-picker/-/content-block-picker-1.1.0.tgz#7f27d0636ff88c43f398c6f4452d5a1f6ef2a93a"
-  integrity sha512-sVMY7zdpXSWhJmwoHn8jL3/QAx2vGtsgdLlSGjMEfwo1d7lRNUuy4PUkTVAdqmUvi2LfRZ2Gbx7fv2I0Q84ZhA==
+content-block-picker@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/content-block-picker/-/content-block-picker-2.0.0.tgz#e37822c45f37f045542cd894dcd4ecbf60c48824"
+  integrity sha512-P/2QeLRj1ITsat7jHptoUkzUAeXZTXPUNsqkaces6YzagqCHnhetFqVTf0FsYSDkyEsiQdmCHDzA/AsP6R20pg==
   dependencies:
     dompurify "^3.4.14"
-    govuk-frontend "^6.4.0"
+    govuk-frontend "^6.5.0"
 
 core-util-is@~1.0.0:
   version "1.0.3"
@@ -1620,10 +1620,10 @@ gopd@^1.0.1, gopd@^1.2.0:
   resolved "https://registry.yarnpkg.com/gopd/-/gopd-1.2.0.tgz#89f56b8217bdbc8802bd299df6d7f1081d7e51a1"
   integrity sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==
 
-govuk-frontend@^6.4.0:
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/govuk-frontend/-/govuk-frontend-6.4.0.tgz#bacd856aae0b27862b9636734eddcfa14b90b3ac"
-  integrity sha512-jU3oaVFXqK1yDVIdZs1YZ6JD7YDB4PFUHF3rFMWJye9ArImp42F9wCsFzzB1+udjuzGCryJGcHHbBQ5HY+8rqQ==
+govuk-frontend@^6.5.0:
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/govuk-frontend/-/govuk-frontend-6.5.1.tgz#fbd75bc07e5f550419c604310f98201741b2b4b6"
+  integrity sha512-myC7pDU9d7NqHa/oiDKe7k/ojCPMY4LjHpJkDncgQ3MgWeGUkySpz/gfdjRVvGaER6GNoi0kDGSgSXMa1he0xg==
 
 graceful-fs@^4.2.4:
   version "4.2.11"

@@ -46,6 +46,6 @@
     "js-yaml": "^5.2.1"
   },
   "dependencies": {
-    "content-block-picker": "^1.1.0"
+    "content-block-picker": "^2.0.0"
   }
 }
