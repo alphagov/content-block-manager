@@ -19,7 +19,6 @@
 
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
-    <!-- Content Block Editor Section -->
     <section class="govuk-!-margin-bottom-9">
       <h2 class="govuk-heading-l">Interactive Demo</h2>
 
@@ -35,39 +34,19 @@
       <textarea
         id="demo-textarea"
         rows="12"
-        class="my-cbp govuk-textarea"
-        data-module="content-block-highlight"
-        data-cbp-insert-block-button="insert-content-block-button"><%= @block_picker_demo_initial_content %></textarea>
+        class="my-cbp govuk-textarea"><%= @block_picker_demo_initial_content %></textarea>
     </section>
   </div>
 </div>
 
 <script>
-    document.addEventListener('turbo:load', function() {
-    // Wait for the ContentBlockPicker library to load
-    // The UMD module exports to window['content-block-picker'].ContentBlockPicker
-    if (typeof window['content-block-picker'] !== 'undefined' && window['content-block-picker'].ContentBlockPicker) {
-      initializeEditor();
-    } else {
-      // If not loaded yet, wait a bit and try again
-      setTimeout(function() {
-        if (typeof window['content-block-picker'] !== 'undefined' && window['content-block-picker'].ContentBlockPicker) {
-          initializeEditor();
-        } else {
-          console.error('ContentBlockPicker library failed to load');
-          console.log('Available globals:', Object.keys(window).filter(k => k.includes('content')));
-        }
-      }, 100);
-    }
-  });
+  window.addEventListener("DOMContentLoaded", function() {
+    const ContentBlockPicker = window['content-block-picker'].ContentBlockPicker;
 
-  function initializeEditor() {
-    const textarea = document.querySelector(".my-cbp");
-    if (textarea) {
-      const ContentBlockPicker = window['content-block-picker'].ContentBlockPicker;
-      new ContentBlockPicker(textarea, {
-        baseUrl: window.location.origin + "/api/",
-      });
-    }
-  }
+    const baseUrl = window.location.origin + "/api/";
+    const textarea = document.getElementById("demo-textarea");
+    const insertButton = document.getElementById("insert-content-block-button");
+
+    new ContentBlockPicker({ baseUrl, textarea, insertButton });
+  });
 </script>
