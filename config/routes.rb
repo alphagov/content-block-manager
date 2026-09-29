@@ -60,7 +60,7 @@ Rails.application.routes.draw do
                path: "time-period-date-range"
     end
 
-    resources :documents, only: [:index]
+    resources :documents, only: %i[index show]
   end
 
   resources :editions, only: %i[new create destroy], path_names: { new: ":block_type/new" } do
