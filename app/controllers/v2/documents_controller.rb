@@ -10,6 +10,7 @@ module V2
 
         begin
           @documents = @filter.call
+          @error_summary_errors = [{ text: flash[:error] }] if flash[:error]
           render :index
         rescue V2::Document::DocumentFilter::InvalidFiltersError => e
           @documents = V2::Document::DocumentFilter.new({}).call
@@ -20,6 +21,16 @@ module V2
       else
         redirect_to v2_documents_path(default_filters)
       end
+    end
+
+    def show
+      @document = Document.find(params[:id])
+      @edition = @document.most_recent_edition
+
+      render :show
+    rescue ActiveRecord::RecordNotFound
+      redirect_to v2_documents_path(default_filters),
+                  flash: { error: I18n.t("v2.document.show.errors.document_not_found", id: params[:id]) }
     end
 
   private
