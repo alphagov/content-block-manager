@@ -1,0 +1,16 @@
+<% content_for :page_full_width, true %>
+<% content_for :page_title, @document.most_recent_edition.title %>
+<% content_for :back_link do %>
+  <%= render "govuk_publishing_components/components/back_link", {
+    href: v2_documents_path,
+  } %>
+<% end %>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-three-quarters govuk-!-margin-bottom-5">
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">
+      <span class="govuk-caption-xl"><%= @document.block_type.humanize %></span>
+      <%= @edition.title %>
+    </h1>
+  </div>
+</div>
