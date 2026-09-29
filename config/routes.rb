@@ -46,7 +46,11 @@ Rails.application.routes.draw do
   end
 
   namespace :v2 do
-    resources :time_period_editions, only: %i[new create show edit update] do
+    concern :reviewable do
+      resources :pre_publication_reviews, path: "pre-publication-reviews", only: %i[new create]
+    end
+
+    resources :time_period_editions, only: %i[new create show edit update], concerns: :reviewable do
       resource :time_period_date_range,
                only: %i[edit update],
                path: "time-period-date-range"
