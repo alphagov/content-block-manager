@@ -13,7 +13,8 @@ Feature: Create Time Period Edition
     And I continue to the date range page
     And I fill the date range details correctly
     And I save and continue
-    Then I see that the Edition was created successfully
+    Then I see the pre publication review page
+    And I see that the Edition was created successfully
 
   Scenario: Editor is informed when creating a new Time Period Edition incorrectly
     When I fill the Time Period Edition details incorrectly
