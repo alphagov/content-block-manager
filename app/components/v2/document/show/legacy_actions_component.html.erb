@@ -1,0 +1,23 @@
+<ul class="actions govuk-list govuk-!-text-align-centre">
+  <li>
+    <% if finalised_state? %>
+      <%= render "govuk_publishing_components/components/button", {
+        text: "Edit #{@document.block_type.humanize.downcase}",
+        href: "new edition for document - not implemented",
+      } %>
+    <% else %>
+      <%= render "govuk_publishing_components/components/button", {
+        text: draft? ? I18n.t("v2.document.show.buttons.finalised_in_draft") : I18n.t("v2.document.show.buttons.finalised_not_in_draft"),
+        href: edit_v2_time_period_edition_path(@edition),
+        secondary_solid: draft? ? false : true,
+        inline_layout: false,
+      } %>
+    <% end %>
+  </li>
+
+  <% if state != "published" && @document.has_published_edition? %>
+    <li class="govuk-!-static-margin-top-3">
+      <%= link_to(I18n.t("v2.document.show.links.published_edition"), "go to published edition - not implemented", class: "govuk-link") %>
+    </li>
+  <% end %>
+</ul>

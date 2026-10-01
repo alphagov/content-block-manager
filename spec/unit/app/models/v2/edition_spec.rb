@@ -78,7 +78,7 @@ RSpec.describe V2::Edition, type: :model do
     describe "state enum validation" do
       it do
         is_expected.to define_enum_for(:state)
-          .with_values(draft: "draft", published: "published")
+          .with_values(draft: "draft", published: "published", scheduled: "scheduled")
           .backed_by_column_of_type(:string)
       end
     end
