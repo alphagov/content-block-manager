@@ -23,6 +23,9 @@ RSpec.configure do |config|
     config.pattern = "{spec,engines/*/spec}/**/*_spec.rb"
   end
 
+  # This allows you to run only failures with --only-failures
+  config.example_status_persistence_file_path = "spec/examples.txt"
+
   config.expose_dsl_globally = false
   config.infer_spec_type_from_file_location!
 

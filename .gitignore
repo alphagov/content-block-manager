@@ -53,5 +53,8 @@ node_modules
 # test coverage reports
 /coverage
 
+# rspec status persistence
+/spec/examples.txt
+
 # Prebuilt assets
 /public
