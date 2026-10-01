@@ -6,7 +6,7 @@ module V2
 
     def update
       if @edition.update(edition_params)
-        redirect_to v2_time_period_edition_path(@edition.id),
+        redirect_to v2_time_period_edition_review_path(@edition),
                     notice: I18n.t("v2.time_period_edition.create.success")
       else
         @error_summary_errors = @edition.errors.map do |error|
