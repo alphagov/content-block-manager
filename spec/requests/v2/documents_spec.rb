@@ -105,6 +105,8 @@ RSpec.describe "V2 documents", type: :request do
         expect(response).to render_template("v2/documents/show")
         expect(response.body).to include("British Summer Time 2026")
         expect(response.body).to include("Time period")
+        expect(response.body).to include("Draft")
+        expect(response.body).to include("Complete draft")
       end
     end
 

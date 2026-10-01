@@ -76,6 +76,10 @@ module V2
       editions.count == 1
     end
 
+    def has_published_edition?
+      editions.published.any?
+    end
+
   private
 
     def generate_content_id

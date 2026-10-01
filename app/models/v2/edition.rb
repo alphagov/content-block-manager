@@ -10,7 +10,7 @@ module V2
 
     before_validation :set_document_sluggable_string, on: :create
 
-    attribute enum :state, draft: "draft", published: "published", scheduled: "scheduled"
+    enum :state, draft: "draft", published: "published", scheduled: "scheduled"
 
     scope :most_recent_first, -> { order(created_at: :desc) }
 
@@ -22,6 +22,16 @@ module V2
 
     def publish
       update(state: :published)
+    end
+
+    # Below methods are temporary until workflow/state is properly implemented, to allow for testing of the views
+    class << self
+      def published
+        %w[placeholder placeholder]
+      end
+      def finalised_states
+        %i[published superseded deleted]
+      end
     end
 
   private
