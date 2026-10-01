@@ -10,6 +10,8 @@ module V2
 
     before_validation :set_document_sluggable_string, on: :create
 
+    enum :state, draft: "draft", published: "published"
+
     scope :most_recent_first, -> { order(created_at: :desc) }
 
     # Abstract method to be implemented by subclasses
