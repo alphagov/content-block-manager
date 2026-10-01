@@ -12,5 +12,21 @@
       <span class="govuk-caption-xl"><%= @document.block_type.humanize %></span>
       <%= @edition.title %>
     </h1>
+
+    <%=
+      render(
+        Shared::DocumentStatusTagComponent.new(
+          state: @edition.state,
+          ),
+        )
+    %>
+  </div>
+
+  <div class="govuk-grid-column-one-quarter content-block-manager-header--column-right">
+    <%= render(
+          V2::Document::Show::LegacyActionsComponent.new(
+            document: @document,
+            ),
+          ) %>
   </div>
 </div>
