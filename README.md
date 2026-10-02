@@ -91,6 +91,15 @@ within the `./govuk-docker` directory.
 # run all the test suites
 govuk-docker-run bundle exec rake
 ```
+This app has [RSpec Status Persistence](https://rspec.info/features/3-12/rspec-core/command-line/only-failures/) enabled, which allows for the use of RSpec's `only-failures` and `next-failure` features.  
+
+```
+# run all tests which failed in the previous run
+govuk-docker-run bundle exec rspec --only-failures
+
+# cycle through tests which failed on the previous run one at a time
+govuk-docker-run bundle exec rspec --next-failure
+```
 
 Javascript unit tests can also be run separately:
 
