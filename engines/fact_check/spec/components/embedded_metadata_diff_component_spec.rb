@@ -30,11 +30,11 @@ RSpec.describe FactCheck::EmbeddedMetadataDiffComponent, type: :component do
 
         diff_blocks = page.find_css(".compare-editions")
 
-        expect(diff_blocks[0]).to have_css(".diff del", text: "some title")
-        expect(diff_blocks[0]).to have_css(".diff ins", text: "some new title")
+        expect(diff_blocks[0]).to have_css(".diff.del", text: "some title")
+        expect(diff_blocks[0]).to have_css(".diff.ins", text: "some new title")
 
-        expect(diff_blocks[1]).to have_css(".diff del", text: "a day")
-        expect(diff_blocks[1]).to have_css(".diff ins", text: "a week")
+        expect(diff_blocks[1]).to have_css(".diff.del", text: "a day")
+        expect(diff_blocks[1]).to have_css(".diff.ins", text: "a week")
       end
     end
 

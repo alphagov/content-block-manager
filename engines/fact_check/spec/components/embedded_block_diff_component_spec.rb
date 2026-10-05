@@ -55,8 +55,8 @@ RSpec.describe FactCheck::EmbeddedBlockDiffComponent, type: :component do
       let(:items_published) { { "amount" => "1.234" } }
 
       it "should render the diff between the two editions" do
-        expect(page).to have_summary_row.with_key("Amount").with_css(".compare-editions .diff del", text: "£1.234")
-        expect(page).to have_summary_row.with_key("Amount").with_css(".compare-editions .diff ins", text: "£12.34")
+        expect(page).to have_summary_row.with_key("Amount").with_css(".compare-editions .diff.del", text: "£1.234")
+        expect(page).to have_summary_row.with_key("Amount").with_css(".compare-editions .diff.ins", text: "£12.34")
       end
     end
 
@@ -142,32 +142,62 @@ RSpec.describe FactCheck::EmbeddedBlockDiffComponent, type: :component do
 
       it "should render the values nested within the card" do
         expect(page).to have_css(".govuk-summary-card__content") do |summary_card_content|
+          # binding.pry
           expect(summary_card_content).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Rate 1/) do |rate_details|
-            expect(rate_details).to have_summary_row.with_key("Name").with_value("Personal allowance")
-            expect(rate_details).to have_summary_row.with_key("Value").with_value("0%")
+            expect(rate_details).to have_summary_row.with_key("Name") do |row|
+              expect row.to have_css(".visually-hidden", text: "Added content")
+              expect row.to have_content "Added content Personal allowance"
+            end
+
+            expect(rate_details).to have_summary_row.with_key("Value") do |row|
+              expect row.to have_css(".visually-hidden", text: "Added content")
+              expect row.to have_content "Added content 0%"
+            end
 
             expect(rate_details).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Band 1/) do |band_details|
-              expect(band_details).to have_summary_row.with_key("Name").with_value("Personal allowance band")
+              expect(band_details).to have_summary_row.with_key("Name") do |row|
+                expect row.to have_css(".visually-hidden", text: "Added content")
+                expect row.to have_content "Added content Personal allowance band"
+              end
 
               expect(band_details).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Upper threshold/) do |upper_threshold_details|
-                expect(upper_threshold_details).to have_summary_row.with_key("Value").with_value("£12,570")
+                expect(upper_threshold_details).to have_summary_row.with_key("Value") do |row|
+                  expect row.to have_css(".visually-hidden", text: "Added content")
+                  expect row.to have_content "Added content £12,570"
+                end
               end
             end
           end
 
           expect(summary_card_content).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Rate 2/) do |rate_details|
-            expect(rate_details).to have_summary_row.with_key("Name").with_value("Basic rate")
-            expect(rate_details).to have_summary_row.with_key("Value").with_value("20%")
+            expect(rate_details).to have_summary_row.with_key("Name") do |row|
+              expect row.to have_css(".visually-hidden", text: "Added content")
+              expect row.to have_content "Added content Basic rate"
+            end
+
+            expect(rate_details).to have_summary_row.with_key("Value") do |row|
+              expect row.to have_css(".visually-hidden", text: "Added content")
+              expect row.to have_content "Added content 20%"
+            end
 
             expect(rate_details).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Band 1/) do |band_details|
-              expect(band_details).to have_summary_row.with_key("Name").with_value("Basic rate band")
+              expect(band_details).to have_summary_row.with_key("Name") do |row|
+                expect row.to have_css(".visually-hidden", text: "Added content")
+                expect row.to have_content "Added content Basic rate band"
+              end
 
               expect(band_details).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Lower threshold/) do |lower_threshold_details|
-                expect(lower_threshold_details).to have_summary_row.with_key("Value").with_value("£12,571")
+                expect(lower_threshold_details).to have_summary_row.with_key("Value") do |row|
+                  expect row.to have_css(".visually-hidden", text: "Added content")
+                  expect row.to have_content "Added content £12,571"
+                end
               end
 
               expect(band_details).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Upper threshold/) do |upper_threshold_details|
-                expect(upper_threshold_details).to have_summary_row.with_key("Value").with_value("£50,270")
+                expect(upper_threshold_details).to have_summary_row.with_key("Value") do |row|
+                  expect row.to have_css(".visually-hidden", text: "Added content")
+                  expect row.to have_content "Added content £50,270"
+                end
               end
             end
           end
@@ -213,9 +243,9 @@ RSpec.describe FactCheck::EmbeddedBlockDiffComponent, type: :component do
           expect(page).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Band 1/) do |band_details|
             expect(band_details).to have_css(".app-c-embedded-objects-blocks-component--nested", text: /Upper threshold/) do |upper_threshold_details|
               expect(upper_threshold_details).to have_summary_row.with_key("Value")
-                                                                 .with_css(".compare-editions .diff del", text: "£12,550")
+                                                                 .with_css(".compare-editions .diff.del", text: "£12,550")
               expect(upper_threshold_details).to have_summary_row.with_key("Value")
-                                                                 .with_css(".compare-editions .diff ins", text: "£12,570")
+                                                                 .with_css(".compare-editions .diff.ins", text: "£12,570")
             end
           end
         end
