@@ -42,12 +42,12 @@ RSpec.describe FactCheck::NestedBlocksWithSummaryDiffComponent, type: :component
   it "should render a summary diff of the whole block" do
     expect(page).to have_css(".app-c-embedded-objects-blocks-component", count: 1) do |full_component|
       expect(full_component).to have_css(".govuk-summary-card", count: 1) do |summary|
-        expect(summary).to have_css(".diff del", text: "123 fake street")
-        expect(summary).to have_css(".diff del", text: "Springfield")
+        expect(summary).to have_css(".diff.del", text: "123 fake street")
+        expect(summary).to have_css(".diff.del", text: "Springfield")
 
-        expect(summary).to have_css(".diff ins", text: "123 real street")
-        expect(summary).to have_css(".diff ins", text: "Springfield")
-        expect(summary).to have_css(".diff ins", text: "England")
+        expect(summary).to have_css(".diff.ins", text: "123 real street")
+        expect(summary).to have_css(".diff.ins", text: "Springfield")
+        expect(summary).to have_css(".diff.ins", text: "England")
       end
     end
   end

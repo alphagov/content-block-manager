@@ -61,9 +61,9 @@ Then("I should see {string} in the summary details") do |value|
 end
 
 def expect_removed_content_in_block(value, block = page)
-  expect(block).to have_css("[aria-label=\"removed content\"]", text: /#{value}/)
+  expect(block).to have_css(".diff.del", text: /#{value}/)
 end
 
 def expect_added_content_in_block(value, block = page)
-  expect(block).to have_css("[aria-label=\"added content\"]", text: /#{value}/)
+  expect(block).to have_css(".diff.ins", text: /#{value}/)
 end
