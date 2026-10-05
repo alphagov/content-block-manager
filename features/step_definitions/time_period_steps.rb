@@ -160,7 +160,7 @@ Then("I should see the edited time period values have been saved") do
 end
 
 Then("I should see the changed values of the new edition") do
-  find("span[data-ga4-expandable='']", text: "All date range attributes").click
+  find("summary[data-ga4-expandable='true']", text: "All date range attributes").click
   time_period.should_see_time_period_represented_clearly(details: time_period.changed_details, page: page)
 end
 

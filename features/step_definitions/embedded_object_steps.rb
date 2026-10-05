@@ -73,7 +73,7 @@ When("I view all the telephone attributes") do
   # navigate to "telephones" tab
   find("#tab_telephones").click
   # expand the list of telphone details
-  find("span[data-ga4-expandable='']", text: "All telephone attributes").click
+  find("summary[data-ga4-expandable='true']", text: "All telephone attributes").click
 end
 
 Then("I should see that the call charges fields have been changed") do
