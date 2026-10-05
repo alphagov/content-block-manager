@@ -412,7 +412,7 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.5)
-    nokodiff (1.0.0)
+    nokodiff (1.1.0)
       diff-lcs
     nokogiri (1.19.4-aarch64-linux-gnu)
       racc (~> 1.4)
@@ -1165,7 +1165,7 @@ CHECKSUMS
   net-smtp (0.5.1) sha256=ed96a0af63c524fceb4b29b0d352195c30d82dd916a42f03c62a3a70e5b70736
   netrc (0.11.0) sha256=de1ce33da8c99ab1d97871726cba75151113f117146becbe45aa85cb3dabee3f
   nio4r (2.7.5) sha256=6c90168e48fb5f8e768419c93abb94ba2b892a1d0602cb06eef16d8b7df1dca1
-  nokodiff (1.0.0) sha256=559529f9f8355279e6b721ba3c0b150dfcd3a2e004484de413dcfad2ef12a127
+  nokodiff (1.1.0) sha256=2b7061a5fb3d1c0b701bd34f57c670a00809a3431ef70a064924d98643f9ad40
   nokogiri (1.19.4-aarch64-linux-gnu) sha256=1269fb644a6de405057a53dd5c762b1209b43ca7424f839454d3dbc677c31a8f
   nokogiri (1.19.4-aarch64-linux-musl) sha256=35c65b9ce72b3bb03207bdbe7067915019dc18c1b9b59139684bd6690fdd01af
   nokogiri (1.19.4-arm-linux-gnu) sha256=a301313e38bb065d68239e79734bcd6f56fb6efaacebde29e9abf2a4735340ca
