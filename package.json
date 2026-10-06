@@ -43,7 +43,7 @@
     "ts-declaration-location": "^1.0.7"
   },
   "resolutions": {
-    "js-yaml": "^5.2.1"
+    "js-yaml": "^5.4.1"
   },
   "dependencies": {
     "content-block-picker": "^2.0.0"
