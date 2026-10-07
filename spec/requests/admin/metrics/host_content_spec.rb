@@ -98,6 +98,25 @@ RSpec.describe Admin::Metrics::HostContentController, type: :request do
           expect(response).to have_http_status(:ok)
           expect(titles).to eq(["Mongoose block", "Aardvark block", "Zebra block"])
         end
+
+        describe "when paginating one block per page" do
+          before { stub_const("Document::RollupMetricsQuery::PER_PAGE", 1) }
+
+          it "shows one page of blocks at a time" do
+            get admin_metrics_host_content_path(page: 2)
+
+            expect(titles).to eq(["Aardvark block"])
+          end
+
+          it "keeps the current order when moving to the next page" do
+            get admin_metrics_host_content_path(order: "lead_organisation_name")
+            expect(titles).to eq(["Aardvark block"])
+
+            get body.find(".govuk-pagination__next a")[:href]
+
+            expect(titles).to eq(["Mongoose block"])
+          end
+        end
       end
     end
 

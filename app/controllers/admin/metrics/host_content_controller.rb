@@ -6,6 +6,7 @@ class Admin::Metrics::HostContentController < ApplicationController
   end
 
   def index
-    @query = Document::RollupMetricsQuery.new(order: params[:order])
+    @query = Document::RollupMetricsQuery.new(order: params[:order], page: params[:page])
+    @documents = @query.documents
   end
 end

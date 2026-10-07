@@ -93,6 +93,28 @@ RSpec.describe Document::RollupMetricsQuery do
     it "falls back to the default order when the order isn't one we allow" do
       expect(titles("title; DROP TABLE documents")).to eq(%w[TimePeriod Pension Contact Unmeasured])
     end
+
+    describe "paging" do
+      before { stub_const("#{described_class}::PER_PAGE", 3) }
+
+      it "returns the first page of blocks by default" do
+        expect(described_class.new(order: nil).documents.map(&:title)).to eq(%w[TimePeriod Pension Contact])
+      end
+
+      it "returns the requested page of blocks" do
+        expect(described_class.new(order: nil, page: 2).documents.map(&:title)).to eq(%w[Unmeasured])
+      end
+
+      it "knows how many pages there are" do
+        expect(described_class.new(order: nil).documents.total_pages).to eq(2)
+      end
+    end
+  end
+
+  describe "PER_PAGE" do
+    it "shows 100 blocks per page" do
+      expect(described_class::PER_PAGE).to eq(100)
+    end
   end
 
   describe "#order" do

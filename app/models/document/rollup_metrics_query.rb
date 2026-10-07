@@ -1,5 +1,6 @@
 class Document::RollupMetricsQuery
   DEFAULT_ORDER = "-views".freeze
+  PER_PAGE = 100
 
   SORTABLE_COLUMNS = {
     "lead_organisation_name" => RollupMetric.arel_table[:lead_organisation_name],
@@ -12,17 +13,22 @@ class Document::RollupMetricsQuery
 
   attr_reader :order
 
-  def initialize(order:)
+  def initialize(order:, page: nil)
     @order = allowed?(order) ? order : DEFAULT_ORDER
+    @page = page
   end
 
   def documents
     Document.left_joins(:rollup_metric)
             .preload(:rollup_metric, :most_recent_edition)
             .order(sort_order, Document.arel_table[:id].asc)
+            .page(page)
+            .per(PER_PAGE)
   end
 
 private
+
+  attr_reader :page
 
   def allowed?(order)
     SORTABLE_COLUMNS.key?(order.to_s.delete_prefix("-"))
