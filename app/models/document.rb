@@ -22,6 +22,7 @@ class Document < ApplicationRecord
 
   has_many :domain_events, -> { order(created_at: :desc) }
   has_many :versions, through: :editions, source: :versions
+  has_one :rollup_metric, dependent: :destroy
 
   has_one :latest_published_edition,
           -> { published.most_recent_first }, class_name: "Edition"
