@@ -3,4 +3,6 @@
 <% content_for :context, "Metrics" %>
 <% content_for :title, "Host content metrics" %>
 
-<%= render Admin::Metrics::HostContentTableComponent.new(documents: @query.documents, order: @query.order) %>
+<%= render Admin::Metrics::HostContentTableComponent.new(documents: @documents, order: @query.order) %>
+
+<%= paginate(@documents, theme: "govuk_paginator") %>
