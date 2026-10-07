@@ -52,6 +52,7 @@ RSpec.describe HostContentItem do
     before do
       expect(Public::Services).to receive(:publishing_api).and_return(publishing_api_mock)
       allow(SignonUser).to receive(:with_uuids).and_return([editor])
+      allow(RollupMetric).to receive(:record!)
     end
 
     it "calls the Publishing API for the content which embeds the target" do
@@ -189,6 +190,59 @@ RSpec.describe HostContentItem do
         expect(result.rollup).to eq(
           HostContentItem::Items::Rollup.new(views: 0, locations: 0, instances: 0, organisations: 0),
         )
+      end
+
+      it "records a rollup of zeros for the block" do
+        described_class.for_document(document)
+
+        expect(RollupMetric).to have_received(:record!).with(
+          document:,
+          rollup: HostContentItem::Items::Rollup.new(views: 0, locations: 0, instances: 0, organisations: 0),
+        )
+      end
+    end
+
+    describe "recording the block's rollup metrics" do
+      before do
+        allow(publishing_api_mock).to receive(:get_host_content_for_content_id).and_return(fake_api_response)
+      end
+
+      it "records the rollup from the Publishing API response" do
+        described_class.for_document(document)
+
+        expect(RollupMetric).to have_received(:record!).with(document:, rollup:)
+      end
+
+      describe "when the rollup can't be recorded" do
+        let(:error) { ActiveRecord::ActiveRecordError.new("Something went wrong") }
+
+        before do
+          allow(RollupMetric).to receive(:record!).and_raise(error)
+          allow(GovukError).to receive(:notify)
+          allow(Rails.logger).to receive(:error)
+        end
+
+        it "returns the host content despite the error" do
+          result = described_class.for_document(document)
+
+          expect(result.rollup).to eq(rollup)
+          expect(result[0].title).to eq("foo")
+        end
+
+        it "logs the error" do
+          described_class.for_document(document)
+
+          expect(Rails.logger).to have_received(:error).with(/Something went wrong/)
+        end
+
+        it "reports the error to Sentry" do
+          described_class.for_document(document)
+
+          expect(GovukError).to have_received(:notify).with(
+            error,
+            extra: { content_id: target_content_id },
+          )
+        end
       end
     end
   end
