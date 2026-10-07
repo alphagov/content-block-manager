@@ -168,6 +168,29 @@ RSpec.describe HostContentItem do
 
       expect { described_class.for_document(document) }.to raise_error(GdsApi::HTTPErrorResponse)
     end
+
+    describe "when the Publishing API has no host content for the target" do
+      before do
+        allow(publishing_api_mock).to receive(:get_host_content_for_content_id)
+          .and_raise(GdsApi::HTTPNotFound.new(404))
+      end
+
+      it "returns no items" do
+        result = described_class.for_document(document)
+
+        expect(result.items).to eq([])
+        expect(result.total).to eq(0)
+        expect(result.total_pages).to eq(0)
+      end
+
+      it "returns a rollup of zeros" do
+        result = described_class.for_document(document)
+
+        expect(result.rollup).to eq(
+          HostContentItem::Items::Rollup.new(views: 0, locations: 0, instances: 0, organisations: 0),
+        )
+      end
+    end
   end
 
   describe "#last_edited_at" do
