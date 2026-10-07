@@ -19,6 +19,21 @@ RSpec.describe Admin::Metrics::HostContentController, type: :request do
 
         expect(Capybara.string(response.body)).to have_css(".gem-c-heading__context", text: "Metrics")
       end
+
+      it "lists every block that hasn't been deleted, including drafts" do
+        allow(Organisation).to receive(:all).and_return([])
+        create(:edition, :pension, :published, title: "New state pension")
+        create(:edition, :contact, :draft, title: "CMA press office")
+        create(:edition, :pension, :published, title: "Deleted pension").document.soft_delete
+
+        get admin_metrics_host_content_path
+
+        table = Capybara.string(response.body).find("[data-testid='host_content_metrics_table']")
+        expect(table).to have_css("tbody tr", count: 2)
+        expect(table).to have_text("New state pension")
+        expect(table).to have_text("CMA press office")
+        expect(table).not_to have_text("Deleted pension")
+      end
     end
 
     describe "when the user doesn't have the view_metrics permission" do

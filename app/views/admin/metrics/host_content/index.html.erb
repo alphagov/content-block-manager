@@ -2,3 +2,5 @@
 <% content_for :page_title, "Host content metrics" %>
 <% content_for :context, "Metrics" %>
 <% content_for :title, "Host content metrics" %>
+
+<%= render Admin::Metrics::HostContentTableComponent.new(documents: @documents) %>
