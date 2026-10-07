@@ -5,5 +5,7 @@ class Admin::Metrics::HostContentController < ApplicationController
     render "errors/forbidden", status: :forbidden
   end
 
-  def index; end
+  def index
+    @documents = Document.includes(:rollup_metric, :most_recent_edition).order(:id)
+  end
 end
