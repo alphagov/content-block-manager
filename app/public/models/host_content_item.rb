@@ -43,6 +43,12 @@ class HostContentItem < Data.define(
   private
 
     def host_content_for(document, page: nil, order: nil)
+      fetch_host_content(document, page:, order:).tap do |api_response|
+        record_rollup_metric(document, api_response)
+      end
+    end
+
+    def fetch_host_content(document, page:, order:)
       Public::Services.publishing_api.get_host_content_for_content_id(
         document.content_id,
         {
@@ -52,6 +58,13 @@ class HostContentItem < Data.define(
       ).parsed_content
     rescue GdsApi::HTTPNotFound
       NOT_FOUND_RESPONSE
+    end
+
+    def record_rollup_metric(document, api_response)
+      RollupMetric.record!(document:, rollup: rollup(api_response))
+    rescue StandardError => e
+      Rails.logger.error("Could not record rollup metrics for #{document.content_id}: #{e.message}")
+      GovukError.notify(e, extra: { content_id: document.content_id })
     end
 
     def rollup(api_response)
