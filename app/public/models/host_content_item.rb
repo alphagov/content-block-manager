@@ -14,15 +14,16 @@ class HostContentItem < Data.define(
 )
   DEFAULT_ORDER = "-unique_pageviews".freeze
 
+  NOT_FOUND_RESPONSE = {
+    "results" => [],
+    "total" => 0,
+    "total_pages" => 0,
+    "rollup" => { "views" => 0, "locations" => 0, "instances" => 0, "organisations" => 0 },
+  }.freeze
+
   class << self
     def for_document(document, page: nil, order: nil)
-      api_response = Public::Services.publishing_api.get_host_content_for_content_id(
-        document.content_id,
-        {
-          page:,
-          order: order || DEFAULT_ORDER,
-        }.compact,
-      ).parsed_content
+      api_response = host_content_for(document, page:, order:)
 
       editor_uuids = api_response["results"].map { |c| c["last_edited_by_editor_id"] }.compact.uniq
       editors = editor_uuids.present? ? SignonUser.with_uuids(editor_uuids) : []
@@ -37,21 +38,21 @@ class HostContentItem < Data.define(
         total_pages: api_response["total_pages"],
         rollup: rollup(api_response),
       )
-    rescue GdsApi::HTTPNotFound
-      HostContentItem::Items.new(
-        items: [],
-        total: 0,
-        total_pages: 0,
-        rollup: HostContentItem::Items::Rollup.new(
-          views: 0,
-          locations: 0,
-          instances: 0,
-          organisations: 0,
-        ),
-      )
     end
 
   private
+
+    def host_content_for(document, page: nil, order: nil)
+      Public::Services.publishing_api.get_host_content_for_content_id(
+        document.content_id,
+        {
+          page:,
+          order: order || DEFAULT_ORDER,
+        }.compact,
+      ).parsed_content
+    rescue GdsApi::HTTPNotFound
+      NOT_FOUND_RESPONSE
+    end
 
     def rollup(api_response)
       HostContentItem::Items::Rollup.new(
