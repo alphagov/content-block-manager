@@ -1,6 +1,10 @@
 class RollupMetric < ApplicationRecord
   belongs_to :document
 
+  def self.oldest_refreshed_at
+    joins(:document).minimum(:refreshed_at)
+  end
+
   def self.record!(document:, rollup:)
     find_or_initialize_by(document:).tap do |rollup_metric|
       rollup_metric.update!(

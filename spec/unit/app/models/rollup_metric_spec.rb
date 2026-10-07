@@ -79,4 +79,25 @@ RSpec.describe RollupMetric, type: :model do
       expect(rollup_metric.lead_organisation_name).to be_nil
     end
   end
+
+  describe ".oldest_refreshed_at" do
+    it "is when the least recently refreshed block's metrics were refreshed" do
+      create(:rollup_metric, refreshed_at: 2.hours.ago)
+      create(:rollup_metric, refreshed_at: 3.days.ago)
+      create(:rollup_metric, refreshed_at: 1.minute.ago)
+
+      expect(described_class.oldest_refreshed_at).to eq(3.days.ago)
+    end
+
+    it "ignores the metrics of deleted blocks, which are no longer refreshed" do
+      create(:rollup_metric, refreshed_at: 2.hours.ago)
+      create(:rollup_metric, refreshed_at: 3.days.ago).document.soft_delete
+
+      expect(described_class.oldest_refreshed_at).to eq(2.hours.ago)
+    end
+
+    it "is nil when no metrics have been recorded" do
+      expect(described_class.oldest_refreshed_at).to be_nil
+    end
+  end
 end

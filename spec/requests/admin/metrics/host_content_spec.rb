@@ -20,6 +20,25 @@ RSpec.describe Admin::Metrics::HostContentController, type: :request do
         expect(Capybara.string(response.body)).to have_css(".gem-c-heading__context", text: "Metrics")
       end
 
+      describe "how current the figures are" do
+        it "shows when the least recently refreshed metrics were refreshed" do
+          create(:rollup_metric, refreshed_at: Time.zone.local(2011, 11, 10, 2, 0))
+          create(:rollup_metric, refreshed_at: Time.zone.local(2011, 11, 11, 9, 30))
+
+          get admin_metrics_host_content_path
+
+          expect(Capybara.string(response.body))
+            .to have_css("[data-testid='host_content_metrics_last_updated']",
+                         text: "Data no older than: 10 November 2011 at 2:00am")
+        end
+
+        it "doesn't say when the data was last updated if no metrics have been recorded yet" do
+          get admin_metrics_host_content_path
+
+          expect(Capybara.string(response.body)).not_to have_text("Data no older than")
+        end
+      end
+
       it "lists every block that hasn't been deleted, including drafts" do
         allow(Organisation).to receive(:all).and_return([])
         create(:edition, :pension, :published, title: "New state pension")
