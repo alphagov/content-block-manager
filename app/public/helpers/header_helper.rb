@@ -12,6 +12,7 @@ module HeaderHelper
 
     [
       main_nav_item("Blocks", root_path),
+      metrics_nav_item(current_user),
       {
         text: "View website",
         href: ContentBlockManager.public_root,
@@ -20,6 +21,14 @@ module HeaderHelper
         text: "Switch app",
         href: Plek.external_url_for("signon"),
       },
-    ]
+    ].compact
+  end
+
+private
+
+  def metrics_nav_item(current_user)
+    return unless current_user.has_permission?(User::Permissions::VIEW_METRICS)
+
+    main_nav_item("Metrics", Rails.application.routes.url_helpers.admin_metrics_host_content_path)
   end
 end
