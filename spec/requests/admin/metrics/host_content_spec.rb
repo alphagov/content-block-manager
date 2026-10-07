@@ -34,6 +34,46 @@ RSpec.describe Admin::Metrics::HostContentController, type: :request do
         expect(table).to have_text("CMA press office")
         expect(table).not_to have_text("Deleted pension")
       end
+
+      describe "with blocks from two organisations" do
+        before do
+          allow(Organisation).to receive(:all).and_return([])
+          create(:edition, :pension, :published, title: "Zebra block").document.tap do |document|
+            create(:rollup_metric, document:, views: 1_000, lead_organisation_name: "Zebra Office")
+          end
+          create(:edition, :pension, :published, title: "Aardvark block").document.tap do |document|
+            create(:rollup_metric, document:, views: 10, lead_organisation_name: "Aardvark Agency")
+          end
+        end
+
+        def body
+          Capybara.string(response.body)
+        end
+
+        def titles
+          body.all("[data-testid='host_content_metrics_table'] tbody tr td:nth-child(2)")
+              .map { |cell| cell.text.strip }
+        end
+
+        it "sorts by views, highest first, by default" do
+          get admin_metrics_host_content_path
+
+          expect(titles).to eq(["Zebra block", "Aardvark block"])
+        end
+
+        it "sorts by organisation when asked to" do
+          get admin_metrics_host_content_path(order: "lead_organisation_name")
+
+          expect(titles).to eq(["Aardvark block", "Zebra block"])
+        end
+
+        it "ignores an order it doesn't allow" do
+          get admin_metrics_host_content_path(order: "title; DROP TABLE documents")
+
+          expect(response).to have_http_status(:ok)
+          expect(titles).to eq(["Zebra block", "Aardvark block"])
+        end
+      end
     end
 
     describe "when the user doesn't have the view_metrics permission" do

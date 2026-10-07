@@ -6,6 +6,6 @@ class Admin::Metrics::HostContentController < ApplicationController
   end
 
   def index
-    @documents = Document.includes(:rollup_metric, :most_recent_edition).order(:id)
+    @query = Document::RollupMetricsQuery.new(order: params[:order])
   end
 end
