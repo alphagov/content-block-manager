@@ -40,6 +40,10 @@ class HostContentItem < Data.define(
       )
     end
 
+    def rollup_for(document)
+      rollup(host_content_for(document))
+    end
+
   private
 
     def host_content_for(document, page: nil, order: nil)
