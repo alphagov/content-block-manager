@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Shared::HostEditionsTableComponent < ViewComponent::Base
+  include AbbreviatedNumberHelper
   TABLE_ID = "host_editions"
 
   def initialize(caption:, host_content_items:, edition:, current_page: nil, order: nil)
@@ -81,7 +82,7 @@ private
         text: content_item.instances,
       },
       {
-        text: content_item.unique_pageviews ? number_to_human(content_item.unique_pageviews, format: "%n%u", precision: 3, significant: true, units: { thousand: "k", million: "m", billion: "b" }) : 0,
+        text: content_item.unique_pageviews ? abbreviated_number(content_item.unique_pageviews) : 0,
       },
       {
         text: content_item.publishing_organisation.fetch("title", nil),
