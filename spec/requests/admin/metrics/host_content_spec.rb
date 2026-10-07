@@ -34,6 +34,71 @@ RSpec.describe Admin::Metrics::HostContentController, type: :request do
         expect(table).to have_text("CMA press office")
         expect(table).not_to have_text("Deleted pension")
       end
+
+      describe "ordering" do
+        before do
+          allow(Organisation).to receive(:all).and_return([])
+          {
+            "Mongoose block" => [1_000, "Mongoose Ministry"],
+            "Aardvark block" => [100, "Aardvark Agency"],
+            "Zebra block" => [10, "Zebra Office"],
+          }.each do |title, (views, lead_organisation_name)|
+            create(:edition, :pension, :published, title:).document.tap do |document|
+              create(:rollup_metric, document:, views:, lead_organisation_name:)
+            end
+          end
+        end
+
+        def body
+          Capybara.string(response.body)
+        end
+
+        def titles
+          body.all("[data-testid='host_content_metrics_table'] tbody tr td:nth-child(2)")
+              .map { |cell| cell.text.strip }
+        end
+
+        describe "ordering by views" do
+          it "sorts by views, highest first, by default" do
+            get admin_metrics_host_content_path
+
+            expect(titles).to eq(["Mongoose block", "Aardvark block", "Zebra block"])
+          end
+
+          it "sorts by views, highest first when requested" do
+            get admin_metrics_host_content_path(order: "-views")
+
+            expect(titles).to eq(["Mongoose block", "Aardvark block", "Zebra block"])
+          end
+
+          it "sorts by views, lowest first when requested" do
+            get admin_metrics_host_content_path(order: "views")
+
+            expect(titles).to eq(["Zebra block", "Aardvark block", "Mongoose block"])
+          end
+        end
+
+        describe "ordering by lead_organisation" do
+          it "sorts by organisation when asked to" do
+            get admin_metrics_host_content_path(order: "lead_organisation_name")
+
+            expect(titles).to eq(["Aardvark block", "Mongoose block", "Zebra block"])
+          end
+
+          it "sorts by organisation (desc) when requested" do
+            get admin_metrics_host_content_path(order: "-lead_organisation_name")
+
+            expect(titles).to eq(["Zebra block", "Mongoose block", "Aardvark block"])
+          end
+        end
+
+        it "ignores an order it doesn't allow and applies default order" do
+          get admin_metrics_host_content_path(order: "title; DROP TABLE documents")
+
+          expect(response).to have_http_status(:ok)
+          expect(titles).to eq(["Mongoose block", "Aardvark block", "Zebra block"])
+        end
+      end
     end
 
     describe "when the user doesn't have the view_metrics permission" do

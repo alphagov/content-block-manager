@@ -3,4 +3,4 @@
 <% content_for :context, "Metrics" %>
 <% content_for :title, "Host content metrics" %>
 
-<%= render Admin::Metrics::HostContentTableComponent.new(documents: @documents) %>
+<%= render Admin::Metrics::HostContentTableComponent.new(documents: @query.documents, order: @query.order) %>

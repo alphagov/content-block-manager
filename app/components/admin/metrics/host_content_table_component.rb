@@ -3,17 +3,48 @@ class Admin::Metrics::HostContentTableComponent < ViewComponent::Base
 
   PLACEHOLDER = "–".freeze
 
-  def initialize(documents:)
+  COLUMNS = [
+    { heading: "Organisation", sort_by: "lead_organisation_name" },
+    { heading: "Block" },
+    { heading: "Block type", sort_by: "block_type" },
+    { heading: "Embed code" },
+    { heading: "Locations", sort_by: "locations" },
+    { heading: "Instances", sort_by: "instances" },
+    { heading: "Views (30 days)", sort_by: "views" },
+    { heading: "Orgs", sort_by: "organisations" },
+  ].freeze
+
+  def initialize(documents:, order:)
     @documents = documents
+    @order = order
   end
 
 private
 
-  attr_reader :documents
+  attr_reader :documents, :order
 
   def head
-    ["Organisation", "Block", "Block type", "Embed code", "Locations", "Instances", "Views (30 days)", "Orgs"]
-      .map { |heading| { text: heading } }
+    COLUMNS.map do |column|
+      next { text: column[:heading] } unless column[:sort_by]
+
+      {
+        text: column[:heading],
+        href: sort_link(column[:sort_by]),
+        sort_direction: sort_direction(column[:sort_by]),
+      }
+    end
+  end
+
+  def sort_direction(column)
+    case order
+    when column then "ascending"
+    when "-#{column}" then "descending"
+    end
+  end
+
+  def sort_link(column)
+    column = "-#{column}" if sort_direction(column) == "ascending"
+    helpers.admin_metrics_host_content_path(order: column)
   end
 
   def rows

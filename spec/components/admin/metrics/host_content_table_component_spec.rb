@@ -31,9 +31,11 @@ RSpec.describe Admin::Metrics::HostContentTableComponent, type: :component do
     table.find("tbody tr", text: title).all("th, td").map { |cell| cell.text.strip }
   end
 
+  let(:order) { "-views" }
+
   before do
     allow(Organisation).to receive(:all).and_return([])
-    render_inline(described_class.new(documents:))
+    render_inline(described_class.new(documents:, order:))
   end
 
   it "shows a column for each metric" do
@@ -72,5 +74,52 @@ RSpec.describe Admin::Metrics::HostContentTableComponent, type: :component do
       "–",
       "–",
     ])
+  end
+
+  describe "sorting" do
+    def sort_link(heading)
+      table.find("thead th a", text: heading)
+    end
+
+    it "links each sortable column's heading to sort by it" do
+      {
+        "Organisation" => "lead_organisation_name",
+        "Block type" => "block_type",
+        "Locations" => "locations",
+        "Instances" => "instances",
+        "Views (30 days)" => "views",
+        "Orgs" => "organisations",
+      }.each do |heading, order|
+        expect(sort_link(heading)[:href]).to eq(admin_metrics_host_content_path(order:))
+      end
+    end
+
+    it "doesn't link the block and embed code headings" do
+      expect(table).not_to have_css("thead th a", exact_text: "Block")
+      expect(table).not_to have_css("thead th a", text: "Embed code")
+    end
+
+    it "shows that the table is sorted by views, descending" do
+      expect(table).to have_css(
+        ".govuk-table__header--active a.app-table__sort-link--descending",
+        text: "Views (30 days)",
+      )
+    end
+
+    describe "when sorted by organisation, ascending" do
+      let(:order) { "lead_organisation_name" }
+
+      it "shows that the table is sorted by organisation, ascending" do
+        expect(table).to have_css(
+          ".govuk-table__header--active a.app-table__sort-link--ascending",
+          text: "Organisation",
+        )
+      end
+
+      it "links the organisation heading to sort by organisation, descending" do
+        expect(sort_link("Organisation")[:href])
+          .to eq(admin_metrics_host_content_path(order: "-lead_organisation_name"))
+      end
+    end
   end
 end
