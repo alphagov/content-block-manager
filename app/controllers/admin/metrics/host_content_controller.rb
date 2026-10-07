@@ -8,5 +8,6 @@ class Admin::Metrics::HostContentController < ApplicationController
   def index
     @query = Document::RollupMetricsQuery.new(order: params[:order], page: params[:page])
     @documents = @query.documents
+    @oldest_refreshed_at = RollupMetric.oldest_refreshed_at
   end
 end
