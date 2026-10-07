@@ -13,13 +13,17 @@ Given("I am logged in as an E2E user") do
 end
 
 Given(/^I have the "(.*?)" permission$/) do |perm|
-  @user.permissions << perm
+  @user.permissions |= [perm]
   @user.save!
+
+  expect(@user.reload.permissions).to include(perm)
 end
 
 Given("I do not have the {string} permission") do |perm|
-  @user.permissions << @user.permissions - [perm]
+  @user.permissions -= [perm]
   @user.save!
+
+  expect(@user.reload.permissions).not_to include(perm)
 end
 
 Around("@use_real_sso") do |_scenario, block|
