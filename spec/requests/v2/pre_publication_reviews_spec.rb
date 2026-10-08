@@ -35,4 +35,49 @@ RSpec.describe "V2::PrePublicationReviews", type: :request do
       end
     end
   end
+
+  describe "POST /v2/time_period_editions/8/review" do
+    context "when the confirmation checkbox is checked" do
+      let(:valid_params) { { edition: { has_checked_content: "1" } } }
+
+      context "when publishing is successful" do
+        it "updates the state and redirects with a success notice" do
+          post v2_time_period_edition_review_path(time_period_edition_id: edition.id), params: valid_params
+
+          expect(edition.reload).to be_published
+          expect(response).to redirect_to(v2_documents_path)
+          expect(flash[:notice]).to eq(I18n.t("v2.edition.publish.success"))
+        end
+      end
+
+      context "when publishing fails" do
+        before do
+          allow_any_instance_of(V2::Edition).to receive(:update).and_return(false)
+        end
+
+        it "does not update the state and re-renders the review page" do
+          post v2_time_period_edition_review_path(time_period_edition_id: edition.id), params: valid_params
+
+          expect(edition.reload).to be_draft
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(response).to render_template("v2/pre_publication_reviews/new")
+        end
+      end
+    end
+
+    context "when the confirmation checkbox is NOT checked" do
+      it "does not publish the edition and re-renders with a validation error" do
+        post v2_time_period_edition_review_path(time_period_edition_id: edition.id)
+
+        expect(edition.reload).to be_draft
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response).to render_template("v2/pre_publication_reviews/new")
+
+        expect(response.body).to include("There is a problem")
+        expect(response.body).to include(
+          I18n.t("v2.edition.pre_publication_review.errors.confirm"),
+        )
+      end
+    end
+  end
 end

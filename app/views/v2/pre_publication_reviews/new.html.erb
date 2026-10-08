@@ -5,6 +5,15 @@
      href: edit_v2_time_period_edition_time_period_date_range_path(@edition),
    }) %>
 
+<% if @check_content_error_copy %>
+  <%= render "govuk_publishing_components/components/error_summary", {
+    title: "There is a problem",
+    items: [{
+      text: @check_content_error_copy,
+      href: "#edition_has_checked_content" }],
+  } %>
+<% end %>
+
 <div id="edition_<%= @edition.id %>">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
@@ -22,8 +31,8 @@
     <div class="govuk-grid-column-full">
      <%= form_with(
         model: @edition,
-        url: v2_time_period_edition_time_period_date_range_path(@edition),
-        method: @edition.persisted? ? :patch : :post,
+        url: v2_time_period_edition_review_path(@edition),
+        method: :post,
       ) do %>
 
     <div class="govuk-grid-row">

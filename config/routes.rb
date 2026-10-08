@@ -48,6 +48,7 @@ Rails.application.routes.draw do
   namespace :v2 do
     concern :reviewable do
       get :review, to: "pre_publication_reviews#new"
+      post :review, to: "pre_publication_reviews#create"
     end
 
     resources :time_period_editions, only: %i[new create show edit update], concerns: :reviewable do
