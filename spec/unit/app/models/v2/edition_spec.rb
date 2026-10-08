@@ -109,4 +109,13 @@ RSpec.describe V2::Edition, type: :model do
       expect(edition).to be_draft
     end
   end
+
+  describe "#publish" do
+    it "updates the state to published and saves the record" do
+      edition = create(:v2_time_period_edition, state: :draft)
+
+      expect { edition.publish }
+        .to change(edition, :state).from("draft").to("published")
+    end
+  end
 end
