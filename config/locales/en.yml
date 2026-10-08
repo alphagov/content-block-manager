@@ -451,3 +451,7 @@ en:
     edition:
       pre_publication_review:
         confirm: 'I confirm that the details I’ve put into the content block have been checked and are factually correct.'
+        errors:
+          confirm: Tick box to confirm details are correct
+      publish:
+        success: 'Edition was successfully published'
