@@ -50,9 +50,9 @@ RSpec.describe "V2::TimePeriodDateRange", type: :request do
         patch v2_time_period_edition_time_period_date_range_path(edition),
               params: valid_date_range_attributes
         expect(response).to redirect_to(
-          v2_time_period_edition_path(edition),
+          v2_time_period_edition_review_path(edition),
         )
-        expect(flash[:notice]).to eq(I18n.t("v2/time_period_edition.create.success"))
+        expect(flash[:notice]).to eq(I18n.t("v2.time_period_edition.create.success"))
       end
     end
 

@@ -30,7 +30,7 @@ module V2
 
       if @edition.save
         redirect_to v2_time_period_edition_path(@edition.id),
-                    notice: I18n.t("v2/time_period_edition.update.success")
+                    notice: I18n.t("v2.time_period_edition.update.success")
       else
         render :edit, status: :unprocessable_content
       end

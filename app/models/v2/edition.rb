@@ -10,12 +10,18 @@ module V2
 
     before_validation :set_document_sluggable_string, on: :create
 
+    enum :state, draft: "draft", published: "published"
+
     scope :most_recent_first, -> { order(created_at: :desc) }
 
     # Abstract method to be implemented by subclasses
     # Returns a hash representation of the edition's details
     def to_details
       raise NotImplementedError, "Subclasses must implement #to_details method"
+    end
+
+    def publish
+      update(state: :published)
     end
 
   private

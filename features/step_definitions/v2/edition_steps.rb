@@ -24,12 +24,12 @@ When("I fill the Time Period Edition details incorrectly") do
   )
 end
 
-Then("I see that the Edition was created successfully") do
-  expect(page).to have_content(I18n.t("v2/time_period_edition.create.success"))
+And("I see that the Edition was created successfully") do
+  expect(page).to have_content(I18n.t("v2.time_period_edition.create.success"))
 end
 
 Then("I see that the Edition was updated successfully") do
-  expect(page).to have_content(I18n.t("v2/time_period_edition.update.success"))
+  expect(page).to have_content(I18n.t("v2.time_period_edition.update.success"))
 end
 
 When("a Time Period Edition exists") do
@@ -45,9 +45,22 @@ When("a Time Period Edition exists") do
   puts "Created Time Period Edition with ID: #{@time_period_edition.id}"
 end
 
+And("a date range exists for that time period") do
+  FactoryBot.create(
+    :v2_time_period_date_range,
+    edition: @time_period_edition,
+    start: 1.month.ago,
+    end: 1.month.from_now,
+  )
+end
+
 Then("I see which Time Period Edition errors I need to correct") do
   expect(page).to have_content("Title cannot be blank")
   expect(page).to have_content("Lead organisation cannot be blank")
+end
+
+And("I see that the edition was published successfully") do
+  expect(page).to have_content(I18n.t("v2.edition.publish.success"))
 end
 
 def fill_in_edition_details(title:, description:, lead_organisation:, instructions:)

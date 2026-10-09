@@ -115,3 +115,11 @@ And("I continue to the date range page") do
                                edition,
                              ))
 end
+
+Then("I see the pre publication review page") do
+  edition = V2::TimePeriodEdition.last
+  expect(current_path).to eq(v2_time_period_edition_review_path(
+                               edition,
+                             ))
+  expect(page).to have_content("Review time period")
+end
