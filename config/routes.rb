@@ -23,6 +23,10 @@ Rails.application.routes.draw do
 
   namespace :admin do
     post "preview" => "preview#preview"
+
+    namespace :metrics do
+      get "host-content", to: "host_content#index", as: :host_content
+    end
   end
 
   root to: "documents#index", via: :get

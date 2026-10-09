@@ -52,6 +52,7 @@ RSpec.describe HostContentItem do
     before do
       expect(Public::Services).to receive(:publishing_api).and_return(publishing_api_mock)
       allow(SignonUser).to receive(:with_uuids).and_return([editor])
+      allow(RollupMetric).to receive(:record!)
     end
 
     it "calls the Publishing API for the content which embeds the target" do
@@ -167,6 +168,148 @@ RSpec.describe HostContentItem do
       )
 
       expect { described_class.for_document(document) }.to raise_error(GdsApi::HTTPErrorResponse)
+    end
+
+    describe "when the Publishing API has no host content for the target" do
+      before do
+        allow(publishing_api_mock).to receive(:get_host_content_for_content_id)
+          .and_raise(GdsApi::HTTPNotFound.new(404))
+      end
+
+      it "returns no items" do
+        result = described_class.for_document(document)
+
+        expect(result.items).to eq([])
+        expect(result.total).to eq(0)
+        expect(result.total_pages).to eq(0)
+      end
+
+      it "returns a rollup of zeros" do
+        result = described_class.for_document(document)
+
+        expect(result.rollup).to eq(
+          HostContentItem::Items::Rollup.new(views: 0, locations: 0, instances: 0, organisations: 0),
+        )
+      end
+
+      it "records a rollup of zeros for the block" do
+        described_class.for_document(document)
+
+        expect(RollupMetric).to have_received(:record!).with(
+          document:,
+          rollup: HostContentItem::Items::Rollup.new(views: 0, locations: 0, instances: 0, organisations: 0),
+        )
+      end
+    end
+
+    describe "recording the block's rollup metrics" do
+      before do
+        allow(publishing_api_mock).to receive(:get_host_content_for_content_id).and_return(fake_api_response)
+      end
+
+      it "records the rollup from the Publishing API response" do
+        described_class.for_document(document)
+
+        expect(RollupMetric).to have_received(:record!).with(document:, rollup:)
+      end
+
+      describe "when the rollup can't be recorded" do
+        let(:error) { ActiveRecord::ActiveRecordError.new("Something went wrong") }
+
+        before do
+          allow(RollupMetric).to receive(:record!).and_raise(error)
+          allow(GovukError).to receive(:notify)
+          allow(Rails.logger).to receive(:error)
+        end
+
+        it "returns the host content despite the error" do
+          result = described_class.for_document(document)
+
+          expect(result.rollup).to eq(rollup)
+          expect(result[0].title).to eq("foo")
+        end
+
+        it "logs the error" do
+          described_class.for_document(document)
+
+          expect(Rails.logger).to have_received(:error).with(/Something went wrong/)
+        end
+
+        it "reports the error to Sentry" do
+          described_class.for_document(document)
+
+          expect(GovukError).to have_received(:notify).with(
+            error,
+            extra: { content_id: target_content_id },
+          )
+        end
+      end
+    end
+  end
+
+  describe ".rollup_for" do
+    let(:target_content_id) { SecureRandom.uuid }
+    let(:document) { double("document", content_id: target_content_id) }
+    let(:rollup) do
+      HostContentItem::Items::Rollup.new(views: 98_731, locations: 7, instances: 20, organisations: 1)
+    end
+    let(:publishing_api_mock) { double("GdsApi::PublishingApi") }
+
+    let(:fake_api_response) do
+      GdsApi::Response.new(
+        double(
+          "http_response",
+          code: 200,
+          body: {
+            "content_id" => target_content_id,
+            "total" => 1,
+            "total_pages" => 1,
+            "rollup" => rollup.to_h,
+            "results" => [{ "title" => "foo", "last_edited_by_editor_id" => SecureRandom.uuid }],
+          }.to_json,
+        ),
+      )
+    end
+
+    before do
+      allow(Public::Services).to receive(:publishing_api).and_return(publishing_api_mock)
+      allow(publishing_api_mock).to receive(:get_host_content_for_content_id)
+        .with(target_content_id, { order: HostContentItem::DEFAULT_ORDER })
+        .and_return(fake_api_response)
+      allow(RollupMetric).to receive(:record!)
+      allow(SignonUser).to receive(:with_uuids)
+    end
+
+    it "returns the block's rollup" do
+      expect(described_class.rollup_for(document)).to eq(rollup)
+    end
+
+    it "records the block's rollup" do
+      described_class.rollup_for(document)
+
+      expect(RollupMetric).to have_received(:record!).with(document:, rollup:)
+    end
+
+    it "doesn't look up the host content's editors in Signon" do
+      described_class.rollup_for(document)
+
+      expect(SignonUser).not_to have_received(:with_uuids)
+    end
+
+    it "returns a rollup of zeros when the Publishing API has no host content for the block" do
+      allow(publishing_api_mock).to receive(:get_host_content_for_content_id)
+        .and_raise(GdsApi::HTTPNotFound.new(404))
+
+      expect(described_class.rollup_for(document)).to eq(
+        HostContentItem::Items::Rollup.new(views: 0, locations: 0, instances: 0, organisations: 0),
+      )
+    end
+
+    it "raises an error if the host content can't be loaded" do
+      allow(publishing_api_mock).to receive(:get_host_content_for_content_id)
+        .and_raise(GdsApi::HTTPErrorResponse.new(500, "An internal error message"))
+
+      expect { described_class.rollup_for(document) }.to raise_error(GdsApi::HTTPErrorResponse)
     end
   end
 

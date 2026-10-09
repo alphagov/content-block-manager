@@ -145,6 +145,26 @@ RSpec.describe "Documents", type: :request do
 
       expect(page).to have_text(document.title)
     end
+
+    it "records the block's rollup metrics" do
+      stub_publishing_api_has_embedded_content_for_any_content_id(
+        results: [],
+        total: 0,
+        order: HostContentItem::DEFAULT_ORDER,
+        rollup: { "views" => 98_731, "locations" => 7, "instances" => 20, "organisations" => 1 },
+      )
+
+      get document_path(document)
+
+      expect(document.reload.rollup_metric).to have_attributes(
+        views: 98_731,
+        locations: 7,
+        instances: 20,
+        organisations: 1,
+        lead_organisation_name: organisation.name,
+        refreshed_at: Time.current,
+      )
+    end
   end
 
   describe "#content_id" do
