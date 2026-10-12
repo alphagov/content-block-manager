@@ -36,12 +36,12 @@ class HostContentItem < Data.define(
         items:,
         total: api_response["total"],
         total_pages: api_response["total_pages"],
-        rollup: rollup(api_response),
+        rollup: build_rollup_from_api_response(api_response),
       )
     end
 
     def rollup_for(document)
-      rollup(host_content_for(document))
+      build_rollup_from_api_response(host_content_for(document))
     end
 
   private
@@ -65,13 +65,13 @@ class HostContentItem < Data.define(
     end
 
     def record_rollup_metric(document, api_response)
-      RollupMetric.record!(document:, rollup: rollup(api_response))
+      RollupMetric.record!(document:, rollup: build_rollup_from_api_response(api_response))
     rescue StandardError => e
       Rails.logger.error("Could not record rollup metrics for #{document.content_id}: #{e.message}")
       GovukError.notify(e, extra: { content_id: document.content_id })
     end
 
-    def rollup(api_response)
+    def build_rollup_from_api_response(api_response)
       HostContentItem::Items::Rollup.new(
         views: api_response["rollup"]["views"],
         locations: api_response["rollup"]["locations"],
