@@ -246,12 +246,39 @@ RSpec.describe Edition::Show::EmbeddedObjects::BlocksComponent, type: :component
       end
     end
 
-    it "uses aria-label to distinguish the link to 'all attributes' of _else_ object of type _something_" do
-      render_inline component
+    describe "aria-label distinguishing the link to 'all attributes'" do
+      context "when the object has a title" do
+        let(:items) do
+          {
+            "title" => "Email us",
+            "foo" => "bar",
+          }
+        end
 
-      expect(page).to have_css ".app-c-embedded-objects-blocks-component__details-wrapper" do |wrapper|
-        expect(wrapper).to have_css "summary[aria-label='else']" do |wrapper|
-          expect(wrapper).to have_css ".govuk-details__summary-text", text: "All something attributes"
+        before do
+          allow(subschema).to receive(:field).with("title").and_return(build(:field, label: "Title"))
+        end
+
+        it "includes the visible summary text followed by the object's human-readable title" do
+          render_inline component
+
+          expect(page).to have_css ".app-c-embedded-objects-blocks-component__details-wrapper" do |wrapper|
+            expect(wrapper).to have_css "summary[aria-label='All something attributes - Email us']" do |summary|
+              expect(summary).to have_css ".govuk-details__summary-text", text: "All something attributes"
+            end
+          end
+        end
+      end
+
+      context "when the object has no title" do
+        it "includes the visible summary text followed by the object_title identifier" do
+          render_inline component
+
+          expect(page).to have_css ".app-c-embedded-objects-blocks-component__details-wrapper" do |wrapper|
+            expect(wrapper).to have_css "summary[aria-label='All something attributes - else']" do |summary|
+              expect(summary).to have_css ".govuk-details__summary-text", text: "All something attributes"
+            end
+          end
         end
       end
     end
