@@ -51,6 +51,14 @@ private
     end
   end
 
+  def all_attributes_title
+    "All #{object_name} attributes"
+  end
+
+  def all_attributes_aria_label
+    "#{all_attributes_title} - #{items['title'].presence || object_title}"
+  end
+
   def all_attributes_preamble
     I18n.t("embedded_object.all_attributes", object_name: object_name)
   end

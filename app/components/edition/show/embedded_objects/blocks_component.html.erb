@@ -26,9 +26,9 @@
       <% end %>
 
       <%= render "govuk_publishing_components/components/details", {
-        title: "All #{object_name} attributes",
+        title: all_attributes_title,
         summary_aria_attributes: {
-          label: object_title,
+          label: all_attributes_aria_label,
         },
       } do %>
         <%= attributes %>
