@@ -74,6 +74,14 @@ RSpec.describe V2::Edition, type: :model do
         expect(edition).to be_valid
       end
     end
+
+    describe "state enum validation" do
+      it do
+        is_expected.to define_enum_for(:state)
+          .with_values(draft: "draft", published: "published")
+          .backed_by_column_of_type(:string)
+      end
+    end
   end
 
   describe "#to_details" do
@@ -91,6 +99,23 @@ RSpec.describe V2::Edition, type: :model do
         creator:,
       )
       expect(edition.to_details).to eq({ "field_1" => "value 1" })
+    end
+  end
+
+  describe "state" do
+    it "defaults to draft upon initialisation" do
+      edition = V2::Edition.new
+      expect(edition.state).to eq("draft")
+      expect(edition).to be_draft
+    end
+  end
+
+  describe "#publish" do
+    it "updates the state to published and saves the record" do
+      edition = create(:v2_time_period_edition, state: :draft)
+
+      expect { edition.publish }
+        .to change(edition, :state).from("draft").to("published")
     end
   end
 end
