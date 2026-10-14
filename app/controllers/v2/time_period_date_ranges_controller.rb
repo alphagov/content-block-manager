@@ -6,8 +6,9 @@ module V2
 
     def update
       if @edition.update(edition_params)
-        redirect_to new_v2_time_period_edition_pre_publication_review_path(@edition),
-                    notice: I18n.t("v2.time_period_edition.create.success")
+        flash[:success] = I18n.t("v2.time_period_edition.create.success")
+
+        redirect_to new_v2_time_period_edition_pre_publication_review_path(@edition)
       else
         @error_summary_errors = @edition.errors.map do |error|
           {
