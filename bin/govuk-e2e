@@ -1,0 +1,35 @@
+#!/bin/bash -e
+# Prime the local infrastructure and run the GOV.UK end-to-end Content Block
+# Manager journey against the local govuk-docker stack.
+#
+# This assumes the govuk-docker stack is already up (e.g. `govuk-docker up
+# content-block-manager-full`) and that govuk-docker and govuk-e2e-tests are
+# checked out alongside this repo. See docs/end_to_end_tests.md.
+#
+# It primes the fixtures via govuk-docker's make targets (which include the
+# readiness gate), then runs the Playwright spec. Any arguments ($@) are passed
+# through to Playwright, so you can run the interactive UI with:
+#
+#     bin/govuk-e2e --ui
+
+repo_root="$(cd "$(dirname "$0")/.." && pwd)"
+govuk_root="$(dirname "$repo_root")"
+govuk_docker_dir="$govuk_root/govuk-docker"
+govuk_e2e_tests_dir="$govuk_root/govuk-e2e-tests"
+
+for dir in "$govuk_docker_dir" "$govuk_e2e_tests_dir"; do
+  if [[ ! -d "$dir" ]]; then
+    echo "Expected to find $dir alongside this repo. Aborting." >&2
+    exit 1
+  fi
+done
+
+echo "==> Seeding the GOV.UK e2e fixtures (waits for the stack to be ready)..."
+make -C "$govuk_docker_dir" content-block-manager-seed-govuk-e2e
+
+echo "==> Resetting the block to its seeded starting state..."
+make -C "$govuk_docker_dir" content-block-manager-reset-govuk-e2e
+
+echo "==> Running the Content Block Manager e2e journey..."
+cd "$govuk_e2e_tests_dir"
+yarn playwright test tests/content-block-manager.spec.js "$@"
