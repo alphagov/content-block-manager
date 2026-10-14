@@ -44,8 +44,15 @@ RSpec.describe "V2 documents", type: :request do
         expect(response).to have_http_status(:success)
         expect(response).to render_template("v2/documents/index")
 
-        expect(page).to have_css("[data-testid='homepage-item-0']", text: "British Summer Time 2026")
-        expect(page).to have_css("[data-testid='homepage-item-1']", text: "Tax Year 2025")
+        within("[data-testid='homepage-item-0']") do |card|
+          expect(card).to have_content("British Summer Time 2026")
+          expect(card).to have_link("View", href: v2_document_path(document_with_newer_edition))
+        end
+
+        within("[data-testid='homepage-item-1']") do |card|
+          expect(card).to have_content("Tax Year 2025")
+          expect(card).to have_link("View", href: v2_document_path(document_with_older_edition))
+        end
       end
     end
 
