@@ -21,11 +21,12 @@ RSpec.describe Document::Index::V2::SummaryCardComponent, type: :component do
   end
 
   it "renders a content block as a summary card" do
-    render_inline(described_class.new(document:))
+    @document = described_class.new(document:)
+    render_inline(@document)
 
     expect(page).to have_css ".govuk-summary-card__title", text: edition.title
     expect(page).to have_css ".govuk-summary-card__action", count: 1
-    expect(page).to have_css ".govuk-summary-card__action .govuk-link[href='']"
+    expect(page).to have_css ".govuk-summary-card__action .govuk-link[href='/v2/documents/#{document.id}']"
 
     expect(page).to have_css ".govuk-link", text: "View"
 
