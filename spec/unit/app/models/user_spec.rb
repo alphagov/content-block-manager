@@ -29,6 +29,12 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "Permissions::VIEW_METRICS" do
+    it "matches the name of the permission in Signon" do
+      expect(User::Permissions::VIEW_METRICS).to eq("view_metrics")
+    end
+  end
+
   describe "#organisation" do
     it "returns nil when organisation_content_id is nil" do
       user = build(:user)

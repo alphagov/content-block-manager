@@ -1,5 +1,6 @@
 RSpec.describe Document, type: :model do
   it { is_expected.to have_many(:domain_events) }
+  it { is_expected.to have_one(:rollup_metric).dependent(:destroy) }
 
   it "exists with required data" do
     document = create(
