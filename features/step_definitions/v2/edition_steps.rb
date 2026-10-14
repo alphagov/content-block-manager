@@ -41,6 +41,7 @@ When("a Time Period Edition exists") do
     description: "This is a new time period edition.",
     lead_organisation_id: organisation.id,
     instructions_to_publishers: "Nothing much.",
+    date_range: FactoryBot.build(:v2_time_period_date_range),
   )
   puts "Created Time Period Edition with ID: #{@time_period_edition.id}"
 end

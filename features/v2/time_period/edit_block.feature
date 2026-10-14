@@ -18,3 +18,15 @@ Feature: Edit Time Period Edition
     When I fill the Time Period Edition details incorrectly
     And I save and continue
     Then I see which Time Period Edition errors I need to correct
+
+  Scenario: Editor can return to edit time period date range page
+    Given I am viewing the pre publication review page
+    When I follow the link to edit the date range
+    Then I see the edit date range page
+
+  Scenario: Editor can edit time period date range page
+    Given I am on the edit date range page
+    When I fill the date range details correctly
+    And I save and continue
+    Then I see the pre publication review page
+    And I see a notice that the update was successful
