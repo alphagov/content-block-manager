@@ -1,9 +1,6 @@
 class Edition::Show::V2::TimePeriodDateRangeSummaryCardComponent < ViewComponent::Base
-  attr_reader :summary_card_actions
-
-  def initialize(date_range:, summary_card_actions: nil)
-    @date_range = date_range
-    @summary_card_actions = summary_card_actions
+  def initialize(edition:)
+    @edition = edition
   end
 
   def title
@@ -12,8 +9,17 @@ class Edition::Show::V2::TimePeriodDateRangeSummaryCardComponent < ViewComponent
 
   def rows
     [
-      { key: "Start", value: @date_range.start.strftime("%-d %B %Y") },
-      { key: "End", value: @date_range.end.strftime("%-d %B %Y") },
+      { key: "Start", value: @edition.date_range.start.strftime("%-d %B %Y") },
+      { key: "End", value: @edition.date_range.end.strftime("%-d %B %Y") },
+    ]
+  end
+
+  def summary_card_actions
+    [
+      {
+        label: "Edit",
+        href: edit_v2_time_period_edition_time_period_date_range_path(@edition),
+      },
     ]
   end
 end
