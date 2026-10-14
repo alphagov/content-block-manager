@@ -29,6 +29,7 @@ module V2
       def published
         %w[placeholder placeholder]
       end
+
       def finalised_states
         %i[published superseded deleted]
       end
