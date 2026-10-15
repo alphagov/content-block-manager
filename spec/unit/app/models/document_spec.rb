@@ -105,6 +105,28 @@ RSpec.describe Document, type: :model do
     end
   end
 
+  describe "::without_testing_artefacts" do
+    let!(:testing_artefact) do
+      create(:edition, :pension, :published, title: "Test").document.tap do |doc|
+        doc.testing_artefact = true
+        doc.save!
+      end
+    end
+
+    before do
+      2.times { create(:edition, :pension, :published) }
+    end
+
+    it "excludes testing artefacts" do
+      results = Document.without_testing_artefacts
+
+      aggregate_failures do
+        expect(results.count).to eq(2)
+        expect(results).not_to include(testing_artefact)
+      end
+    end
+  end
+
   describe "#most_recent_edition" do
     let(:document) { create(:document, :pension) }
 
