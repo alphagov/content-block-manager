@@ -52,11 +52,20 @@ RSpec.describe Document::RollupMetricsQuery do
   end
 
   describe "#documents" do
-    it "includes every block that hasn't been deleted" do
+    it "includes every (non-test) block that hasn't been deleted" do
       deleted = block("Deleted", block_type: :pension, views: 1)
       deleted.soft_delete
 
       expect(titles(nil)).to contain_exactly("Pension", "Contact", "TimePeriod", "Unmeasured")
+    end
+
+    it "excludes any E2E test blocks " do
+      create(:edition, :pension, :published, title: "Test").document.tap do |doc|
+        doc.testing_artefact = true
+        doc.save!
+      end
+
+      expect(titles(nil)).not_to include("Test")
     end
 
     it "orders by views, highest first, by default" do
