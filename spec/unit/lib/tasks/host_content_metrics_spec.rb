@@ -6,6 +6,18 @@ RSpec.describe "host_content_metrics:refresh_rollups" do
   let!(:pension) { create(:edition, :pension, :published, lead_organisation_id: organisation.id).document }
   let!(:contact) { create(:edition, :contact, :draft, lead_organisation_id: organisation.id).document }
 
+  let!(:e2e_test_block) do
+    create(
+      :edition,
+      :pension,
+      :published,
+      lead_organisation_id: organisation.id,
+    ).document.tap do |doc|
+      doc.testing_artefact = true
+      doc.save!
+    end
+  end
+
   before do
     allow(Organisation).to receive(:all).and_return([organisation])
     allow(Rails.logger).to receive(:info)
@@ -46,6 +58,12 @@ RSpec.describe "host_content_metrics:refresh_rollups" do
       task.invoke
 
       expect(RollupMetric.find_by(document_id: deleted.id)).to be_nil
+    end
+
+    it "doesn't create metrics for E2E test blocks" do
+      task.invoke
+
+      expect(RollupMetric.find_by(document_id: e2e_test_block.id)).to be_nil
     end
 
     it "logs its progress" do
