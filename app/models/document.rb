@@ -31,6 +31,7 @@ class Document < ApplicationRecord
           -> { active.most_recent_first }, class_name: "Edition"
 
   scope :live, -> { joins(:editions).merge(Edition.published.most_recent_first) }
+  scope :without_testing_artefacts, -> { where(testing_artefact: false) }
 
   def built_embed_code
     "#{embed_code_prefix}}}"
