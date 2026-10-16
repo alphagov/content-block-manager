@@ -57,6 +57,7 @@ en:
             end:
               blank: "Enter an end date"
               invalid_date: "End date is not a valid date"
+              must_be_after_start_date: "End date must be after start date"
     attributes:
       edition/document:
         title:
