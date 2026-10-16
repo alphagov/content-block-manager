@@ -65,10 +65,10 @@ RSpec.describe "V2::TimePeriodDateRange", type: :request do
         expect(edition.date_range&.start).to eq(original_start)
       end
 
-      it "returns unprocessable entity status" do
+      it "returns unprocessable content status" do
         patch v2_time_period_edition_time_period_date_range_path(edition),
               params: invalid_date_range_attributes
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "renders the edit template" do
