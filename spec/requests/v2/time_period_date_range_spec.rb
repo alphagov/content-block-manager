@@ -11,12 +11,15 @@ RSpec.describe "V2::TimePeriodDateRange", type: :request do
     end
     let(:document) { edition.document }
 
+    let(:start_date) { "2025-04-06 09:00" }
+    let(:end_date) { "2026-04-05 17:30" }
+
     let(:valid_date_range_attributes) do
       {
         edition: {
           date_range_attributes: {
-            start: "2025-04-06 09:00",
-            end: "2026-04-05 17:30",
+            start: start_date,
+            end: end_date,
           },
         },
       }
