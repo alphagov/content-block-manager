@@ -92,7 +92,7 @@ private
                          .merge(Edition.most_recent_for_document)
                          .merge(Edition.active)
 
-    documents = documents.where(testing_artefact: false) unless Current.user&.is_e2e_user?
+    documents = documents.without_testing_artefacts unless Current.user&.is_e2e_user?
     documents = documents.where(id: ids_with_keyword(keyword)) if keyword.present?
     documents = documents.where(block_type: filters[:block_type]) if filters[:block_type].present?
     documents = documents.with_lead_organisation(filters[:lead_organisation]) if filters[:lead_organisation].present?

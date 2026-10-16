@@ -28,7 +28,7 @@ RSpec.describe Document::DocumentFilter do
       it "only returns non-testing artefacts" do
         filter.call({})
 
-        expect(document_scope_spy).to have_received(:where).with(testing_artefact: false)
+        expect(document_scope_spy).to have_received(:without_testing_artefacts)
       end
 
       describe "when no filters are given" do
