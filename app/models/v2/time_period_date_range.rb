@@ -22,7 +22,7 @@ module V2
       return if self.end.blank? || start.blank?
 
       if self.end <= start
-        errors.add(:end, "must be after start date")
+        errors.add(:end, :must_be_after_start_date)
       end
     end
   end

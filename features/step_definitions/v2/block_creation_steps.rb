@@ -123,3 +123,20 @@ Then("I see the pre publication review page") do
                              ))
   expect(page).to have_content("Review time period")
 end
+
+Given("I am on the edit date range page") do
+  edition = V2::TimePeriodEdition.last
+  visit edit_v2_time_period_edition_time_period_date_range_path(edition)
+end
+
+Then("I see the edit date range page") do
+  within "h1" do
+    expect(page).to have_content("Edit time period block")
+  end
+end
+
+Then("I see the edit time period page") do
+  within "h1" do
+    expect(page).to have_content("Edit time period")
+  end
+end

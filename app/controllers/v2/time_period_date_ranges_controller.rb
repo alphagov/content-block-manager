@@ -5,9 +5,13 @@ module V2
     def edit; end
 
     def update
+      has_associated_date_range = @edition.date_range.present?
+
       if @edition.update(edition_params)
-        redirect_to new_v2_time_period_edition_pre_publication_review_path(@edition),
-                    notice: I18n.t("v2.time_period_edition.create.success")
+        notice_key = has_associated_date_range ? "update.success" : "create.success"
+        flash[:success] = I18n.t("v2.time_period_edition.#{notice_key}")
+
+        redirect_to new_v2_time_period_edition_pre_publication_review_path(@edition)
       else
         @error_summary_errors = @edition.errors.map do |error|
           {

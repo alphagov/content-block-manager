@@ -29,8 +29,15 @@ module V2
       @edition.assign_attributes(edition_params.except(:creator))
 
       if @edition.save
-        redirect_to v2_time_period_edition_path(@edition.id),
-                    notice: I18n.t("v2.time_period_edition.update.success")
+        if !has_associated_date_range
+          redirect_to edit_v2_time_period_edition_time_period_date_range_path(
+            @edition,
+          )
+        else
+          flash[:success] = I18n.t("v2.time_period_edition.update.success")
+
+          redirect_to new_v2_time_period_edition_pre_publication_review_path(@edition)
+        end
       else
         render :edit, status: :unprocessable_content
       end
@@ -40,6 +47,10 @@ module V2
 
     def block_type
       V2::Document.block_types[:time_period]
+    end
+
+    def has_associated_date_range
+      @edition.date_range.present?
     end
   end
 end

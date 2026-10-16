@@ -57,6 +57,7 @@ en:
             end:
               blank: "Enter an end date"
               invalid_date: "End date is not a valid date"
+              must_be_after_start_date: "End date must be after start date"
     attributes:
       edition/document:
         title:
@@ -445,9 +446,9 @@ en:
         title: 'Edit time period'
         context: 'Edit content block'
       create:
-        success: 'Time period edition was successfully created.'
+        success: 'Time period was successfully created.'
       update:
-        success: 'Time period edition was successfully updated.'
+        success: 'Time period was successfully updated.'
     edition:
       pre_publication_review:
         confirm: 'I confirm that the details I’ve put into the content block have been checked and are factually correct.'
