@@ -54,13 +54,13 @@ Rails.application.routes.draw do
       resources :pre_publication_reviews, path: "pre-publication-reviews", only: %i[new create]
     end
 
-    resources :time_period_editions, only: %i[new create show edit update], concerns: :reviewable do
+    resources :time_period_editions, only: %i[new create edit update], concerns: :reviewable do
       resource :time_period_date_range,
                only: %i[edit update],
                path: "time-period-date-range"
     end
 
-    resources :documents, only: [:index]
+    resources :documents, only: %i[index show]
   end
 
   resources :editions, only: %i[new create destroy], path_names: { new: ":block_type/new" } do

@@ -4,15 +4,6 @@ RSpec.describe "V2 time period editions", type: :request do
     login_as(create(:user))
   end
 
-  describe "GET /v2/time_period_edition/:id" do
-    it "renders the time period edition 'show' page" do
-      get v2_time_period_edition_path(0)
-
-      expect(response).to have_http_status(:success)
-      expect(response).to render_template("v2/time_period_editions/show")
-    end
-  end
-
   describe "GET /v2/time_period_editions/new" do
     describe "when rendering the new template" do
       before do
@@ -151,10 +142,10 @@ RSpec.describe "V2 time period editions", type: :request do
       expect(existing_edition.instructions_to_publishers).to eq(updated_params[:instructions_to_publishers])
     end
 
-    it "redirects to the time period edition page with a success message" do
+    it "redirects to the associated document show page with a success message" do
       put v2_time_period_edition_path(existing_edition.id), params: { edition: updated_params }
 
-      expect(response).to redirect_to(v2_time_period_edition_path(existing_edition.id))
+      expect(response).to redirect_to(v2_document_path(existing_edition.document))
       follow_redirect!
       expect(response.body).to include(I18n.t("v2.time_period_edition.update.success"))
     end

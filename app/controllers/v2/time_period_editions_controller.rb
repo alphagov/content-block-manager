@@ -29,7 +29,7 @@ module V2
       @edition.assign_attributes(edition_params.except(:creator))
 
       if @edition.save
-        redirect_to v2_time_period_edition_path(@edition.id),
+        redirect_to v2_document_path(@edition.document),
                     notice: I18n.t("v2.time_period_edition.update.success")
       else
         render :edit, status: :unprocessable_content
