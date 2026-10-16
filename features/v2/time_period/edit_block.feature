@@ -9,10 +9,16 @@ Feature: Edit Time Period Edition
     And a Time Period Edition exists
     And I am viewing the form to update an existing Time Period Edition
 
+  Scenario: Editor can return to edit time period edition metadata page
+    Given I am viewing the pre publication review page
+    When I follow the link to edit the time period details
+    Then I see the edit time period page
+
   Scenario: Editor can edit an existing Time Period Edition
     When I fill the Time Period Edition details correctly
     And I save and continue
-    Then I see that the Edition was updated successfully
+    Then I see the pre publication review page
+    And I see that the Edition was updated successfully
 
   Scenario: Editor is informed when editing an existing Time Period Edition incorrectly
     When I fill the Time Period Edition details incorrectly

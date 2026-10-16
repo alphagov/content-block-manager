@@ -134,3 +134,9 @@ Then("I see the edit date range page") do
     expect(page).to have_content("Edit time period block")
   end
 end
+
+Then("I see the edit time period page") do
+  within "h1" do
+    expect(page).to have_content("Edit time period")
+  end
+end

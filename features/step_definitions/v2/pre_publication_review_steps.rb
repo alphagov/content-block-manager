@@ -13,6 +13,12 @@ When("I follow the link to edit the date range") do
   end
 end
 
+When("I follow the link to edit the time period details") do
+  within(".govuk-summary-card", text: "Time period details") do
+    click_link("Edit")
+  end
+end
+
 And("I see a notice that the update was successful") do
   within(".govuk-notification-banner--success") do
     expect(page).to have_content(I18n.t("v2.time_period_edition.update.success"))
