@@ -5,7 +5,7 @@ module HostContentMetricsHelpers
     "organisation" => "Organisation",
     "title" => "Block",
     "block type" => "Block type",
-    "embed code" => "Embed code",
+    "embed code / content id" => "Embed code / Content ID",
     "locations" => "Locations",
     "instances" => "Instances",
     "views" => "Views (30 days)",

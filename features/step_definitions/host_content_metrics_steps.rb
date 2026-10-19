@@ -55,6 +55,15 @@ Then("the title {string} should link to the block's page") do |title|
   expect(cell).to have_link(title, href: document_path(@blocks.fetch(title)))
 end
 
+Then("the host content metric rows should display their embed codes and Content IDs") do
+  @blocks.each do |(title, document)|
+    within(metrics_table_cell(title, "embed code / content id")) do |cell|
+      expect(cell).to have_css(".embed-code", text: document.embed_code)
+      expect(cell).to have_css(".content-id", text: document.content_id)
+    end
+  end
+end
+
 Then("I should see {string} for each metric of {string}") do |placeholder, title|
   HostContentMetricsHelpers::METRIC_KEYS.each do |key|
     expect(metrics_table_cell(title, key).text.strip).to eq(placeholder)

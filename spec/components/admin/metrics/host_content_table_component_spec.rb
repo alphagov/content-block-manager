@@ -20,7 +20,7 @@ RSpec.describe Admin::Metrics::HostContentTableComponent, type: :component do
   let(:documents) { Document.where(id: [measured_document.id, unmeasured_document.id]).order(:id) }
 
   let(:headings) do
-    ["Organisation", "Block", "Block type", "Embed code", "Locations", "Instances", "Views (30 days)", "Orgs"]
+    ["Organisation", "Block", "Block type", "Embed code / Content ID", "Locations", "Instances", "Views (30 days)", "Orgs"]
   end
 
   def table
@@ -51,7 +51,7 @@ RSpec.describe Admin::Metrics::HostContentTableComponent, type: :component do
       "Department for Work and Pensions",
       "New state pension",
       "Pension",
-      "{{embed:content_block_pension:#{measured_document.content_id_alias}}}",
+      "{{embed:content_block_pension:#{measured_document.content_id_alias}}}#{measured_document.content_id}",
       "7",
       "20",
       "98.7k",
@@ -68,7 +68,7 @@ RSpec.describe Admin::Metrics::HostContentTableComponent, type: :component do
       "–",
       "CMA press office",
       "Contact",
-      "{{embed:content_block_contact:#{unmeasured_document.content_id_alias}}}",
+      "{{embed:content_block_contact:#{unmeasured_document.content_id_alias}}}#{unmeasured_document.content_id}",
       "–",
       "–",
       "–",
@@ -94,9 +94,9 @@ RSpec.describe Admin::Metrics::HostContentTableComponent, type: :component do
       end
     end
 
-    it "doesn't link the block and embed code headings" do
+    it "doesn't link the block and embed code / content id headings" do
       expect(table).not_to have_css("thead th a", exact_text: "Block")
-      expect(table).not_to have_css("thead th a", text: "Embed code")
+      expect(table).not_to have_css("thead th a", text: "Embed code / Content ID")
     end
 
     it "shows that the table is sorted by views, descending" do

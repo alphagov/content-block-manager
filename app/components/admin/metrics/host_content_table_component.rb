@@ -35,8 +35,8 @@ private
         value: ->(document) { document.block_type.humanize },
       ),
       Column.new(
-        heading: "Embed code",
-        value: ->(document) { document.built_embed_code },
+        heading: "Embed code / Content ID",
+        value: value_for_embed_code_and_content_id,
       ),
       metric_column("Locations", :locations),
       metric_column("Instances", :instances),
@@ -87,5 +87,18 @@ private
 
   def formatted_metric(value)
     value.nil? ? PLACEHOLDER : abbreviated_number(value)
+  end
+
+  def value_for_embed_code_and_content_id
+    lambda { |document|
+      [
+        content_tag(:div, class: "embed-code") do
+          content_tag(:code, document.built_embed_code)
+        end,
+        content_tag(:div, class: "content-id") do
+          content_tag(:code, document.content_id)
+        end,
+      ].join.html_safe
+    }
   end
 end
