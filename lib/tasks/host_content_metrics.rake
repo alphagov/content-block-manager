@@ -8,7 +8,7 @@ namespace :host_content_metrics do
       Rails.logger.public_send(level, line)
     }
 
-    documents = Document.all
+    documents = Document.without_testing_artefacts
     log.call("Refreshing rollup metrics for #{documents.count} #{'block'.pluralize(documents.count)}")
 
     refreshed = 0

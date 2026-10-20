@@ -19,7 +19,8 @@ class Document::RollupMetricsQuery
   end
 
   def documents
-    Document.left_joins(:rollup_metric)
+    Document.without_testing_artefacts
+            .left_joins(:rollup_metric)
             .preload(:rollup_metric, :most_recent_edition)
             .order(sort_order, Document.arel_table[:id].asc)
             .page(page)
