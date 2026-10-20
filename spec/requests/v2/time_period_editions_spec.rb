@@ -137,6 +137,8 @@ RSpec.describe "V2 time period editions", type: :request do
 
     let(:updated_edition) { create(:v2_time_period_edition, **updated_params) }
 
+    let(:lead_organisation) { build(:organisation, id: SecureRandom.uuid) }
+
     before do
       allow(Organisation).to receive(:all).and_return([])
     end
@@ -151,12 +153,34 @@ RSpec.describe "V2 time period editions", type: :request do
       expect(existing_edition.instructions_to_publishers).to eq(updated_params[:instructions_to_publishers])
     end
 
-    it "redirects to the time period edition page with a success message" do
-      put v2_time_period_edition_path(existing_edition.id), params: { edition: updated_params }
+    context "when the edition has no associated date range" do
+      let(:edition_without_date_range) { create(:v2_time_period_edition, date_range: nil, lead_organisation_id: lead_organisation.id) }
 
-      expect(response).to redirect_to(v2_time_period_edition_path(existing_edition.id))
-      follow_redirect!
-      expect(response.body).to include(I18n.t("v2.time_period_edition.update.success"))
+      before do
+        allow(Organisation).to receive(:find).and_return(lead_organisation)
+      end
+
+      it "redirects to the edit date range page" do
+        put v2_time_period_edition_path(edition_without_date_range), params: { edition: updated_params }
+
+        expect(response).to redirect_to(edit_v2_time_period_edition_time_period_date_range_path(edition_without_date_range))
+        follow_redirect!
+      end
+    end
+
+    context "when the edition has an associated date range" do
+      let(:edition_with_date_range) { create(:v2_time_period_edition, date_range: build(:v2_time_period_date_range), lead_organisation_id: lead_organisation.id) }
+
+      before do
+        allow(Organisation).to receive(:find).and_return(lead_organisation)
+      end
+
+      it "redirects to the pre publication review page with a success message" do
+        put v2_time_period_edition_path(edition_with_date_range), params: { edition: updated_params }
+        expect(response).to redirect_to(new_v2_time_period_edition_pre_publication_review_path(edition_with_date_range))
+        follow_redirect!
+        expect(response.body).to include(I18n.t("v2.time_period_edition.update.success"))
+      end
     end
 
     it "re-renders the edit form with errors when invalid parameters are provided" do

@@ -43,7 +43,7 @@ RSpec.describe V2::TimePeriodDateRange, type: :model do
           end: Time.zone.parse("2025-04-05 23:59"),
         )
         expect(date_range).not_to be_valid
-        expect(date_range.errors[:end]).to include("must be after start date")
+        expect(date_range.errors[:end]).to include("End date must be after start date")
       end
 
       it "is invalid when end equals start" do
@@ -54,7 +54,7 @@ RSpec.describe V2::TimePeriodDateRange, type: :model do
           end: same_time,
         )
         expect(date_range).not_to be_valid
-        expect(date_range.errors[:end]).to include("must be after start date")
+        expect(date_range.errors[:end]).to include("End date must be after start date")
       end
 
       it "is valid when end is after start" do
