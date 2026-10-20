@@ -29,12 +29,12 @@ Feature: View consolidated host content metrics
     And I should see these metrics for "New state pension":
       | organisation  | Department for Work and Pensions                  |
       | block type    | Pension                                           |
-      | embed code    | {{embed:content_block_pension:new-state-pension}} |
       | locations     | 7                                                 |
       | instances     | 20                                                |
       | views         | 98.7k                                             |
       | organisations | 1                                                 |
     And the title "New state pension" should link to the block's page
+    And the host content metric rows should display their embed codes and Content IDs
 
   Scenario: Blocks not yet measured aren't mistaken for unused ones
     Given a draft pension block "Unpublished pension" has no rollup metrics

@@ -1,0 +1,6 @@
+.app-c-host-content-metrics-table {
+  .embed-code,
+  .content-id {
+    @include govuk-font($size: 16);
+  }
+}
