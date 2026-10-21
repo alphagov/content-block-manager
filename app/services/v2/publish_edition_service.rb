@@ -14,17 +14,21 @@ module V2
       content_id = document.content_id
       content_id_alias = document.content_id_alias
 
-      create_publishing_api_edition(
-        content_id:,
-        content_id_alias:,
-        document_type: "content_block_#{block_type}",
-        edition:,
-      )
-      publish_publishing_api_edition(content_id:)
-      edition.public_send(:publish!)
+      ActiveRecord::Base.transaction do
+        create_publishing_api_edition(
+          content_id:,
+          content_id_alias:,
+          document_type: "content_block_#{block_type}",
+          edition:,
+        )
+        publish_publishing_api_edition(content_id:)
+        edition.public_send(:publish!)
+      end
+
       edition
     rescue PublishingFailureError => e
-      discard_publishing_api_edition(content_id:)
+      discard_publishing_api_edition(content_id:, edition:)
+
       raise e
     end
 
@@ -33,6 +37,8 @@ module V2
         content_id,
         publishing_api_payload(document_type, content_id_alias, edition),
       )
+    rescue GdsApi::BaseError => e
+      raise PublishingFailureError, "Could not publish #{content_id} because: #{e.message}"
     end
 
     def publishing_api_payload(document_type, content_id_alias, edition)
@@ -41,12 +47,18 @@ module V2
 
     def publish_publishing_api_edition(content_id:)
       Public::Services.publishing_api.publish(content_id)
-    rescue GdsApi::HTTPErrorResponse => e
+    rescue GdsApi::BaseError => e
       raise PublishingFailureError, "Could not publish #{content_id} because: #{e.message}"
     end
 
-    def discard_publishing_api_edition(content_id:)
+    def discard_publishing_api_edition(content_id:, edition:)
       Public::Services.publishing_api.discard_draft(content_id)
+    rescue GdsApi::BaseError => e
+      GovukError.notify(
+        e,
+        extra: { edition_id: edition.id, document_id: edition.document.id },
+        level: :warn,
+      )
     end
   end
 end

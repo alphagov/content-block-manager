@@ -32,7 +32,14 @@ module V2
 
     def publish
       if @edition.state != "published"
-        V2::PublishEditionService.new.call(@edition)
+        begin
+          V2::PublishEditionService.new.call(@edition)
+        rescue V2::PublishEditionService::PublishingFailureError => e
+          return {
+            path: new_v2_time_period_edition_pre_publication_review_path(@edition),
+            flash: { alert: e.message },
+          }
+        end
       end
 
       { path: v2_document_path(@edition.document), flash: { success: I18n.t("v2.edition.publish.success") } }

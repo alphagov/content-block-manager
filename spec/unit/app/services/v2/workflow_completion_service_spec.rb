@@ -59,6 +59,21 @@ RSpec.describe V2::WorkflowCompletionService do
         end
       end
 
+      describe "when the publishing service raises an error" do
+        let(:error_message) { "Failed to publish to the publishing API" }
+
+        before do
+          allow(service).to receive(:call).and_raise(V2::PublishEditionService::PublishingFailureError, error_message)
+        end
+
+        it "should return the pre publication review path and an alert flash message" do
+          described_class.new(edition, "publish").call => { path:, flash: }
+
+          expect(path).to eq("/v2/time_period_editions/123/pre-publication-reviews/new")
+          expect(flash).to eq({ alert: error_message })
+        end
+      end
+
       describe "when the edition has already been published" do
         let(:service) { double(V2::PublishEditionService) }
 
