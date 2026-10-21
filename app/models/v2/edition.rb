@@ -2,6 +2,8 @@ module V2
   class Edition < ApplicationRecord
     include ::Edition::HasLeadOrganisation
     include ::Edition::HasAuthors
+    include ::Edition::Diffable
+    include Workflow
 
     belongs_to :document, class_name: "V2::Document", foreign_key: :v2_document_id, inverse_of: :editions
 
@@ -30,23 +32,11 @@ module V2
       end
 
       def available_states
-        %i[published superseded deleted scheduled draft]
-      end
-
-      def active_states
-        available_states - inactive_states
-      end
-
-      def inactive_states
-        %i[superseded deleted]
-      end
-
-      def in_progress_states
-        available_states - finalised_states
+        %i[published draft]
       end
 
       def finalised_states
-        %i[published superseded deleted]
+        %i[published]
       end
     end
 
