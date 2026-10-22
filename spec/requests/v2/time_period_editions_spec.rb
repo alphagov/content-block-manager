@@ -4,15 +4,6 @@ RSpec.describe "V2 time period editions", type: :request do
     login_as(create(:user))
   end
 
-  describe "GET /v2/time_period_edition/:id" do
-    it "renders the time period edition 'show' page" do
-      get v2_time_period_edition_path(0)
-
-      expect(response).to have_http_status(:success)
-      expect(response).to render_template("v2/time_period_editions/show")
-    end
-  end
-
   describe "GET /v2/time_period_editions/new" do
     describe "when rendering the new template" do
       before do

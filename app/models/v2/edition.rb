@@ -10,7 +10,7 @@ module V2
 
     before_validation :set_document_sluggable_string, on: :create
 
-    enum :state, draft: "draft", published: "published"
+    enum :state, draft: "draft", published: "published", scheduled: "scheduled", superseded: "superseded", deleted: "deleted"
 
     scope :most_recent_first, -> { order(created_at: :desc) }
 
@@ -22,6 +22,32 @@ module V2
 
     def publish
       update(state: :published)
+    end
+
+    class << self
+      def published
+        %w[placeholder placeholder]
+      end
+
+      def available_states
+        %i[published superseded deleted scheduled draft]
+      end
+
+      def active_states
+        available_states - inactive_states
+      end
+
+      def inactive_states
+        %i[superseded deleted]
+      end
+
+      def in_progress_states
+        available_states - finalised_states
+      end
+
+      def finalised_states
+        %i[published superseded deleted]
+      end
     end
 
   private
