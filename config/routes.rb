@@ -1,3 +1,5 @@
+EDITION_TYPES = %w[V2::TimePeriodEdition].freeze
+
 require "govuk_sidekiq/gds_sso_middleware"
 
 Rails.application.routes.draw do
@@ -54,13 +56,17 @@ Rails.application.routes.draw do
       resources :pre_publication_reviews, path: "pre-publication-reviews", only: %i[new create]
     end
 
-    resources :time_period_editions, only: %i[new create edit update], concerns: :reviewable do
-      resource :time_period_date_range,
-               only: %i[edit update],
-               path: "time-period-date-range"
-    end
+    resources :time_period_editions, only: %i[new create], concerns: :reviewable
 
-    resources :documents, only: %i[index show]
+    resources :documents, only: %i[index show] do
+      EDITION_TYPES.each do |edition_type|
+        constraints EditionTypeConstraints.new(edition_type) do
+          resources :editions, only: %i[edit update], controller: edition_type.demodulize.underscore.pluralize do
+            resource :time_period_date_range, only: %i[edit update], path: "time-period-date-range" if edition_type == "V2::TimePeriodEdition"
+          end
+        end
+      end
+    end
   end
 
   resources :editions, only: %i[new create destroy], path_names: { new: ":block_type/new" } do
