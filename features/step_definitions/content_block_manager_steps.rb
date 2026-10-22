@@ -24,6 +24,10 @@ Then(/^I click on page ([^"]*)$/) do |page_number|
   click_link page_number
 end
 
+When("I click the number {int} View link") do |int|
+  all("a", text: "View")[int - 1].click
+end
+
 When("I save a draft") do
   click_on "Save as draft"
 end

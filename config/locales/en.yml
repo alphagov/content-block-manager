@@ -438,6 +438,19 @@ en:
       minute: Minute
 
   v2:
+    document:
+      show:
+        buttons:
+          finalised_in_draft: Complete draft
+          finalised_not_in_draft: Edit draft
+          new_edition: "Edit %{block_type}"
+          latest_edition: Edit latest edition
+        errors:
+          document_not_found: "Document with ID %{id} not found"
+        links:
+          newer_draft_edition: Return to latest edition
+          published_edition: Go to published edition
+
     time_period_edition:
       new:
         title: 'Create time period'

@@ -44,8 +44,15 @@ RSpec.describe "V2 documents", type: :request do
         expect(response).to have_http_status(:success)
         expect(response).to render_template("v2/documents/index")
 
-        expect(page).to have_css("[data-testid='homepage-item-0']", text: "British Summer Time 2026")
-        expect(page).to have_css("[data-testid='homepage-item-1']", text: "Tax Year 2025")
+        within("[data-testid='homepage-item-0']") do |card|
+          expect(card).to have_content("British Summer Time 2026")
+          expect(card).to have_link("View", href: v2_document_path(document_with_newer_edition))
+        end
+
+        within("[data-testid='homepage-item-1']") do |card|
+          expect(card).to have_content("Tax Year 2025")
+          expect(card).to have_link("View", href: v2_document_path(document_with_older_edition))
+        end
       end
     end
 
@@ -74,6 +81,47 @@ RSpec.describe "V2 documents", type: :request do
         expect(assigns(:error_summary_errors)).to eq([
           { text: "Last updated from date is invalid", href: "#last_updated_from_3i" },
         ])
+      end
+    end
+  end
+
+  describe "GET /v2/documents/:id" do
+    let(:organisation) { build(:organisation, id: SecureRandom.uuid) }
+
+    before do
+      allow(Organisation).to receive(:all).and_return([organisation])
+    end
+
+    context "when a valid document ID is provided" do
+      before do
+        @document = create(:v2_document)
+
+        create(
+          :v2_time_period_edition,
+          document: @document,
+          lead_organisation_id: organisation.id,
+          created_at: 1.day.ago,
+        )
+      end
+
+      it "renders the show page for that document" do
+        get v2_document_path(@document)
+
+        expect(response).to have_http_status(:success)
+        expect(response).to render_template("v2/documents/show")
+        expect(response.body).to include(@document.title)
+      end
+    end
+
+    context "when an invalid document ID is provided" do
+      it "redirects to the index page with an error alert" do
+        get v2_document_path(999_999_999)
+
+        expect(response).to redirect_to(v2_documents_path(lead_organisation: ""))
+
+        follow_redirect!
+
+        expect(assigns(:error_summary_errors)).to eq([{ text: "Document with ID 999999999 not found" }])
       end
     end
   end

@@ -44,7 +44,7 @@ private
     [
       {
         label: "View",
-        href: "",
+        href: v2_document_path(document),
       },
     ]
   end
