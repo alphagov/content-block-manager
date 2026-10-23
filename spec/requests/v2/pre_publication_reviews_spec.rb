@@ -39,28 +39,25 @@ RSpec.describe "V2::PrePublicationReviews", type: :request do
   describe "POST /v2/time_period_editions/8/pre-publication-reviews" do
     context "when the confirmation checkbox is checked" do
       let(:valid_params) { { edition: { has_checked_content: "1" } } }
+      let(:workflow_service_mock) { instance_double(V2::WorkflowCompletionService) }
 
-      context "when publishing is successful" do
-        it "updates the state and redirects with a success notice" do
-          post v2_time_period_edition_pre_publication_reviews_path(time_period_edition_id: edition.id), params: valid_params
-
-          expect(edition.reload).to be_published
-          expect(response).to redirect_to(v2_documents_path)
-          expect(flash[:notice]).to eq(I18n.t("v2.edition.publish.success"))
-        end
+      before do
+        allow(V2::WorkflowCompletionService).to receive(:new).and_return(workflow_service_mock)
       end
 
-      context "when publishing fails" do
+      context "when publishing is successful" do
         before do
-          allow_any_instance_of(V2::Edition).to receive(:update).and_return(false)
+          allow(workflow_service_mock).to receive(:call).and_return({
+            path: "/completion-path",
+            flash: { foo: "bar" },
+          })
         end
 
-        it "does not update the state and re-renders the review page" do
+        it "redirects to the completion path with a flash message" do
           post v2_time_period_edition_pre_publication_reviews_path(time_period_edition_id: edition.id), params: valid_params
 
-          expect(edition.reload).to be_draft
-          expect(response).to have_http_status(:unprocessable_content)
-          expect(response).to render_template("v2/pre_publication_reviews/new")
+          expect(response).to redirect_to("/completion-path")
+          expect(flash[:foo]).to eq("bar")
         end
       end
     end
