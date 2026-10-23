@@ -13,11 +13,10 @@ module V2
 
         return render "v2/pre_publication_reviews/new", status: :unprocessable_content
       end
-      if @edition.publish
-        redirect_to v2_documents_path, notice: I18n.t("v2.edition.publish.success")
-      else
-        render "v2/pre_publication_reviews/new", status: :unprocessable_content
-      end
+
+      completion = V2::WorkflowCompletionService.new(@edition, "publish").call
+
+      redirect_to completion[:path], flash: completion[:flash]
     end
 
   private
