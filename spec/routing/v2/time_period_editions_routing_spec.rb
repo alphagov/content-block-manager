@@ -39,10 +39,6 @@ RSpec.describe "V2 time period editions routing", type: :routing do
           expect(post: "/v2/time_period_editions").to route_to("v2/time_period_editions#create")
         end
 
-        it "routes 'v2/time_period_editions/:id/edit' to 'v2/time_period_editions#edit'" do
-          expect(get: "/v2/time_period_editions/5678/edit").to route_to("v2/time_period_editions#edit", id: "5678")
-        end
-
         it "routes 'v2/documents/:document_id/editions/:id' to 'v2/time_period_editions#update'" do
           expect(put: "/v2/time_period_editions/5678").to route_to("v2/time_period_editions#update", id: "5678")
           expect(patch: "/v2/time_period_editions/5678").to route_to("v2/time_period_editions#update", id: "5678")
