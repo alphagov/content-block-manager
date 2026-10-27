@@ -6,7 +6,11 @@ Feature: Create Time Period Edition
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And I am viewing the form to create a new Time Period Edition
+    And I visit the content block list page
+    And I follow the link to create a new content block
+    And I select "Time period"
+    And I save and continue
+    Then I am viewing the form to create a new Time Period Edition
 
   Scenario: Editor can create a new Time Period Edition
     When I fill the Time Period Edition details correctly
