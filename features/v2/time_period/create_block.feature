@@ -20,6 +20,10 @@ Feature: Create Time Period Edition
     Then I see the pre publication review page
     And I see that the Edition was created successfully
 
+  Scenario: Editor can navigate back to the select content block type page
+    When I click the back link
+    Then I see the select content block type page
+
   Scenario: Editor is informed when creating a new Time Period Edition incorrectly
     When I fill the Time Period Edition details incorrectly
     And I save and continue
