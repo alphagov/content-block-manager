@@ -12,6 +12,6 @@ Feature: Create Time Period Edition
 
   Scenario: Editor can review a new Time Period Edition
     When I confirm that the block details are correct and continue
-    Then I see the content block list page
+    Then I am taken to the Show page for "New Time Period Edition"
     And I see that the edition was published successfully
 

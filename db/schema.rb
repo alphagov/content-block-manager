@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_07_130719) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_21_132332) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -134,6 +134,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_07_130719) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "v2_domain_events", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "v2_edition_id"
+    t.integer "v2_document_id"
+    t.string "name", null: false
+    t.jsonb "metadata"
+    t.integer "v2_version_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_v2_domain_events_on_name"
+    t.index ["user_id"], name: "index_v2_domain_events_on_user_id"
+    t.index ["v2_document_id"], name: "index_v2_domain_events_on_v2_document_id"
+    t.index ["v2_edition_id"], name: "index_v2_domain_events_on_v2_edition_id"
+    t.index ["v2_version_id"], name: "index_v2_domain_events_on_v2_version_id"
+  end
+
   create_table "v2_editions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "description"
@@ -155,6 +171,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_07_130719) do
     t.datetime "start"
     t.datetime "updated_at", null: false
     t.index ["edition_id"], name: "index_v2_time_period_date_ranges_on_edition_id"
+  end
+
+  create_table "v2_versions", force: :cascade do |t|
+    t.text "item_type", null: false
+    t.integer "item_id", null: false
+    t.integer "event", null: false
+    t.text "whodunnit"
+    t.text "state"
+    t.json "field_diffs"
+    t.text "updated_embedded_object_type"
+    t.text "updated_embedded_object_title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_id"], name: "index_v2_versions_on_item_id"
+    t.index ["item_type"], name: "index_v2_versions_on_item_type"
   end
 
   create_table "versions", force: :cascade do |t|
