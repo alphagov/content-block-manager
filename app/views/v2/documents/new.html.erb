@@ -1,0 +1,18 @@
+<% content_for :context, "Create content block" %>
+
+<% if flash[:error] %>
+  <%= render Edition::New::ErrorSummaryComponent.new(
+    error_message: flash[:error],
+  ) %>
+<% end %>
+
+<% content_for :back_link do %>
+  <%= render "govuk_publishing_components/components/back_link", {
+    href: v2_documents_path,
+  } %>
+<% end %>
+
+<%= render "form",
+           heading: content_for(:title),
+           heading_caption: content_for(:context),
+           error_message: flash[:error] %>
