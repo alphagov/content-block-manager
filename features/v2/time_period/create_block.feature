@@ -24,6 +24,10 @@ Feature: Create Time Period Edition
     When I click the back link
     Then I see the select content block type page
 
+  Scenario: Editor can cancel creation to return to the select content block type page
+    When I click the cancel link
+    Then I see the select content block type page
+
   Scenario: Editor is informed when creating a new Time Period Edition incorrectly
     When I fill the Time Period Edition details incorrectly
     And I save and continue
