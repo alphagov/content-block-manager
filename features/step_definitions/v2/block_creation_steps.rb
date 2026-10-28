@@ -111,14 +111,16 @@ And("I continue to the date range page") do
 
   edition = V2::TimePeriodEdition.last
 
-  expect(current_path).to eq(edit_v2_time_period_edition_time_period_date_range_path(
+  expect(current_path).to eq(edit_v2_document_edition_date_range_path(
+                               edition.document,
                                edition,
                              ))
 end
 
 Then("I see the pre publication review page") do
   edition = V2::TimePeriodEdition.last
-  expect(current_path).to eq(new_v2_time_period_edition_pre_publication_review_path(
+  expect(current_path).to eq(new_v2_document_edition_pre_publication_review_path(
+                               edition.document,
                                edition,
                              ))
   expect(page).to have_content("Review time period")
@@ -126,7 +128,7 @@ end
 
 Given("I am on the edit date range page") do
   edition = V2::TimePeriodEdition.last
-  visit edit_v2_time_period_edition_time_period_date_range_path(edition)
+  visit edit_v2_document_edition_date_range_path(edition.document, edition)
 end
 
 Then("I see the edit date range page") do
