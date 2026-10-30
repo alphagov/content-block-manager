@@ -16,6 +16,10 @@ module V2::Edition::Workflow
       def in_progress_states
         available_states - finalised_states
       end
+
+      def finalised_states
+        %i[published]
+      end
     end
 
     state_machine auto_scopes: true do
