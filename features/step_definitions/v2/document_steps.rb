@@ -21,6 +21,10 @@ Given("a {string} document in the {string} state exists") do |type, state|
   create_document_with_state(state:, type:)
 end
 
+And("that document has a previous published edition") do
+  create_previous_published_edition
+end
+
 When("I visit that document") do
   visit v2_document_path(@document)
 end
@@ -41,7 +45,7 @@ Then("I have the ability to edit the draft edition") do
   should_see_document_button(button_text, href: edit_v2_document_edition_path(@document, @document.most_recent_edition))
 end
 
-And("I have the ability to view the current published edition [not currently functional]") do
+And("I have the ability to view the current published edition") do
   should_see_document_link(I18n.t("v2.document.show.links.published_edition"))
 end
 
