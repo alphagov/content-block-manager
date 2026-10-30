@@ -96,12 +96,16 @@ RSpec.describe "V2 documents", type: :request do
       before do
         @document = create(:v2_document)
 
-        create(
+        @edition = create(
           :v2_time_period_edition,
           document: @document,
           lead_organisation_id: organisation.id,
           created_at: 1.day.ago,
         )
+
+        allow_any_instance_of(V2::Document::Show::MetadataSummaryListComponent)
+          .to receive(:current_state_label)
+          .and_return("some notes about the current state")
       end
 
       it "renders the show page for that document" do
@@ -110,6 +114,16 @@ RSpec.describe "V2 documents", type: :request do
         expect(response).to have_http_status(:success)
         expect(response).to render_template("v2/documents/show")
         expect(response.body).to include(@document.title)
+      end
+
+      it "renders the metadata summary list component" do
+        get v2_document_path(@document)
+
+        expect(page).to have_summary_row.with_key("Time period name").with_value(@edition.title)
+        expect(page).to have_summary_row.with_key("Description").with_value(@edition.description)
+        expect(page).to have_summary_row.with_key("Lead organisation").with_value(@edition.lead_organisation.name)
+        expect(page).to have_summary_row.with_key("Instructions to publishers").with_value(@edition.instructions_to_publishers)
+        expect(page).to have_summary_row.with_key("Status").with_value("some notes about the current state")
       end
     end
 
