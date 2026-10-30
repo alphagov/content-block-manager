@@ -34,13 +34,3 @@ Scenario: GDS Editor can see the Show Document page for a Draft document
   Then I see the document metadata for the "Draft" "Time period" document
   And I have the ability to edit the draft edition
   And I have the ability to view the current published edition [not currently functional]
-
-  Scenario: GDS Editor can see the Show Document page for a Scheduled document
-  # To-do:
-    # Without state properly implemented, the "Go to published edition" never appears.
-    # This test will need splitting into two/updating when that is done
-    Given a "Time period" document in the "Scheduled" state exists
-    When I visit that document
-    Then I see the document metadata for the "Scheduled" "Time period" document
-    And I have the ability to edit the draft edition
-    And I have the ability to view the current published edition [not currently functional]

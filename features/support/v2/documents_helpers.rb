@@ -2,11 +2,8 @@ module DocumentsHelpers
   def create_document_with_state(state:, type: "Time period")
     edition_type = "v2_#{type}_edition".parameterize.underscore.to_sym
     organisation = Organisation.all.first
-    edition = FactoryBot.create(edition_type, lead_organisation_id: organisation.id)
+    @edition = FactoryBot.create(edition_type, lead_organisation_id: organisation.id, state: state.parameterize.underscore)
     @document = edition.document
-
-    # When workflow implemented, apply state properly. For now, store as variable
-    @document_state = state.parameterize.underscore
   end
 
   def should_see_title_of_document_contains(title)

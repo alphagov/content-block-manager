@@ -27,9 +27,6 @@ module V2
       @document = Document.find(params[:id])
       @edition = @document.most_recent_edition
 
-      # This is temporary to allow for feature testing until state is properly implemented
-      @edition.state = params[:state] if params[:state]
-
       render :show
     rescue ActiveRecord::RecordNotFound
       redirect_to v2_documents_path(default_filters),
