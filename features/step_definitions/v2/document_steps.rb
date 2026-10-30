@@ -44,3 +44,25 @@ end
 And("I have the ability to view the current published edition [not currently functional]") do
   should_see_document_link(I18n.t("v2.document.show.links.published_edition"))
 end
+
+And("I follow the link to create a new content block") do
+  click_link("Create content block")
+end
+
+And("I visit the content block list page") do
+  visit v2_documents_path
+end
+
+And("I select {string}") do |block_type|
+  choose block_type
+end
+
+Then("I see the select content block type page") do
+  within "h1" do
+    expect(page).to have_content("Select a content block")
+  end
+end
+
+Then("I see an error telling me to select a block type") do
+  expect(page).to have_content("Select a content block")
+end

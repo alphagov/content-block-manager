@@ -6,7 +6,11 @@ Feature: Create Time Period Edition
   Background:
     Given I am logged in
     And the organisation "Ministry of Example" exists
-    And I am viewing the form to create a new Time Period Edition
+    And I visit the content block list page
+    And I follow the link to create a new content block
+    And I select "Time period"
+    And I save and continue
+    Then I am viewing the form to create a new Time Period Edition
 
   Scenario: Editor can create a new Time Period Edition
     When I fill the Time Period Edition details correctly
@@ -15,6 +19,14 @@ Feature: Create Time Period Edition
     And I save and continue
     Then I see the pre publication review page
     And I see that the Edition was created successfully
+
+  Scenario: Editor can navigate back to the select content block type page
+    When I click the back link
+    Then I see the select content block type page
+
+  Scenario: Editor can cancel creation to return to the select content block type page
+    When I click the cancel link
+    Then I see the select content block type page
 
   Scenario: Editor is informed when creating a new Time Period Edition incorrectly
     When I fill the Time Period Edition details incorrectly

@@ -41,6 +41,10 @@ en:
               invalid: "Start is invalid"
             end:
               invalid: "End is invalid"
+        v2/document:
+          attributes:
+            block_type:
+              blank: Select a content block
         v2/edition:
           attributes:
             title:
@@ -450,6 +454,8 @@ en:
         links:
           newer_draft_edition: Return to latest edition
           published_edition: Go to published edition
+      new:
+        title: Select a content block
 
     time_period_edition:
       new:

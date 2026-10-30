@@ -36,10 +36,27 @@ module V2
                   flash: { error: I18n.t("v2.document.show.errors.document_not_found", id: params[:id]) }
     end
 
+    def new; end
+
+    def create
+      block_type = params[:block_type]
+      if block_type.blank?
+        redirect_to new_v2_document_path, flash: { error: I18n.t("activerecord.errors.models.v2/document.attributes.block_type.blank") }
+      else
+        redirect_to path_for_selected_type(block_type)
+      end
+    end
+
   private
 
     def default_filters
       { lead_organisation: "" }
+    end
+
+    def path_for_selected_type(block_type)
+      if block_type == "time_period"
+        new_v2_time_period_edition_path
+      end
     end
   end
 end

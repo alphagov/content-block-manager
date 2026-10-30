@@ -65,6 +65,14 @@
       text: I18n.t("buttons.save_and_continue"),
       type: "submit",
       } %>
+
+  <%= render "govuk_publishing_components/components/button", {
+      text: I18n.t("buttons.cancel"),
+      name: "cancel",
+      value: I18n.t("buttons.cancel"),
+      href: new_v2_document_path,
+      secondary_solid: true,
+    } %>
   </div>
 
 <% end %>

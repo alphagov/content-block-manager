@@ -39,3 +39,8 @@ Scenario: Blocks are ordered by most recently created edition
   And a content block exists with title "Newer document" created 1 hour ago
   When I visit the V2 index page
   Then I should see "Newer document" listed before "Older document"
+
+Scenario: GDS Editor can navigate to create content block page
+  When I visit the V2 index page
+  And I follow the link to create a new content block
+  Then I see the select content block type page

@@ -125,4 +125,32 @@ RSpec.describe "V2 documents", type: :request do
       end
     end
   end
+
+  describe "GET /v2/documents/new" do
+    it "renders the new document template" do
+      get new_v2_document_path
+
+      expect(response).to render_template("v2/documents/new")
+    end
+  end
+
+  describe "POST v2/documents" do
+    context "when passed a time period block type param" do
+      it "redirects to the new time period edition path" do
+        post v2_documents_path, params: { block_type: "time_period" }
+
+        expect(response).to redirect_to(new_v2_time_period_edition_path)
+      end
+    end
+
+    context "when passed an empty block type param" do
+      it "redirects to the new v2 document path with an error message" do
+        post v2_documents_path, params: { block_type: "" }
+
+        expect(response).to redirect_to(new_v2_document_path)
+        follow_redirect!
+        expect(response.body).to include(I18n.t("activerecord.errors.models.v2/document.attributes.block_type.blank"))
+      end
+    end
+  end
 end
