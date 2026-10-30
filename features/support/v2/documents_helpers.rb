@@ -6,6 +6,12 @@ module DocumentsHelpers
     @document = edition.document
   end
 
+  def create_previous_published_edition
+    edition_type = "v2_#{@document.block_type}_edition".parameterize.underscore.to_sym
+
+    FactoryBot.create(edition_type, document: @document, created_at: @document.most_recent_edition.created_at - 10.minutes, state: "published")
+  end
+
   def should_see_title_of_document_contains(title)
     expect(page).to have_css(".govuk-heading-xl", text: title)
   end
