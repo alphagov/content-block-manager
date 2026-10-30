@@ -29,4 +29,12 @@
             ),
           ) %>
   </div>
+
+  <div class="govuk-grid-column-full">
+    <%= render(
+          V2::Document::Show::MetadataSummaryListComponent.new(
+            edition: @edition,
+          ),
+        ) %>
+  </div>
 </div>

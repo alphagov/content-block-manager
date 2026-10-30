@@ -22,7 +22,7 @@ Given("a {string} document in the {string} state exists") do |type, state|
 end
 
 When("I visit that document") do
-  visit v2_document_path(@document, state: @document_state)
+  visit v2_document_path(@document)
 end
 
 Then("I see the document metadata for the {string} {string} document") do |state, type|
@@ -37,7 +37,7 @@ Then("I have the ability to create a new draft edition for the document [not cur
 end
 
 Then("I have the ability to edit the draft edition") do
-  button_text = @document_state == "draft" ? I18n.t("v2.document.show.buttons.finalised_in_draft") : I18n.t("v2.document.show.buttons.finalised_not_in_draft")
+  button_text = @edition.state == "draft" ? I18n.t("v2.document.show.buttons.finalised_in_draft") : I18n.t("v2.document.show.buttons.finalised_not_in_draft")
   should_see_document_button(button_text, href: edit_v2_document_edition_path(@document, @document.most_recent_edition))
 end
 

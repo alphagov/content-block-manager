@@ -454,9 +454,14 @@ en:
         links:
           newer_draft_edition: Return to latest edition
           published_edition: Go to published edition
+        metadata_labels:
+          organisation: Lead organisation
+          instructions_to_publishers: Instructions to publishers
+          description: Description
+          status: Status
       new:
         title: Select a content block
-
+        
     time_period_edition:
       new:
         title: 'Create time period'
