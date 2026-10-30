@@ -22,10 +22,6 @@ module V2
       raise NotImplementedError, "Subclasses must implement #to_details method"
     end
 
-    def publish
-      update(state: :published)
-    end
-
     class << self
       def published
         %w[placeholder placeholder]
