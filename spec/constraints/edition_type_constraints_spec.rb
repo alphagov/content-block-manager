@@ -1,5 +1,6 @@
 RSpec.describe EditionTypeConstraints do
-  let(:edition) { create(:v2_time_period_edition) }
+  let(:document) { create(:v2_document) }
+  let!(:edition) { create(:v2_time_period_edition, document: document) }
 
   describe "#matches?" do
     it "returns true when the edition is the same type the constraint is initialised for" do
@@ -7,9 +8,19 @@ RSpec.describe EditionTypeConstraints do
       expect(constraint.matches?(request_for(id: edition.id.to_s))).to be true
     end
 
+    it "returns true when only :document_id is provided, and the block_type is the same type the constraint is initialised for" do
+      constraint = described_class.new("V2::TimePeriodEdition")
+      expect(constraint.matches?(request_for(document_id: document.id.to_s))).to be true
+    end
+
     it "returns false when the edition is not the same type the constraint is initialised for" do
       constraint = described_class.new("Edition")
       expect(constraint.matches?(request_for(id: edition.id.to_s))).to be false
+    end
+
+    it "returns false when only :document_id is provided, and the block_type is not the same type the constraint is initialised for" do
+      constraint = described_class.new("Edition")
+      expect(constraint.matches?(request_for(document_id: document.id.to_s))).to be false
     end
 
     it "will use :edition_id over :id for nested queries" do
@@ -28,7 +39,7 @@ RSpec.describe EditionTypeConstraints do
       expect(described_class.new("V2::TimePeriodEdition").matches?(request)).to be true
     end
 
-    it "returns false for a request lacking :edition_id or :id" do
+    it "returns false for a request lacking both :document_id and (:edition_id or :id)" do
       constraint = described_class.new("V2::TimePeriodEdition")
       expect(constraint.matches?(request_for(foo: "bar"))).to be false
     end
