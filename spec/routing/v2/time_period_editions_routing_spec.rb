@@ -19,6 +19,10 @@ RSpec.describe "V2 time period editions routing", type: :routing do
         it "routes '/v2/documents/:document_id/editions/new' to 'v2/time_period_editions#new'" do
           expect(get: "/v2/documents/1234/editions/new").to route_to("v2/time_period_editions#new", document_id: "1234")
         end
+
+        it "routes 'v2/documents/:document_id/editions' to 'v2/time_period_editions#create'" do
+          expect(post: "/v2/documents/1234/editions").to route_to("v2/time_period_editions#create", document_id: "1234")
+        end
       end
 
       describe "V2 Time period date ranges controller" do
