@@ -101,4 +101,26 @@ RSpec.describe V2::Edition, type: :model do
       expect(edition).to be_draft
     end
   end
+
+  describe "#show_embed_codes?" do
+    %i[published scheduled].each do |state|
+      context "when in the '#{state}' state" do
+        let(:edition) { build(:v2_edition, state:) }
+
+        it "returns true" do
+          expect(edition.show_embed_codes?).to be true
+        end
+      end
+    end
+
+    (V2::Edition.available_states - %i[published scheduled]).each do |state|
+      context "when in the non-published/scheduled state '#{state}'" do
+        let(:edition) { build(:v2_edition, state:) }
+
+        it "returns false" do
+          expect(edition.show_embed_codes?).to be false
+        end
+      end
+    end
+  end
 end
