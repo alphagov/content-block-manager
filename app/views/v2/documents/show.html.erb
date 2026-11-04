@@ -37,4 +37,12 @@
           ),
         ) %>
   </div>
+
+  <div class="govuk-grid-column-full">
+    <%= render(
+          Edition::Show::DefaultBlockComponent.new(
+            edition: @edition,
+            ),
+          ) %>
+  </div>
 </div>

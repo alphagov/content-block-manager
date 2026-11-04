@@ -22,6 +22,20 @@ module V2
       raise NotImplementedError, "Subclasses must implement #to_details method"
     end
 
+    def render(embed_code = document.embed_code)
+      ContentBlockTools::ContentBlock.new(
+        document_type: "content_block_#{document.block_type}",
+        content_id: document.content_id,
+        title:,
+        details: to_details,
+        embed_code:,
+      ).render
+    end
+
+    def show_embed_codes?
+      published? || scheduled?
+    end
+
   private
 
     def set_document_sluggable_string
