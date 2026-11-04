@@ -69,16 +69,19 @@ RSpec.describe V2::TimePeriodDateRange, type: :model do
   end
 
   describe "#to_details" do
-    it "returns a hash with formatted start and end datetime" do
+    it "returns a hash with formatted start and end datetime in ISO 8601 standard format" do
       date_range = described_class.new(
         start: Time.zone.parse("2025-04-06 00:00"),
         end: Time.zone.parse("2026-04-05 23:59"),
       )
 
       expect(date_range.to_details).to eq({
-        "start" => "2025-04-06 00:00:00.00000000 +0100 ",
-        "end" => "2026-04-05 23:59:00.00000000 +0100",
+        "start" => "2025-04-06T00:00:00+01:00",
+        "end" => "2026-04-05T23:59:00+01:00",
       })
+
+      expect(date_range.to_details["start"]).to be_a(String)
+      expect(date_range.to_details["end"]).to be_a(String)
     end
   end
 end
