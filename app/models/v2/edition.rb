@@ -16,28 +16,12 @@ module V2
 
     scope :most_recent_first, -> { order(created_at: :desc) }
 
+    scope :published, -> { where(state: "published") }
+
     # Abstract method to be implemented by subclasses
     # Returns a hash representation of the edition's details
     def to_details
       raise NotImplementedError, "Subclasses must implement #to_details method"
-    end
-
-    def publish
-      update(state: :published)
-    end
-
-    class << self
-      def published
-        %w[placeholder placeholder]
-      end
-
-      def available_states
-        %i[published draft]
-      end
-
-      def finalised_states
-        %i[published]
-      end
     end
 
   private
