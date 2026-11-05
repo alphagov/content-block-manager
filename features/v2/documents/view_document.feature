@@ -23,6 +23,7 @@ Scenario: GDS Editor can see the Show Document page for a Published document
   Given a "Time period" document in the "Published" state exists
   When I visit that document
   Then I see the document metadata for the "Published" "Time period" document
+  And I see the default block for the document
   And I have the ability to create a new draft edition for the document [not currently functional]
 
 Scenario: GDS Editor can see the Show Document page for a Draft document
