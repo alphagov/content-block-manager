@@ -17,6 +17,15 @@
 <hr class="govuk-section-break govuk-!-margin-bottom-8 govuk-section-break--visible">
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
+    <% if Flipflop.enabled?(:show_snippets) %>
+      <%= render BlockPreview::TabsComponent.new(
+        current_tab: @current_tab,
+        snippet_count: @snippets.count,
+        block: @block,
+        preview_content: @preview_content,
+      ) %>
+    <% end %>
+
     <%= turbo_frame_tag "preview_frame_#{@block.id}" do %>
       <%= render partial: "iframe" %>
     <% end %>

@@ -1,0 +1,31 @@
+<% content_for :page_title, "Preview content block in host document" %>
+<% content_for :context, "Preview #{@block.block_type.humanize.downcase}" %>
+<% content_for :title, @preview_content.title %>
+<% content_for :title_margin_bottom, 1 %>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-body govuk-!-margin-bottom-0">
+    <%= render(BlockPreview::PreviewDetailsComponent.new(
+      block: @block,
+      preview_content: @preview_content)) %>
+  </div>
+</div>
+<hr class="govuk-section-break govuk-!-margin-bottom-8 govuk-section-break--visible">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <%= render BlockPreview::TabsComponent.new(
+      current_tab: @current_tab,
+      snippet_count: @snippets.count,
+      block: @block,
+      preview_content: @preview_content,
+    ) %>
+
+    <div class="result-wrapper">
+      <% @snippets.each do |snippet| %>
+        <div class="result govspeak compare-editions">
+          <%= snippet.to_html.html_safe %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

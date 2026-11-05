@@ -1,6 +1,6 @@
 class BlockPreview::ContentDiff
   def initialize(html, block)
-    @before = html.at_css('[data-module="govspeak"]')
+    @before = html
     @block = block
   end
 
@@ -12,8 +12,10 @@ private
 
   def diff_fragment
     @diff_fragment ||= begin
-      fragment = Nokogiri::HTML.fragment(Nokodiff.diff(before, after))
-      fragment.children.first.add_class("compare-editions")
+      fragment = Nokogiri::HTML.fragment(Nokodiff.diff(before.to_s, after.to_s))
+      wrapped = Nokogiri::HTML.fragment("<div class='compare-editions'></div>")
+      wrapped.at_css("div").add_child(fragment)
+      wrapped.to_html
     end
   end
 

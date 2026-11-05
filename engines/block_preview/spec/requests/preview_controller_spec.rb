@@ -13,6 +13,7 @@ RSpec.describe BlockPreview::PreviewController, type: :request do
   before do
     allow(ContentBlock).to receive(:from_edition_id).and_return(block)
     allow(BlockPreview::PreviewContent).to receive(:new).and_return(mock_preview_content)
+    allow(Flipflop).to receive(:enabled?).with(:show_snippets).and_return(false)
   end
 
   describe "GET #show" do

@@ -44,6 +44,11 @@ Given(/^there is a (draft|published) host document with a link$/) do |host_type|
   stub_publishing_api_has_embedded_content_details(@dependent_content.first, "en", host_type)
 end
 
+Given(/^the show_snippets feature flag is( not)? turned on$/) do |negated|
+  allow(Flipflop).to receive(:enabled?).and_call_original
+  allow(Flipflop).to receive(:enabled?).with(:show_snippets).and_return(negated.nil?)
+end
+
 Given("there is a host document that is a smart answer") do
   @current_host_document = @dependent_content.first
   embed_code = "{{embed:#{@current_host_document['block_type']}:#{@current_host_document['content_id']}}}"

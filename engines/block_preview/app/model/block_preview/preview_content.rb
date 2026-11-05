@@ -2,7 +2,7 @@ module BlockPreview
   class PreviewContent
     VALID_STATES = %w[published draft].freeze
 
-    attr_reader :state
+    attr_reader :state, :content_id, :block, :base_path, :locale
 
     def initialize(content_id:, block:, base_path: nil, locale: "en", state: "published")
       @content_id = content_id
@@ -32,8 +32,6 @@ module BlockPreview
     end
 
   private
-
-    attr_reader :content_id, :block, :base_path, :locale
 
     def validated_state(state)
       return state if VALID_STATES.include?(state)

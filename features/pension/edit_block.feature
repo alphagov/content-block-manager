@@ -132,6 +132,7 @@ Feature: Edit a pension block
   @javascript
   Scenario: GDS editor can preview a host document
     Given there is a published host document with a link
+    And the show_snippets feature flag is not turned on
     When I revisit the edit page
     And I save and continue
     When I click on the first host document
@@ -142,6 +143,7 @@ Feature: Edit a pension block
   @javascript
   Scenario: GDS editor can preview a host document within a smart answer
     Given there is a host document that is a smart answer
+    And the show_snippets feature flag is not turned on
     When I revisit the edit page
     And I save and continue
     When I click on the first host document

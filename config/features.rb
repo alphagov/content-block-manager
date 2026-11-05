@@ -30,4 +30,8 @@ Flipflop.configure do
   feature :ga4_form_tracking,
           description: "Add GA4 form tracking to Content Block Manager",
           default: ContentBlockManager.integration_or_staging? || !Rails.env.production?
+
+  feature :show_snippets,
+          description: "Show snippets in Content Block preview",
+          default: ContentBlockManager.integration_or_staging? || !Rails.env.production?
 end
