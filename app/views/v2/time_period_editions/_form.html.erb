@@ -70,7 +70,7 @@
       text: I18n.t("buttons.cancel"),
       name: "cancel",
       value: I18n.t("buttons.cancel"),
-      href: new_v2_document_path,
+      href: params[:document_id] ? v2_document_path(@document) : new_v2_document_path,
       secondary_solid: true,
     } %>
   </div>

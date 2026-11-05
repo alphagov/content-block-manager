@@ -11,13 +11,13 @@ Feature: View documents
 Scenario: GDS Editor can navigate from the Documents Index page to the Show page for given documents
   Given I visit the V2 index page
   And I click the View link for "British Summer Time"
-  Then I am taken to the Show page for "British Summer Time"
+  Then I see the Show page for "British Summer Time"
 
   When I click the back link
   Then I am returned to the V2 index page
 
   And I click the View link for "Summer Internship Scheme"
-  Then I am taken to the Show page for "Summer Internship Scheme"
+  Then I see the Show page for "Summer Internship Scheme"
 
 @javascript
 Scenario: GDS Editor can see the Show Document page for a Published document
@@ -30,7 +30,7 @@ Scenario: GDS Editor can see the Show Document page for a Published document
   And I see the default block for the document
   And I see the rollup data for the document
   And I see the places the content block is used
-  And I have the ability to create a new draft edition for the document [not currently functional]
+  And I have the ability to create a new draft edition for the document
 
 Scenario: GDS Editor can see the Show Document page for a Draft document
   Given a "Time period" document in the "Draft" state exists

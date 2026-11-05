@@ -13,7 +13,7 @@ Then("I click the View link for {string}") do |document_title|
   end
 end
 
-Then("I am taken to the Show page for {string}") do |document_title|
+Then("I see the Show page for {string}") do |document_title|
   should_see_title_of_document_contains(document_title)
 end
 
@@ -35,9 +35,12 @@ Then("I see the document metadata for the {string} {string} document") do |state
   should_see_block_type_of_document(type)
 end
 
-Then("I have the ability to create a new draft edition for the document [not currently functional]") do
-  # Currently the button is displayed, but is not functional
-  should_see_document_button("Edit #{@document.block_type.humanize.downcase}")
+Then("I have the ability to create a new draft edition for the document") do
+  should_see_document_button("Edit #{@document.block_type.humanize.downcase}", href: new_v2_document_edition_path(@document))
+end
+
+And("I click the link to Edit Time Period") do
+  click_link("Edit #{@document.block_type.humanize.downcase}")
 end
 
 Then("I have the ability to edit the draft edition") do
