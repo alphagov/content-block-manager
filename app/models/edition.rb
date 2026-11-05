@@ -1,5 +1,10 @@
 class Edition < ApplicationRecord
-  validates :title, presence: true
+  validates :title, presence: {
+    message: lambda do |edition, _|
+      I18n.t("activerecord.errors.models.edition.blank",
+             attribute_with_indefinite_article: edition.document.title_name_with_indefinite_article)
+    end,
+  }
   validates :change_note, presence: true, if: :major_change?, on: :change_note
   validates :major_change, inclusion: [true, false], on: :change_note
 

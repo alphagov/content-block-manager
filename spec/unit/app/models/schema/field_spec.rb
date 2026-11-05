@@ -248,6 +248,113 @@ RSpec.describe Schema::Field do
     end
   end
 
+  describe "#all_nested_fields" do
+    context "when field has no nested fields" do
+      let(:body) do
+        {
+          "properties" => {
+            "something" => {
+              "type" => "string",
+            },
+          },
+        }
+      end
+
+      it "returns an empty array" do
+        expect(field.all_nested_fields).to eq([])
+      end
+    end
+
+    context "when field has nested fields but no deeper nesting" do
+      let(:body) do
+        {
+          "properties" => {
+            "something" => {
+              "type" => "object",
+              "properties" => {
+                "foo" => { "type" => "string" },
+                "bar" => { "type" => "string" },
+              },
+            },
+          },
+        }
+      end
+
+      it "returns the direct nested fields" do
+        all_nested = field.all_nested_fields
+        expect(all_nested.map(&:name)).to eq(%w[foo bar])
+        expect(all_nested.count).to eq(2)
+      end
+    end
+
+    context "when field has deeply nested fields" do
+      let(:body) do
+        {
+          "properties" => {
+            "something" => {
+              "type" => "object",
+              "properties" => {
+                "level1" => { "type" => "string" },
+                "nested_obj" => {
+                  "type" => "object",
+                  "properties" => {
+                    "level2" => { "type" => "string" },
+                    "level2b" => { "type" => "string" },
+                  },
+                },
+              },
+            },
+          },
+        }
+      end
+
+      it "returns all nested fields including deeply nested ones" do
+        all_nested = field.all_nested_fields
+        field_names = all_nested.map(&:name)
+
+        expect(field_names).to include("level1")
+        expect(field_names).to include("nested_obj")
+        expect(field_names).to include("level2")
+        expect(field_names).to include("level2b")
+        expect(all_nested.count).to eq(4)
+      end
+    end
+
+    context "when field has nested arrays with objects" do
+      let(:body) do
+        {
+          "properties" => {
+            "something" => {
+              "type" => "object",
+              "properties" => {
+                "items" => {
+                  "type" => "array",
+                  "items" => {
+                    "type" => "object",
+                    "properties" => {
+                      "name" => { "type" => "string" },
+                      "value" => { "type" => "string" },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        }
+      end
+
+      it "includes fields from nested arrays" do
+        all_nested = field.all_nested_fields
+        field_names = all_nested.map(&:name)
+
+        expect(field_names).to include("items")
+        expect(field_names).to include("name")
+        expect(field_names).to include("value")
+        expect(all_nested.count).to eq(3)
+      end
+    end
+  end
+
   describe "#array_items" do
     describe "when there are no properties present" do
       it "returns nil" do

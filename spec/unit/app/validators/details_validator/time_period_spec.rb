@@ -38,7 +38,7 @@ RSpec.describe DetailsValidator do
       it { is_expected.not_to be_valid }
 
       it "adds an error to the start field" do
-        expect(errors[:details_date_range_start]).to include("Start is invalid")
+        expect(errors[:details_date_range_start]).to include("Enter a real date")
       end
     end
 
@@ -48,7 +48,7 @@ RSpec.describe DetailsValidator do
       it { is_expected.not_to be_valid }
 
       it "adds an error to the end field" do
-        expect(errors[:details_date_range_end]).to include("End is invalid")
+        expect(errors[:details_date_range_end]).to include("Enter a real date")
       end
     end
 
@@ -58,7 +58,7 @@ RSpec.describe DetailsValidator do
       it { is_expected.not_to be_valid }
 
       it "adds an error to the end field" do
-        expect(errors[:details_date_range_end]).to include("End must be after date range start")
+        expect(errors[:details_date_range_end]).to include("The end date must be after the start date")
       end
     end
 
@@ -68,7 +68,7 @@ RSpec.describe DetailsValidator do
       it { is_expected.not_to be_valid }
 
       it "adds an error to the end field" do
-        expect(errors[:details_date_range_end]).to include("End must be after date range start")
+        expect(errors[:details_date_range_end]).to include("The end date must be after the start date")
       end
     end
   end

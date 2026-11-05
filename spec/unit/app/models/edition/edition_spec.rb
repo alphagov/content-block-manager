@@ -118,20 +118,30 @@ RSpec.describe Edition, type: :model do
     end
   end
 
-  it "validates the presence of an edition title" do
-    edition = build(
-      :edition,
-      created_at:,
-      updated_at:,
-      details:,
-      document_attributes: {},
-      lead_organisation_id: organisation.id.to_s,
-      title: nil,
-    )
+  {
+    pension: "a title",
+    contact: "a contact name",
+    tax: "a tax name",
+    time_period: "a time period name",
+  }.each do |block_type, attribute_name|
+    context "when the edition is a #{block_type}" do
+      it "validates the presence of an edition title with the correct error message" do
+        edition = build(
+          :edition,
+          block_type,
+          created_at:,
+          updated_at:,
+          details:,
+          document: build(:document, block_type: block_type),
+          lead_organisation_id: organisation.id.to_s,
+          title: nil,
+        )
 
-    aggregate_failures do
-      expect_model_not_to_be_valid(model: edition)
-      expect(edition.errors.full_messages).to include("Title cannot be blank")
+        aggregate_failures do
+          expect_model_not_to_be_valid(model: edition)
+          expect(edition.errors.full_messages).to include("Enter #{attribute_name}")
+        end
+      end
     end
   end
 
@@ -142,7 +152,7 @@ RSpec.describe Edition, type: :model do
 
       aggregate_failures do
         expect_model_not_to_be_valid(model: edition, context: :change_note)
-        expect(edition.errors.full_messages).to include("Change note cannot be blank")
+        expect(edition.errors.full_messages).to include("Enter a change note")
       end
     end
 
