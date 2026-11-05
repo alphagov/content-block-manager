@@ -46,6 +46,10 @@ When("a Time Period Edition exists") do
   puts "Created Time Period Edition with ID: #{@time_period_edition.id}"
 end
 
+And("that edition is published") do
+  @time_period_edition.publish!
+end
+
 And("a date range exists for that time period") do
   FactoryBot.create(
     :v2_time_period_date_range,
@@ -55,6 +59,43 @@ And("a date range exists for that time period") do
   )
 end
 
+And("I am viewing the show document page for that time period") do
+  @document = @time_period_edition.document
+  visit v2_document_path(@document)
+end
+
+And("I see the Time Period Edition fields pre-populated with the existing edition's data") do
+  expect(page).to have_field("edition[title]", with: @time_period_edition.title)
+  expect(page).to have_select("edition[lead_organisation_id]", selected: @time_period_edition.lead_organisation.name)
+  expect(page).to have_field("edition[description]", with: @time_period_edition.description)
+  expect(page).to have_field("edition[instructions_to_publishers]", with: @time_period_edition.instructions_to_publishers)
+end
+
+Then("I see the Time Period Date Range fields pre-populated with the existing date range's data") do
+  range = @time_period_edition.date_range
+
+  expect(page).to have_select("edition[date_range_attributes][start(5i)]", selected: sprintf("%02d", range.start.min))
+  expect(page).to have_select("edition[date_range_attributes][start(4i)]", selected: sprintf("%02d", range.start.hour))
+  expect(page).to have_field("edition[date_range_attributes][start(3i)]", with: range.start.day)
+  expect(page).to have_field("edition[date_range_attributes][start(2i)]", with: range.start.month)
+  expect(page).to have_field("edition[date_range_attributes][start(1i)]", with: range.start.year)
+
+  expect(page).to have_select("edition[date_range_attributes][end(5i)]", selected: sprintf("%02d", range.end.min))
+  expect(page).to have_select("edition[date_range_attributes][end(4i)]", selected: sprintf("%02d", range.end.hour))
+  expect(page).to have_field("edition[date_range_attributes][end(3i)]", with: range.end.day)
+  expect(page).to have_field("edition[date_range_attributes][end(2i)]", with: range.end.month)
+  expect(page).to have_field("edition[date_range_attributes][end(1i)]", with: range.end.year)
+end
+
+When("I update the year for the date range to 2026-2027") do
+  fill_in "edition[date_range_attributes][start(1i)]", with: "2026"
+  fill_in "edition[date_range_attributes][end(1i)]", with: "2027"
+end
+
+And("I update the edition title to {string}") do |title|
+  fill_in "edition[title]", with: title
+end
+
 Then("I see which Time Period Edition errors I need to correct") do
   expect(page).to have_content("Title cannot be blank")
   expect(page).to have_content("Lead organisation cannot be blank")
@@ -62,6 +103,22 @@ end
 
 And("I see that the edition was published successfully") do
   expect(page).to have_content(I18n.t("v2.edition.publish.success"))
+end
+
+And("I see that the document's edition and date range have been updated with the details that I entered") do
+  expect(page).to have_content("Updated edition title")
+  expect(page).to have_content("6 April 2026")
+  expect(page).to have_content("5 April 2027")
+end
+
+And("I fill the Time Period Date Range details with invalid data") do
+  fill_in "edition[date_range_attributes][start(1i)]", with: "Invalid"
+  fill_in "edition[date_range_attributes][end(1i)]", with: "Invalid"
+end
+
+Then("I see errors telling me I have not entered valid dates") do
+  expect(page).to have_content("Start date is not a valid date")
+  expect(page).to have_content("End date is not a valid date")
 end
 
 def fill_in_edition_details(title:, description:, lead_organisation:, instructions:)

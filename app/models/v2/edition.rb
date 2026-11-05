@@ -2,7 +2,7 @@ module V2
   class Edition < ApplicationRecord
     include ::Edition::HasLeadOrganisation
     include ::Edition::HasAuthors
-    include ::Edition::Diffable
+    include V2::Edition::Diffable
     include Workflow
 
     belongs_to :document, class_name: "V2::Document", foreign_key: :v2_document_id, inverse_of: :editions

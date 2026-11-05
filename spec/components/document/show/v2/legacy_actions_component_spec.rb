@@ -40,7 +40,7 @@ RSpec.describe V2::Document::Show::LegacyActionsComponent, type: :component do
 
             it "offers an 'Edit {block type}' button to create a new draft edition" do
               expect(page).to have_css(
-                ".actions a.govuk-button[href='new edition for document - not implemented']",
+                ".actions a.govuk-button[href='/v2/documents/456/editions/new']",
                 text: I18n.t("v2.document.show.buttons.new_edition", block_type: "time period"),
               )
             end

@@ -46,6 +46,125 @@ RSpec.describe "V2 time period editions", type: :request do
     end
   end
 
+  describe "GET /v2/documents/:document_id/editions/new" do
+    describe "when rendering the new template" do
+      let(:organisation) { instance_double(Organisation, id: SecureRandom.uuid, name: "Government Digital Service") }
+      let(:previous_edition) { create(:v2_time_period_edition, lead_organisation_id: organisation.id) }
+      let(:document) { previous_edition.document }
+
+      before do
+        allow(Organisation).to receive(:all).and_return([organisation])
+
+        get new_v2_document_edition_path(document)
+      end
+
+      it "renders the correct page successfully" do
+        expect(response).to have_http_status(:success)
+        expect(response).to render_template("v2/time_period_editions/new")
+      end
+
+      it "contains the correct form with the required fields, pre-populated with the previous edition's content" do
+        expect(page).to have_css("form[action='#{v2_document_editions_path(document)}']") do |form|
+          expect(form).to have_field("edition[title]", text: previous_edition.title)
+          expect(form).to have_field("edition[description]", text: previous_edition.description)
+          expect(form).to have_select("edition[lead_organisation_id]") do |select|
+            expect(select.find("option[selected]")[:value]).to eq(organisation.id)
+          end
+          expect(form).to have_field("edition[instructions_to_publishers]", text: previous_edition.instructions_to_publishers)
+          expect(form).to have_button("Save and continue")
+        end
+      end
+
+      it "contains character-limited fields with the correct character limits" do
+        expect(page).to have_css(".govuk-character-count[data-module='govuk-character-count'][data-maxlength='65']")
+        expect(page).to have_css(".govuk-character-count__message", text: "You can enter up to 65 characters")
+
+        expect(page).to have_css(".govuk-character-count[data-module='govuk-character-count'][data-maxlength='165']")
+        expect(page).to have_css(".govuk-character-count__message", text: "You can enter up to 165 characters")
+      end
+
+      it "uses the existing time period edition from the time period document" do
+        edition = assigns(:edition)
+
+        expect(edition).to be_a(V2::TimePeriodEdition)
+        expect(edition).not_to be_new_record
+        expect(edition).to eq(previous_edition)
+        expect(edition.document).not_to be_new_record
+        expect(edition.document).to eq(document)
+      end
+    end
+  end
+
+  describe "POST /v2/time_period_editions" do
+    let(:organisation) { instance_double(Organisation, id: SecureRandom.uuid, name: "Government Digital Service") }
+
+    before do
+      post v2_time_period_editions_path(edition: { title: "test",
+                                                   lead_organisation_id: organisation.id,
+                                                   instructions_to_publishers: "foo",
+                                                   description: "bar" })
+    end
+
+    describe "when submitting the form" do
+      it "initialises and saves a new time period edition and time period document" do
+        edition = assigns(:edition)
+
+        expect(edition).to be_a(V2::TimePeriodEdition)
+        expect(edition).to be_persisted
+        expect(edition.title).to eq("test")
+        expect(edition.description).to eq("bar")
+        expect(edition.lead_organisation_id).to eq(organisation.id)
+        expect(edition.instructions_to_publishers).to eq("foo")
+        expect(edition.description).to eq("bar")
+        expect(edition.document).to be_persisted
+        expect(edition.document.block_type).to eq("time_period")
+      end
+
+      it "redirects to the time period edition date range path" do
+        expect(response).to redirect_to edit_v2_document_edition_date_range_path(assigns(:document), assigns(:edition))
+        expect(response).to have_http_status(:redirect)
+      end
+    end
+  end
+
+  describe "POST /v2/documents/:document_id/editions/:edition_id" do
+    let(:organisation) { instance_double(Organisation, id: SecureRandom.uuid, name: "Government Digital Service") }
+    let(:previous_edition) { create(:v2_time_period_edition, lead_organisation_id: organisation.id) }
+    let(:document) { previous_edition.document }
+
+    before do
+      post v2_document_editions_path(document,
+                                     previous_edition,
+                                     edition: { title: "test",
+                                                lead_organisation_id: organisation.id,
+                                                instructions_to_publishers: "foo",
+                                                description: "bar" })
+    end
+
+    describe "when submitting the form" do
+      it "initialises and saves a new time period edition, using the existing time period document" do
+        edition = assigns(:edition)
+
+        expect(edition).to be_a(V2::TimePeriodEdition)
+        expect(edition).to be_persisted
+        expect(edition).not_to eq(previous_edition)
+        expect(edition.previous_edition).to eq(previous_edition)
+        expect(edition.title).to eq("test")
+        expect(edition.description).to eq("bar")
+        expect(edition.lead_organisation_id).to eq(organisation.id)
+        expect(edition.instructions_to_publishers).to eq("foo")
+        expect(edition.description).to eq("bar")
+        expect(edition.document).to be_persisted
+        expect(edition.document).to eq(document)
+      end
+
+      it "redirects to the time period edition date range path" do
+        expect(response).to redirect_to edit_v2_document_edition_date_range_path(assigns(:document), assigns(:edition))
+        expect(response).to have_http_status(:redirect)
+      end
+    end
+  end
+
   describe "POST /v2/time_period_edition/:id" do
     before do
       allow(Organisation).to receive(:all).and_return([])
