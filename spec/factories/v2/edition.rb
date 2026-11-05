@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :v2_edition, class: "V2::Edition" do
     sequence(:title) { |n| "V2 edition title #{n}" }
 
-    state { "draft" }
+    state { :draft }
 
     association :document, factory: :v2_document
 
@@ -11,7 +11,11 @@ FactoryBot.define do
     association :creator, factory: :user
 
     trait :published do
-      state { "published" }
+      state { :published }
+    end
+
+    trait :draft do
+      state { :draft }
     end
   end
 end

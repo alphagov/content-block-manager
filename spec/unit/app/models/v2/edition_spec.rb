@@ -74,14 +74,6 @@ RSpec.describe V2::Edition, type: :model do
         expect(edition).to be_valid
       end
     end
-
-    describe "state enum validation" do
-      it do
-        is_expected.to define_enum_for(:state)
-          .with_values(draft: "draft", published: "published", scheduled: "scheduled", deleted: "deleted", superseded: "superseded")
-          .backed_by_column_of_type(:string)
-      end
-    end
   end
 
   describe "#to_details" do

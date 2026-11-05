@@ -12,8 +12,6 @@ module V2
 
     before_validation :set_document_sluggable_string, on: :create
 
-    enum :state, draft: "draft", published: "published", scheduled: "scheduled", superseded: "superseded", deleted: "deleted"
-
     scope :most_recent_first, -> { order(created_at: :desc) }
 
     scope :published, -> { where(state: "published") }

@@ -25,9 +25,10 @@ module V2::Edition::Workflow
     state_machine auto_scopes: true do
       state :draft
       state :published
+      state :scheduled
 
       event :publish do
-        transitions from: :draft, to: :published
+        transitions from: %i[draft scheduled], to: :published
       end
     end
 
