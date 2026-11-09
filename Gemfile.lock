@@ -236,7 +236,7 @@ GEM
       plek (>= 1.9.0)
       rack (>= 2.2.0)
       rest-client (~> 2.0)
-    gds-sso (23.0.0)
+    gds-sso (23.1.0)
       oauth2 (~> 2.0)
       omniauth (~> 2.1)
       omniauth-oauth2 (~> 1.8)
@@ -1113,7 +1113,7 @@ CHECKSUMS
   flipflop (2.8.0) sha256=90ff7125918793aa3db2fd8479cc612106bd880c86552029119d915f668e9789
   friendly_id (5.7.0) sha256=b8994416ebaceebc7c60bc556e84ef32a3a663e2e582eb04c429216cc98de4c4
   gds-api-adapters (103.5.0) sha256=92988ac084ef720b0f03f6f678e291795278d8f06620dc59f9b0a42ee4daf14b
-  gds-sso (23.0.0) sha256=869f52f7f0766e3cd4fa22e06870498dec9d488457b87cf0c4a878d304df8cbb
+  gds-sso (23.1.0) sha256=3b466beabcca2a0fe480b9ede41fdf2a606071744962658114251277bb45011d
   globalid (1.4.0) sha256=037f12fbf1d9d7a014d501c2d5c77356fd4ddd96d7a7991d6700bba96706f427
   google-protobuf (4.36.2) sha256=2f8daff50ae14aad36ab0ccdcf284065fa71d726c444efe114e6db82ffe62494
   google-protobuf (4.36.2-aarch64-linux-gnu) sha256=c3279ec6eaa59f6ed6276eda2a33cffb4306471183ab79a332e698b8564f5169
