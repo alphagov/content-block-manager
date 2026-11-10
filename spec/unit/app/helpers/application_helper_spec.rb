@@ -1,4 +1,42 @@
 RSpec.describe ApplicationHelper, type: :helper do
+  describe "create_blocks?" do
+    context "when the logged-in user HAS 'create_blocks' permission set" do
+      before do
+        def helper.current_user
+          FactoryBot.build(:user).tap { |u| u.permissions << "create_blocks" }
+        end
+      end
+
+      it "returns true" do
+        expect(helper.create_blocks?).to be true
+      end
+    end
+
+    context "when the logged-in user does NOT have 'create_blocks' permission set" do
+      before do
+        def helper.current_user
+          FactoryBot.build(:user).tap { |u| u.permissions = [] }
+        end
+      end
+
+      it "returns true" do
+        expect(helper.create_blocks?).to be false
+      end
+    end
+
+    context "when user is nil" do
+      before do
+        def helper.current_user
+          nil
+        end
+      end
+
+      it "returns false" do
+        expect(helper.create_blocks?).to be false
+      end
+    end
+  end
+
   describe "pre_release_features?" do
     before do
       # As #current_user is included by Devise as a *controller* helper it's
