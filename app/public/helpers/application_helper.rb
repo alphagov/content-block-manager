@@ -4,7 +4,10 @@ module ApplicationHelper
   include ActionView::Helpers::RecordTagHelper
 
   def create_blocks?
-    return true if current_user&.has_permission?(User::Permissions::CREATE_BLOCKS_PERMISSION)
+    return false unless current_user
+    return true unless Flipflop.disable_block_creation?
+
+    return true if current_user.has_permission?(User::Permissions::CREATE_BLOCKS_PERMISSION)
 
     false
   end

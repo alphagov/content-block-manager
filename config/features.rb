@@ -23,6 +23,11 @@ Flipflop.configure do
   # feature :world_domination,
   #   default: true,
   #   description: "Take over the world."
+
+  feature :disable_block_creation,
+          description: "Suppress the 'Create content block' CTA on the homepage",
+          default: false
+
   feature :show_all_content_block_types,
           description: "Show all applicable content block types in Content Block Manager",
           default: ContentBlockManager.integration_or_staging? || !Rails.env.production?
