@@ -30,6 +30,14 @@
           ) %>
   </div>
 
+  <%=
+    render(
+      Document::Show::HostEditionsRollupComponent.new(
+        rollup: @host_content_items.rollup,
+      ),
+    )
+  %>
+
   <div class="govuk-grid-column-full">
     <%= render(
           V2::Document::Show::MetadataSummaryListComponent.new(
