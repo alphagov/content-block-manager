@@ -11,8 +11,8 @@ module V2
 
     def to_details
       {
-        "start" => start,
-        "end" => self.end,
+        "start" => start.iso8601,
+        "end" => self.end.iso8601,
       }
     end
 

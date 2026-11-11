@@ -19,10 +19,15 @@ Scenario: GDS Editor can navigate from the Documents Index page to the Show page
   And I click the View link for "Summer Internship Scheme"
   Then I am taken to the Show page for "Summer Internship Scheme"
 
+@javascript
 Scenario: GDS Editor can see the Show Document page for a Published document
-  Given a "Time period" document in the "Published" state exists
+  Given the following time period content block has been published:
+      | Time period name             | Start date     | End date   |
+      | British Summer Time          | 27/03/2026     | 27/10/2026 |
+
   When I visit that document
   Then I see the document metadata for the "Published" "Time period" document
+  And I see the default block for the document
   And I have the ability to create a new draft edition for the document [not currently functional]
 
 Scenario: GDS Editor can see the Show Document page for a Draft document

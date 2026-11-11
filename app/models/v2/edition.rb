@@ -12,8 +12,6 @@ module V2
 
     before_validation :set_document_sluggable_string, on: :create
 
-    enum :state, draft: "draft", published: "published", scheduled: "scheduled", superseded: "superseded", deleted: "deleted"
-
     scope :most_recent_first, -> { order(created_at: :desc) }
 
     scope :published, -> { where(state: "published") }
@@ -22,6 +20,20 @@ module V2
     # Returns a hash representation of the edition's details
     def to_details
       raise NotImplementedError, "Subclasses must implement #to_details method"
+    end
+
+    def render(embed_code = document.embed_code)
+      ContentBlockTools::ContentBlock.new(
+        document_type: "content_block_#{document.block_type}",
+        content_id: document.content_id,
+        title:,
+        details: to_details,
+        embed_code:,
+      ).render
+    end
+
+    def show_embed_codes?
+      published? || scheduled?
     end
 
   private

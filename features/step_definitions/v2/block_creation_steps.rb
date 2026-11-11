@@ -21,6 +21,30 @@ Given("the following time period content blocks have been drafted:") do |table|
   end
 end
 
+Given("the following time period content block has been published:") do |table|
+  table.hashes.each do |row|
+    organisation = Organisation.all.first
+
+    @document = V2::Document.create!(
+      block_type: "time_period",
+    )
+
+    @edition = create(
+      :v2_time_period_edition,
+      document: @document,
+      creator: build(:user),
+      lead_organisation_id: organisation.id,
+      date_range: FactoryBot.build(
+        :v2_time_period_date_range,
+        start: row["Start date"],
+        end: row["End date"],
+      ),
+    )
+
+    @edition.publish!
+  end
+end
+
 When("I fill in {string} date with {string}, {string}, {string}") do |field_label, day, month, year|
   param_key = field_label.parameterize(separator: "_")
 

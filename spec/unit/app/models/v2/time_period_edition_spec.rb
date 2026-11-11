@@ -61,8 +61,8 @@ RSpec.describe V2::TimePeriodEdition, type: :model do
       expect(edition.to_details).to eq({
         "description" => "Tax year 2025/26",
         "date_range" => {
-          "start" => "2025-04-06 00:00:00.000000000 +0100",
-          "end" => "2026-04-05 23:59:00.000000000 +0100",
+          "start" => "2025-04-06T00:00:00+01:00",
+          "end" => "2026-04-05T23:59:00+01:00",
         },
       })
     end
@@ -85,8 +85,8 @@ RSpec.describe V2::TimePeriodEdition, type: :model do
 
       expect(edition.to_details).to eq({
         "date_range" => {
-          "start" => "2025-04-06 00:00:00.000000000 +0100",
-          "end" => "2026-04-05 23:59:00.000000000 +0100",
+          "start" => "2025-04-06T00:00:00+01:00",
+          "end" => "2026-04-05T23:59:00+01:00",
         },
       })
     end

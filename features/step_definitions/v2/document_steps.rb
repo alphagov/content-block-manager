@@ -70,3 +70,13 @@ end
 Then("I see an error telling me to select a block type") do
   expect(page).to have_content("Select a content block")
 end
+
+And("I see the default block for the document") do
+  within ".gem-c-summary-card[title='Default block']" do
+    expect(page).to have_text("27 March 2026 to 27 October 2026")
+    find("a", text: "Copy code").click
+    expect(page).to have_content(
+      @edition.document.embed_code,
+    )
+  end
+end
