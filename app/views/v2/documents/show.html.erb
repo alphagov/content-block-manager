@@ -52,5 +52,19 @@
             edition: @edition,
             ),
           ) %>
+   </div>
+
+  <div class="govuk-grid-row govuk-!-padding-top-8">
+    <div class="govuk-grid-column-full">
+      <%= render(
+        Shared::HostEditionsTableComponent.new(
+          caption: t("host_editions.caption"),
+          host_content_items: @host_content_items,
+          current_page: @page,
+          order: @order,
+          edition: @edition,
+        ),
+      ) %>
+    </div>
   </div>
 </div>
