@@ -27,6 +27,10 @@ module V2
       @document = Document.find(params[:id])
       @edition = @document.most_recent_edition
 
+      @host_content_items = HostContentItem.for_document(
+        @document,
+      )
+
       render :show
     rescue ActiveRecord::RecordNotFound
       redirect_to v2_documents_path(default_filters),

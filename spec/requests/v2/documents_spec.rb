@@ -90,6 +90,12 @@ RSpec.describe "V2 documents", type: :request do
 
     before do
       allow(Organisation).to receive(:all).and_return([organisation])
+
+      stub_publishing_api_has_embedded_content_for_any_content_id(
+        results: [],
+        total: 0,
+        order: HostContentItem::DEFAULT_ORDER,
+      )
     end
 
     context "when a valid document ID is provided" do

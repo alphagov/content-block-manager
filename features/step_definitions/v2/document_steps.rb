@@ -80,3 +80,12 @@ And("I see the default block for the document") do
     )
   end
 end
+
+And("I see the rollup data for the document") do
+  within ".rollup-details" do
+    expect(page).to have_content("Locations")
+    expect(page).to have_content("Instance")
+    expect(page).to have_content("Views")
+    expect(page).to have_content("Organisations")
+  end
+end
