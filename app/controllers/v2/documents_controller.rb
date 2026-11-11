@@ -26,6 +26,8 @@ module V2
     def show
       @document = Document.find(params[:id])
       @edition = @document.most_recent_edition
+      @order = params[:order]
+      @page = params[:page]
 
       @host_content_items = HostContentItem.for_document(
         @document,

@@ -89,3 +89,9 @@ And("I see the rollup data for the document") do
     expect(page).to have_content("Organisations")
   end
 end
+
+And("I see the places the content block is used") do
+  within ".app-c-host-editions-table" do
+    expect(page).to have_content("Places this content block is used")
+  end
+end
