@@ -1,6 +1,6 @@
 module V2
   class DomainEvent < ApplicationRecord
-    belongs_to :document, class_name: "V2::Document", foreign_key: :v2_document_id
+    belongs_to :document, class_name: "V2::Document", foreign_key: :v2_document_id, inverse_of: :domain_events
     belongs_to :edition, class_name: "V2::Edition", foreign_key: :v2_edition_id, optional: true
     belongs_to :version, class_name: "V2::Version", foreign_key: :v2_version_id, optional: true
 

@@ -1,5 +1,5 @@
 RSpec.describe V2::DomainEvent, type: :model do
-  it { is_expected.to belong_to(:document).class_name("V2::Document").with_foreign_key(:v2_document_id).required }
+  it { is_expected.to belong_to(:document).class_name("V2::Document").with_foreign_key(:v2_document_id).inverse_of(:domain_events).required }
   it { is_expected.to belong_to(:user).class_name("User").required }
   it { is_expected.to belong_to(:edition).class_name("V2::Edition").with_foreign_key(:v2_edition_id).optional }
   it { is_expected.to belong_to(:version).class_name("V2::Version").with_foreign_key(:v2_version_id).optional }
