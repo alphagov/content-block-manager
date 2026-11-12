@@ -1,6 +1,7 @@
 module V2
-  class TimePeriodDateRangesController < ApplicationController
+  class TimePeriodDateRangesController < BaseController
     before_action :set_edition, :set_document
+    before_action :populate_existing_date_range, if: -> { document_id_in_params? }, only: :edit
 
     def edit; end
 
@@ -31,6 +32,11 @@ module V2
 
     def set_document
       @document = V2::Document.find(params[:document_id])
+    end
+
+    def populate_existing_date_range
+      previous = @document&.latest_published_edition&.date_range.dup
+      @edition.build_date_range(start: previous.start, end: previous.end) if previous
     end
 
     def edition_params

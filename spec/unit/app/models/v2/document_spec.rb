@@ -52,6 +52,24 @@ RSpec.describe V2::Document, type: :model do
         expect(document.most_recent_edition).to be_nil
       end
     end
+
+    describe "#latest_published_edition" do
+      it "returns the most recently published edition" do
+        document = create(:v2_document, block_type: "time_period")
+
+        _draft_edition = create(:v2_time_period_edition, document: document, state: "draft", created_at: 1.day.ago)
+        published_edition = create(:v2_time_period_edition, document: document, state: "published", created_at: 3.days.ago)
+        _older_published_edition = create(:v2_time_period_edition, document: document, state: "published", created_at: 4.days.ago)
+
+        expect(document.latest_published_edition).to eq(published_edition)
+      end
+
+      it "returns nil when there are no editions" do
+        document = create(:v2_document, block_type: "time_period")
+
+        expect(document.latest_published_edition).to be_nil
+      end
+    end
   end
 
   describe "callbacks" do

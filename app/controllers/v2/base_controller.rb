@@ -1,5 +1,7 @@
 module V2
   class BaseController < ApplicationController
+    helper_method :document_id_in_params?
+
     def edition_params
       params.require("edition").permit(
         :description,
@@ -7,6 +9,10 @@ module V2
         :instructions_to_publishers,
         :title,
       ).merge(creator: current_user)
+    end
+
+    def document_id_in_params?
+      params[:document_id].present?
     end
   end
 end

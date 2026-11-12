@@ -1,17 +1,28 @@
 module V2
   class TimePeriodEditionsController < BaseController
     def new
-      @edition = V2::TimePeriodEdition.new
-      @edition.build_document(block_type:)
+      if document_id_in_params?
+        @document = V2::Document.find(params[:document_id])
+        @edition = @document.latest_published_edition.dup
+      else
+        @edition = V2::TimePeriodEdition.new
+        @edition.build_document(block_type:)
+      end
     end
 
     def create
       @edition = V2::TimePeriodEdition.new(edition_params)
-      @edition.build_document(block_type:)
+
+      if document_id_in_params?
+        @document = V2::Document.find(params[:document_id])
+        @edition.document = @document
+      else
+        @document = @edition.build_document(block_type:)
+      end
 
       if @edition.save
         redirect_to edit_v2_document_edition_date_range_path(
-          @edition.document,
+          @document,
           @edition,
         )
       else

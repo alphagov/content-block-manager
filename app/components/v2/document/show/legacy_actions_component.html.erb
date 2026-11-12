@@ -7,7 +7,7 @@
                 I18n.t("v2.document.show.buttons.new_edition", block_type: @document.block_type.humanize.downcase),
         href: has_more_recent_draft? ?
                 "edit latest edition - not implemented" :
-                "new edition for document - not implemented",
+                new_v2_document_edition_path(@document),
       } %>
     <% else %>
       <%= render "govuk_publishing_components/components/button", {

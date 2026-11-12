@@ -23,6 +23,11 @@ module V2
             foreign_key: :v2_document_id,
             class_name: "V2::Edition"
 
+    has_one :latest_published_edition,
+            -> { published.most_recent_first },
+            foreign_key: :v2_document_id,
+            class_name: "V2::TimePeriodEdition"
+
     before_validation :generate_content_id, on: :create
     after_validation :set_content_id_alias_and_embed_code, on: :create
 
