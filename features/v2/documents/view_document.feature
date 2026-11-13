@@ -30,6 +30,7 @@ Scenario: GDS Editor can see the Show Document page for a Published document
   And I see the default block for the document
   And I see the rollup data for the document
   And I see the places the content block is used
+  And I see the time period created event on the timeline
   And I have the ability to create a new draft edition for the document
 
 Scenario: GDS Editor can see the Show Document page for a Draft document

@@ -68,3 +68,13 @@
     </div>
   </div>
 </div>
+
+<div class="govuk-grid-row govuk-!-padding-top-8">
+  <div class="govuk-grid-column-full">
+    <%= render(
+          V2::Document::Show::DocumentTimelineComponent.new(
+            document_domain_events: @document.domain_events,
+          ),
+        ) %>
+  </div>
+</div>
