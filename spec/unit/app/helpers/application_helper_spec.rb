@@ -1,4 +1,86 @@
 RSpec.describe ApplicationHelper, type: :helper do
+  describe "create_blocks?" do
+    context "when the 'disable_block_creation' feature flag is DISABLED" do
+      before { allow(Flipflop).to receive(:disable_block_creation?).and_return(false) }
+
+      context "and the logged-in user has 'create_blocks' permission set" do
+        before do
+          def helper.current_user
+            FactoryBot.build(:user).tap { |u| u.permissions << "create_blocks" }
+          end
+        end
+
+        it "returns true" do
+          expect(helper.create_blocks?).to be true
+        end
+      end
+
+      context "and the logged-in user does NOT have 'create_blocks' permission set" do
+        before do
+          def helper.current_user
+            FactoryBot.build(:user).tap { |u| u.permissions = [] }
+          end
+        end
+
+        it "returns true" do
+          expect(helper.create_blocks?).to be true
+        end
+      end
+
+      context "and user is nil" do
+        before do
+          def helper.current_user
+            nil
+          end
+        end
+
+        it "returns false" do
+          expect(helper.create_blocks?).to be false
+        end
+      end
+    end
+
+    context "when the 'disable_block_creation' feature flag is ENABLED" do
+      before { allow(Flipflop).to receive(:disable_block_creation?).and_return(true) }
+
+      context "and the logged-in user has 'create_blocks' permission set" do
+        before do
+          def helper.current_user
+            FactoryBot.build(:user).tap { |u| u.permissions << "create_blocks" }
+          end
+        end
+
+        it "returns true" do
+          expect(helper.create_blocks?).to be true
+        end
+      end
+
+      context "and the logged-in user does NOT have the 'create_blocks' permission set" do
+        before do
+          def helper.current_user
+            FactoryBot.build(:user).tap { |u| u.permissions = [] }
+          end
+        end
+
+        it "returns false" do
+          expect(helper.create_blocks?).to be false
+        end
+      end
+
+      context "and user is nil" do
+        before do
+          def helper.current_user
+            nil
+          end
+        end
+
+        it "returns false" do
+          expect(helper.create_blocks?).to be false
+        end
+      end
+    end
+  end
+
   describe "pre_release_features?" do
     before do
       # As #current_user is included by Devise as a *controller* helper it's

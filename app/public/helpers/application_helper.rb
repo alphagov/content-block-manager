@@ -3,6 +3,15 @@ require "record_tag_helper/helper"
 module ApplicationHelper
   include ActionView::Helpers::RecordTagHelper
 
+  def create_blocks?
+    return false unless current_user
+    return true unless Flipflop.disable_block_creation?
+
+    return true if current_user.has_permission?(User::Permissions::CREATE_BLOCKS_PERMISSION)
+
+    false
+  end
+
   def pre_release_features?
     env = GovukPublishingComponents::AppHelpers::Environment.current_acceptance_environment
     return false if env == "production"
