@@ -59,3 +59,9 @@ Given(/^I have scheduled a change for (\d+) days in the future$/) do |number_of_
   schedule_change(number_of_days)
   review_and_confirm
 end
+
+Then("the published edition should have the changed content from the scheduled change") do
+  within "h1" do
+    expect(page).to have_content("Changed title")
+  end
+end
