@@ -83,7 +83,8 @@ module Edition::Workflow
           previous_state: current_state,
           new_state: new_state,
           transition_name: event,
-        },
+          scheduled_publication: scheduled_publication,
+        }.compact,
       )
     end
 
