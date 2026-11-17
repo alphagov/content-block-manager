@@ -3,6 +3,12 @@ require "record_tag_helper/helper"
 module ApplicationHelper
   include ActionView::Helpers::RecordTagHelper
 
+  def block_creation_enabled?
+    return false unless current_user
+
+    block_creation_permitted_via_feature_flag?
+  end
+
   def pre_release_features?
     env = GovukPublishingComponents::AppHelpers::Environment.current_acceptance_environment
     return false if env == "production"
@@ -46,5 +52,11 @@ module ApplicationHelper
         selected: selected_ids.include?(o.id),
       }
     end
+  end
+
+private
+
+  def block_creation_permitted_via_feature_flag?
+    !Flipflop.disable_block_creation?
   end
 end

@@ -1,4 +1,58 @@
 RSpec.describe ApplicationHelper, type: :helper do
+  describe "block_creation_enabled?" do
+    before do
+      def helper.current_user
+        FactoryBot.build(:user)
+      end
+    end
+
+    context "when the 'disable_block_creation' feature flag is DISABLED" do
+      before do
+        test_strategy = Flipflop::FeatureSet.current.test!
+        test_strategy.switch!(:disable_block_creation, false)
+      end
+
+      it "returns true" do
+        expect(helper.block_creation_enabled?).to be true
+      end
+
+      context "and user is nil" do
+        before do
+          def helper.current_user
+            nil
+          end
+        end
+
+        it "returns false" do
+          expect(helper.block_creation_enabled?).to be false
+        end
+      end
+    end
+
+    context "when the 'disable_block_creation' feature flag is ENABLED" do
+      before do
+        test_strategy = Flipflop::FeatureSet.current.test!
+        test_strategy.switch!(:disable_block_creation, true)
+      end
+
+      it "returns false" do
+        expect(helper.block_creation_enabled?).to be false
+      end
+
+      context "and user is nil" do
+        before do
+          def helper.current_user
+            nil
+          end
+        end
+
+        it "returns false" do
+          expect(helper.block_creation_enabled?).to be false
+        end
+      end
+    end
+  end
+
   describe "pre_release_features?" do
     before do
       # As #current_user is included by Devise as a *controller* helper it's
