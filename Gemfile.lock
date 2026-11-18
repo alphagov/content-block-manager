@@ -281,7 +281,7 @@ GEM
       nokogiri (~> 1.12)
       rinku (~> 2.0)
       sanitize (>= 6, < 8)
-    govuk_app_config (9.27.1)
+    govuk_app_config (9.28.0)
       connection_pool (< 4)
       logstasher (>= 2.1, < 4.0)
       opentelemetry-exporter-otlp (>= 0.25, < 0.35)
@@ -636,7 +636,7 @@ GEM
       opentelemetry-common (~> 0.20)
       opentelemetry-registry (~> 0.2)
       opentelemetry-semantic_conventions
-    opentelemetry-semantic_conventions (1.44.0)
+    opentelemetry-semantic_conventions (1.45.0)
       opentelemetry-api (~> 1.0)
     ostruct (0.6.3)
     packwerk (3.3.1)
@@ -1133,7 +1133,7 @@ CHECKSUMS
   google-protobuf (4.36.2-x86_64-linux-musl) sha256=0fa17686c896da96a60a705e56ddc7d4ff56413f52787c655bd4c9fb33ffe14f
   googleapis-common-protos-types (1.25.0) sha256=3eac7998e9e52f506d5a68d944284b8d2f6d65d744ab92a0cdd269198a009d15
   govspeak (10.11.10) sha256=2b666b5efbf6055d796bb88b4d93d9086c7d63169f98a1a86e11bdc7b2831ba5
-  govuk_app_config (9.27.1) sha256=b8d360bcea291de19cf16e11f03fdc17df4a798f750125a712e264354ddb7057
+  govuk_app_config (9.28.0) sha256=1c68b6eadd5df05dcc2dadb5d15786dca7c9e26af1ed2b1ef53de73ac9b7e3d2
   govuk_frontend_toolkit (9.0.1) sha256=18fdae529c9003e023c3461d89a45ddaf5ac0df311705351743c9f1b7b48a2de
   govuk_personalisation (1.2.0) sha256=8496e9e30c433846b87547b63ec65c98a64dd92fcf1b46b45e300150a24430b1
   govuk_publishing_components (71.1.0) sha256=f40527957daa265248c9c5e9b7bbc8717f9ef925f436bb74dbcf70781d58975b
@@ -1256,7 +1256,7 @@ CHECKSUMS
   opentelemetry-metrics-api (0.10.0) sha256=bbeeba7606886d7a918b3e4edeb96ac51eb8d3308630d610eee12be53836c755
   opentelemetry-registry (0.6.3) sha256=568fa8eaea94394f29f4fce3f0339ab10c3bf6d6c8beed6b3cfee6fd37fcc608
   opentelemetry-sdk (1.13.1) sha256=91c9cc315ac7ef30243549eeff8b27cd0d39bd02bdf9c9ae481ab96a1cec6754
-  opentelemetry-semantic_conventions (1.44.0) sha256=b09b8793422f13b01c08f7a6f29b5f511f47f37bcdb57c0513465a0464168513
+  opentelemetry-semantic_conventions (1.45.0) sha256=f6a5b5187d3421e125576692be2a1cfd510d07a9abff81a1e71c67dc1a835cb5
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
   packwerk (3.3.1) sha256=095d3c295ec52c21bd7fef393462d892cae2e3cbfa98e740fcd0ef5529afd3d2
   packwerk-extensions (0.4.0) sha256=2aae10dd437c163fda2f1a8c913f320f1af15b66494933aa24b16b705ef3655d
