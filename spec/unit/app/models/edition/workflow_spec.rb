@@ -73,29 +73,61 @@ RSpec.describe Edition::Workflow, type: :model do
       end
 
       context "when a transition completes successfully" do
-        let(:expected_transition_description) do
-          {
-            previous_state: :draft_complete,
-            new_state: :awaiting_review,
-            transition_name: :ready_for_review,
-          }
-        end
-
         before do
           allow(Current).to receive(:user).and_return(user)
-
-          edition.ready_for_review!
         end
 
-        it "asks DomainEvent::record to record the transition" do
-          expect(DomainEvent).to have_received(:record).with(
-            name: "edition.state_transition.succeeded",
-            metadata: expected_transition_description,
-            edition: edition,
-            document: document,
-            user: user,
-            version: version,
-          )
+        context "when scheduled_publication is present" do
+          let(:expected_transition_description) do
+            {
+              previous_state: :draft_complete,
+              new_state: :awaiting_review,
+              transition_name: :ready_for_review,
+              scheduled_publication: 7.days.from_now,
+            }
+          end
+
+          before do
+            edition.scheduled_publication = expected_transition_description[:scheduled_publication]
+            edition.save!
+            edition.ready_for_review!
+          end
+
+          it "asks DomainEvent::record to record the transition with metadata including the timestamp for scheduled publication" do
+            expect(DomainEvent).to have_received(:record).with(
+              name: "edition.state_transition.succeeded",
+              metadata: expected_transition_description,
+              edition: edition,
+              document: document,
+              user: user,
+              version: version,
+            )
+          end
+        end
+
+        context "when scheduled_publication is not present" do
+          let(:expected_transition_description) do
+            {
+              previous_state: :draft_complete,
+              new_state: :awaiting_review,
+              transition_name: :ready_for_review,
+            }
+          end
+
+          before do
+            edition.ready_for_review!
+          end
+
+          it "asks DomainEvent::record to record the transition with metadata excluding the timestamp for scheduled publication" do
+            expect(DomainEvent).to have_received(:record).with(
+              name: "edition.state_transition.succeeded",
+              metadata: expected_transition_description,
+              edition: edition,
+              document: document,
+              user: user,
+              version: version,
+            )
+          end
         end
       end
     end
