@@ -6,7 +6,8 @@ module ApplicationHelper
   def block_creation_enabled?
     return false unless current_user
 
-    block_creation_permitted_via_feature_flag?
+    block_creation_permitted_via_feature_flag? ||
+      user_has_permission_to_override_disable_block_creation_flag?
   end
 
   def pre_release_features?
@@ -58,5 +59,9 @@ private
 
   def block_creation_permitted_via_feature_flag?
     !Flipflop.disable_block_creation?
+  end
+
+  def user_has_permission_to_override_disable_block_creation_flag?
+    current_user.has_permission?(User::Permissions::OVERRIDE_DISABLE_BLOCK_CREATION_FLAG)
   end
 end

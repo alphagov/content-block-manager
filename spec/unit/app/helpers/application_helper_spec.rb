@@ -12,8 +12,28 @@ RSpec.describe ApplicationHelper, type: :helper do
         test_strategy.switch!(:disable_block_creation, false)
       end
 
-      it "returns true" do
-        expect(helper.block_creation_enabled?).to be true
+      context "and the logged-in user has the override permission set" do
+        before do
+          def helper.current_user
+            FactoryBot.build(:user).tap { |u| u.permissions << "override_disable_block_creation_flag" }
+          end
+        end
+
+        it "returns true" do
+          expect(helper.block_creation_enabled?).to be true
+        end
+      end
+
+      context "and the logged-in user does NOT have the override permission set" do
+        before do
+          def helper.current_user
+            FactoryBot.build(:user).tap { |u| u.permissions = [] }
+          end
+        end
+
+        it "returns true" do
+          expect(helper.block_creation_enabled?).to be true
+        end
       end
 
       context "and user is nil" do
@@ -35,8 +55,28 @@ RSpec.describe ApplicationHelper, type: :helper do
         test_strategy.switch!(:disable_block_creation, true)
       end
 
-      it "returns false" do
-        expect(helper.block_creation_enabled?).to be false
+      context "and the logged-in user has the override permission set" do
+        before do
+          def helper.current_user
+            FactoryBot.build(:user).tap { |u| u.permissions << "override_disable_block_creation_flag" }
+          end
+        end
+
+        it "returns true" do
+          expect(helper.block_creation_enabled?).to be true
+        end
+      end
+
+      context "and the logged-in user does NOT have the the override permission set" do
+        before do
+          def helper.current_user
+            FactoryBot.build(:user).tap { |u| u.permissions = [] }
+          end
+        end
+
+        it "returns false" do
+          expect(helper.block_creation_enabled?).to be false
+        end
       end
 
       context "and user is nil" do

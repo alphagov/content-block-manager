@@ -22,6 +22,7 @@ class User < ApplicationRecord
     PRE_RELEASE_FEATURES_PERMISSION = "pre_release_features".freeze
     SHOW_ALL_CONTENT_BLOCK_TYPES = "show_all_content_block_types".freeze
     VIEW_METRICS = "view_metrics".freeze
+    OVERRIDE_DISABLE_BLOCK_CREATION_FLAG = "override_disable_block_creation_flag".freeze
   end
 
   def organisation
