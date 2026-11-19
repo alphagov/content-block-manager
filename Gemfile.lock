@@ -90,7 +90,7 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
-    addressable (2.9.1)
+    addressable (2.9.2)
       public_suffix (>= 2.0.2, < 8.0)
     anonymous_loader (0.1.5)
       version_gem (~> 1.1, >= 1.1.17)
@@ -317,7 +317,7 @@ GEM
       govuk_app_config (>= 1.1)
       redis-client (>= 0.22.2)
       sidekiq (~> 7.0, < 8)
-    govuk_test (4.1.3)
+    govuk_test (5.0.0)
       brakeman (>= 5.0.2)
       capybara (>= 3.36)
       puma
@@ -758,7 +758,7 @@ GEM
       actionview (>= 5)
     redis-client (0.31.0)
       connection_pool
-    regexp_parser (2.13.1)
+    regexp_parser (2.13.4)
     reline (0.7.0)
       io-console (~> 0.5)
     request_store (1.7.0)
@@ -861,10 +861,9 @@ GEM
     sass-embedded (1.90.0-x86_64-linux-musl)
       google-protobuf (~> 4.31)
     securerandom (0.4.1)
-    selenium-webdriver (4.43.0)
+    selenium-webdriver (4.53.0)
       base64 (~> 0.2)
       logger (~> 1.4)
-      rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
     sentry-rails (7.2.0)
@@ -1053,7 +1052,7 @@ CHECKSUMS
   activerecord (8.1.4.1) sha256=bd65599ca0b5d210937f835d42c7aff69d271741c75aab022730be6cbce67e87
   activestorage (8.1.4.1) sha256=0f4e2f114f3584723a80a2c089aacc6170e765a0b2c385c9782e26ed78f05c66
   activesupport (8.1.4.1) sha256=16ac4f341ca65c85a1fcdb8ac73f68891aae9e3c4a6f9c3a27daed8b00017ed7
-  addressable (2.9.1) sha256=f1212365945455c84e8d031eea40fc6bedf0c663a78d95b3ab93591040bc5c35
+  addressable (2.9.2) sha256=9117c7e7d6ee07230e75ce41fb9401ae55354dc654fcd0e862ba41d539e9a610
   anonymous_loader (0.1.5) sha256=c96a4a1b5f49f320037fae63e931ac15b3823686e4f0ee6f24f75a0ade4227cb
   api (0.0.1)
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
@@ -1139,7 +1138,7 @@ CHECKSUMS
   govuk_publishing_components (71.1.0) sha256=f40527957daa265248c9c5e9b7bbc8717f9ef925f436bb74dbcf70781d58975b
   govuk_schemas (6.3.2) sha256=91ff2c17509e55ac799ac6cba883496300e7f35285e2013bcd80002d67c2b8ee
   govuk_sidekiq (11.1.2) sha256=abc8488bf8493a01325b7519c110da19dfc1b2fd32dcc57256f59007aab3c351
-  govuk_test (4.1.3) sha256=27334f70966fc52ebceff6b90f487ae294b577dd2b4e469ae6b2a32a44dd1bd5
+  govuk_test (5.0.0) sha256=0af18a2556f264f275051bd4450ed4f3a044725f69c4693c9a76d16d3413be7b
   hana (1.3.7) sha256=5425db42d651fea08859811c29d20446f16af196308162894db208cac5ce9b0d
   hashdiff (1.2.1) sha256=9c079dbc513dfc8833ab59c0c2d8f230fa28499cc5efb4b8dd276cf931457cd1
   hashie (5.2.0) sha256=357a22635195c2e3911fbbc3de9a7d528843d1f42ab0aae02171048f16332d72
@@ -1300,7 +1299,7 @@ CHECKSUMS
   rdoc (8.1.0) sha256=befc37880a5cfd36dcb176c748b5fd5ee39dd3536a75e81824e4972ce230f60a
   record_tag_helper (1.0.1) sha256=28b073f6c0e529d0f96969ba8ce5c2a9c1b5472d603a67b60bf64798b15c3dcf
   redis-client (0.31.0) sha256=6820cb2a21e6795a823141f50fd25e655de2b8dc8ff833b43509a27b0263fd75
-  regexp_parser (2.13.1) sha256=5aedb6b7c35688f51e86eef17a15374dfd287c83f4ca644b2c5f3ec50a33b44b
+  regexp_parser (2.13.4) sha256=1d0547814f57e6f00946957bd0ca201bc42f42cfb08eee89df60998aedcd8a3b
   reline (0.7.0) sha256=5b012d8e55dbf9d450f12bde2cf7d15ff546ae80b3f8f3b30e570d431815583d
   request_store (1.7.0) sha256=e1b75d5346a315f452242a68c937ef8e48b215b9453a77a6c0acdca2934c88cb
   rest-client (2.1.0) sha256=35a6400bdb14fae28596618e312776c158f7ebbb0ccad752ff4fa142bf2747e3
@@ -1335,7 +1334,7 @@ CHECKSUMS
   sass-embedded (1.90.0-x86_64-linux-gnu) sha256=cfcead0b72810818186459b14e587a94aa8bb15a167185898154f7b9d5a63036
   sass-embedded (1.90.0-x86_64-linux-musl) sha256=fffd0ee0dff16fa2ce572228fa7d4f5ed1f9aff6b2b6a79af92cb2000a7b5a71
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
-  selenium-webdriver (4.43.0) sha256=a634377b964b701c6ac0a009ce3a08fa34ec1e1e7fe9a6d57e3088d14529a65c
+  selenium-webdriver (4.53.0) sha256=211aa56ca366de20abf2af22f8f7742c5389ab834ab0d97de5e2bcb5f44f418d
   sentry-rails (7.2.0) sha256=c3874fed94a68f3f60a917243b6e25414ff284455abd14e3351479a32807af79
   sentry-ruby (7.2.0) sha256=2da448c2b7028a7691f31ae5c946830b8e694d0aec78ef2b9e5c7e1da9c3e01a
   sentry-sidekiq (7.2.0) sha256=3b2f3cd73ddc0c6a60fdf6a37c411b2d19f97b6291b4a88ef8594d554710ccd6
