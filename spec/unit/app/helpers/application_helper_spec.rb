@@ -1,4 +1,98 @@
 RSpec.describe ApplicationHelper, type: :helper do
+  describe "block_creation_enabled?" do
+    before do
+      def helper.current_user
+        FactoryBot.build(:user)
+      end
+    end
+
+    context "when the 'disable_block_creation' feature flag is DISABLED" do
+      before do
+        test_strategy = Flipflop::FeatureSet.current.test!
+        test_strategy.switch!(:disable_block_creation, false)
+      end
+
+      context "and the logged-in user has the override permission set" do
+        before do
+          def helper.current_user
+            FactoryBot.build(:user).tap { |u| u.permissions << "override_disable_block_creation_flag" }
+          end
+        end
+
+        it "returns true" do
+          expect(helper.block_creation_enabled?).to be true
+        end
+      end
+
+      context "and the logged-in user does NOT have the override permission set" do
+        before do
+          def helper.current_user
+            FactoryBot.build(:user).tap { |u| u.permissions = [] }
+          end
+        end
+
+        it "returns true" do
+          expect(helper.block_creation_enabled?).to be true
+        end
+      end
+
+      context "and user is nil" do
+        before do
+          def helper.current_user
+            nil
+          end
+        end
+
+        it "returns false" do
+          expect(helper.block_creation_enabled?).to be false
+        end
+      end
+    end
+
+    context "when the 'disable_block_creation' feature flag is ENABLED" do
+      before do
+        test_strategy = Flipflop::FeatureSet.current.test!
+        test_strategy.switch!(:disable_block_creation, true)
+      end
+
+      context "and the logged-in user has the override permission set" do
+        before do
+          def helper.current_user
+            FactoryBot.build(:user).tap { |u| u.permissions << "override_disable_block_creation_flag" }
+          end
+        end
+
+        it "returns true" do
+          expect(helper.block_creation_enabled?).to be true
+        end
+      end
+
+      context "and the logged-in user does NOT have the the override permission set" do
+        before do
+          def helper.current_user
+            FactoryBot.build(:user).tap { |u| u.permissions = [] }
+          end
+        end
+
+        it "returns false" do
+          expect(helper.block_creation_enabled?).to be false
+        end
+      end
+
+      context "and user is nil" do
+        before do
+          def helper.current_user
+            nil
+          end
+        end
+
+        it "returns false" do
+          expect(helper.block_creation_enabled?).to be false
+        end
+      end
+    end
+  end
+
   describe "pre_release_features?" do
     before do
       # As #current_user is included by Devise as a *controller* helper it's
