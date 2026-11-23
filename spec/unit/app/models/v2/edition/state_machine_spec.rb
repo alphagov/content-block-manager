@@ -1,4 +1,4 @@
-RSpec.describe V2::Edition::Workflow, type: :model do
+RSpec.describe V2::Edition::StateMachine, type: :model do
   let(:version) { double("version") }
 
   before do
