@@ -50,7 +50,7 @@ And("I proceed to selecting the publish date") do
 end
 
 And("the timeline item for the schedule publication should still be shown") do
-  expect(page).to have_content(@future_date.strftime("%-d %B %Y at %l:%M%P"))
+  expect(page).to have_content([@future_date.strftime("%e %B %Y").strip, @future_date.strftime("%l:%M%P").strip].join(" at "))
 end
 
 When("I enter an invalid date") do
