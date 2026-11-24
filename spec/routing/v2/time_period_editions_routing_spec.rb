@@ -37,12 +37,12 @@ RSpec.describe "V2 time period editions routing", type: :routing do
       end
 
       describe "V2 Pre publication review controller" do
-        it "routes 'v2/documents/:document_id/editions/:id/pre-publication-reviews/new' to 'v2/pre_publication_reviews#new'" do
-          expect(get: "/v2/documents/1234/editions/5678/pre-publication-reviews/new").to route_to("v2/pre_publication_reviews#new", document_id: "1234", edition_id: "5678")
+        it "routes 'v2/documents/:document_id/editions/:id/review' to 'v2/pre_publication_reviews#review'" do
+          expect(get: "/v2/documents/1234/editions/5678/review").to route_to("v2/pre_publication_reviews#review", document_id: "1234", edition_id: "5678")
         end
 
-        it "routes 'v2/documents/:document_id/editions/:id/pre-publication-reviews' to 'v2/pre_publication_reviews#create'" do
-          expect(post: "/v2/documents/1234/editions/5678/pre-publication-reviews").to route_to("v2/pre_publication_reviews#create", document_id: "1234", edition_id: "5678")
+        it "routes 'v2/documents/:document_id/editions/:id/complete-workflow' to 'v2/pre_publication_reviews#complete_workflow'" do
+          expect(post: "/v2/documents/1234/editions/5678/complete-workflow").to route_to("v2/pre_publication_reviews#complete_workflow", document_id: "1234", edition_id: "5678")
         end
       end
     end

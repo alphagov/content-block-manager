@@ -143,7 +143,7 @@ end
 
 Then("I see the pre publication review page") do
   edition = V2::TimePeriodEdition.last
-  expect(current_path).to eq(new_v2_document_edition_pre_publication_review_path(
+  expect(current_path).to eq(review_v2_document_edition_pre_publication_reviews_path(
                                edition.document,
                                edition,
                              ))

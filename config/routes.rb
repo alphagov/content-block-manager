@@ -51,7 +51,12 @@ Rails.application.routes.draw do
 
   namespace :v2 do
     concern :reviewable do
-      resources :pre_publication_reviews, path: "pre-publication-reviews", only: %i[new create]
+      resources :pre_publication_reviews, path: "", only: [] do
+        collection do
+          get "review", to: "pre_publication_reviews#review", as: :review
+          post "complete-workflow", to: "pre_publication_reviews#complete_workflow", as: :complete_workflow
+        end
+      end
     end
 
     resources :time_period_editions, only: %i[new create]
