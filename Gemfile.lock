@@ -673,7 +673,7 @@ GEM
       base64
       concurrent-ruby (>= 1.1.6)
       mime-types (>= 3.0)
-    plek (5.3.2)
+    plek (6.0.0)
     pp (0.6.4)
       prettyprint
     prettyprint (0.2.1)
@@ -1271,7 +1271,7 @@ CHECKSUMS
   pg (1.7.0-x86_64-linux-musl) sha256=0c9bc93b6e0aca2a5b07daef00b7ec4f9882bfe21ef3872b4371f8ecffe1f1e1
   pg_search (2.4.0) sha256=8b0b518aad9d0dcb507f7de35c0145d495c0dbe3c6e0babeeb3b226b5981ccaf
   playwright-ruby-client (1.64.0) sha256=a30df6435a26a09dccb664260e1aaed49de2c2d97a67c7ee7b03ab84755af755
-  plek (5.3.2) sha256=98bacbd22262e742910f29d766b65328a203eb35ba20f9876181dd76ce4c4420
+  plek (6.0.0) sha256=48a3e22b32892f5a30865262573886162ab664b4fb5db8b02043349754e7618d
   pp (0.6.4) sha256=dfcb0fce700c41456265922884f9fe195d7fbb0674a3578e6c0f69588e82b570
   prettyprint (0.2.1) sha256=d555d57ea6d7cf001d4774b693546a6bd88bec1e778ddffb5c60b68ceec4b7d4
   prism (1.9.0) sha256=7b530c6a9f92c24300014919c9dcbc055bf4cdf51ec30aed099b06cd6674ef85
