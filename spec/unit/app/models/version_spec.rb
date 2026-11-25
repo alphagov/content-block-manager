@@ -99,7 +99,7 @@ RSpec.describe Version, type: :model do
     it "returns an empty hash when the value is nil" do
       content_block_version.field_diffs = nil
 
-      expect(content_block_version.field_diffs).to eq(({}))
+      expect(content_block_version.field_diffs).to eq({})
     end
   end
 end
