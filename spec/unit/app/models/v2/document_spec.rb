@@ -14,6 +14,18 @@ RSpec.describe V2::Document, type: :model do
   let(:creator) { create(:user) }
 
   describe "associations" do
+    describe "#editions" do
+      it "returns editions in the order they were created, oldest first" do
+        document = create(:v2_document, block_type: "time_period")
+
+        middle_edition = create(:v2_time_period_edition, document:, created_at: 2.days.ago)
+        newest_edition = create(:v2_time_period_edition, document:, created_at: 1.day.ago)
+        oldest_edition = create(:v2_time_period_edition, document:, created_at: 3.days.ago)
+
+        expect(document.editions).to eq([oldest_edition, middle_edition, newest_edition])
+      end
+    end
+
     describe "#time_period_editions" do
       it "builds a TimePeriodEdition with the correct type" do
         document = build(:v2_document, block_type: "time_period")
