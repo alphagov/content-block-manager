@@ -3,15 +3,17 @@ module V2
     before_action :set_edition, :set_document
     helper_method :page_title
 
-    def new; end
+    def review
+      render "review"
+    end
 
-    def create
+    def complete_workflow
       unless params.dig(:edition, :has_checked_content)
         @check_content_error_copy = I18n.t(
           "v2.edition.pre_publication_review.errors.confirm",
         )
 
-        return render "v2/pre_publication_reviews/new", status: :unprocessable_content
+        return render "v2/pre_publication_reviews/review", status: :unprocessable_content
       end
 
       completion = V2::WorkflowCompletionService.new(@edition, "publish").call

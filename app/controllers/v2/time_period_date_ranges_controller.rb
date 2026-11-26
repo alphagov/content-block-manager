@@ -12,7 +12,7 @@ module V2
         notice_key = has_associated_date_range ? "update.success" : "create.success"
         flash[:success] = I18n.t("v2.time_period_edition.#{notice_key}")
 
-        redirect_to new_v2_document_edition_pre_publication_review_path(@document, @edition)
+        redirect_to review_v2_document_edition_pre_publication_reviews_path(@document, @edition)
       else
         @error_summary_errors = @edition.errors.map do |error|
           {

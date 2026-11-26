@@ -10,15 +10,15 @@ RSpec.describe "V2::PrePublicationReviews", type: :request do
     allow(Organisation).to receive(:all).and_return([organisation])
   end
 
-  let(:request_url) { "/v2/documents/#{document.id}/editions/#{edition.id}/pre-publication-reviews/new" }
+  let(:request_url) { "/v2/documents/#{document.id}/editions/#{edition.id}/review" }
 
-  describe "GET /v2/documents/:document_id/editions/:edition_id/pre-publication-reviews/new" do
+  describe "GET /v2/documents/:document_id/editions/:edition_id/review" do
     context "when the edition exists and is valid" do
       before { get request_url }
 
       it "renders the review page" do
         expect(response).to have_http_status(:ok)
-        expect(response).to render_template("v2/pre_publication_reviews/new")
+        expect(response).to render_template("v2/pre_publication_reviews/review")
       end
 
       it "renders the correct page title from the helper method" do
@@ -36,7 +36,7 @@ RSpec.describe "V2::PrePublicationReviews", type: :request do
     end
   end
 
-  describe "POST /v2/documents/:document_id/editions/:edition_id/pre-publication-reviews" do
+  describe "POST /v2/documents/:document_id/editions/:edition_id/complete_workflow" do
     context "when the confirmation checkbox is checked" do
       let(:valid_params) { { edition: { has_checked_content: "1" } } }
       let(:workflow_service_mock) { instance_double(V2::WorkflowCompletionService) }
@@ -54,7 +54,7 @@ RSpec.describe "V2::PrePublicationReviews", type: :request do
         end
 
         it "redirects to the completion path with a flash message" do
-          post v2_document_edition_pre_publication_reviews_path(document_id: document.id, edition_id: edition.id, params: valid_params)
+          post complete_workflow_v2_document_edition_pre_publication_reviews_path(document_id: document.id, edition_id: edition.id, params: valid_params)
 
           expect(response).to redirect_to("/completion-path")
           expect(flash[:foo]).to eq("bar")
@@ -64,11 +64,11 @@ RSpec.describe "V2::PrePublicationReviews", type: :request do
 
     context "when the confirmation checkbox is NOT checked" do
       it "does not publish the edition and re-renders with a validation error" do
-        post v2_document_edition_pre_publication_reviews_path(document_id: document.id, edition_id: edition.id)
+        post complete_workflow_v2_document_edition_pre_publication_reviews_path(document_id: document.id, edition_id: edition.id)
 
         expect(edition.reload).to be_draft
         expect(response).to have_http_status(:unprocessable_content)
-        expect(response).to render_template("v2/pre_publication_reviews/new")
+        expect(response).to render_template("v2/pre_publication_reviews/review")
 
         expect(response.body).to include("There is a problem")
         expect(response.body).to include(

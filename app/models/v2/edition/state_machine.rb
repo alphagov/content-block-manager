@@ -1,4 +1,4 @@
-module V2::Edition::Workflow
+module V2::Edition::StateMachine
   extend ActiveSupport::Concern
 
   included do

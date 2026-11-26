@@ -1,5 +1,5 @@
 When("I am viewing the pre publication review page") do
-  visit new_v2_document_edition_pre_publication_review_path(@time_period_edition.document, @time_period_edition)
+  visit review_v2_document_edition_pre_publication_reviews_path(@time_period_edition.document, @time_period_edition)
 end
 
 When("I confirm that the block details are correct and continue") do
