@@ -18,7 +18,7 @@ Then("I should see a form for the schema") do
 end
 
 Then("I should see all the schemas listed") do
-  Schema.all.each do |schema| # rubocop:disable Rails/FindEach - `Schema` is not an ActiveRecord object
+  Schema.all.each do |schema| # rubocop:disable Rails/FindEach -- `Schema` is not an ActiveRecord object
     expect(page).to have_content(schema.name)
   end
 end

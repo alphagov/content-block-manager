@@ -98,7 +98,7 @@ RSpec.describe V2::Version, type: :model do
     it "returns an empty hash when the value is nil" do
       version.field_diffs = nil
 
-      expect(version.field_diffs).to eq(({}))
+      expect(version.field_diffs).to eq({})
     end
   end
 end
