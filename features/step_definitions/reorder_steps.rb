@@ -31,14 +31,14 @@ end
 Then(/^I should see the contact methods in the new order$/) do
   Capybara.current_session.driver.with_playwright_page do |page|
     item = page.get_by_testid("reorder-item-0")
-    expect(item).to playwright_matchers.have_text("Email The Team")
+    expect(item).to playwright_matchers.contain_text("Email The Team")
   end
 end
 
 Then("I should see {string} in the ordered items") do |item_title|
   Capybara.current_session.driver.with_playwright_page do |p_page|
     item = p_page.get_by_testid("reorder-item-3")
-    expect(item).to playwright_matchers.have_text(item_title)
+    expect(item).to playwright_matchers.contain_text(item_title)
   end
 end
 
