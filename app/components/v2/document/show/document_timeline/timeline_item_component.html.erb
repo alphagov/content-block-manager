@@ -1,0 +1,51 @@
+<div class="timeline__item">
+  <div class="timeline__header">
+    <% if is_latest %>
+      <span class="timeline__latest">
+        <%= I18n.t("timeline_item.latest") %>
+      </span>
+      <br>
+    <% end %>
+    <h2 class="timeline__title"><%= title %></h2>
+    <p class="timeline__byline">by <%= byline %></p>
+  </div>
+
+  <p class="timeline__date">
+      <%= date %>
+  </p>
+
+  <% if details_of_changes.present? %>
+    <div class="timeline__diff-table">
+      <% details = details_of_changes %>
+      <%= render "govuk_publishing_components/components/details", {
+        title: I18n.t("timeline_item.details_of_changes.title"),
+        open: is_latest,
+        summary_aria_attributes: {
+          label: "#{I18n.t("timeline_item.details_of_changes.title")} - #{title}",
+        },
+      } do %>
+        <%= details %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div>
+    <% if internal_change_note.present? %>
+      <div class="timeline__note timeline__note--internal">
+        <h2 class="timeline__title">
+          <%= I18n.t("timeline_item.internal_note.title") %>
+        </h2>
+        <p class="govuk-body"><%= internal_change_note %></p>
+      </div>
+    <% end %>
+
+    <% if change_note.present? %>
+      <div class="timeline__note timeline__note--public">
+        <h2 class="timeline__title">
+          <%= I18n.t("timeline_item.change_note.title") %>
+        </h2>
+        <p class="govuk-body"><%= change_note %></p>
+      </div>
+    <% end %>
+  </div>
+</div>
