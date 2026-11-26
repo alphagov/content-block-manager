@@ -6,6 +6,7 @@ module V2
     friendly_id :sluggable_string, use: :slugged, slug_column: :content_id_alias, routes: :default
 
     has_many :editions,
+             -> { order(created_at: :asc, id: :asc) },
              class_name: "V2::Edition",
              foreign_key: :v2_document_id,
              dependent: :destroy,
