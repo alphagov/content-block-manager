@@ -13,6 +13,7 @@ Feature: Schedule a content object
     When I review and confirm I have checked the content
     When I click to view the content block
     Then the published state of the object should be shown
+    And the published edition should have the changed content from the scheduled change
     And there should be no jobs scheduled
 
   @disable-sidekiq-test-mode
