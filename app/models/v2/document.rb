@@ -38,7 +38,7 @@ module V2
     before_validation :generate_content_id, on: :create
     after_validation :set_content_id_alias_and_embed_code, on: :create
 
-    enum :block_type, { time_period: "time_period" }
+    enum :block_type, { time_period: "time_period", pension: "pension" }
 
     scope :by_most_recently_created_edition, lambda {
       latest_edition = V2::Edition
