@@ -98,3 +98,8 @@ And("I see the places the content block is used") do
     expect(page).to have_content("Places this content block is used")
   end
 end
+
+And("I see the time period created event on the timeline") do
+  expect(page).to have_selector(".timeline__title", text: "Time period created")
+  expect(page).to have_selector(".timeline__byline", text: "by #{@user.name}")
+end

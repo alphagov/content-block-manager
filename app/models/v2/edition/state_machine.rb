@@ -30,6 +30,10 @@ module V2::Edition::StateMachine
       event :publish do
         transitions from: %i[draft scheduled], to: :published
       end
+
+      event :schedule do
+        transitions from: %i[draft], to: :scheduled
+      end
     end
 
     def event_fired(current_state, new_state, event)
@@ -50,7 +54,8 @@ module V2::Edition::StateMachine
           previous_state: current_state,
           new_state: new_state,
           transition_name: event,
-        },
+          scheduled_for_publication_at: scheduled_for_publication_at,
+        }.compact,
       )
     end
 

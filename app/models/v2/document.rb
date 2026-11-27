@@ -19,6 +19,12 @@ module V2
              dependent: :destroy,
              inverse_of: :document
 
+    has_many :domain_events,
+             -> { order(created_at: :desc) },
+             class_name: "V2::DomainEvent",
+             foreign_key: :v2_document_id,
+             inverse_of: :document
+
     has_one :most_recent_edition,
             -> { most_recent_first },
             foreign_key: :v2_document_id,

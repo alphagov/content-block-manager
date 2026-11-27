@@ -1,9 +1,9 @@
 FactoryBot.define do
-  factory :v2_version, class: "Version" do
+  factory :v2_version, class: "V2::Version" do
     event { "created" }
     item do
       build(
-        :v2_edition,
+        :v2_time_period_edition,
         document: build(
           :v2_document,
           block_type: "time_period",

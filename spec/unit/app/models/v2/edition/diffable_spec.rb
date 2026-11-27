@@ -84,6 +84,31 @@ RSpec.describe V2::Edition::Diffable do
 
         expect(expected_diff).to eq(edition.generate_diff)
       end
+
+      it "returns a diff if nested `to_details` fields have changed" do
+        previous_date_range = build(:v2_time_period_date_range, start: Time.zone.parse("2025-04-06"), end: Time.zone.parse("2025-04-07"))
+        previous_edition.date_range = previous_date_range
+        previous_edition.save!
+
+        updated_date_range = build(:v2_time_period_date_range, start: Time.zone.parse("2026-04-06"), end: Time.zone.parse("2026-04-07"))
+        edition.date_range = updated_date_range
+        edition.save!
+
+        expected_diff = {
+          "details" => { "date_range" => {
+            "start" => DiffItem.new(
+              previous_value: Time.zone.parse("2025-04-06"),
+              new_value: Time.zone.parse("2026-04-06"),
+            ),
+            "end" => DiffItem.new(
+              previous_value: Time.zone.parse("2025-04-07"),
+              new_value: Time.zone.parse("2026-04-07"),
+            ),
+          } },
+        }
+
+        expect(expected_diff).to eq(edition.generate_diff)
+      end
     end
   end
 end

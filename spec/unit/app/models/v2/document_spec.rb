@@ -13,6 +13,12 @@ RSpec.describe V2::Document, type: :model do
 
   let(:creator) { create(:user) }
 
+  it { is_expected.to have_many(:editions).class_name("V2::Edition").with_foreign_key(:v2_document_id).dependent(:destroy).inverse_of(:document) }
+  it { is_expected.to have_many(:time_period_editions).class_name("V2::TimePeriodEdition").with_foreign_key(:v2_document_id).dependent(:destroy).inverse_of(:document) }
+  it { is_expected.to have_many(:domain_events).class_name("V2::DomainEvent").with_foreign_key(:v2_document_id).inverse_of(:document) }
+  it { is_expected.to have_one(:most_recent_edition).with_foreign_key(:v2_document_id).class_name("V2::Edition") }
+  it { is_expected.to have_one(:latest_published_edition).with_foreign_key(:v2_document_id).class_name("V2::TimePeriodEdition") }
+
   describe "associations" do
     describe "#editions" do
       it "returns editions in the order they were created, oldest first" do

@@ -7,8 +7,6 @@ RSpec.describe V2::Edition::StateMachine, type: :model do
   end
 
   describe "use of state machine's 'event_fired' callback" do
-    let(:user) { create("user") }
-
     describe "creation of a new _version_ on state transition" do
       let(:user) { build(:user, id: 456) }
       let(:document) { build(:v2_document, id: 10) }
@@ -72,29 +70,54 @@ RSpec.describe V2::Edition::StateMachine, type: :model do
       end
 
       context "when a transition completes successfully" do
-        let(:expected_transition_description) do
-          {
-            previous_state: :draft,
-            new_state: :published,
-            transition_name: :publish,
-          }
-        end
-
         before do
           allow(Current).to receive(:user).and_return(user)
-
-          edition.publish!
         end
 
-        it "asks V2::DomainEvent::record to record the transition" do
-          expect(V2::DomainEvent).to have_received(:record).with(
-            name: "edition.state_transition.succeeded",
-            metadata: expected_transition_description,
-            edition: edition,
-            document: document,
-            user: user,
-            version: version,
-          )
+        context "when scheduled_for_publication_at is present" do
+          let(:scheduled_for_publication_at) { 7.days.from_now }
+
+          before do
+            edition.scheduled_for_publication_at = scheduled_for_publication_at
+            edition.schedule!
+          end
+
+          it "asks DomainEvent::record to record the transition with metadata including the timestamp for scheduled publication" do
+            expect(V2::DomainEvent).to have_received(:record).with(
+              name: "edition.state_transition.succeeded",
+              metadata: {
+                previous_state: :draft,
+                new_state: :scheduled,
+                transition_name: :schedule,
+                scheduled_for_publication_at:,
+              },
+              edition: edition,
+              document: document,
+              user: user,
+              version: version,
+            )
+          end
+        end
+
+        context "when scheduled_for_publication_at is not present" do
+          before do
+            edition.publish!
+          end
+
+          it "asks DomainEvent::record to record the transition without scheduled_for_publication_at in the metadata" do
+            expect(V2::DomainEvent).to have_received(:record).with(
+              name: "edition.state_transition.succeeded",
+              metadata: {
+                previous_state: :draft,
+                new_state: :published,
+                transition_name: :publish,
+              },
+              edition: edition,
+              document: document,
+              user: user,
+              version: version,
+            )
+          end
         end
       end
     end

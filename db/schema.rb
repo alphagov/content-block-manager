@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_21_132332) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_25_082418) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -160,8 +160,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_21_132332) do
     t.datetime "updated_at", null: false
     t.bigint "v2_document_id", null: false
     t.string "state", default: "draft", null: false
+    t.string "internal_change_note"
+    t.string "change_note"
+    t.datetime "scheduled_for_publication_at"
     t.index ["state"], name: "index_v2_editions_on_state"
     t.index ["v2_document_id"], name: "index_v2_editions_on_v2_document_id"
+  end
+
+  create_table "v2_pension_amounts", force: :cascade do |t|
+    t.bigint "edition_id", null: false
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["edition_id"], name: "index_v2_pension_amounts_on_edition_id"
   end
 
   create_table "v2_time_period_date_ranges", force: :cascade do |t|
@@ -210,5 +221,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_21_132332) do
   add_foreign_key "outcomes", "users", column: "creator_id"
   add_foreign_key "rollup_metrics", "documents"
   add_foreign_key "v2_editions", "v2_documents"
+  add_foreign_key "v2_pension_amounts", "v2_editions", column: "edition_id"
   add_foreign_key "v2_time_period_date_ranges", "v2_editions", column: "edition_id"
 end
