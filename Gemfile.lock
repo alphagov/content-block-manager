@@ -301,7 +301,7 @@ GEM
     govuk_personalisation (1.2.0)
       plek (>= 1.9.0)
       rails (>= 6, < 9)
-    govuk_publishing_components (71.1.0)
+    govuk_publishing_components (71.2.0)
       chartkick
       govuk_app_config
       govuk_personalisation (>= 0.7.0)
@@ -397,6 +397,7 @@ GEM
       mime-types-data (~> 3.2025, >= 3.2025.0507)
     mime-types-data (3.2026.1103)
     mini_mime (1.1.5)
+    mini_portile2 (2.8.9)
     minitest (6.1.0)
       drb (~> 2.0)
       prism (>= 1.5, < 3)
@@ -420,6 +421,9 @@ GEM
     nio4r (2.7.5)
     nokodiff (1.1.0)
       diff-lcs
+    nokogiri (1.19.7)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
     nokogiri (1.19.7-aarch64-linux-gnu)
       racc (~> 1.4)
     nokogiri (1.19.7-aarch64-linux-musl)
@@ -954,10 +958,10 @@ GEM
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.9.2)
     websocket (1.2.11)
-    websocket-driver (0.8.2)
+    websocket-driver (0.9.1)
       base64
-      websocket-extensions (>= 0.1.0)
-    websocket-extensions (0.1.5)
+      websocket-extensions (>= 0.2.0)
+    websocket-extensions (0.3.0)
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zeitwerk (2.8.3)
@@ -1143,7 +1147,7 @@ CHECKSUMS
   govuk_app_config (10.2.0) sha256=8fd947a4463d6170b0ef6161c9c9f4a6f8623a6472b101d797543e4cdd8b2b7c
   govuk_frontend_toolkit (9.0.1) sha256=18fdae529c9003e023c3461d89a45ddaf5ac0df311705351743c9f1b7b48a2de
   govuk_personalisation (1.2.0) sha256=8496e9e30c433846b87547b63ec65c98a64dd92fcf1b46b45e300150a24430b1
-  govuk_publishing_components (71.1.0) sha256=f40527957daa265248c9c5e9b7bbc8717f9ef925f436bb74dbcf70781d58975b
+  govuk_publishing_components (71.2.0) sha256=84e2502becfc1708c9ff4463575f1e457cff6a3c167cd27d39546ef782f2288c
   govuk_schemas (6.3.2) sha256=91ff2c17509e55ac799ac6cba883496300e7f35285e2013bcd80002d67c2b8ee
   govuk_sidekiq (12.0.0) sha256=378b0741330212d60c5bdd9787fd8122d71523ef9b61dfbf02d1f3ea666b85f2
   govuk_test (5.0.0) sha256=0af18a2556f264f275051bd4450ed4f3a044725f69c4693c9a76d16d3413be7b
@@ -1181,6 +1185,7 @@ CHECKSUMS
   mime-types (3.7.0) sha256=dcebf61c246f08e15a4de34e386ebe8233791e868564a470c3fe77c00eed5e56
   mime-types-data (3.2026.1103) sha256=cda7af94d895f1fd33e000acea800e6ed31e4c861e3d6c1a27c8b74f9e44dc64
   mini_mime (1.1.5) sha256=8681b7e2e4215f2a159f9400b5816d85e9d8c6c6b491e96a12797e798f8bccef
+  mini_portile2 (2.8.9) sha256=0cd7c7f824e010c072e33f68bc02d85a00aeb6fce05bb4819c03dfd3c140c289
   minitest (6.1.0) sha256=ff373595aa8888631e8a5463986a76b3845346ae6d7fa46e139c1633d418076e
   msgpack (1.8.7) sha256=dfefec761b5f9047e6e8d95d2c7f8af4b3725d984a01942adc533aa819a2df33
   multi_test (1.1.0) sha256=e9e550cdd863fb72becfe344aefdcd4cbd26ebf307847f4a6c039a4082324d10
@@ -1193,6 +1198,7 @@ CHECKSUMS
   netrc (0.11.0) sha256=de1ce33da8c99ab1d97871726cba75151113f117146becbe45aa85cb3dabee3f
   nio4r (2.7.5) sha256=6c90168e48fb5f8e768419c93abb94ba2b892a1d0602cb06eef16d8b7df1dca1
   nokodiff (1.1.0) sha256=2b7061a5fb3d1c0b701bd34f57c670a00809a3431ef70a064924d98643f9ad40
+  nokogiri (1.19.7) sha256=abe94507c54cb18f872777b16bdca4aad32b1abdc4c52fe843f1c80fbdf992b8
   nokogiri (1.19.7-aarch64-linux-gnu) sha256=8f5e15d299602456406e1f03a9f3456cceb33a0722811e818d2ee2214eb4c84a
   nokogiri (1.19.7-aarch64-linux-musl) sha256=efe0c3602e6e54521bc21c681930ce5568e2d11203de17400710b2b3ca2e4cb4
   nokogiri (1.19.7-arm-linux-gnu) sha256=7fd1907125691aa89e838cc91161761c758b4e17bb32f0dd9b5515a82cc759af
@@ -1383,8 +1389,8 @@ CHECKSUMS
   webmock (3.39.0) sha256=c74366b69b681ae2bb691f23643a73476157c1acdc56f674a8dece1b0fa0fd12
   webrick (1.9.2) sha256=beb4a15fc474defed24a3bda4ffd88a490d517c9e4e6118c3edce59e45864131
   websocket (1.2.11) sha256=b7e7a74e2410b5e85c25858b26b3322f29161e300935f70a0e0d3c35e0462737
-  websocket-driver (0.8.2) sha256=97c556b019bf3410b4961002ac501621e9322d3f8a7bc02161a09301cc4c4146
-  websocket-extensions (0.1.5) sha256=1c6ba63092cda343eb53fc657110c71c754c56484aad42578495227d717a8241
+  websocket-driver (0.9.1) sha256=8b6c5c0834f77f53b86d486cc761c99d60df807a8264267ea52fca0da660bb1e
+  websocket-extensions (0.3.0) sha256=1492aabd79218294b564e67e9ee6a90abdac1a2981d35a49848bbc39754f0752
   xpath (3.2.0) sha256=6dfda79d91bb3b949b947ecc5919f042ef2f399b904013eb3ef6d20dd3a4082e
   zeitwerk (2.8.3) sha256=2c85125a8467ce069e20123d1e709a08955c9d29c118c25b46b7b7fafdbb92e5
 
